@@ -1,0 +1,15 @@
+/* .p-button-raised {
+    padding: 0.75rem 1rem !important;
+    background-color: black;
+}
+.p-button-text {
+    padding: 0.75rem 1rem !important;
+    background-color: black;
+} */
+.p-button {
+    padding: 0.4rem 1rem 0.2rem 1rem !important;
+    text-align: left !important;
+}
+.p-button .p-button-icon-left {
+    padding-bottom: 0.2rem !important;
+}
