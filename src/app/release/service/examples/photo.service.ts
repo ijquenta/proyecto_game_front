@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Image } from '../api/image';
+// import { Image } from '../api/image';
 
 @Injectable()
 export class PhotoService {
@@ -10,7 +10,7 @@ export class PhotoService {
     getImages() {
         return this.http.get<any>('assets/release/data/photos.json')
             .toPromise()
-            .then(res => res.data as Image[])
+            // .then(res => res.data as Image[])
             .then(data => data);
     }
 }

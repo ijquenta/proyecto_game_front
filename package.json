@@ -1,5 +1,5 @@
 {
-    "name": "sakai-ng",
+    "name": "ibci-ng",
     "version": "16.0.0",
     "license": "PrimeNG Commercial",
     "scripts": {
@@ -29,6 +29,7 @@
         "@types/file-saver": "^2.0.5",
         "chart.js": "^3.3.2",
         "file-saver": "^2.0.5",
+        "jwt-decode": "^3.1.2",
         "ng2-pdf-viewer": "^10.0.0",
         "ngx-spinner": "^16.0.2",
         "primeflex": "^3.3.1",

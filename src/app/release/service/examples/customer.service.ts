@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Customer } from '../api/customer';
+// import { Customer } from '../api/customer';
 
 @Injectable()
 export class CustomerService {
@@ -10,21 +10,21 @@ export class CustomerService {
     getCustomersSmall() {
         return this.http.get<any>('assets/release/data/customers-small.json')
             .toPromise()
-            .then(res => res.data as Customer[])
+            // .then(res => res.data as Customer[])
             .then(data => data);
     }
 
     getCustomersMedium() {
         return this.http.get<any>('assets/release/data/customers-medium.json')
             .toPromise()
-            .then(res => res.data as Customer[])
+            // .then(res => res.data as Customer[])
             .then(data => data);
     }
 
     getCustomersLarge() {
         return this.http.get<any>('assets/release/data/customers-large.json')
             .toPromise()
-            .then(res => res.data as Customer[])
+            // .then(res => res.data as Customer[])
             .then(data => data);
     }
 }

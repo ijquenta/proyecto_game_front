@@ -14,12 +14,294 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.model = [
+            // {
+            //     label: 'Usuarios',
+            //     icon: 'pi pi-fw pi-briefcase',
+            //     items: [
+            //         {
+            //             label: 'Administrar Usuarios',
+            //             icon: 'pi pi-fw pi-pencil',
+            //             routerLink: ['/usuario/crud']
+            //         },
+            //         {
+            //             label: 'Buscar',
+            //             icon: 'pi pi-fw pi-circle-off',
+            //             routerLink: ['/usuario/empty']
+            //         },
+            //     ]
+            // },
             {
-                label: 'Usuarios',
+                label: 'Principal',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
+                ]
+            },
+            {
+                label: 'USUARIOS',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
-                        label: 'Administrar Usuarios',
+                        label: 'Usuarios',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Usuarios',
+                                icon: 'pi pi-fw pi-users',
+                                routerLink: ['/usuario/crud']
+                            },
+                            {
+                                label: 'Accesos Usuarios',
+                                icon: 'pi pi-fw pi-wrench',
+                                routerLink: ['/usuario/empty']
+                            },
+                            {
+                                label: 'Reportes Usuarios',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'ESTUDIANTES',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Estudiantes',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Estudiantes',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            // {
+                            //     label: 'Accesos Usuarios',
+                            //     icon: 'pi pi-fw pi-wrench',
+                            //     routerLink: ['/usuario/empty']
+                            // },
+                            {
+                                label: 'Reportes Estudiantes',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Asistencias',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Asistencias',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            // {
+                            //     label: 'Accesos Usuarios',
+                            //     icon: 'pi pi-fw pi-wrench',
+                            //     routerLink: ['/usuario/empty']
+                            // },
+                            {
+                                label: 'Reportes Asistencias',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Notas',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Notas',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            // {
+                            //     label: 'Accesos Usuarios',
+                            //     icon: 'pi pi-fw pi-wrench',
+                            //     routerLink: ['/usuario/empty']
+                            // },
+                            {
+                                label: 'Reportes Notas',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'DOCENTES',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Docentes',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Docente',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            // {
+                            //     label: 'Accesos Usuarios',
+                            //     icon: 'pi pi-fw pi-wrench',
+                            //     routerLink: ['/usuario/empty']
+                            // },
+                            {
+                                label: 'Reportes Docentes',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'INSCRIPCIÓN',
+                items: [
+                    {
+                        label: 'Inscripción', icon: 'pi pi-fw pi-bookmark',
+                        items: [
+                            {
+                                label: 'Administrar Inscripción', icon: 'pi pi-fw pi-bookmark',
+                                items: [
+                                    { label: 'Nueva Inscripción', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Listar Incripciones', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Verificar Incripción', icon: 'pi pi-fw pi-bookmark' },
+                                ]
+                            },
+                            {
+                                label: 'Reporte Incripción', icon: 'pi pi-fw pi-bookmark',
+                                items: [
+                                    { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Reportes general', icon: 'pi pi-fw pi-bookmark' }
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        label: 'Matriculación', icon: 'pi pi-fw pi-bookmark',
+                        items: [
+                            {
+                                label: 'Administración Matricula', icon: 'pi pi-fw pi-bookmark',
+                                items: [
+                                    { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Listar Matriculas', icon: 'pi pi-fw pi-bookmark' },
+                                ]
+                            },
+                            {
+                                label: 'Reporte Matricula', icon: 'pi pi-fw pi-bookmark',
+                                items: [
+                                    { label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' },
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'MATERIAL DE APOYO',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Material de Apoyo',
+                        icon: 'pi pi-fw pi-book',
+                        items: [
+                            {
+                                label: 'Gestionar Material',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            // {
+                            //     label: 'Accesos Usuarios',
+                            //     icon: 'pi pi-fw pi-wrench',
+                            //     routerLink: ['/usuario/empty']
+                            // },
+                            {
+                                label: 'Buscar Material',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'MATERIAS',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Materia',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Materia',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            {
+                                label: 'Historial Materia',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Modulo',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Modulo',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'PAGOS',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Pagos',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'Gestionar Pagos',
+                                icon: 'pi pi-fw pi-folder-open',
+                                // routerLink: ['/usuario/crud']
+                            },
+                            {
+                                label: 'Reportes Pagos',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                // routerLink: ['/usuario/empty']
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Notificación de pago',
+                        icon: 'pi pi-fw pi-bell',
+                        items: [
+                            {
+                                label: 'Envio de mensaje',
+                                icon: 'pi pi-fw pi-bell',
+                                // routerLink: ['/usuario/crud']
+                            },
+                        ]
+                    }
+                ]
+            },
+            /*
+            {
+                label: 'Estudiantes',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
                         icon: 'pi pi-fw pi-pencil',
                         routerLink: ['/usuario/crud']
                     },
@@ -31,6 +313,167 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
+                label: 'Docentes',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'Materia',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'MATERIAL DE CLASES',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'MATRICULA',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'INSCRIPCIÓN',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'NIVEL',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'PAGOS',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'ASISTENCIA',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'NOTA',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            },
+            {
+                label: 'NOTIFICACIONES',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Administrar Estudiantes',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/usuario/crud']
+                    },
+                    {
+                        label: 'Buscar',
+                        icon: 'pi pi-fw pi-circle-off',
+                        routerLink: ['/usuario/empty']
+                    },
+                ]
+            }, */
+            
+            /*{
                 label: 'Home',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
@@ -70,7 +513,7 @@ export class AppMenuComponent implements OnInit {
                     { label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', routerLink: ['/utilities/icons'] },
                     { label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: ['https://www.primefaces.org/primeflex/'], target: '_blank' },
                 ]
-            },
+            },*/ /*
             {
                 label: 'Pages',
                 icon: 'pi pi-fw pi-briefcase',
@@ -122,7 +565,7 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/pages/empty']
                     },
                 ]
-            },
+            },*/ /*
             {
                 label: 'Hierarchy',
                 items: [
@@ -164,7 +607,7 @@ export class AppMenuComponent implements OnInit {
                         ]
                     }
                 ]
-            },
+            },/*
             {
                 label: 'Get Started',
                 items: [
@@ -175,7 +618,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'View Source', icon: 'pi pi-fw pi-search', url: ['https://github.com/primefaces/sakai-ng'], target: '_blank'
                     }
                 ]
-            }
+            }*/
         ];
     }
 }

@@ -4,16 +4,17 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { NotfoundComponent } from './release/components/notfound/notfound.component';
-import { ProductService } from './release/service/product.service';
-import { CountryService } from './release/service/country.service';
-import { CustomerService } from './release/service/customer.service';
-import { EventService } from './release/service/event.service';
-import { IconService } from './release/service/icon.service';
-import { NodeService } from './release/service/node.service';
-import { PhotoService } from './release/service/photo.service';
+import { ProductService } from './release/service/examples/product.service';
+import { CountryService } from './release/service/examples/country.service';
+import { CustomerService } from './release/service/examples/customer.service';
+import { EventService } from './release/service/examples/event.service';
+import { IconService } from './release/service/examples/icon.service';
+import { NodeService } from './release/service/examples/node.service';
+import { PhotoService } from './release/service/examples/photo.service';
 import { ReportComponent } from './release/components/reportes/report/report.component';
 import { ReportesComponent } from './release/components/reportes/reportes.component';
 import { SafePipe } from './release/pipes/safe.pipe';
+import { AuthService } from './release/service/core/auth.service';
 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
@@ -43,6 +44,11 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {TabViewModule} from 'primeng/tabview';
 import {PanelMenuModule} from 'primeng/panelmenu';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+
+
+// Login
+import { LoginComponent } from './components/login/login.component';
+// import { AuthService } from './release/service/core/auth.service';
 @NgModule({
     declarations: [
         AppComponent,
@@ -50,49 +56,25 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
         ReportComponent,
         ReportesComponent,
         SafePipe,
+        LoginComponent,
     ],
     imports: [
-        AppRoutingModule,
-        AppLayoutModule,
-        PdfViewerModule,
-        NgxSpinnerModule,
-        CalendarModule,
-        TableModule,
-        DialogModule,
-        DynamicDialogModule,
-        CommonModule,
-        BrowserModule,
-        HttpClientModule,
-        FormsModule,
-        AppRoutingModule,
-        ButtonModule,
-        RippleModule,
-        TableModule,
-        DropdownModule,
-        ToastModule,
-        ConfirmDialogModule,
-        MessagesModule,
-        SidebarModule,
-        AutoCompleteModule,
-        DialogModule,
-        InputTextModule,
-        CalendarModule,
-        DynamicDialogModule,
-        InputNumberModule,
-        SelectButtonModule,
-        CheckboxModule,
-        TabViewModule,
-        NgxSpinnerModule,
-        PanelMenuModule,
-        PdfViewerModule,
-        InputTextareaModule,
-        CalendarModule,
-
+        AppRoutingModule, AppLayoutModule, PdfViewerModule, NgxSpinnerModule,
+        CalendarModule, TableModule, DialogModule, DynamicDialogModule, 
+        CommonModule, BrowserModule, HttpClientModule, FormsModule, AppRoutingModule,
+        ButtonModule, RippleModule, TableModule, DropdownModule, ToastModule, ConfirmDialogModule, 
+        MessagesModule, SidebarModule, AutoCompleteModule, DialogModule,
+        InputTextModule, CalendarModule, DynamicDialogModule, InputNumberModule, SelectButtonModule,
+        CheckboxModule, TabViewModule, NgxSpinnerModule, PanelMenuModule, PdfViewerModule, 
+        InputTextareaModule, CalendarModule,
+        
     ],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy },
-        CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, DialogService, PrimeIcons, ConfirmationService, MessageService
+        CountryService, CustomerService, EventService, IconService,
+        NodeService, PhotoService, ProductService, DialogService,
+        PrimeIcons, ConfirmationService, MessageService,
+        // AuthService
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
