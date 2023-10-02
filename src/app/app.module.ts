@@ -60,8 +60,10 @@ import { LoginRoutingModule } from './modules/components/auth/login/login-routin
 import { LoginComponent } from './modules/components/auth/login/login.component';
 import { RegisterComponent } from './modules/components/auth/register/register.component';
 import { PasswordModule } from 'primeng/password';
-import { ReporteComponent } from './modules/components/usuario/reporte/reporte.component';
-import { ReporteRoutingModule } from './modules/components/usuario/reporte/reporte-routing.module';
+// import { ReporteComponent } from './modules/components/usuario/usuario-reporte/usuario-reporte.component';
+// import { ReporteRoutingModule } from './modules/components/usuario/usuario-reporte/usuario-reporte-routing.module';
+// import { ReportComponent } from './modules/components/reportes/report/report.component';
+// import { ReporteRou}
 
 @NgModule({
     declarations: [
@@ -73,7 +75,7 @@ import { ReporteRoutingModule } from './modules/components/usuario/reporte/repor
         // LoginComponent,
         LoginComponent,
         RegisterComponent,
-        ReporteComponent
+        // ReportComponent
         
     ],
     imports: [
@@ -88,7 +90,7 @@ import { ReporteRoutingModule } from './modules/components/usuario/reporte/repor
         InputTextareaModule, CalendarModule,
         
         LoginRoutingModule,PasswordModule,
-        ReporteRoutingModule,
+        // ReporteRoutingModule,
     ],
     providers: [
         // { provide: LocationStrategy, useClass: HashLocationStrategy },
