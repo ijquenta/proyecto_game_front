@@ -3,10 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const API_URL = 'http://localhost:5001/academico_api';
+export const API_URL2 = 'https://fake-trello-api.herokuapp.com';
 export const TOKEN = 'token';
 
 export const environment = {
-  production: false
+  production: false,
+  API_URL2: 'https://fake-trello-api.herokuapp.com'
 };
 
 /*

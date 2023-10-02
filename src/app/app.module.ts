@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+// import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AppLayoutModule } from './layout/app.layout.module';
-import { NotfoundComponent } from './release/components/notfound/notfound.component';
-import { ProductService } from './release/service/examples/product.service';
-import { CountryService } from './release/service/examples/country.service';
-import { CustomerService } from './release/service/examples/customer.service';
-import { EventService } from './release/service/examples/event.service';
-import { IconService } from './release/service/examples/icon.service';
-import { NodeService } from './release/service/examples/node.service';
-import { PhotoService } from './release/service/examples/photo.service';
-import { ReportComponent } from './release/components/reportes/report/report.component';
-import { ReportesComponent } from './release/components/reportes/reportes.component';
-import { SafePipe } from './release/pipes/safe.pipe';
-import { AuthService } from './release/service/core/auth.service';
+import { AppLayoutModule } from './modules/layout/app.layout.module';
+import { NotfoundComponent } from './modules/components/notfound/notfound.component';
+import { ProductService } from './modules/service/examples/product.service';
+import { CountryService } from './modules/service/examples/country.service';
+import { CustomerService } from './modules/service/examples/customer.service';
+import { EventService } from './modules/service/examples/event.service';
+import { IconService } from './modules/service/examples/icon.service';
+import { NodeService } from './modules/service/examples/node.service';
+import { PhotoService } from './modules/service/examples/photo.service';
+import { ReportComponent } from './modules/components/reportes/report/report.component';
+import { ReportesComponent } from './modules/components/reportes/reportes.component';
+import { SafePipe } from './modules/pipes/safe.pipe';
+// import { AuthService } from './release/service/core/auth.service';
 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
@@ -47,8 +47,22 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 
 
 // Login
-import { LoginComponent } from './components/login/login.component';
+// import { LoginComponent } from './release/components/auth/login/login.component';
 // import { AuthService } from './release/service/core/auth.service';
+// import { AuthService } from './services/auth.service';
+// import { HttpClientModule } from '@angular/common/http';
+
+// para quitar #
+// import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
+
+import { LoginRoutingModule } from './modules/components/auth/login/login-routing.module';
+import { LoginComponent } from './modules/components/auth/login/login.component';
+import { RegisterComponent } from './modules/components/auth/register/register.component';
+import { PasswordModule } from 'primeng/password';
+import { ReporteComponent } from './modules/components/usuario/reporte/reporte.component';
+import { ReporteRoutingModule } from './modules/components/usuario/reporte/reporte-routing.module';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -56,10 +70,15 @@ import { LoginComponent } from './components/login/login.component';
         ReportComponent,
         ReportesComponent,
         SafePipe,
+        // LoginComponent,
         LoginComponent,
+        RegisterComponent,
+        ReporteComponent
+        
     ],
     imports: [
-        AppRoutingModule, AppLayoutModule, PdfViewerModule, NgxSpinnerModule,
+        AppRoutingModule, AppLayoutModule,
+        PdfViewerModule, NgxSpinnerModule,
         CalendarModule, TableModule, DialogModule, DynamicDialogModule, 
         CommonModule, BrowserModule, HttpClientModule, FormsModule, AppRoutingModule,
         ButtonModule, RippleModule, TableModule, DropdownModule, ToastModule, ConfirmDialogModule, 
@@ -68,13 +87,16 @@ import { LoginComponent } from './components/login/login.component';
         CheckboxModule, TabViewModule, NgxSpinnerModule, PanelMenuModule, PdfViewerModule, 
         InputTextareaModule, CalendarModule,
         
+        LoginRoutingModule,PasswordModule,
+        ReporteRoutingModule,
     ],
     providers: [
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        // { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService, CustomerService, EventService, IconService,
         NodeService, PhotoService, ProductService, DialogService,
         PrimeIcons, ConfirmationService, MessageService,
-        // AuthService
+        // AuthService,
+
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
