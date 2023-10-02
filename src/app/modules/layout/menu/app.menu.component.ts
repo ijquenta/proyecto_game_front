@@ -84,7 +84,7 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Reportes Estudiantes',
                                 icon: 'pi pi-fw pi-file-pdf',
-                                // routerLink: ['/usuario/empty']
+                                routerLink: ['estudiante/reporte']
                             }
                         ]
                     },
