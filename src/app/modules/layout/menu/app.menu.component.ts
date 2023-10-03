@@ -116,7 +116,7 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Notas',
                                 icon: 'pi pi-fw pi-folder-open',
-                                // routerLink: ['/usuario/crud']
+                                routerLink: ['nota/crud']
                             },
                             // {
                             //     label: 'Accesos Usuarios',
@@ -126,7 +126,7 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Reportes Notas',
                                 icon: 'pi pi-fw pi-file-pdf',
-                                // routerLink: ['/usuario/empty']
+                                routerLink: ['nota/reporte']
                             }
                         ]
                     }

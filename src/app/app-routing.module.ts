@@ -28,6 +28,7 @@ const routes: Routes = [
                     { path: 'estudiante', loadChildren: () => import('./modules/components/estudiante/estudiante.module').then(m => m.EstudianteModule) },
                     { path: 'asistencia', loadChildren: () => import('./modules/components/asistencia/asistencia.module').then(m => m.AsistenciaModule) },
                     { path: 'docente', loadChildren: () => import('./modules/components/docente/docente.module').then(m => m.DocenteModule) },
+                    { path: 'nota', loadChildren: () => import('./modules/components/nota/nota.module').then(m => m.NotaModule) },
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]
