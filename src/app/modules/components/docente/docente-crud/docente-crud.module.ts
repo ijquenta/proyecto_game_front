@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CrudRoutingModule } from './crud-routing.module';
-import { CrudComponent } from './crud.component';
+import { DocenteCrudRoutingModule } from './docente-crud-routing.module';
+import { DocenteCrudComponent } from './docente-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -22,7 +22,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 @NgModule({
     imports: [
         CommonModule,
-        CrudRoutingModule,
+        DocenteCrudRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -38,7 +38,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         InputNumberModule,
         DialogModule
     ],
-    declarations: [CrudComponent],
+    declarations: [DocenteCrudComponent],
     providers: [UsuarioService, ReporteService]
 })
-export class CrudModule { }
+export class DocenteCrudModule { }

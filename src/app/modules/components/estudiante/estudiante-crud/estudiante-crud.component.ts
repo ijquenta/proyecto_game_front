@@ -9,7 +9,7 @@ import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 @Component({
-    templateUrl: './crud.component.html',
+    templateUrl: './estudiante-crud.component.html',
     providers: [MessageService]
 })
 export class CrudComponent implements OnInit {
