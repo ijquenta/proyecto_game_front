@@ -95,7 +95,7 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Asistencias',
                                 icon: 'pi pi-fw pi-folder-open',
-                                // routerLink: ['/usuario/crud']
+                                routerLink: ['asistencia/crud']
                             },
                             // {
                             //     label: 'Accesos Usuarios',
@@ -105,7 +105,7 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Reportes Asistencias',
                                 icon: 'pi pi-fw pi-file-pdf',
-                                // routerLink: ['/usuario/empty']
+                                routerLink: ['asistencia/reporte']
                             }
                         ]
                     },

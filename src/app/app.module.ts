@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './modules/layout/app.layout.module';
-import { NotfoundComponent } from './modules/components/notfound/notfound.component';
 import { ProductService } from './modules/service/examples/product.service';
 import { CountryService } from './modules/service/examples/country.service';
 import { CustomerService } from './modules/service/examples/customer.service';
@@ -11,8 +10,6 @@ import { EventService } from './modules/service/examples/event.service';
 import { IconService } from './modules/service/examples/icon.service';
 import { NodeService } from './modules/service/examples/node.service';
 import { PhotoService } from './modules/service/examples/photo.service';
-import { ReportComponent } from './modules/components/reportes/report/report.component';
-import { ReportesComponent } from './modules/components/reportes/reportes.component';
 import { SafePipe } from './modules/pipes/safe.pipe';
 // import { AuthService } from './release/service/core/auth.service';
 
@@ -62,21 +59,22 @@ import { RegisterComponent } from './modules/components/auth/register/register.c
 import { PasswordModule } from 'primeng/password';
 // import { ReporteComponent } from './modules/components/usuario/usuario-reporte/usuario-reporte.component';
 // import { ReporteRoutingModule } from './modules/components/usuario/usuario-reporte/usuario-reporte-routing.module';
-// import { ReportComponent } from './modules/components/reportes/report/report.component';
+import { ReportComponent } from './modules/components/reportes/report/report.component';
+import { ReportesComponent } from './modules/components/reportes/reportes.component';
+// import { AsistenciaCrudComponent } from './modules/components/asistencia/asistencia-crud/asistencia-crud.component';
+// import { AsistenciaReporteComponent } from './modules/components/asistencia/asistencia-reporte/asistencia-reporte.component';
 // import { ReporteRou}
 
 @NgModule({
     declarations: [
         AppComponent,
-        NotfoundComponent,
         ReportComponent,
         ReportesComponent,
         SafePipe,
-        // LoginComponent,
         LoginComponent,
         RegisterComponent,
-        // ReportComponent
-        
+        // AsistenciaCrudComponent,
+        // AsistenciaReporteComponent,
     ],
     imports: [
         AppRoutingModule, AppLayoutModule,

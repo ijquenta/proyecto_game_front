@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { NotfoundComponent } from './modules/components/notfound/notfound.component';
+// import { NotfoundComponent } from './modules/components/notfound/notfound.component';
 import { AppLayoutComponent } from "./modules/layout/app.layout.component";
 
 // import { LoginComponent } from './release/components/auth/login/login.component';
@@ -16,7 +16,7 @@ const routes: Routes = [
     // loadChildren: () => import('./release/components/dashboard/dashboard.module').then((m) => m.DashboardModule),
     component: AppLayoutComponent,
                 children: [
-                    { path: '', loadChildren: () => import('./modules/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
+                    { path: '', loadChildren: () => import('./modules/components/principal/principal.module').then(m => m.PrincipaldModule) },
                     // { path: '', loadChildren: () => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                     // { path: 'uikit', loadChildren: () => import('./release/components/uikit/uikit.module').then(m => m.UIkitModule) },
                     // { path: 'utilities', loadChildren: () => import('./release/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
@@ -26,6 +26,7 @@ const routes: Routes = [
                     { path: 'usuario', loadChildren: () => import('./modules/components/usuario/usuario.module').then(m => m.UsuarioModule) },
                     // para estudiantes
                     { path: 'estudiante', loadChildren: () => import('./modules/components/estudiante/estudiante.module').then(m => m.EstudianteModule) },
+                    { path: 'asistencia', loadChildren: () => import('./modules/components/asistencia/asistencia.module').then(m => m.AsistenciaModule) },
                     { path: 'docente', loadChildren: () => import('./modules/components/docente/docente.module').then(m => m.DocenteModule) },
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
