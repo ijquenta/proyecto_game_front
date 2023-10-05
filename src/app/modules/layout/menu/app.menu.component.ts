@@ -273,12 +273,12 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Pagos',
                                 icon: 'pi pi-fw pi-money-bill',
-                                // routerLink: ['/usuario/crud']
+                                routerLink: ['pago/crud']
                             },
                             {
                                 label: 'Reportes Pagos',
                                 icon: 'pi pi-fw pi-file-pdf',
-                                // routerLink: ['/usuario/empty']
+                                routerLink: ['pago/reporte']
                             }
                         ]
                     },

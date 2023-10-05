@@ -30,6 +30,7 @@ const routes: Routes = [
                     { path: 'docente', loadChildren: () => import('./modules/components/docente/docente.module').then(m => m.DocenteModule) },
                     { path: 'nota', loadChildren: () => import('./modules/components/nota/nota.module').then(m => m.NotaModule) },
                     { path: 'inscripcion', loadChildren: () => import('./modules/components/inscripcion/inscripcion.module').then(m => m.InscripcionModule) },
+                    { path: 'pago', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]
