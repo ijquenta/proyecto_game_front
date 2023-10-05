@@ -166,18 +166,18 @@ export class AppMenuComponent implements OnInit {
                         label: 'Inscripción', icon: 'pi pi-fw pi-user-plus',
                         items: [
                             {
-                                label: 'Administrar Inscripción', icon: 'pi pi-fw pi-bookmark',
+                                label: 'Administrar Inscripción', icon: 'pi pi-fw pi-plus-circle',
                                 items: [
-                                    { label: 'Nueva Inscripción', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/nuevo'] },
-                                    { label: 'Listar Incripciones', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/listar'] },
-                                    { label: 'Verificar Incripción', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/verificar']  },
+                                    { label: 'Nueva Inscripción', icon: 'pi pi-fw pi-user-plus', routerLink: ['inscripcion/nuevo'] },
+                                    { label: 'Listar Incripciones', icon: 'pi pi-fw pi-users', routerLink: ['inscripcion/listar'] },
+                                    { label: 'Verificar Incripción', icon: 'pi pi-fw pi-verified', routerLink: ['inscripcion/verificar']  },
                                 ]
                             },
                             {
-                                label: 'Reporte Incripción', icon: 'pi pi-fw pi-bookmark',
+                                label: 'Reporte Incripción', icon: 'pi pi-fw pi-file-edit',
                                 items: [
-                                    { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/reporteEstudiante']  },
-                                    { label: 'Reportes general', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/reportes']}
+                                    { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-file-pdf', routerLink: ['inscripcion/reporteEstudiante']  },
+                                    { label: 'Reportes general', icon: 'pi pi-fw pi-file', routerLink: ['inscripcion/reportes']}
                                 ]
                             },
                         ]
@@ -186,16 +186,17 @@ export class AppMenuComponent implements OnInit {
                         label: 'Matriculación', icon: 'pi pi-fw pi-check-square',
                         items: [
                             {
-                                label: 'Administración Matricula', icon: 'pi pi-fw pi-bookmark',
+                                label: 'Administración Matricula', icon: 'pi pi-fw pi-list',
                                 items: [
-                                    { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Listar Matriculas', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-plus', routerLink: ['matricula/nuevo'] },
+                                    { label: 'Listar Matriculas', icon: 'pi pi-fw pi-users', routerLink: ['matricula/listar'] },
+                                    
                                 ]
                             },
                             {
-                                label: 'Reporte Matricula', icon: 'pi pi-fw pi-bookmark',
+                                label: 'Reporte Matricula', icon: 'pi pi-fw pi-file-pdf',
                                 items: [
-                                    { label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Reportes', icon: 'pi pi-fw pi-file', routerLink: ['matricula/reporte'] },
                                 ]
                             },
                         ]
@@ -250,13 +251,18 @@ export class AppMenuComponent implements OnInit {
                         ]
                     },
                     {
-                        label: 'Modulo',
+                        label: 'Niveles',
                         icon: 'pi pi-fw pi-circle-off',
                         items: [
                             {
-                                label: 'Gestionar Modulo',
+                                label: 'Gestionar Niveles',
                                 icon: 'pi pi-fw pi-folder-open',
-                                // routerLink: ['/usuario/crud']
+                                routerLink: ['nivel/crud']
+                            },
+                            {
+                                label: 'Reporte Niveles',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                routerLink: ['nivel/reporte']
                             },
                         ]
                     }
@@ -279,20 +285,25 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Reportes Pagos',
                                 icon: 'pi pi-fw pi-file-pdf',
                                 routerLink: ['pago/reporte']
+                            },
+                            {
+                                label: 'Notificación de pago',
+                                icon: 'pi pi-fw pi-bell',
+                                routerLink: ['pago/notificacion']
                             }
                         ]
                     },
-                    {
-                        label: 'Notificación de pago',
-                        icon: 'pi pi-fw pi-bell',
-                        items: [
-                            {
-                                label: 'Envio de mensaje',
-                                icon: 'pi pi-fw pi-bell',
-                                // routerLink: ['/usuario/crud']
-                            },
-                        ]
-                    }
+                    // {
+                    //     label: 'Notificación de pago',
+                    //     icon: 'pi pi-fw pi-bell',
+                    //     items: [
+                    //         {
+                    //             label: 'Envio de mensaje',
+                    //             icon: 'pi pi-fw pi-bell',
+                    //             // routerLink: ['/usuario/crud']
+                    //         },
+                    //     ]
+                    // }
                 ]
             },
             /*

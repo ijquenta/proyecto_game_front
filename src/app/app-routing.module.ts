@@ -33,6 +33,8 @@ const routes: Routes = [
                     { path: 'pago', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
                     { path: 'materia', loadChildren: () => import('./modules/components/materia/materia.module').then(m => m.MateriaModule) },
                     { path: 'material', loadChildren: () => import('./modules/components/material/material.module').then(m => m.MaterialModule) },
+                    { path: 'matricula', loadChildren: () => import('./modules/components/matricula/matricula.module').then(m => m.MatriculaModule)},
+                    { path: 'nivel', loadChildren: () => import('./modules/components/nivel/nivel.module').then(m => m.NivelModule)}
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]
