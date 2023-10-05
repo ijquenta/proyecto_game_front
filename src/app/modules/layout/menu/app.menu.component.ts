@@ -168,16 +168,16 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Administrar Inscripción', icon: 'pi pi-fw pi-bookmark',
                                 items: [
-                                    { label: 'Nueva Inscripción', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Listar Incripciones', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Verificar Incripción', icon: 'pi pi-fw pi-bookmark' },
+                                    { label: 'Nueva Inscripción', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/nuevo'] },
+                                    { label: 'Listar Incripciones', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/listar'] },
+                                    { label: 'Verificar Incripción', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/verificar']  },
                                 ]
                             },
                             {
                                 label: 'Reporte Incripción', icon: 'pi pi-fw pi-bookmark',
                                 items: [
-                                    { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-bookmark' },
-                                    { label: 'Reportes general', icon: 'pi pi-fw pi-bookmark' }
+                                    { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/reporteEstudiante']  },
+                                    { label: 'Reportes general', icon: 'pi pi-fw pi-bookmark', routerLink: ['inscripcion/reportes']}
                                 ]
                             },
                         ]
