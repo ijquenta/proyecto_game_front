@@ -213,7 +213,7 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Material',
                                 icon: 'pi pi-fw pi-folder-open',
-                                // routerLink: ['/usuario/crud']
+                                routerLink: ['material/crud']
                             },
                             // {
                             //     label: 'Accesos Usuarios',
@@ -221,9 +221,9 @@ export class AppMenuComponent implements OnInit {
                             //     routerLink: ['/usuario/empty']
                             // },
                             {
-                                label: 'Buscar Material',
+                                label: 'Reporte Material',
                                 icon: 'pi pi-fw pi-file-pdf',
-                                // routerLink: ['/usuario/empty']
+                                routerLink: ['material/reporte']
                             }
                         ]
                     }

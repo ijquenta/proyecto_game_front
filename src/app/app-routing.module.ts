@@ -32,6 +32,7 @@ const routes: Routes = [
                     { path: 'inscripcion', loadChildren: () => import('./modules/components/inscripcion/inscripcion.module').then(m => m.InscripcionModule) },
                     { path: 'pago', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
                     { path: 'materia', loadChildren: () => import('./modules/components/materia/materia.module').then(m => m.MateriaModule) },
+                    { path: 'material', loadChildren: () => import('./modules/components/material/material.module').then(m => m.MaterialModule) },
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]
