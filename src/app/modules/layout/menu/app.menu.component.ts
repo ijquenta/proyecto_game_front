@@ -240,12 +240,12 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Materia',
                                 icon: 'pi pi-fw pi-folder-open',
-                                // routerLink: ['/usuario/crud']
+                                routerLink: ['materia/crud']
                             },
                             {
                                 label: 'Historial Materia',
                                 icon: 'pi pi-fw pi-file-pdf',
-                                // routerLink: ['/usuario/empty']
+                                routerLink: ['materia/reporte']
                             }
                         ]
                     },

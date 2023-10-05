@@ -31,6 +31,7 @@ const routes: Routes = [
                     { path: 'nota', loadChildren: () => import('./modules/components/nota/nota.module').then(m => m.NotaModule) },
                     { path: 'inscripcion', loadChildren: () => import('./modules/components/inscripcion/inscripcion.module').then(m => m.InscripcionModule) },
                     { path: 'pago', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    { path: 'materia', loadChildren: () => import('./modules/components/materia/materia.module').then(m => m.MateriaModule) },
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]
