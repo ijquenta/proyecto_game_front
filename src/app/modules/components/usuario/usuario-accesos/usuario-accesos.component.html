@@ -4,5 +4,41 @@
             <h4>Accesos Usuarios</h4>
             <p>This is your empty page template to start building beautiful applications.</p>
         </div>
+        <div class="card">
+            <p-table [value]="listaRoles" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th>Código Rol</th>
+                        <th>Descripción del Role</th>
+                        <th>Operaciones</th>
+                        <!-- <th>Quantity</th> -->
+                        <!-- <th>Status</th> -->
+                        <!-- <th>Reviews</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rol>
+                    <tr>
+                        <td>{{rol.rolid}}</td>
+                        <td>{{rol.rolnom}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
+                            </div>
+                        </td>
+                        <!-- <td></td>
+                        <td></td>
+                        <td></td> -->
+
+                        <!-- <td>{{product.name}}</td>
+                        <td>{{product.price | currency:'USD'}}</td>
+                        <td>{{product.category}}</td>
+                        <td>{{product.quantity}}</td>
+                        <td><p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)"></p-tag></td>
+                        <td><p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating></td> -->
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
     </div>
 </div>

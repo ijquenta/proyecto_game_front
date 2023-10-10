@@ -21,6 +21,11 @@ export class UsuarioService {
         console.log("GetUsuario");
         return this.http.get(`${API_URL}/listaUsuarios`);
     }
+
+    getRoles(){
+        console.log("Roles");
+        return this.http.get(`${API_URL}/listarRoles`);
+    }
     // getProductsSmall() {
     //     return this.http.get<any>('assets/release/data/products-small.json')
     //         .toPromise()
