@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Product } from '../../api/product';
 import { API_URL } from 'src/environments/environment';
 import { Usuario } from '../../models/usuario';
+import { Rol } from '../../models/rol';
 
 @Injectable()
 export class UsuarioService {
@@ -26,6 +27,30 @@ export class UsuarioService {
         console.log("Roles");
         return this.http.get(`${API_URL}/listarRoles`);
     }
+
+    crearRol(criterio: any){
+        console.log("Service Crear Rol", criterio);
+        return this.http.post(`${API_URL}/crearRol`, criterio);
+    }
+
+    modificarRol(criterio: any){
+        console.log("Service Modificar Rol", criterio);
+        let registroModRol = new Rol();
+        registroModRol.rolId = criterio.rolid;
+        registroModRol.rolNombre = criterio.rolnombre;
+        registroModRol.rolDescripcion = criterio.roldescripcion;
+        registroModRol.rolUsuMod = 'Usu Modddd';
+        console.log("datos service->", registroModRol);
+        return this.http.post(`${API_URL}/modificarRol`, registroModRol);
+    }
+    eliminarRol(criterio: any){
+        console.log("Service Eliminar Rol", criterio);
+        return this.http.post(`${API_URL}/eliminarRol`, criterio);
+    }
+    // registrarDatosBeneficio(criterio: any) {
+    //     return this.http.post(`${API_URL}/registrarBeneficioNuevo`, criterio);
+    // }
+    
     // getProductsSmall() {
     //     return this.http.get<any>('assets/release/data/products-small.json')
     //         .toPromise()

@@ -4,3 +4,7 @@ export class Usuario {
     password: string = '';
     email: string = '';
 }
+interface InventoryStatus {
+    label: string;
+    value: string;
+}

@@ -1,4 +1,9 @@
 export class Rol {
-    id: number = 0;
-    des_rol: string = '';
+    rolId: number;
+    rolNombre: string = "";
+    rolDescripcion?: string;
+    rolUsuReg: string = "";
+    rolFecReg: any;
+    rolUsuMod: string = "";
+    rolFecMod: any;
 }

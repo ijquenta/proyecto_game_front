@@ -11,6 +11,7 @@ import { IconService } from './modules/service/examples/icon.service';
 import { NodeService } from './modules/service/examples/node.service';
 import { PhotoService } from './modules/service/examples/photo.service';
 import { SafePipe } from './modules/pipes/safe.pipe';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 // import { AuthService } from './release/service/core/auth.service';
 
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -88,6 +89,8 @@ import { ReportesComponent } from './modules/components/reportes/reportes.compon
         InputTextareaModule, CalendarModule,
         
         LoginRoutingModule,PasswordModule,
+
+        ScrollPanelModule
         // ReporteRoutingModule,
     ],
     providers: [

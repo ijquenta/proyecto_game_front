@@ -1,17 +1,46 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsuarioAccesosRoutingModule } from './usuario-accesos-routing.module';
-import { UsuarioAccesosComponent } from './usuario-accesos.component';
 import { TableModule } from 'primeng/table';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { DialogModule } from 'primeng/dialog';
+import { FormsModule } from '@angular/forms';
+import { FileUploadModule } from 'primeng/fileupload';
+import { RippleModule } from 'primeng/ripple';
+import { RatingModule } from 'primeng/rating';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DropdownModule } from 'primeng/dropdown';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { UsuarioAccesosRoutingModule } from './usuario-accesos-routing.module';
+
+import { UsuarioAccesosComponent } from './usuario-accesos.component';
+
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 @NgModule({
     imports: [
         CommonModule,
         UsuarioAccesosRoutingModule,
         TableModule,
-        ButtonModule
+        ButtonModule,
+        TagModule,
+        ToastModule,
+        ToolbarModule,
+        DialogModule,
+        FormsModule,
+        FileUploadModule,
+        RippleModule,
+        InputTextModule,
+        InputTextareaModule,
+        DropdownModule,
+        RadioButtonModule,
+        InputNumberModule,
+        RatingModule,
     ],
     declarations: [UsuarioAccesosComponent],
     providers: [UsuarioService]

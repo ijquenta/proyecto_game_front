@@ -4,6 +4,7 @@ import { filter, Subscription } from 'rxjs';
 import { LayoutService } from "./service/app.layout.service";
 import { AppSidebarComponent } from './sidebar/app.sidebar.component';
 import { AppTopBarComponent } from './topbar/app.topbar.component';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-layout',

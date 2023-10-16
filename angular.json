@@ -36,6 +36,11 @@
                         "scripts": [
                             "node_modules/prismjs/prism.js",
                             "node_modules/prismjs/components/prism-typescript.js"
+                        ],
+                        "allowedCommonJsDependencies": [
+                            "pdfjs-dist",
+                            "pdfjs-dist/web/pdf_viewer",
+                            "file-saver"
                         ]
                     },
                     "configurations": {

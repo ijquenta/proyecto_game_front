@@ -18,6 +18,7 @@ import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from './sidebar/app.sidebar.component';
 import { AppLayoutComponent } from "./app.layout.component";
 // Agregar
+
 import { MenubarModule } from 'primeng/menubar';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
@@ -49,6 +50,6 @@ import { PanelMenuModule } from 'primeng/panelmenu';
         MenuModule,
         PanelMenuModule
     ],
-    exports: [AppLayoutComponent]
+    exports: [AppLayoutComponent],
 })
 export class AppLayoutModule { }
