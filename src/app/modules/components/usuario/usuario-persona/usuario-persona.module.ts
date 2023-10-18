@@ -15,18 +15,21 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { UsuarioAccesosRoutingModule } from './usuario-accesos-routing.module';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CheckboxModule } from 'primeng/checkbox';
+import { PasswordModule } from 'primeng/password';
 
-import { UsuarioAccesosComponent } from './usuario-accesos.component';
+
+import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
+import { UsuarioPersonaComponent } from './usuario-persona.component';
 
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     imports: [
         CommonModule,
-        UsuarioAccesosRoutingModule,
+        UsuarioPersonaRoutingModule,
         TableModule,
         ButtonModule,
         TagModule,
@@ -42,9 +45,14 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         RadioButtonModule,
         InputNumberModule,
         RatingModule,
-        ProgressSpinnerModule
+        PasswordModule,
+        CalendarModule
     ],
-    declarations: [UsuarioAccesosComponent],
+    declarations: [UsuarioPersonaComponent],
     providers: [UsuarioService]
 })
-export class UsuarioAccesosModule { }
+export class UsuarioPersonaModule { }
+
+
+
+

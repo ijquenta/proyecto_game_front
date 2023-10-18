@@ -1,49 +1,49 @@
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="flex flex-column align-items-center justify-content-center">
-      <!-- <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo_ibci' : 'logo_ibci'}}.png"
+        <!-- <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo_ibci' : 'logo_ibci'}}.png"
         alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0"> -->
-      <div
-        style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-        <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
-          <div class="text-center mb-5">
-            <!-- <img src="assets/release/images/login/avatar.png" alt="Image" height="50" class="mb-3"> -->
-            <div class="text-900 text-3xl font-medium mb-3">Ingresar</div>
-            <!-- <span class="text-600 font-medium">Sistema de Seguimiento y Gestión Academico</span> -->
-            <span class="text-600 font-medium">IBCI</span>
-          </div>
-          <div *ngIf="status === 'failed'">
-            <p class="text-center mb-5 font-medium text-red-500 text-xs mt-1 ml-1">
-            Las credenciales son invalidas!
-            </p>
-          </div>
-          <div>
-            <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
-            <input id="email1" type="text" placeholder="Email address" pInputText class="w-full md:w-30rem mb-5"
-              style="padding:1rem" [(ngModel)]="email">
-  
-            <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-            <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true"
-              styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
-  
-            
-            
-            <div class="flex align-items-center justify-content-between mb-5 gap-5">
-              <div class="flex align-items-center">
-                <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
-                <label for="rememberme1">Recuerdame</label>
-              </div>
-              <a class="font-medium no-underline ml-2 text-right cursor-pointer"
-                style="color: var(--primary-color)">Olvidaste tu contraseña?</a>
-                <!-- <button pButton pRipple label="Crear Cuenta" class="w-full p-3 text-xl" [routerLink]="['/register']"></button> -->
-                <p-button label="Small" icon="pi pi-check" label="Crear Cuenta" styleClass="p-button-sm" [routerLink]="['/register']"></p-button>
+        <div
+            style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+                <div class="text-center mb-5">
+                    <!-- <img src="assets/release/images/login/avatar.png" alt="Image" height="50" class="mb-3"> -->
+                    <div class="text-900 text-3xl font-medium mb-3">Ingresar</div>
+                    <!-- <span class="text-600 font-medium">Sistema de Seguimiento y Gestión Academico</span> -->
+                    <span class="text-600 font-medium">IBCI</span>
+                </div>
+                <div *ngIf="status === 'failed'">
+                    <p class="text-center mb-5 font-medium text-red-500 text-xs mt-1 ml-1">
+                        Las credenciales son invalidas!
+                    </p>
+                </div>
+                <div>
+                    <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
+                    <input id="email1" type="text" placeholder="Email address" pInputText class="w-full md:w-30rem mb-5"
+                        style="padding:1rem" [(ngModel)]="email">
+
+                    <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
+                    <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true"
+                        styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
+
+
+
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="flex align-items-center">
+                            <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
+                            <label for="rememberme1">Recuerdame</label>
+                        </div>
+                        <a class="font-medium no-underline ml-2 text-right cursor-pointer"
+                            style="color: var(--primary-color)">Olvidaste tu contraseña?</a>
+                        <!-- <button pButton pRipple label="Crear Cuenta" class="w-full p-3 text-xl" [routerLink]="['/register']"></button> -->
+                        <p-button label="Small" icon="pi pi-check" label="Crear Cuenta" styleClass="p-button-sm"
+                            [routerLink]="['/register']"></p-button>
+                    </div>
+
+                    <button pButton pRipple label="Ingresar" class="w-full p-3 text-xl" (click)="doLogin()"></button>
+
+                </div>
+
             </div>
-            
-            <button pButton pRipple label="Ingresar" class="w-full p-3 text-xl" (click)="doLogin()"></button>
-            
-          </div>
-          
         </div>
-      </div>
     </div>
-  </div>
-  
+</div>

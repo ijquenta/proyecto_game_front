@@ -55,16 +55,18 @@ export class ReporteService {
     //         .then(res => res.data as Product[])
     //         .then(data => data);
     // }
+
     rptUsuarios() {
-        // this.spinner.show();
+
+        this.spinner.show();
         // console.log("fechas->",this.pip.transform(fechaInicio, 'dd-MM-yyyy'), this.pip.transform(fechaFin, 'dd-MM-yyyy'))
         return this.http.post(`${API_URL}/rptTotalesSigma`, {}, httpOptions).subscribe(
           (data: any) => {
-            // this.spinner.hide();
+            this.spinner.hide();
             this.archivos.generateReportPDF(data, `Reporte Usuarios`);
           },
           (error) => {
-            // this.spinner.hide();
+            this.spinner.hide();
             console.log(error);
             this.archivos.showToast();
           }

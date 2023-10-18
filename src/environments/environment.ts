@@ -8,7 +8,8 @@ export const TOKEN = 'token';
 
 export const environment = {
   production: false,
-  API_URL2: 'https://fake-trello-api.herokuapp.com'
+  API_URL2: 'https://fake-trello-api.herokuapp.com',
+  API_URL: 'http://localhost:5001/academico_api'
 };
 
 /*

@@ -47,10 +47,14 @@ export class UsuarioService {
         console.log("Service Eliminar Rol", criterio);
         return this.http.post(`${API_URL}/eliminarRol`, criterio);
     }
+    ListarPersona(){
+        console.log("ListarPersona");
+        return this.http.get(`${API_URL}/listarPersona`);
+    }
     // registrarDatosBeneficio(criterio: any) {
     //     return this.http.post(`${API_URL}/registrarBeneficioNuevo`, criterio);
     // }
-    
+
     // getProductsSmall() {
     //     return this.http.get<any>('assets/release/data/products-small.json')
     //         .toPromise()

@@ -55,6 +55,11 @@ export class AppMenuComponent implements OnInit {
                                 routerLink: ['usuario/accesos']
                             },
                             {
+                                label: 'Gestionar Persona',
+                                icon: 'pi pi-fw pi-users',
+                                routerLink: ['usuario/persona']
+                            },
+                            {
                                 label: 'Reporte Usuarios',
                                 icon: 'pi pi-fw pi-file-pdf',
                                 routerLink: ['usuario/reporte']
@@ -190,7 +195,7 @@ export class AppMenuComponent implements OnInit {
                                 items: [
                                     { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-plus', routerLink: ['matricula/nuevo'] },
                                     { label: 'Listar Matriculas', icon: 'pi pi-fw pi-users', routerLink: ['matricula/listar'] },
-                                    
+
                                 ]
                             },
                             {
@@ -483,7 +488,7 @@ export class AppMenuComponent implements OnInit {
                     },
                 ]
             }, */
-            
+
             /*{
                 label: 'Home',
                 items: [
