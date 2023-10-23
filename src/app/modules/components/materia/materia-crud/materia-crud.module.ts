@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MateriaCrudRoutingModule } from './materia-crud-routing.module';
-import { MateriaCrudComponent } from './matearia-crud.component';
+import { MateriaCrudComponent } from './materia-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -18,6 +18,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { MateriaService } from 'src/app/modules/service/data/materia.service';
 
 @NgModule({
     imports: [
@@ -39,6 +40,6 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         DialogModule
     ],
     declarations: [MateriaCrudComponent],
-    providers: [UsuarioService, ReporteService]
+    providers: [UsuarioService, ReporteService, MateriaService]
 })
 export class MateriaCrudModule { }

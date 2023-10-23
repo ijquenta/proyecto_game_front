@@ -1,9 +1,9 @@
-<div class="grid">
+<div class="grid" >
     <div class="col-12">
         <div class="card">
             <p-toast></p-toast>
-            <h3>MODULO PERSONA</h3>
-            <p>Administración del Modulo Persona</p>
+            <h3>Gestionar Persona</h3>
+            <!-- <p>Administración del Modulo Persona</p> -->
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
@@ -11,17 +11,16 @@
                             (click)="NuevoPersona()"></button>
                     </div>
                 </ng-template>
-                <ng-template pTemplate="right">
+                <!-- <ng-template pTemplate="right">
                     <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba"
                         styleClass="p-button-raised p-button-purple-200"></p-button>
-                </ng-template>
-
+                </ng-template> -->
             </p-toolbar>
 
             <div class="card">
                 <p-table [value]="lista_personas" [rows]="5" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
                     [rowsPerPageOptions]="[5,10,20]">
-                    <ng-template pTemplate="caption">
+                    <!-- <ng-template pTemplate="caption">
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <h5 class="m-0">Administrar Personas</h5>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
@@ -30,11 +29,10 @@
                                     placeholder="Buscar..." class="w-full sm:w-auto" />
                             </span>
                         </div>
-
-                    </ng-template>
+                    </ng-template> -->
                     <ng-template pTemplate="header" let-columns>
                         <tr>
-                            <th>Código</th>
+                            <!-- <th>Código</th> -->
                             <th>Usuario</th>
                             <th>Nombre completo</th>
                             <th>Fecha de nacimiento</th>
@@ -52,7 +50,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-persona>
                         <tr>
-                            <td>{{persona.perid}}</td>
+                            <!-- <td>{{persona.perid}}</td> -->
                             <td>{{persona.perusuario}}</td>
                             <td>{{persona.pernombres}} {{persona.perapepat}} {{persona.perapemat}}</td>
                             <td>{{persona.perfecnac | date:'dd/MM/yyyy'}}</td>
@@ -82,8 +80,7 @@
                 </p-table>
             </div>
 
-            <p-dialog [(visible)]="personaDialog" [style]="{width: '70%', height:'75%'}" header="Registrar Nuevo Rol"
-                [modal]="true" class="p-fluid">
+            <p-dialog [(visible)]="personaDialog" [style]="{width: '70%', height:'75%'}" header="Registrar Persona" [modal]="true" class="p-fluid">
 
                 <ng-template pTemplate="content">
                     <!-- <div class="col-12">
@@ -145,11 +142,9 @@
                         <input id="zip" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div> -->
-                    <div class="grid p-fluid">
-                        <div class="col-12">
-                            <p-card
-                                class="flex flex-column p-3 relative bg-gray-200 border-round p-4 font-bold text-gray-900">
-                                <div class="card p-fluid ">
+                    <div class="grid" >
+                        <div class="col-12" >
+                                <div class="card p-fluid border-3 border-primary-500">
                                     <div class="grid formgrid p-fluid">
                                         <!-- <div class="col-12 mb-2 lg:col-3 lg:mb-0">
                                     <span class="p-float-label">
@@ -186,14 +181,13 @@
                                         </div>
                                     </div>
                                 </div>
-                            </p-card>
                         </div>
                     </div>
 
-                    <div class="grid">
+                    <div class="grid" >
                         <div class="col-12 md:col-6">
-                            <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900">
-                                <div class="card p-fluid">
+                            <!-- <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900"> -->
+                                <div class="card p-fluid border-3 border-primary-500">
                                     <div class="grid formgrid p-fluid">
                                         <div class="col-12 mb-2 lg:col-6 lg:mb-0">
                                                 <span class="p-float-label">
@@ -209,7 +203,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </p-card>
+                            <!-- </p-card> -->
                             <!-- <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900">
                                 <div class="card p-fluid">
                                     <div class="p-formgrid grid">
@@ -240,8 +234,28 @@
                                     </div>
                                 </div>
                             </p-card> -->
-                            <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900">
-                                <div class="card p-fluid">
+                            <!-- <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900"> -->
+                                <div class="card p-fluid border-3 border-primary-500" >
+                                    <!-- <h5>Fechas</h5> -->
+                                    <div class="grid formgrid p-fluid">
+                                        <div class="fielsd col">
+                                            <span class="p-float-label">
+                                                <p-calendar inputId="fecnac" appendTo="body" dateFormat="dd-mm-yy"
+                                                    [(ngModel)]="persona.perfecnac" [showIcon]="true"></p-calendar>
+                                                <label for="fecnac">Fecha de nacimiento</label>
+                                            </span>
+                                        </div>
+                                        <div class="field col">
+                                            <span class="p-float-label">
+                                                <p-calendar inputId="fecFinal" appendTo="body" dateFormat="dd-mm-yy"
+                                                    [(ngModel)]="fechaLiquidacion" [showIcon]="true"></p-calendar>
+                                                <label for="fecFinal">Fecha de Liquidación</label>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card p-fluid border-3 border-primary-500" >
                                     <!-- <h5>Fechas</h5> -->
                                     <div class="grid formgrid p-fluid">
                                         <div class="field col">
@@ -251,63 +265,71 @@
                                                 <label for="fecnac">Fecha de nacimiento</label>
                                             </span>
                                         </div>
-                                        <!-- <div class="field col">
+                                        <div class="field col">
                                             <span class="p-float-label">
                                                 <p-calendar inputId="fecFinal" appendTo="body" dateFormat="dd-mm-yy"
                                                     [(ngModel)]="fechaLiquidacion" [showIcon]="true"></p-calendar>
                                                 <label for="fecFinal">Fecha de Liquidación</label>
                                             </span>
-                                        </div> -->
+                                        </div>
                                     </div>
                                 </div>
-
-                            </p-card>
+                            <!-- </p-card> -->
                         </div>
 
 
                         <div class="col-12 md:col-6">
-                            <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900">
-                                <div class="grid formgrid p-fluid">
-                                    <!-- <h5>Horizontal</h5> -->
 
-                                    <div class="field col-12 md:col-6">
+                            <!-- <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900"> -->
+                                <div class="card p-fluid border-3 border-primary-500" >
+                                <div class="grid formgrid p-fluid">
+                                    <div class="col-12 mb-2 lg:col-6 lg:mb-0">
                                         <span class="p-float-label">
                                             <input type="text" pInputText="pInputText" [(ngModel)]="dictamenJuridico" />
                                             <label for="ddNivel">Celular</label>
                                         </span>
                                     </div>
-                                    <div class="field col-12 md:col-6">
+                                    <div class="col-12 mb-2 lg:col-6 lg:mb-0">
                                         <span class="p-float-label">
                                             <input type="text" pInputText="pInputText" [(ngModel)]="hojaRuta" />
                                             <label for="integeronly">Telefono</label>
                                         </span>
                                     </div>
-                                    <div class="field col-12 md:col-12">
-                                        <span class="p-float-label">
-                                            <p-dropdown inputId="ddTipoMotivo" appendTo="body" [filter]="true"
-                                                filterBy="desTipoMotivo" [options]="tipoMotivo"
-                                                [(ngModel)]="tipoMotivoSelected"
-                                                optionLabel="desTipoMotivo"></p-dropdown>
-                                            <ng-template let-tipoMotivo="tipoMotivo" pTemplate="item">
-                                                <div style="max-width: 100px;">{{tipoMotivo.desTipoMotivo}}</div>
-                                            </ng-template>
-                                            <label for="Motivo">Motivo</label>
-                                        </span>
-                                    </div>
-                                    <div class="field col-12 md:col-12">
-                                        <span class="p-float-label">
-                                            <textarea id="float-input" rows="1" cols="15"
-                                                pInputTextarea="pInputTextarea" [(ngModel)]="observaciones"></textarea>
-                                            <label for="float-input">Observaciones</label>
-                                        </span>
+                                </div>
+                                </div>
+                                <div class="card p-fluid border-3 border-primary-500" >
+                                    <div class="grid formgrid p-fluid">
+                                        <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                                                <span class="p-float-label">
+                                                    <p-dropdown inputId="ddTipoMotivo" appendTo="body" [filter]="true"
+                                                        filterBy="desTipoMotivo" [options]="tipoMotivo"
+                                                        [(ngModel)]="tipoMotivoSelected"
+                                                        optionLabel="desTipoMotivo">
+                                                    </p-dropdown>
+                                                    <ng-template let-tipoMotivo="tipoMotivo" pTemplate="item">
+                                                        <div style="max-width: 100px;">{{tipoMotivo.desTipoMotivo}}</div>
+                                                    </ng-template>
+                                                    <label for="Motivo">Motivo</label>
+                                                </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </p-card>
-                        </div>
+
+                                <div class="card p-fluid border-3 border-primary-500" >
+                                    <div class="grid formgrid p-fluid">
+                                        <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                                            <span class="p-float-label">
+                                                <textarea id="float-input" rows="1" cols="15"
+                                                    pInputTextarea="pInputTextarea" [(ngModel)]="observaciones"></textarea>
+                                                <label for="float-input">Observaciones</label>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </div>
+                            <!-- </p-card> -->
                     </div>
-
-
-
                 </ng-template>
 
                 <ng-template pTemplate="footer">

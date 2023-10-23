@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MateriaCrudComponent } from './matearia-crud.component';
+import { MateriaCrudComponent } from './materia-crud.component';
 
 @NgModule({
 	imports: [RouterModule.forChild([

@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 // import { Product } from 'src/app/release/api/product';
 import { Usuarios } from 'src/app/modules/models/usuarios';
 import { Usuario } from 'src/app/modules/models/usuario';
+
+import { Materia } from 'src/app/modules/models/materia';
+
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 // import { ProductService } from 'src/app/release/service/product.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+// import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 @Component({
@@ -40,20 +44,23 @@ export class MateriaCrudComponent implements OnInit {
 
     listaUsuarios: Usuario[] = [];
 
+    listaMaterias: Materia[] = [];
+
     constructor(
                 // private productService: ProductService,
                 private messageService: MessageService,
-                private usuarioService: UsuarioService,
+                // private usuarioService: UsuarioService,
+                private materiaService: MateriaService,
                 public reporte: ReporteService,) { }
 
     ngOnInit() {
         console.log("ngOnInit")
         // this.usuarioService.getUsuario().then(data => this.listaUsuarios = data);
         // console.log(this.listaUsuarios);
-        this.usuarioService.getUsuario().subscribe(
+        this.materiaService.listarMaterias().subscribe(
             (result: any) => {
-                this.listaUsuarios = result;
-                console.log("usuarios", this.listaUsuarios)
+                this.listaMaterias = result;
+                console.log("Materias", this.listaMaterias)
             }
         )
         // this.productService.getProducts().then(data => this.products = data);

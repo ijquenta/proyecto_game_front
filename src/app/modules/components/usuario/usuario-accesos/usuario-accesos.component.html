@@ -11,7 +11,7 @@
                     </div>
                 </ng-template>
                 <ng-template pTemplate="right">
-                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-purple-200"></p-button>
+                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Lista de Usuarios" styleClass="p-button-raised p-button-purple-200"></p-button>
                 </ng-template>
 
             </p-toolbar>
@@ -29,7 +29,7 @@
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th>Código</th>
+                        <!-- <th>Código</th> -->
                         <th>Nombre del Rol</th>
                         <th>Descripción del Rol</th>
                         <th>Registro por:</th>
@@ -40,7 +40,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rol>
                     <tr>
-                        <td>{{rol.rolid}}</td>
+                        <!-- <td>{{rol.rolid}}</td> -->
                         <td>{{rol.rolnombre}}</td>
                         <td>{{rol.roldescripcion}}</td>
                         <td>{{rol.rolusureg}}<br>{{rol.rolfecreg | date:'dd/MM/yyyy HH:mm:ss'}}</td>
