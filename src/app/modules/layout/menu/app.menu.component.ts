@@ -236,7 +236,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'MATERIAS',
+                label: 'MATERIAS Y CURSOS',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -268,6 +268,22 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Reporte Niveles',
                                 icon: 'pi pi-fw pi-file-pdf',
                                 routerLink: ['nivel/reporte']
+                            },
+                        ]
+                    },
+                    {
+                        label: 'Cursos',
+                        icon: 'pi pi-fw pi-circle-off',
+                        items: [
+                            {
+                                label: 'Gestionar Cursos',
+                                icon: 'pi pi-fw pi-folder-open',
+                                routerLink: ['curso/crud']
+                            },
+                            {
+                                label: 'Reporte Cursos',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                routerLink: ['curso/reporte']
                             },
                         ]
                     }

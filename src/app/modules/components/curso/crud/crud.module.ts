@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NivelCrudRoutingModule } from './nivel-crud-routing.module';
-import { NivelCrudComponent } from './nivel-crud.component';
+import { CursoCrudRoutingModule } from './crud-routing.module';
+import { CursoCrudComponent } from './crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -19,14 +19,11 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
-import { NivelService } from 'src/app/modules/service/data/nivel.service';
-import { TagModule } from 'primeng/tag';
 
-import { CalendarModule } from 'primeng/calendar';
 @NgModule({
     imports: [
         CommonModule,
-        NivelCrudRoutingModule,
+        CursoCrudRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -40,12 +37,9 @@ import { CalendarModule } from 'primeng/calendar';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule,
-        CalendarModule,
-        TagModule
-
+        DialogModule
     ],
-    declarations: [NivelCrudComponent],
-    providers: [UsuarioService, ReporteService, CursoService, NivelService]
+    declarations: [CursoCrudComponent],
+    providers: [UsuarioService, ReporteService, CursoService]
 })
-export class NivelCrudModule { }
+export class CursoCrudModule { }

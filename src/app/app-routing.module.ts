@@ -1,3 +1,4 @@
+import { CursoModule } from './modules/components/curso/curso.module';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 // import { NotfoundComponent } from './modules/components/notfound/notfound.component';
@@ -34,7 +35,8 @@ const routes: Routes = [
                     { path: 'materia', loadChildren: () => import('./modules/components/materia/materia.module').then(m => m.MateriaModule) },
                     { path: 'material', loadChildren: () => import('./modules/components/material/material.module').then(m => m.MaterialModule) },
                     { path: 'matricula', loadChildren: () => import('./modules/components/matricula/matricula.module').then(m => m.MatriculaModule)},
-                    { path: 'nivel', loadChildren: () => import('./modules/components/nivel/nivel.module').then(m => m.NivelModule)}
+                    { path: 'nivel', loadChildren: () => import('./modules/components/nivel/nivel.module').then(m => m.NivelModule)},
+                    { path: 'curso', loadChildren: () => import('./modules/components/curso/curso.module').then(m => m.CursoModule)}
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]
