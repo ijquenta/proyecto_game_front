@@ -23,28 +23,24 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th> Opciones</th>
-                        <!-- <th pSortableColumn="curid">Id <p-sortIcon field="curid"></p-sortIcon></th> -->
-                        <th pSortableColumn="curnombre">NombreCurso <p-sortIcon field="curnombre"></p-sortIcon></th>
+                        <th pSortableColumn="curid">Id <p-sortIcon field="curid"></p-sortIcon></th>
+                        <th pSortableColumn="curnombre">Nombre Curso <p-sortIcon field="curnombre"></p-sortIcon></th>
                         <th>Descripción</th>
                         <th pSortableColumn="curnivel">Nivel <p-sortIcon field="curnivel"></p-sortIcon></th>
                         <th pSortableColumn="curfecini">Fecha Inicio <p-sortIcon field="curfecini"></p-sortIcon></th>
                         <th pSortableColumn="curfecfin">Fecha Final <p-sortIcon field="curfecfin"></p-sortIcon></th>
                         <th pSortableColumn="curestadodescripcion">Estado <p-sortIcon field="curestadodescripcion"></p-sortIcon></th>
                         <th pSortableColumn="curestado">Estado <p-sortIcon field="curestado"></p-sortIcon></th>
+                        <th>Fecha de creación</th>
+                        <th>Fecha de modificación</th>
+                        <th> Opciones</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-nivel>
                     <tr>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarNivel(nivel)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="eliminarNivel(nivel)"></button>
-                            </div>
-                        </td>
-                        <!-- <td style="width:5%; min-width:3rem;">
+                        <td style="width:5%; min-width:3rem;">
                             {{nivel.code || nivel.curid}}
-                        </td> -->
+                        </td>
                         <td style="width:20%; min-width:15rem;">
                             <span class="p-column-title">Nombre</span>
                             {{nivel.curnombre}}
@@ -68,7 +64,25 @@
                         <td style="width:5%; min-width:3rem;">
                             {{nivel.curestado}}
                         </td>
-
+                        <td style="width:5%; min-width:3rem;">
+                            <p-chip>
+                                <div class="p-2"> {{nivel.curusureg}} {{nivel.curfecreg | date:'dd/MM/yyyy h:mm:ss a'}} </div>
+                            </p-chip>
+                        </td>
+                        <td style="width:5%; min-width:3rem;">
+                            <p-chip>
+                                <div class="p-2">
+                                    {{ nivel.curusumod }}
+                                    {{ formatFecha(nivel.curfecmod) | date:'dd/MM/yyyy h:mm:ss a' }}
+                                  </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarNivel(nivel)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="eliminarNivel(nivel)"></button>
+                            </div>
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -81,7 +95,8 @@
                 <div class="card p-fluid">
                     <div class="field">
                         <label for="curnombre">Nombre del Curso</label>
-                        <input type="text" pInputText id="curnombre" [(ngModel)]="nivel.curnombre" required autofocus/>
+                        <!-- <h5> Nombre del Curso</h5> -->
+                        <input type="text" pInputText id="curnombre" [(ngModel)]="nivel.curnombre" required/>
                     </div>
 
                     <div class="field">
@@ -136,7 +151,7 @@
         <p-dialog [(visible)]="eliminarNivelDialog" header="Confirmar" [modal]="true" [style]="{width:'750px'}">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="product">Estas seguro que quieres eliminar este Nivel <b>{{nivel.curnombre}} en la rango de fechas: {{nivel.curfchini | date:'dd/MM/yyyy'}}-{{nivel.curfchfin | date:'dd/MM/yyyy'}}</b>?</span>
+                <span *ngIf="nivel">Estas seguro que quieres eliminar este Nivel <b>{{nivel.curnombre}} en la rango de fechas: {{nivel.curfchini | date:'dd/MM/yyyy'}}-{{nivel.curfchfin | date:'dd/MM/yyyy'}}</b>?</span>
             </div>
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="eliminarNivelDialog = false"></button>

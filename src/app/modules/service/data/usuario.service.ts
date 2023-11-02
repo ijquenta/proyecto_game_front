@@ -19,17 +19,18 @@ export class UsuarioService {
     // }
 
     getUsuario(){
-        console.log("GetUsuario");
+        // console.log("GetUsuario");
         return this.http.get(`${API_URL}/listaUsuarios`);
     }
 
     getRoles(){
-        console.log("Roles");
-        return this.http.get(`${API_URL}/listarRoles`);
+        // console.log("Roles");
+        // return this.http.get(`${API_URL}/listarRoles`);
+        return this.http.get(`${API_URL}/tipoRol`);
     }
 
     crearRol(criterio: any){
-        console.log("Service Crear Rol", criterio);
+        // console.log("Service Crear Rol", criterio);
         return this.http.post(`${API_URL}/crearRol`, criterio);
     }
 

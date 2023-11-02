@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CursoCrudRoutingModule } from './crud-routing.module';
-import { CursoCrudComponent } from './crud.component';
+import { CursoCrudRoutingModule } from './curso-crud-routing.module';
+import { CursoCrudComponent } from './curso-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -19,6 +19,10 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { CalendarModule } from 'primeng/calendar';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+
 
 @NgModule({
     imports: [
@@ -37,7 +41,10 @@ import { CursoService } from 'src/app/modules/service/data/curso.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        CalendarModule,
+        TagModule,
+        ChipModule
     ],
     declarations: [CursoCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService]

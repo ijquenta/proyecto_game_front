@@ -1,0 +1,169 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <h2>ADMINISTRAR | ASIGNACIÓN DE MATERIAS A CURSOS</h2>
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="abrirNuevo()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <!-- <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button> -->
+                </ng-template>
+            </p-toolbar>
+            <p-table #dt [value]="listaCursosMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">LISTA DE ASIGNACIONES | CURSO | MATERIA</h5>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="curmatid">CODIGO <p-sortIcon field="curmatid"></p-sortIcon></th>
+                        <th pSortableColumn="curid">CODIGO MODULO<p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="curnombre">NOMBRE MODULO<p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="matnombre">NOMBRE MATERIA<p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="perapepat">IMPARTIDO POR<p-sortIcon field="name"></p-sortIcon></th>
+                        <th>DURACIÓN </th>
+                        <th pSortableColumn="name">ESTADO<p-sortIcon field="name"></p-sortIcon></th>
+                        <th> OPCIONES</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-cursoMateria>
+                    <tr>
+                        <td style="width:5%; min-width:1rem;">
+                            {{cursoMateria.curmatid}}
+                        </td>
+                        <td style="width:5%; min-width:1rem;">
+                            {{cursoMateria.curid}}
+                        </td>
+                        <td style="width:20%; min-width:17rem;">
+                            {{cursoMateria.curnombre}}
+                        </td>
+                        <td style="width:14%; min-width:17rem;">
+                            <p-chip>
+                                <div class="p-2">
+                                    Nivel {{cursoMateria.matnivel}}: Materia #{{cursoMateria.matid}} {{cursoMateria.matnombre}}
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td style="width:14%; min-width:15rem;">
+
+                            <p-chip>
+                                <div class="p-2">{{cursoMateria.pernombrecompleto}}</div>
+                            </p-chip>
+                            <p-chip>
+                                <div class="p-2">{{cursoMateria.curmatidrol}}:{{cursoMateria.curmatidroldes}}</div>
+                            </p-chip>
+                        </td>
+
+                        <td style="width:5%; min-width:6rem;">
+                            <p-tag severity="info"> {{cursoMateria.curmatfecini | date:'dd/MM/yyyy'}} </p-tag>
+                            <p-tag severity="warn"> {{cursoMateria.curmatfecfin | date:'dd/MM/yyyy'}} </p-tag>
+                        </td>
+                        <td style="width:7%; min-width:5rem;">
+                            <p-tag severity="success">
+                                {{cursoMateria.curmatestado}}:{{cursoMateria.curmatestadodescripcion}} </p-tag>
+
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button mr-2"
+                                    (click)="editarCursoMateria(cursoMateria)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                                    (click)="eliminarCursoMateria(cursoMateria)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="cursoMateriaDialog" [style]="{width: '50%', height: '70%'}"
+            header="MATERIA | CURSO | DOCENTE" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="status">ELEGIR CURSO</label>
+                    <p-dropdown inputId="ddTipoCurso" (onChange)="onSelectCurso($event)" appendTo="body"
+                        [options]="tipoCurso" [(ngModel)]="tipoCursoSeleccionado" optionLabel="curnombre"
+                        placeholder="SELECCIONAR CURSO">
+                    </p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label for="status">ELEGIR MATERIA</label>
+                    <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoMateria"
+                        [(ngModel)]="tipoMateriaSeleccionado" optionLabel="matnombre" placeholder="SELECCIONAR MATERIA">
+                    </p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label for="status">ELEGIR ROL</label>
+                    <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true"
+                        filterBy="rolnombre" [options]="tipoRol" [(ngModel)]="tipoRolSeleccionado"
+                        optionLabel="rolnombre" placeholder="SELECCIONAR ROL">
+                    </p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label for="status">ELEGIR DOCENTE</label>
+                    <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
+                        [(ngModel)]="tipoPersonaSeleccionado" optionLabel="pernombrecompleto"
+                        placeholder="SELECIONAR DOCENTE"></p-dropdown>
+                </div>
+
+                <div class="card p-fluid">
+                    <div class="flex p-formgrid grid">
+                        <div class="col">
+                            <span class="p-float-label">
+                                <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="cursoMateria.curmatfecini"
+                                    [showIcon]="true"></p-calendar>
+                                <label for="fecIni">FECHA DE INICIO</label>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <span class="p-float-label">
+                                <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="cursoMateria.curmatfecfin"
+                                    [showIcon]="true"></p-calendar>
+                                <label for="fecFin">FECHA DE FIN</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="status">ELEGIR ESTADO</label>
+                    <p-dropdown inputId="ddTipoEstado" appendTo="body" [options]="tipoEstado"
+                        [(ngModel)]="tipoEstadoSeleccionado" optionLabel="desTipoEstado"
+                        placeholder="SELECCIONAR ESTADO"></p-dropdown>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                    (click)="ocultarDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="guardarCursoMateria()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="eliminarCursoMateriaDialog" header="CONFIRMAR ELIMINACIÓN" [modal]="true"
+            [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="cursoMateria">ESTAS SEGURO QUE QUIERES ELIMINAR: <b>{{cursoMateria.curnombre}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="NO"
+                    (click)="eliminarCursoMateriaDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="SI"
+                    (click)="confirmarEliminar()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

@@ -9,11 +9,15 @@ export class NivelService {
 
 
     listarNivel(){
-        console.log("Listar-Nivel-Service");
         return this.http.get(`${API_URL}/listarNivel`);
     }
     insertarNivel(criterio: any){
-        console.log("Insertar-Nivel-Service");
         return this.http.post(`${API_URL}/insertarNivel`, criterio);
+    }
+    eliminarNivel(criterio: any){
+        return this.http.post(`${API_URL}/eliminarNivel`, criterio);
+    }
+    modificarNivel(criterio: any){
+        return this.http.post(`${API_URL}/modificarNivel`, criterio);
     }
 }

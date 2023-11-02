@@ -47,7 +47,7 @@ export class MaterialCrudComponent implements OnInit {
                 public reporte: ReporteService,) { }
 
     ngOnInit() {
-        console.log("ngOnInit")
+        // console.log("ngOnInit")
         // this.usuarioService.getUsuario().then(data => this.listaUsuarios = data);
         // console.log(this.listaUsuarios);
         this.usuarioService.getUsuario().subscribe(

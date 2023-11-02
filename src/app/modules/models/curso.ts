@@ -4,18 +4,27 @@ export class CursoMateria {
     curnombre?: string | null = null;
 	matnombre?: string | null = null;
 	matid?: number = 0;
+    matnivel?: number = 0;
 	pernombres?: string | null = null;
 	perapepat?: string | null = null;
 	perapemat?: string | null = null;
+    pernombrecompleto?: string | null = null;
 	periddocente?: number = 0;
-	curmatfecini?: string | null = null;
-	curmatfecfin?: string | null = null;
-	curmatestado?: string | null = null;
+	curmatfecini?: any;
+	curmatfecfin?: any;
+	curmatestado?: number = 0;
+	curmatestadodescripcion?: string | null = null;
 	curmatusureg?: string | null = null;
 	curmatfecreg?: string | null = null;
 	curmatusumod?: string | null = null;
 	curmatfecmod?: string | null = null;
+    curmatidrol?: number = 0;
+    curmatidroldes?: string | null = null;
 }
+
+
+
+
 
 // export class CursoCombo {
 //     curid: number = 0;

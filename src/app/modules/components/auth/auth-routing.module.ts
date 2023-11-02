@@ -13,12 +13,12 @@ const routes: Routes = [
     {
       path: 'login',
       component: LoginComponent,
-      title: 'Login'
+      title: 'SGSA'
     },
     {
       path: 'register',
       component: RegisterComponent,
-      title: 'Register'
+      title: 'SGSA'
     },
     // {
     //   path: 'forgot-password',

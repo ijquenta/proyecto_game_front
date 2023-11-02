@@ -21,7 +21,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { NivelService } from 'src/app/modules/service/data/nivel.service';
 import { TagModule } from 'primeng/tag';
-
+import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 @NgModule({
     imports: [
@@ -42,7 +42,8 @@ import { CalendarModule } from 'primeng/calendar';
         InputNumberModule,
         DialogModule,
         CalendarModule,
-        TagModule
+        TagModule,
+        ChipModule
 
     ],
     declarations: [NivelCrudComponent],

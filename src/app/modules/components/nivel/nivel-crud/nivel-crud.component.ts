@@ -1,14 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-// import { Product } from 'src/app/release/api/product';
-import { Usuarios } from 'src/app/modules/models/usuarios';
-import { Usuario } from 'src/app/modules/models/usuario';
 import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
-// import { ProductService } from 'src/app/release/service/product.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-// import { Curso } from 'src/app/modules/models/curso';
 import { Nivel } from 'src/app/modules/models/nivel';
 import { NivelService } from 'src/app/modules/service/data/nivel.service';
 import { TipoModulo } from 'src/app/modules/models/diccionario';
@@ -19,21 +11,6 @@ import { DatePipe } from '@angular/common';
     providers: [MessageService]
 })
 export class NivelCrudComponent implements OnInit {
-
-
-    deleteProductDialog: boolean = false;
-    deleteProductsDialog: boolean = false;
-    products: Usuario[] = [];
-    // product: Product = {};
-    product: Usuarios = {};
-    selectedProducts: Usuario[] = [];
-
-    cols: any[] = [];
-    statuses: any[] = [];
-    rowsPerPageOptions = [5, 10, 20];
-    listaUsuarios: Usuario[] = [];
-    productDialog: boolean = false;
-    // listaCursos: Curso[] = [];
 
 
     //-----------------Variables-Nivel-------------------//
@@ -47,19 +24,15 @@ export class NivelCrudComponent implements OnInit {
     tipoModuloSeleccionado: TipoModulo;
     tipoNivelEstado: TipoNivelEstado[] = [];
     tipoNivelEstadoSeleccionado: TipoNivelEstado;
-
-
     registroNivel: Nivel = {};
-
+    pip = new DatePipe('es-BO');
+    opcionNivel: boolean = false;
     //-----------------Variables-Nivel-------------------//
-    pip = new DatePipe('en-US');
+
 
 
     constructor(
-                // private productService: ProductService,
                 private messageService: MessageService,
-                private usuarioService: UsuarioService,
-                private cursoService: CursoService,
                 public reporte: ReporteService,
                 public nivelService: NivelService)
                 {
@@ -68,8 +41,6 @@ export class NivelCrudComponent implements OnInit {
                 }
 
     ngOnInit() {
-        // ngOn Init //
-        console.log("ngOnInit");
         this.listarNivel();
 
         this.tipoModulo = [
@@ -80,19 +51,14 @@ export class NivelCrudComponent implements OnInit {
         ];
 
         this.tipoNivelEstado = [
-            new TipoNivelEstado(1, 'VIGENTE'),
             new TipoNivelEstado(0, 'FINALIZADO'),
+            new TipoNivelEstado(1, 'VIGENTE'),
             new TipoNivelEstado(2, 'OTRO')
         ]
 
-        console.log("TipoModulo-> ",this.tipoModulo);
-        console.log("TipoNivelEstado-> ",this.tipoNivelEstado);
-
-        // ngOn Init //
+        // console.log("TipoModulo-> ",this.tipoModulo);
+        // console.log("TipoNivelEstado-> ",this.tipoNivelEstado);
     }
-    // ngAfterContentInit() {
-    //     this.setData();
-    // }
 
    //---------------Funciones-Nivel---------------//
 
@@ -109,24 +75,41 @@ export class NivelCrudComponent implements OnInit {
         this.tipoModuloSeleccionado = new TipoModulo(0,"");
         this.tipoNivelEstadoSeleccionado = new TipoNivelEstado(0,"");
         this.nivelDialog = true;
+        this.opcionNivel = true;
     }
     ocultarDialog() {
         this.nivelDialog = false;
+        this.opcionNivel = false;
     }
     editarNivel(data: any) {
         this.nivel = { ...data };
         this.setData();
         this.nivelDialog = true;
+        this.opcionNivel = false;
     }
     eliminarNivel(nivel: Nivel) {
         this.eliminarNivelDialog = true;
         this.nivel = { ...nivel };
     }
     confirmarEliminar() {
-        this.eliminarNivelDialog = false;
-        // this.products = this.products.filter(val => val.id !== this.product.id);
-        this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Nivel Eliminado', life: 3000 });
-        this.nivel = {};
+        console.log("confirmarEliminar: ", this.nivel)
+        const criterio = {
+            curid: this.nivel.curid
+        }
+        console.log("criterio: ", criterio)
+        this.nivelService.eliminarNivel(criterio).subscribe(
+            (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Nivel Eliminado', life: 3000 });
+                this.listarNivel();
+                this.eliminarNivelDialog = false;
+                this.nivel = {};
+            },
+            error => {
+            console.log("error",error);
+            const descripcionError = error.error.message;
+                this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+            }
+        );
     }
     curfechaini: any
     curfechafin: any
@@ -145,8 +128,8 @@ export class NivelCrudComponent implements OnInit {
         this.nivel.curdesnivel = this.tipoModuloSeleccionado.desTipoModulo;
         this.nivel.curestado = this.tipoNivelEstadoSeleccionado.codTipoNivelEstado;
         this.nivel.curestadodescripcion = this.tipoNivelEstadoSeleccionado.desTipoNivelEstado;
-        this.nivel.curusureg = 'UsuarioIvanPrueba'
-        this.nivel.curusumod = 'UsuarioModificar'
+        this.nivel.curusureg = 'Usuario Reg';
+        this.nivel.curusumod = 'Usuario Mod';
         const body = {...this.nivel}
         return body;
     }
@@ -169,23 +152,43 @@ export class NivelCrudComponent implements OnInit {
             case 3:
                 return 'danger';
             default:
-                return 'info'; // Valor predeterminado si el estado no coincide con 1 o 0
+                return 'info';
         }
     }
     guardarNivel(){
-
         this.obtenerBody();
         console.log("GuardarNivel", this.nivel);
-        this.nivelService.insertarNivel(this.nivel).subscribe(
-            (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Agregado', life: 3000 });
-                this.listarNivel();
-            },
-            error => {
-            console.log("error",error);
-                this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal!'});
-            });
-        this.nivelDialog = false;
+        if(this.opcionNivel){
+            this.nivelService.insertarNivel(this.nivel).subscribe(
+                (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Agregado', life: 3000 });
+                    this.listarNivel();
+                    this.nivelDialog = false;
+                    this.opcionNivel = false;
+                },
+                error => {
+                console.log("error",error);
+                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'});
+                }
+            );
+        }
+        else{
+            this.nivelService.modificarNivel(this.nivel).subscribe(
+                (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Modificado', life: 3000 });
+                    this.listarNivel();
+                    this.nivelDialog = false;
+                    this.opcionNivel = false;
+                },
+                error => {
+                console.log("error",error);
+                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar el Nivel'});
+                }
+            );
+        }
+    }
+    formatFecha(fechaString: string): Date {
+        return new Date(fechaString); // Convierte la cadena de fecha en un objeto Date
     }
     //---------------Funciones-Nivel---------------//
 }

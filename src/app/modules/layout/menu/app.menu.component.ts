@@ -58,12 +58,13 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Gestionar Persona',
                                 icon: 'pi pi-fw pi-users',
                                 routerLink: ['usuario/persona']
-                            },
-                            {
-                                label: 'Reporte Usuarios',
-                                icon: 'pi pi-fw pi-file-pdf',
-                                routerLink: ['usuario/reporte']
                             }
+                            ,
+                            // {
+                            //     label: 'Reporte Usuarios',
+                            //     icon: 'pi pi-fw pi-file-pdf',
+                            //     routerLink: ['usuario/reporte']
+                            // }
                         ]
                     }
                 ]
@@ -248,11 +249,11 @@ export class AppMenuComponent implements OnInit {
                                 icon: 'pi pi-fw pi-folder-open',
                                 routerLink: ['materia/crud']
                             },
-                            {
-                                label: 'Historial Materia',
-                                icon: 'pi pi-fw pi-file-pdf',
-                                routerLink: ['materia/reporte']
-                            }
+                            // {
+                            //     label: 'Historial Materia',
+                            //     icon: 'pi pi-fw pi-file-pdf',
+                            //     routerLink: ['materia/reporte']
+                            // }
                         ]
                     },
                     {
@@ -264,11 +265,11 @@ export class AppMenuComponent implements OnInit {
                                 icon: 'pi pi-fw pi-folder-open',
                                 routerLink: ['nivel/crud']
                             },
-                            {
-                                label: 'Reporte Niveles',
-                                icon: 'pi pi-fw pi-file-pdf',
-                                routerLink: ['nivel/reporte']
-                            },
+                            // {
+                            //     label: 'Reporte Niveles',
+                            //     icon: 'pi pi-fw pi-file-pdf',
+                            //     routerLink: ['nivel/reporte']
+                            // },
                         ]
                     },
                     {
@@ -280,11 +281,11 @@ export class AppMenuComponent implements OnInit {
                                 icon: 'pi pi-fw pi-folder-open',
                                 routerLink: ['curso/crud']
                             },
-                            {
-                                label: 'Reporte Cursos',
-                                icon: 'pi pi-fw pi-file-pdf',
-                                routerLink: ['curso/reporte']
-                            },
+                            // {
+                            //     label: 'Reporte Cursos',
+                            //     icon: 'pi pi-fw pi-file-pdf',
+                            //     routerLink: ['curso/reporte']
+                            // },
                         ]
                     }
                 ]

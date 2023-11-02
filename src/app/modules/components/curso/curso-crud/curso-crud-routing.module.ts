@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CursoCrudComponent } from './crud.component';
+import { CursoCrudComponent } from './curso-crud.component';
 
 @NgModule({
 	imports: [RouterModule.forChild([

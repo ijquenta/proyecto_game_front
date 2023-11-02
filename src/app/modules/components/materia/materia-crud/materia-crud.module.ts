@@ -19,6 +19,9 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { MateriaService } from 'src/app/modules/service/data/materia.service';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     imports: [
@@ -37,7 +40,10 @@ import { MateriaService } from 'src/app/modules/service/data/materia.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        TagModule,
+        ChipModule,
+        CalendarModule
     ],
     declarations: [MateriaCrudComponent],
     providers: [UsuarioService, ReporteService, MateriaService]

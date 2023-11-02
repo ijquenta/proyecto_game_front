@@ -9,14 +9,15 @@ export class MateriaService {
     constructor(private http: HttpClient) { }
 
 
-    listarMaterias(){
+    listarMateria(){
         console.log("ListarMateria_Service");
-        return this.http.get(`${API_URL}/listarMaterias`);
+        return this.http.get(`${API_URL}/listarMateria`);
     }
 
     getRoles(){
         console.log("Roles");
-        return this.http.get(`${API_URL}/listarRoles`);
+        // return this.http.get(`${API_URL}/listarRoles`);
+        return this.http.get(`${API_URL}/tipoRol`);
     }
 
     crearRol(criterio: any){
@@ -41,5 +42,18 @@ export class MateriaService {
     ListarPersona(){
         console.log("ListarPersona");
         return this.http.get(`${API_URL}/listarPersona`);
+    }
+
+    eliminarMateria(criterio: any){
+        console.log("Service Eliminar Materia", criterio);
+        return this.http.post(`${API_URL}/eliminarMateria`, criterio);
+    }
+    insertarMateria(criterio: any){
+        console.log("Service Insertar Materia", criterio);
+        return this.http.post(`${API_URL}/insertarMateria`, criterio);
+    }
+    modificarMateria(criterio: any){
+        console.log("Service Modificar Materia", criterio);
+        return this.http.post(`${API_URL}/modificarMateria`, criterio);
     }
 }

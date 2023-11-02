@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-// import { Product } from 'src/app/release/api/product';
-import { Usuarios } from 'src/app/modules/models/usuarios';
-import { Usuario } from 'src/app/modules/models/usuario';
-
 import { Materia } from 'src/app/modules/models/materia';
-
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-// import { ProductService } from 'src/app/release/service/product.service';
-// import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { DatePipe } from '@angular/common';
+import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
 
 @Component({
     templateUrl: './materia-crud.component.html',
@@ -18,154 +13,147 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 })
 export class MateriaCrudComponent implements OnInit {
 
-    productDialog: boolean = false;
 
-    deleteProductDialog: boolean = false;
-
-    deleteProductsDialog: boolean = false;
-
-    products: Usuario[] = [];
-
-    // product: Product = {};
-    product: Usuarios = {};
-
-
-
-    selectedProducts: Usuario[] = [];
-
-    submitted: boolean = false;
-
-    cols: any[] = [];
-
-    statuses: any[] = [];
-
-    rowsPerPageOptions = [5, 10, 20];
-
-
-    listaUsuarios: Usuario[] = [];
-
+    //-----------------Variables-------------------//
     listaMaterias: Materia[] = [];
+    materia: Materia = {};
+    submitted: boolean = false;
+    materiaDialog: boolean = false;
+    eliminarMateriaDialog: boolean = false;
+    tipoModulo: TipoModulo[] = [];
+    tipoModuloSeleccionado: TipoModulo;
+    tipoEstado: TipoEstado[] = [];
+    tipoEstadoSeleccionado: TipoEstado;
+    registroMateria: Materia = {};
+    pip = new DatePipe('es-BO');
+    opcionMateria: boolean = false;
+    //-----------------Variables-------------------//
+
 
     constructor(
-                // private productService: ProductService,
                 private messageService: MessageService,
-                // private usuarioService: UsuarioService,
                 private materiaService: MateriaService,
-                public reporte: ReporteService,) { }
+                public reporte: ReporteService,)
+                {
+                    this.tipoModuloSeleccionado = new TipoModulo(0,"");
+                    this.tipoEstadoSeleccionado = new TipoEstado(0,"");
+                }
 
     ngOnInit() {
-        console.log("ngOnInit")
-        // this.usuarioService.getUsuario().then(data => this.listaUsuarios = data);
-        // console.log(this.listaUsuarios);
-        this.materiaService.listarMaterias().subscribe(
+        // console.log("ngOnInit");
+        this.listarMaterias();
+        this.tipoModulo = [
+            new TipoModulo(1, 'PRIMERO'),
+            new TipoModulo(2, 'SEGUNDO'),
+            new TipoModulo(3, 'TERCERO'),
+            new TipoModulo(4, 'OTRO'),
+        ];
+
+        this.tipoEstado = [
+            new TipoEstado(0, 'FINALIZADO'),
+            new TipoEstado(1, 'VIGENTE'),
+            new TipoEstado(2, 'OTRO')
+        ]
+    }
+    listarMaterias(){
+        this.materiaService.listarMateria().subscribe(
             (result: any) => {
                 this.listaMaterias = result;
                 console.log("Materias", this.listaMaterias)
             }
         )
-        // this.productService.getProducts().then(data => this.products = data);
-
-        this.cols = [
-            { field: 'product', header: 'Product' },
-            { field: 'price', header: 'Price' },
-            { field: 'category', header: 'Category' },
-            { field: 'rating', header: 'Reviews' },
-            { field: 'inventoryStatus', header: 'Status' }
-        ];
-
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
-        ];
     }
 
-    openNew() {
-        this.product = {};
-        this.submitted = false;
-        this.productDialog = true;
+    abrirNuevo() {
+        this.materia = {};
+        this.tipoModuloSeleccionado = new TipoModulo(0,"");
+        this.tipoEstadoSeleccionado = new TipoEstado(0,"");
+        this.materiaDialog = true;
+        this.opcionMateria = true;
     }
-
-    deleteSelectedProducts() {
-        this.deleteProductsDialog = true;
+    ocultarDialog() {
+        this.materiaDialog = false;
+        this.opcionMateria = false;
+        this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Proceso Cancelado', life: 3000 });
     }
-
-    editProduct(product: Usuarios) {
-        this.product = { ...product };
-        this.productDialog = true;
+    editarMateria(data: any) {
+        this.materia = { ...data };
+        this.setData();
+        this.materiaDialog = true;
+        this.opcionMateria = false;
     }
-
-    deleteProduct(product: Usuarios) {
-        this.deleteProductDialog = true;
-        this.product = { ...product };
+    eliminarMateria(materia: Materia) {
+        this.eliminarMateriaDialog = true;
+        this.materia = { ...materia };
     }
-
-    confirmDeleteSelected() {
-        this.deleteProductsDialog = false;
-        this.products = this.products.filter(val => !this.selectedProducts.includes(val));
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-        this.selectedProducts = [];
+    confirmarEliminar() {
+        console.log("confirmarEliminar: ", this.materia)
+        const criterio = {
+            matid: this.materia.matid
+        }
+        console.log("criterio: ", criterio)
+        this.materiaService.eliminarMateria(criterio).subscribe(
+            (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Materia Eliminado', life: 3000 });
+                this.listarMaterias();
+                this.eliminarMateriaDialog = false;
+                this.materia = {};
+            },
+            error => {
+            console.log("error",error);
+            const descripcionError = error.error.message;
+                this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+            }
+        );
     }
-
-    confirmDelete() {
-        this.deleteProductDialog = false;
-        this.products = this.products.filter(val => val.id !== this.product.id);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        this.product = {};
+    setData(){
+        this.tipoModuloSeleccionado = new TipoModulo(this.materia.matnivel, this.materia.matdesnivel);
+        this.tipoEstadoSeleccionado = new TipoEstado(this.materia.matestado, this.materia.matestadodescripcion);
+        console.log(this.tipoModuloSeleccionado);
+        console.log(this.tipoEstadoSeleccionado);
+        console.log(this.materia);
     }
-
-    hideDialog() {
-        this.productDialog = false;
-        this.submitted = false;
+    obtenerBody(){
+        console.log("Obtener Body: ", this.materia);
+        this.materia.matnivel = this.tipoModuloSeleccionado.codTipoModulo;
+        this.materia.matdesnivel = this.tipoModuloSeleccionado.desTipoModulo;
+        this.materia.matestado = this.tipoEstadoSeleccionado.codTipoEstado;
+        this.materia.matestadodescripcion = this.tipoEstadoSeleccionado.desTipoEstado;
+        this.materia.matusureg = 'Usuario Reg';
+        this.materia.matusumod = 'Usuario Mod';
+        const body = {...this.materia}
+        return body;
     }
-
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.productDialog = false;
-    //         this.product = {};
-    //     }
-    // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // }
-
-    // createId(): string {
-    //     let id = '';
-    //     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    //     for (let i = 0; i < 5; i++) {
-    //         id += chars.charAt(Math.floor(Math.random() * chars.length));
-    //     }
-    //     return id;
-    // }
-
-    // onGlobalFilter(table: Table, event: Event) {
-    //     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    // }
+    guardarMateria(){
+        this.obtenerBody();
+        console.log("GuardarNivel", this.materia);
+        if(this.opcionMateria){
+            this.materiaService.insertarMateria(this.materia).subscribe(
+                (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Agregado', life: 3000 });
+                    this.listarMaterias();
+                    this.materiaDialog = false;
+                    this.opcionMateria = false;
+                },
+                error => {
+                console.log("error",error);
+                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'});
+                }
+            );
+        }
+        else{
+            this.materiaService.modificarMateria(this.materia).subscribe(
+                (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Modificado', life: 3000 });
+                    this.listarMaterias();
+                    this.materiaDialog = false;
+                    this.opcionMateria = false;
+                },
+                error => {
+                console.log("error",error);
+                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'});
+                }
+            );
+        }
+    }
 }

@@ -16,7 +16,7 @@ export class DiccionarioService {
     return this.http.post(`${API_URL}/listaMateriaCombo`, criterio);
   }
   getListaPersonaDocenteCombo(criterio: any){
-    console.log("Get Persona: ", criterio)
+    // console.log("Get Persona: ", criterio)
     return this.http.post(`${API_URL}/listaPersonaDocenteCombo`, criterio);
   }
 

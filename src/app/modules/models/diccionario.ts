@@ -90,21 +90,60 @@ export class TipoDeduccion{
 }
 
 
-// Curso Materia
+//--------------------- CursoMateria ---------------------//
 export class TipoCurso {
-    codTipoCurso: number = 0;
-    desTipoCurso: string = '';
-    constructor(codTipoCurso: number,desTipoCurso: string){
-        this.codTipoCurso = codTipoCurso;
-        this.desTipoCurso = desTipoCurso;
+    curid: number = 0;
+    curnombre: string = '';
+    curnivel: number = 0;
+    constructor(codTipoCurso: number,desTipoCurso: string, codCurnivel: number){
+        this.curid = codTipoCurso;
+        this.curnombre = desTipoCurso;
+        this.curnivel = codCurnivel;
     }
 }
+// export class TipoRol {
+//     codTipoRol: number = 0;
+//     desTipoRolNombre: string = '';
+//     desTipoRolApePat: string = '';
+//     desTipoRolApeMat: string = '';
+//     constructor(codTipoRol: number, desTipoRolApePat: string, desTipoRolApeMat: string, desTipoRolNombre: string){
+//         this.codTipoRol = codTipoRol;
+//         this.desTipoRolApePat = desTipoRolApePat;
+//         this.desTipoRolApeMat = desTipoRolApeMat;
+//         this.desTipoRolNombre = desTipoRolNombre;
+//     }
+// }
+export class TipoRol {
+    rolid: number = 0;
+	rolnombre: string = '';
+    constructor(codrolid: number, desrolnombre: string){
+        this.rolid = codrolid;
+        this.rolnombre = desrolnombre;
+    }
+}
+export class TipoPersona {
+    perid: number = 0;
+    pernombrecompleto: string = '';
+    constructor(codperid: number, despernombrecompleto: string){
+        this.perid = codperid;
+        this.pernombrecompleto = despernombrecompleto;
+    }
+}
+//--------------------- CursoMateria ---------------------//
 export class TipoModulo {
     codTipoModulo: number = 0;
     desTipoModulo: string = '';
     constructor(codTipoModulo: number,desTipoModulo: string){
         this.codTipoModulo = codTipoModulo;
         this.desTipoModulo = desTipoModulo;
+    }
+}
+export class TipoEstado {
+    codTipoEstado: number = 0;
+    desTipoEstado: string = '';
+    constructor(codTipoEstado: number,desTipoEstado: string){
+        this.codTipoEstado = codTipoEstado;
+        this.desTipoEstado = desTipoEstado;
     }
 }
 export class TipoNivelEstado {
@@ -116,22 +155,14 @@ export class TipoNivelEstado {
     }
 }
 export class TipoMateria {
-    codTipoMateria: number = 0;
-    desTipoMateria: string = '';
-    constructor(codTipoMateria: number, desTipoMateria: string){
-        this.codTipoMateria = codTipoMateria;
-        this.desTipoMateria = desTipoMateria;
+    matid: number = 0;
+    matnombre: string = '';
+    matnivel: number = 0;
+    constructor(codTipoMateria: number, desTipoMateria: string, codMatNivel: number){
+        this.matid = codTipoMateria;
+        this.matnombre = desTipoMateria;
+        this.matnivel = codMatNivel;
     }
 }
-export class TipoRol {
-    codTipoRol: number = 0;
-    desTipoRolNombre: string = '';
-    desTipoRolApePat: string = '';
-    desTipoRolApeMat: string = '';
-    constructor(codTipoRol: number, desTipoRolApePat: string, desTipoRolApeMat: string){
-        this.codTipoRol = codTipoRol;
-        this.desTipoRolApePat = desTipoRolApePat;
-        this.desTipoRolApeMat = desTipoRolApeMat;
-    }
-}
+
 
