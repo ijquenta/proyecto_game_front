@@ -1,7 +1,7 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
-
+import { MenuItem } from 'primeng/api';
 @Component({
     selector: 'app-menu',
     templateUrl: './app.menu.component.html'
@@ -9,6 +9,7 @@ import { LayoutService } from '../service/app.layout.service';
 export class AppMenuComponent implements OnInit {
 
     model: any[] = [];
+    items: MenuItem[];
 
     constructor(public layoutService: LayoutService) { }
 
@@ -32,12 +33,13 @@ export class AppMenuComponent implements OnInit {
             // },
             {
                 label: 'Principal',
+                icon: 'pi pi-fw pi-home',
                 items: [
                     { label: 'Panel de Control', icon: 'pi pi-fw pi-home', routerLink: ['/principal'] }
                 ]
             },
             {
-                label: 'USUARIOS',
+                label: 'Usuario',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -70,7 +72,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'ESTUDIANTES',
+                label: 'Estudiantes',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -139,7 +141,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'DOCENTES',
+                label: 'Docentes',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -166,26 +168,27 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'INSCRIPCIÓN',
+                label: 'Módulo Inscripción',
+                icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
-                        label: 'Inscripción', icon: 'pi pi-fw pi-user-plus',
+                        label: 'Inscripciones', icon: 'pi pi-fw pi-user-plus',
                         items: [
                             {
-                                label: 'Administrar Inscripción', icon: 'pi pi-fw pi-plus-circle',
+                                label: 'Inscripbir estudiante', icon: 'pi pi-fw pi-plus-circle',
                                 items: [
-                                    { label: 'Nueva Inscripción', icon: 'pi pi-fw pi-user-plus', routerLink: ['inscripcion/nuevo'] },
+                                    { label: 'Administrar Inscripción', icon: 'pi pi-fw pi-user-plus', routerLink: ['inscripcion/crud'] },
                                     { label: 'Listar Incripciones', icon: 'pi pi-fw pi-users', routerLink: ['inscripcion/listar'] },
                                     { label: 'Verificar Incripción', icon: 'pi pi-fw pi-verified', routerLink: ['inscripcion/verificar']  },
                                 ]
                             },
-                            {
-                                label: 'Reporte Incripción', icon: 'pi pi-fw pi-file-edit',
-                                items: [
-                                    { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-file-pdf', routerLink: ['inscripcion/reporteEstudiante']  },
-                                    { label: 'Reportes general', icon: 'pi pi-fw pi-file', routerLink: ['inscripcion/reportes']}
-                                ]
-                            },
+                            // {
+                            //     label: 'Reporte Incripción', icon: 'pi pi-fw pi-file-edit',
+                            //     items: [
+                            //         { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-file-pdf', routerLink: ['inscripcion/reporteEstudiante']  },
+                            //         { label: 'Reportes general', icon: 'pi pi-fw pi-file', routerLink: ['inscripcion/reportes']}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -210,7 +213,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'MATERIAL DE APOYO',
+                label: 'Material de Apoyo',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -237,7 +240,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'MATERIAS Y CURSOS',
+                label: 'Materias y Cursos',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -291,7 +294,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'PAGOS',
+                label: 'Módulo Pagos',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
@@ -652,6 +655,122 @@ export class AppMenuComponent implements OnInit {
                     }
                 ]
             }*/
+        ];
+        this.items = [
+            {
+                label: 'File',
+                icon: 'pi pi-fw pi-file',
+                items: [
+                    {
+                        label: 'New',
+                        icon: 'pi pi-fw pi-plus',
+                        items: [
+                            {
+                                label: 'Bookmark',
+                                icon: 'pi pi-fw pi-bookmark'
+                            },
+                            {
+                                label: 'Video',
+                                icon: 'pi pi-fw pi-video'
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Delete',
+                        icon: 'pi pi-fw pi-trash'
+                    },
+                    {
+                        label: 'Export',
+                        icon: 'pi pi-fw pi-external-link'
+                    }
+                ]
+            },
+            {
+                label: 'Edit',
+                icon: 'pi pi-fw pi-pencil',
+                items: [
+                    {
+                        label: 'Left',
+                        icon: 'pi pi-fw pi-align-left'
+                    },
+                    {
+                        label: 'Right',
+                        icon: 'pi pi-fw pi-align-right'
+                    },
+                    {
+                        label: 'Center',
+                        icon: 'pi pi-fw pi-align-center'
+                    },
+                    {
+                        label: 'Justify',
+                        icon: 'pi pi-fw pi-align-justify'
+                    }
+                ]
+            },
+            {
+                label: 'Users',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'New',
+                        icon: 'pi pi-fw pi-user-plus'
+                    },
+                    {
+                        label: 'Delete',
+                        icon: 'pi pi-fw pi-user-minus'
+                    },
+                    {
+                        label: 'Search',
+                        icon: 'pi pi-fw pi-users',
+                        items: [
+                            {
+                                label: 'Filter',
+                                icon: 'pi pi-fw pi-filter',
+                                items: [
+                                    {
+                                        label: 'Print',
+                                        icon: 'pi pi-fw pi-print'
+                                    }
+                                ]
+                            },
+                            {
+                                icon: 'pi pi-fw pi-bars',
+                                label: 'List'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'Events',
+                icon: 'pi pi-fw pi-calendar',
+                items: [
+                    {
+                        label: 'Edit',
+                        icon: 'pi pi-fw pi-pencil',
+                        items: [
+                            {
+                                label: 'Save',
+                                icon: 'pi pi-fw pi-calendar-plus'
+                            },
+                            {
+                                label: 'Delete',
+                                icon: 'pi pi-fw pi-calendar-minus'
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Archieve',
+                        icon: 'pi pi-fw pi-calendar-times',
+                        items: [
+                            {
+                                label: 'Remove',
+                                icon: 'pi pi-fw pi-calendar-minus'
+                            }
+                        ]
+                    }
+                ]
+            }
         ];
     }
 }

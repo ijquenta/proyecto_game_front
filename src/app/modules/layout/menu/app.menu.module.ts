@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 // import { ReporteRoutingModule } from './reporte/reporte-routing.module';
 // import { EmptyDemoComponent } from '../estudiante/empty/emptydemo.component';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { PanelMenuModule } from 'primeng/panelmenu';
 @NgModule({
     declarations: [],
     imports: [
         CommonModule,
         ScrollPanelModule,
+        PanelMenuModule
         // UsuarioRoutingModule,
         // ReporteRoutingModule,
         // EmptyDemoComponent

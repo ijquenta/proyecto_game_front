@@ -96,7 +96,7 @@
                     <div class="field">
                         <label for="curnombre">Nombre de la materia</label>
                         <!-- <h5> Nombre del Curso</h5> -->
-                        <input type="text" pInputText id="curnombre" [(ngModel)]="materia.matnombre" required />
+                        <input type="text" pInputText id="matnombre" [(ngModel)]="materia.matnombre" required />
                     </div>
 
                     <div class="field">
@@ -111,18 +111,12 @@
                         <p-dropdown inputId="ddTipoModulo" appendTo="body" [options]="tipoModulo"
                             [(ngModel)]="tipoModuloSeleccionado" optionLabel="desTipoModulo"
                             placeholder="Seleccionar Modulo"></p-dropdown>
-                        <!-- <ng-template let-tipoModulo pTemplate="item">
-                                        <div style="max-width: 100px;">{{tipoModulo.desTipoModulo}}</div>
-                                    </ng-template> -->
                     </div>
                     <div class="field">
                         <label for="status">Elegir Estado:</label>
                         <p-dropdown inputId="ddTipoEstado" appendTo="body" [options]="tipoEstado"
                             [(ngModel)]="tipoEstadoSeleccionado" optionLabel="desTipoEstado"
                             placeholder="Seleccionar Estado"></p-dropdown>
-                        <!-- <ng-template let-tipoEstado pTemplate="item">
-                                        <div style="max-width: 100px;">{{tipoEstado.desTipoEstado}}</div>
-                                    </ng-template> -->
                     </div>
                 </div>
 

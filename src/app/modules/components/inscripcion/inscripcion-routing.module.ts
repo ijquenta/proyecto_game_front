@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [RouterModule.forChild([
-        { path: 'nuevo', loadChildren: () => import('./inscripcion-nuevo/inscripcion-nuevo.module').then(m => m.InscripcionNuevoModule) },
+        { path: 'crud', loadChildren: () => import('./inscripcion-crud/inscripcion-crud.module').then(m => m.InscripcionCrudModule) },
         { path: 'listar', loadChildren: () => import('./inscripcion-listar/inscripcion-listar.module').then(m => m.InscripcionListarModule) },
         { path: 'verificar', loadChildren: () => import('./inscripcion-verificar/inscripcion-verificar.module').then(m => m.InscripcionVerificarModule) },
         { path: 'reporteEstudiante', loadChildren: () => import('./inscripcion-reporte-estudiante/inscripcion-reporte-estudiante.module').then(m => m.InscripcionRerporteEstudianteModule) },

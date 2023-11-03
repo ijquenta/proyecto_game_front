@@ -17,12 +17,18 @@ import { AppFooterComponent } from './footer/app.footer.component';
 import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from './sidebar/app.sidebar.component';
 import { AppLayoutComponent } from "./app.layout.component";
+import { TieredMenuModule } from 'primeng/tieredmenu';
 // Agregar
-
+import { ChipModule } from 'primeng/chip';
 import { MenubarModule } from 'primeng/menubar';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { PanelMenuModule } from 'primeng/panelmenu';
+
+//
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { AppConfigComponent } from './config/app.config.component';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -48,8 +54,13 @@ import { PanelMenuModule } from 'primeng/panelmenu';
         MenubarModule,
         AvatarModule,
         MenuModule,
-        PanelMenuModule
+        PanelMenuModule,
+        TieredMenuModule,
+        ChipModule,
+        ButtonModule,
+        CommonModule
+
     ],
-    exports: [AppLayoutComponent],
+    exports: [AppLayoutComponent, AppConfigComponent],
 })
 export class AppLayoutModule { }

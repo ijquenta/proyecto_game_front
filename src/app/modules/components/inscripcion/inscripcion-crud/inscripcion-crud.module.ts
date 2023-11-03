@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { InscripcionNuevoRoutingModule } from './inscripcion-nuevo-routing.module';
-import { InscripcionNuevoComponent } from './inscripcion-nuevo.component';
+import { InscripcionCrudRoutingModule } from './inscripcion-crud-routing.module';
+import { InscripcionCrudComponent } from './inscripcion-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -18,11 +18,19 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
+import { CalendarModule } from 'primeng/calendar';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { PanelModule } from 'primeng/panel';
+import { TooltipModule } from 'primeng/tooltip';
+import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
 @NgModule({
     imports: [
         CommonModule,
-        InscripcionNuevoRoutingModule,
+        InscripcionCrudRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -36,9 +44,16 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        CalendarModule,
+        TagModule,
+        ChipModule,
+        CardModule,
+        DividerModule,
+        PanelModule,
+        TooltipModule
     ],
-    declarations: [InscripcionNuevoComponent],
-    providers: [UsuarioService, ReporteService]
+    declarations: [InscripcionCrudComponent],
+    providers: [UsuarioService, ReporteService, CursoService, InscripcionService]
 })
-export class InscripcionNuevoModule { }
+export class InscripcionCrudModule { }

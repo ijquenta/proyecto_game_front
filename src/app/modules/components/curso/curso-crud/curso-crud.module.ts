@@ -19,11 +19,14 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
+
 import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
-
-
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { PanelModule } from 'primeng/panel';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -44,7 +47,11 @@ import { ChipModule } from 'primeng/chip';
         DialogModule,
         CalendarModule,
         TagModule,
-        ChipModule
+        ChipModule,
+        CardModule,
+        DividerModule,
+        PanelModule,
+        TooltipModule
     ],
     declarations: [CursoCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService]

@@ -1,12 +1,12 @@
 <div class="grid">
     <div class="col-12">
-        <p-card header="CURSOS">
+        <p-card header="INSCRIPCIÓN">
             <p-toast></p-toast>
             <div class="flex">
                 <div class="col-6">
-                    <p-panel header="Asignación de Materias a Cursos">
+                    <p-panel header="Inscripción de estudiantes">
                         <p>
-                            Es esta sección se puede realizar al asignación de materias a diferentes curso esto dependerá de la apertura de un nuevo módulo/curso en diferentes fechas.
+                            Es esta sección se puede realizar los registros de la inscripcion de los estudiantes a las diferentes materias.
                         </p>
                     </p-panel>
                 </div>
@@ -14,12 +14,12 @@
                     <p-panel header="Opciones">
                             <div class="my-2">
                                 <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-rounded p-button-success mr-2" (click)="abrirNuevo()"></button>
-                                <button pButton pRipple label="Reporte" icon="pi pi-file-pdf" class="p-button-rounded p-button-info mr-2" (click)="reporte.rptUsuarios()"></button>
+                                <!-- <button pButton pRipple label="Reporte" icon="pi pi-file-pdf" class="p-button-rounded p-button-info mr-2" (click)="reporte.rptUsuarios()"></button> -->
                             </div>
                     </p-panel>
                 </div>
             </div>
-            <p-table [value]="listaCursosMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+            <!-- <p-table [value]="listaCursosMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" >
                 <ng-template pTemplate="header">
                     <tr>
@@ -110,11 +110,81 @@
                         </td>
                     </tr>
                 </ng-template>
-            </p-table>
+            </p-table> -->
+            <p-table [value]="listaInscripcion" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="insid">
+                      Inscripción ID
+                      <p-sortIcon field="insid"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="matrid">
+                      Materia ID
+                      <p-sortIcon field="matrid"></p-sortIcon>
+                    </th>
+                    <th> Gestión de la Matricula</th>
+                    <th pSortableColumn="matrestadodescripcion">
+                      Estado Materia
+                      <p-sortIcon field="matrestadodescripcion"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="pernombrecompleto">
+                      Impartido por
+                      <p-sortIcon field="pernombrecompleto"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="pagdescripcion">
+                      Descripción de Pago
+                      <p-sortIcon field="pagdescripcion"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="pagmonto">
+                      Monto de Pago
+                      <p-sortIcon field="pagmonto"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="insfecreg">
+                      Fecha de Registro
+                      <p-sortIcon field="insfecreg"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="insfecmod">
+                      Fecha de Modificación
+                      <p-sortIcon field="insfecmod"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="insestado">
+                      Estado
+                      <p-sortIcon field="insestado"></p-sortIcon>
+                    </th>
+                    <th> Opciones </th>
+                    <th></th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-inscripcion>
+                  <tr>
+                    <td>{{ inscripcion.insid }}</td>
+                    <td>{{ inscripcion.matrgestion}}</td>
+                    <td>{{ inscripcion.matrid }}</td>
+                    <td>{{ inscripcion.matrestadodescripcion }}</td>
+                    <td>{{ inscripcion.pernombrecompleto }}</td>
+                    <td>{{ inscripcion.pagdescripcion }}</td>
+                    <td>{{ inscripcion.pagmonto }}</td>
+                    <td>{{ inscripcion.insfecreg | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ inscripcion.insfecmod | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ inscripcion.insestado }}</td>
+                    <td>
+                      <div class="flex">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button mr-2"
+                          (click)="editarInscripcion(inscripcion)" pTooltip="Editar">
+                        </button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                          (click)="eliminarInscripcion(inscripcion)" pTooltip="Eliminar">
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
         </p-card>
 
         <p-dialog [(visible)]="cursoMateriaDialog" [style]="{width: '50%'}"
-            header="CURSO" [modal]="true" class="p-fluid">
+            header="INSCRIPCIÓN" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
             <div class="card p-fluid">
                 <div class="flex">
