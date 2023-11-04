@@ -164,5 +164,12 @@ export class TipoMateria {
         this.matnivel = codMatNivel;
     }
 }
-
-
+//--------------------- CursoMatricuña ---------------------//
+export class TipoEstadoMatricula {
+    matrestado: number = 0;
+    matrestadodescripcion: string = '';
+    constructor(matrestado: number, matrestadodescripcion: string){
+        this.matrestado = matrestado;
+        this.matrestadodescripcion = matrestadodescripcion;
+    }
+}

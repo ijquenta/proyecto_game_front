@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-// import { Product } from 'src/app/release/api/product';
-import { Usuarios } from 'src/app/modules/models/usuarios';
-import { Usuario } from 'src/app/modules/models/usuario';
 import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
-// import { ProductService } from 'src/app/release/service/product.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
+import { Matricula } from 'src/app/modules/models/matricula';
+import { TipoEstadoMatricula } from 'src/app/modules/models/diccionario';
 
 @Component({
     templateUrl: './matricula-listar.component.html',
@@ -14,151 +10,109 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 })
 export class MatriculaListarComponent implements OnInit {
 
-    productDialog: boolean = false;
-
-    deleteProductDialog: boolean = false;
-
-    deleteProductsDialog: boolean = false;
-
-    products: Usuario[] = [];
-
-    // product: Product = {};
-    product: Usuarios = {};
-
-
-
-    selectedProducts: Usuario[] = [];
-
-    submitted: boolean = false;
-
-    cols: any[] = [];
-
-    statuses: any[] = [];
-
-    rowsPerPageOptions = [5, 10, 20];
-
-
-    listaUsuarios: Usuario[] = [];
+   
+      //-----------------Variables-------------------//
+        listaMatriculas: Matricula[] = [];
+        matricula: Matricula = {};
+        gestiones: number[] = [];
+        gestionSeleccionado: number;
+    //   submitted: boolean = false;
+        matriculaDialog: boolean = false;
+    //   eliminarMateriaDialog: boolean = false;
+    //   tipoModulo: TipoModulo[] = [];
+    //   tipoModuloSeleccionado: TipoModulo;
+        fechaInicio: Date;
+        fechaFinal: Date;
+        tipoEstadoMatricula: TipoEstadoMatricula[] = [];
+        tipoEstadoMatriculaSeleccionado: TipoEstadoMatricula;
+    //   registroMateria: Materia = {};
+    //   pip = new DatePipe('es-BO');
+    //   opcionMateria: boolean = false;
+      //-----------------Variables-------------------//s
 
     constructor(
                 // private productService: ProductService,
                 private messageService: MessageService,
-                private usuarioService: UsuarioService,
-                public reporte: ReporteService,) { }
+                private matriculaService: MatriculaService,
+                // private usuarioService: UsuarioService,
+                // public reporte: ReporteService,
+                ) { }
 
     ngOnInit() {
-        // console.log("ngOnInit")
-        // this.usuarioService.getUsuario().then(data => this.listaUsuarios = data);
-        // console.log(this.listaUsuarios);
-        this.usuarioService.getUsuario().subscribe(
+        this.listarMatriculas()
+        this.gestionSeleccionado = new Date().getFullYear();
+        for (let anio = this.gestionSeleccionado; anio >= 2018; anio--) {
+            this.gestiones.push(anio);
+        }
+        this.tipoEstadoMatricula = [
+            new TipoEstadoMatricula(0, 'CERRADO'),
+            new TipoEstadoMatricula(1, 'ABIERTO')
+        ]
+    }
+
+    listarMatriculas(){
+        this.matriculaService.listarMatricula().subscribe(
             (result: any) => {
-                this.listaUsuarios = result;
-                console.log("usuarios", this.listaUsuarios)
+                this.listaMatriculas = result;
+                console.log("Matriculas", this.listaMatriculas)
             }
         )
-        // this.productService.getProducts().then(data => this.products = data);
-
-        this.cols = [
-            { field: 'product', header: 'Product' },
-            { field: 'price', header: 'Price' },
-            { field: 'category', header: 'Category' },
-            { field: 'rating', header: 'Reviews' },
-            { field: 'inventoryStatus', header: 'Status' }
-        ];
-
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
-        ];
     }
 
-    openNew() {
-        this.product = {};
-        this.submitted = false;
-        this.productDialog = true;
+    abrirNuevo() {
+        this.matricula = {};
+        this.gestionSeleccionado = 0;
+        this.matriculaDialog = true;
+        this.tipoEstadoMatriculaSeleccionado = new TipoEstadoMatricula(0, "");
     }
 
-    deleteSelectedProducts() {
-        this.deleteProductsDialog = true;
+    ocultarDialog() {
+        this.matriculaDialog = false;
+        // this.opcionMateria = false;
+        this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Proceso Cancelado', life: 3000 });
     }
-
-    editProduct(product: Usuarios) {
-        this.product = { ...product };
-        this.productDialog = true;
-    }
-
-    deleteProduct(product: Usuarios) {
-        this.deleteProductDialog = true;
-        this.product = { ...product };
-    }
-
-    confirmDeleteSelected() {
-        this.deleteProductsDialog = false;
-        this.products = this.products.filter(val => !this.selectedProducts.includes(val));
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-        this.selectedProducts = [];
-    }
-
-    confirmDelete() {
-        this.deleteProductDialog = false;
-        this.products = this.products.filter(val => val.id !== this.product.id);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        this.product = {};
-    }
-
-    hideDialog() {
-        this.productDialog = false;
-        this.submitted = false;
-    }
-
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.productDialog = false;
-    //         this.product = {};
-    //     }
+    // obtenerBody(){
+    //     console.log("Obtener Body: ", this.materia);
+    //     this.matricula.matrgestion = this.gestionSeleccionado;
+    //     this.matricula.matrestadodescripcion = this.tipoEstadoMatriculaSeleccionado.matrestadodescripcion;
+    //     this.matricula.matrfchini = this.tipoEstadoSeleccionado.codTipoEstado;
+    //     this.matricula.matrfchfin = this.tipoEstadoSeleccionado.codTipoEstado;
+    //     this.matricula.matrcos = this.tipoEstadoSeleccionado.desTipoEstado;
+    //     this.matricula.matrusureg = 'Usuario Reg';
+    //     this.matmatriculaeria.matusumod = 'Usuario Mod';
+    //     const body = {...this.materia}
+    //     return body;
     // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
+    // guardarMatricula(){
+    //     this.obtenerBody();
+    //     console.log("GuardarNivel", this.materia);
+    //     if(this.opcionMateria){
+    //         this.materiaService.insertarMateria(this.materia).subscribe(
+    //             (result: any) => {
+    //                 this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Agregado', life: 3000 });
+    //                 this.listarMaterias();
+    //                 this.materiaDialog = false;
+    //                 this.opcionMateria = false;
+    //             },
+    //             error => {
+    //             console.log("error",error);
+    //                 this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'});
+    //             }
+    //         );
     //     }
-
-    //     return index;
-    // }
-
-    // createId(): string {
-    //     let id = '';
-    //     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    //     for (let i = 0; i < 5; i++) {
-    //         id += chars.charAt(Math.floor(Math.random() * chars.length));
+    //     else{
+    //         this.materiaService.modificarMateria(this.materia).subscribe(
+    //             (result: any) => {
+    //                 this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Modificado', life: 3000 });
+    //                 this.listarMaterias();
+    //                 this.materiaDialog = false;
+    //                 this.opcionMateria = false;
+    //             },
+    //             error => {
+    //             console.log("error",error);
+    //                 this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'});
+    //             }
+    //         );
     //     }
-    //     return id;
-    // }
-
-    // onGlobalFilter(table: Table, event: Event) {
-    //     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     // }
 }

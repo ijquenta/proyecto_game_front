@@ -18,6 +18,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     imports: [
@@ -36,9 +38,10 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        CalendarModule
     ],
     declarations: [MatriculaListarComponent],
-    providers: [UsuarioService, ReporteService]
+    providers: [UsuarioService, ReporteService, MatriculaService]
 })
 export class MatriculaListarModule { }

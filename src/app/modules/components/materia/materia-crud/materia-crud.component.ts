@@ -27,7 +27,7 @@ export class MateriaCrudComponent implements OnInit {
     registroMateria: Materia = {};
     pip = new DatePipe('es-BO');
     opcionMateria: boolean = false;
-    //-----------------Variables-------------------//
+    //-----------------Variables-------------------//s
 
 
     constructor(
