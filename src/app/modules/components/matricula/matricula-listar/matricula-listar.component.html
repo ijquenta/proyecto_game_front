@@ -2,11 +2,11 @@
 
     <div class="col-12">
         <div class="card px-6 py-6">
-            <h2>Administración de matriculas</h2>
+            <h2>Administración de Matriculas</h2>
             <p-toast></p-toast>
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
-                   <div class="my-2">
+                    <div class="my-2">
                         <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2"
                             (click)="abrirNuevo()"></button>
                     </div>
@@ -21,18 +21,19 @@
                 [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Lista de matriculas</h5>
+                        <h5 class="m-0">Lista de Matriculas</h5>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="matrid">CÓDIGO<p-sortIcon field="matrid"></p-sortIcon></th>
-                        <th pSortableColumn="matrfchini">FECHA INICIO<p-sortIcon field="matrfchini"></p-sortIcon></th>
-                        <th pSortableColumn="matrfchfin">FECHA FINAL<p-sortIcon field="matrfchfin"></p-sortIcon></th>
-                        <th pSortableColumn="matrcos">COSTO<p-sortIcon field="matrcos"></p-sortIcon></th>
-                        <th>REGISTRADO POR</th>
-                        <th>MODIFICADO POR</th>
-                        <th pSortableColumn="matrestado">ESTADO<p-sortIcon field="matrestado"></p-sortIcon></th>
+                        <th pSortableColumn="matrid">Código<p-sortIcon field="matrid"></p-sortIcon></th>
+                        <th pSortableColumn="matrid">Gestión<p-sortIcon field="matrid"></p-sortIcon></th>
+                        <th pSortableColumn="matrfchini">Fecha Inicio<p-sortIcon field="matrfchini"></p-sortIcon></th>
+                        <th pSortableColumn="matrfchfin">Fecha Final<p-sortIcon field="matrfchfin"></p-sortIcon></th>
+                        <th pSortableColumn="matrcos">Costo<p-sortIcon field="matrcos"></p-sortIcon></th>
+                        <th>Registrado por</th>
+                        <th>Modificado por</th>
+                        <th pSortableColumn="matrestado">Estado<p-sortIcon field="matrestado"></p-sortIcon></th>
                         <th> OPCIONES </th>
                         <th></th>
                     </tr>
@@ -52,23 +53,25 @@
                         <td>
                             {{matricula.matrid}}
                         </td>
-
-                        <td >
+                        <td>
+                            {{matricula.matrgestion}}
+                        </td>
+                        <td>
                             {{matricula.matrfchini}}
                         </td>
-                        <td >
+                        <td>
                             {{matricula.matrfchfin}}
                         </td>
-                        <td >
-                            {{matricula.matrcos}}
+                        <td>
+                            Bs. {{matricula.matrcos}}
                         </td>
-                        <td >
-                           {{matricula.matrusureg}}-{{matricula.matrfecreg}}
+                        <td>
+                            {{matricula.matrusureg}}-{{matricula.matrfecreg}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <p-chip>
                                 <div class="p-2">
-                                    <ng-container *ngIf="matricula.matusumod; else noModificado">
+                                    <ng-container *ngIf="matricula.matrusumod; else noModificado">
                                         {{matricula.matrusumod}} {{matricula.matrfecmod}}
                                     </ng-container>
                                     <ng-template #noModificado>
@@ -78,12 +81,16 @@
                             </p-chip>
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <p-tag severity="Primary" [rounded]="true"> {{matricula.matrestado}}:{{matricula.matrestadodescripcion}} </p-tag>
+                            <p-tag severity="Primary" [rounded]="true">
+                                {{matricula.matrestado}}:{{matricula.matrestadodescripcion}} </p-tag>
                         </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarmatricula(matricula)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="eliminarmatricula(matricula)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editarMatricula(matricula)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="eliminarMatricula(matricula)"></button>
                             </div>
                         </td>
                     </tr>
@@ -91,7 +98,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="matriculaDialog" [style]="{width: '600px'}" header="MATRICULA" [modal]="true"
+        <p-dialog [(visible)]="matriculaDialog" [style]="{width: '600px'}" header="Matricula" [modal]="true"
             class="p-fluid">
 
             <ng-template pTemplate="content">
@@ -99,7 +106,7 @@
                 <!-- <div class="card p-fluid">
                     <div class="field">
                         <label for="curnombre">Nombre de la matricula</label>
-                        
+
                         <input type="text" pInputText id="matnombre" [(ngModel)]="matricula.matnombre" required />
                     </div>
 
@@ -109,32 +116,37 @@
                             cols="20"></textarea>
                     </div>
                 </div> -->
-                <div class="flex">
-                    <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                        <div class="col">
-                            <span class="p-float-label">
-                                <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="fechaInicio"
-                                    [showIcon]="true"></p-calendar>
-                                <label for="fecIni">Elegir Fecha Inicio</label>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                        <div class="col">
-                            <span class="p-float-label">
-                                <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="fechaFinal"
-                                    [showIcon]="true"></p-calendar>
-                                <label for="fecFin">Elegir Fecha Fin</label>
-                            </span>
-                        </div>
-                    </div>
-                </div>
                 <div class="card p-fluid">
+
                     <div class="field">
-                        <label for="status">Elegir Modulo</label>
+                        <label for="status">Elegir Gestión</label>
                         <p-dropdown inputId="ddgestion" appendTo="body" [options]="gestiones"
-                            [(ngModel)]="gestionSeleccionado" 
-                            placeholder="Seleccionar Gestion"></p-dropdown>
+                            [(ngModel)]="gestionSeleccionado" placeholder="Seleccionar Gestion"></p-dropdown>
+                    </div>
+                    <div class="field">
+                        <label class="block font-bold mb-2" for="currency-us">Costo</label>
+                        <p-inputNumber [(ngModel)]="costo" placeholder="Ingrese un monto"
+                            inputId="currency-bob" mode="currency" currency="BOB" locale="es-BO"></p-inputNumber>
+                    </div>
+                    <div class="flex">
+                        <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
+                            <div class="col">
+                                <span class="p-float-label">
+                                    <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="fechaInicio"
+                                        [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                                    <label for="fecIni">Elegir Fecha Inicio</label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
+                            <div class="col">
+                                <span class="p-float-label">
+                                    <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="fechaFinal"
+                                        [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                                    <label for="fecFin">Elegir Fecha Fin</label>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <div class="field">
                         <label for="status">Elegir Estado:</label>
@@ -142,31 +154,30 @@
                             [(ngModel)]="tipoEstadoMatriculaSeleccionado" optionLabel="matrestadodescripcion"
                             placeholder="Seleccionar Estado"></p-dropdown>
                     </div>
-                </div> 
-
+                </div>
             </ng-template>
+
             <ng-template pTemplate="footer">
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="guardarMatricula()"></button>
                 <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                     (click)="ocultarDialog()"></button>
-                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                    (click)="guardarmatricula()"></button>
             </ng-template>
         </p-dialog>
 
-<!-- 
-        <p-dialog [(visible)]="eliminarmatriculaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+        <p-dialog [(visible)]="eliminarMatriculaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 <span *ngIf="matricula">Estas seguro que quieres eliminar esta matricula
-                    <b>{{matricula.matnombre}}</b>?</span>
+                    <b>{{matricula.matrgestion}}</b>?</span>
             </div>
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                    (click)="eliminarmatriculaDialog = false"></button>
+                    (click)="eliminarMatriculaDialog = false"></button>
                 <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
                     (click)="confirmarEliminar()"></button>
             </ng-template>
-        </p-dialog> -->
+        </p-dialog>
 
     </div>
 </div>

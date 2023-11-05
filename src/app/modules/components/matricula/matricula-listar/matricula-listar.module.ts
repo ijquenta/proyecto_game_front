@@ -20,7 +20,8 @@ import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
 import { CalendarModule } from 'primeng/calendar';
-
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
 @NgModule({
     imports: [
         CommonModule,
@@ -39,7 +40,9 @@ import { CalendarModule } from 'primeng/calendar';
         RadioButtonModule,
         InputNumberModule,
         DialogModule,
-        CalendarModule
+        CalendarModule,
+        TagModule,
+        ChipModule
     ],
     declarations: [MatriculaListarComponent],
     providers: [UsuarioService, ReporteService, MatriculaService]

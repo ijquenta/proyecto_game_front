@@ -178,8 +178,8 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Inscripbir estudiante', icon: 'pi pi-fw pi-plus-circle',
                                 items: [
                                     { label: 'Administrar Inscripción', icon: 'pi pi-fw pi-user-plus', routerLink: ['inscripcion/crud'] },
-                                    { label: 'Listar Incripciones', icon: 'pi pi-fw pi-users', routerLink: ['inscripcion/listar'] },
-                                    { label: 'Verificar Incripción', icon: 'pi pi-fw pi-verified', routerLink: ['inscripcion/verificar']  },
+                                    //{ label: 'Listar Incripciones', icon: 'pi pi-fw pi-users', routerLink: ['inscripcion/listar'] },
+                                    //{ label: 'Verificar Incripción', icon: 'pi pi-fw pi-verified', routerLink: ['inscripcion/verificar']  },
                                 ]
                             },
                             // {
@@ -202,12 +202,12 @@ export class AppMenuComponent implements OnInit {
 
                                 ]
                             },
-                            {
+                            /*{
                                 label: 'Reporte Matricula', icon: 'pi pi-fw pi-file-pdf',
                                 items: [
                                     { label: 'Reportes', icon: 'pi pi-fw pi-file', routerLink: ['matricula/reporte'] },
                                 ]
-                            },
+                            },*/
                         ]
                     }
                 ]
