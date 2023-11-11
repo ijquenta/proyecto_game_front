@@ -173,3 +173,21 @@ export class TipoEstadoMatricula {
         this.matrestadodescripcion = matrestadodescripcion;
     }
 }
+
+//-----------------------Inscripcion------------------------//
+export class TipoCursoMateria {
+    curmatid: number = 0;
+    curmatdescripcion: string = '';
+    constructor(curmatid: number, curmatdescripcion: string){
+        this.curmatid = curmatid;
+        this.curmatdescripcion = curmatdescripcion;
+    }
+}
+export class TipoMatricula {
+    matrid: number = 0;
+    matrgestion: number = 0;
+    constructor(matrid: number, matrgestion: number){
+        this.matrid = matrid;
+        this.matrgestion = matrgestion;
+    }
+}

@@ -27,6 +27,7 @@ import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
+
 @NgModule({
     imports: [
         CommonModule,

@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 // import { Product } from 'src/app/release/api/product';
 import { Usuarios } from 'src/app/modules/models/usuarios';
@@ -12,13 +11,13 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 
 // ----------------------- Importaciones ----------------------------
-import { TipoCurso, TipoRol, TipoPersona, TipoEstado, TipoMateria} from 'src/app/modules/models/diccionario';
+import { TipoCurso, TipoRol, TipoPersona, TipoEstado, TipoMateria, TipoCursoMateria, TipoMatricula} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 
 import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
-import { Inscripcion } from 'src/app/modules/models/inscripcion';
+import { Inscripcion, InscripcionRegistro } from 'src/app/modules/models/inscripcion';
 
 @Component({
     templateUrl: './inscripcion-crud.component.html',
@@ -32,7 +31,7 @@ export class InscripcionCrudComponent implements OnInit {
 
     deleteProductsDialog: boolean = false;
 
-    products: Usuario[] = [];
+    // products: Usuario[] = [];
 
     // product: Product = {};
     product: Usuarios = {};
@@ -82,7 +81,25 @@ export class InscripcionCrudComponent implements OnInit {
     tipoEstadoSeleccionado: TipoEstado;
 
 
+    // Variables ------------------------------------------
     listaInscripcion: Inscripcion[] = [];
+    inscripciones: Inscripcion[] = [];
+    products: Inscripcion[];
+    inscripcionDialog: boolean = false;
+    optionInscripcion: boolean = false;
+    eliminarInscripcionDialog: boolean = false;
+    inscripcion: Inscripcion;
+    inscripcionRegistro: InscripcionRegistro = {};
+
+    tipoCursoMateria: TipoCursoMateria[] = [];
+    tipoCursoMateriaSeleccionado: TipoCursoMateria;
+
+    // gestiones: number[] = [];
+    gestiones: TipoMatricula[] = [];
+    // gestionSeleccionado: number;
+    gestionSeleccionado: TipoMatricula;
+
+    curmatid: any;
 
     constructor(
         private messageService: MessageService,
@@ -100,121 +117,116 @@ export class InscripcionCrudComponent implements OnInit {
         }
 
     ngOnInit() {
-        console.log("ngOnInit")
+       this.listarCursoMateria();
+       this.listarCursoCombo();
+       this.listarInscripciones();
+    //    this.gestionSeleccionado = new Date().getFullYear() + 1;
+    //    for (let anio = this.gestionSeleccionado; anio >= 2018; anio--) {
+    //        this.gestiones.push(anio);
+    //    }
+       this.inscripcionService.listarComboMatricula().subscribe(
+        (result: any) => {
+            this.gestiones = result;
+        }
+       )
+       this.obtenerRoles();
 
+       this.tipoEstado = [
+           new TipoEstado(0, 'FINALIZADO'),
+           new TipoEstado(1, 'VIGENTE'),
+           new TipoEstado(2, 'OTRO')
+       ]
+       this.inscripcionService.listarComboCursoMateria().subscribe(
+        (result: any) => {
+          this.tipoCursoMateria = result;
+        //   console.log("Lista Curso Materia: ", this.tipoCursoMateria);
+        }
+      );
+
+    }
+    listarInscripciones(){
         this.inscripcionService.listarInscripcion().subscribe(
             (result: any) => {
-                this.listaInscripcion = result;
-                console.log("Lista Inscripción", this.listaInscripcion)
+              this.products = result;
+              this.inscripciones = this.products.map(item => this.organizarInscripcion(item));
+              console.log("Lista inscripciones", this.inscripciones);
             }
-        )
+          );
     }
-
-    openNew() {
-        this.product = {};
-        this.submitted = false;
-        this.productDialog = true;
+    editarInscripcion(data: any) {
+        this.inscripcion = { ...data };
+        console.log("Datos para editar: ",this.inscripcion);
+        this.setData();
+        this.inscripcionDialog = true;
+        this.optionInscripcion = false;
     }
+    organizarInscripcion(data: any): Inscripcion {
+        const inscripcion = new Inscripcion();
+        inscripcion.insid = data.insid;
+        inscripcion.insusureg = data.insusureg;
+        inscripcion.insfecreg = data.insfecreg;
+        inscripcion.insusumod = data.insusumod;
+        inscripcion.insfecmod = data.insfecmod;
+        inscripcion.insestado = data.insestado;
+        inscripcion.insestadodescripcion = data.insestadodescripcion;
 
-    deleteSelectedProducts() {
-        this.deleteProductsDialog = true;
-    }
+        inscripcion.matricula.push({
+          matrid: data.matrid,
+          matrgestion: data.matrgestion,
+          matrestado: data.matrestado,
+          matrestadodescripcion: data.matrestadodescripcion,
+        });
 
-    editProduct(product: Usuarios) {
-        this.product = { ...product };
-        this.productDialog = true;
-    }
+        inscripcion.estudiante.push({
+          peridestudiante: data.peridestudiante,
+          pernombrecompletoestudiante: data.pernombrecompletoestudiante,
+          peridrol: data.peridrol,
+          rolnombre: data.rolnombre
+        });
 
-    deleteProduct(product: Usuarios) {
-        this.deleteProductDialog = true;
-        this.product = { ...product };
-    }
+        inscripcion.pago.push({
+          pagid: data.pagid,
+          pagdescripcion: data.pagdescripcion,
+          pagestado: data.pagestado,
+          pagestadodescripcion: data.pagestadodescripcion,
+          pagmonto: data.pagmonto,
+        });
 
-    confirmDeleteSelected() {
-        this.deleteProductsDialog = false;
-        this.products = this.products.filter(val => !this.selectedProducts.includes(val));
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-        this.selectedProducts = [];
-    }
+        inscripcion.curso_materia.push({
+          curmatid: data.curmatid,
+          curmatdescripcion: data.curmatdescripcion,
+          curid: data.curid,
+          curnombre: data.curnombre,
+          matid: data.matid,
+          matnombre: data.matnombre,
+        });
 
-    confirmDelete() {
-        this.deleteProductDialog = false;
-        this.products = this.products.filter(val => val.id !== this.product.id);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        this.product = {};
-    }
+        inscripcion.docente.push({
+          periddocente: data.periddocente,
+          pernombrecompletodocente: data.pernombrecompletodocente,
+        });
 
-    hideDialog() {
-        this.productDialog = false;
-        this.submitted = false;
-    }
-
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.productDialog = false;
-    //         this.product = {};
-    //     }
-    // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // }
-
-    // createId(): string {
-    //     let id = '';
-    //     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    //     for (let i = 0; i < 5; i++) {
-    //         id += chars.charAt(Math.floor(Math.random() * chars.length));
-    //     }
-    //     return id;
-    // }
-
-    // onGlobalFilter(table: Table, event: Event) {
-    //     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    // }
-
+        return inscripcion;
+      }
     // ---------------------------------- Funciones Curso Materia  ------------------------
+
     abrirNuevo() {
-        this.cursoMateria = {};
-        this.cursoMateriaDialog = true;
-        this.optionCursoMateria = true;
+        this.inscripcionRegistro = {};
+        this.inscripcionDialog = true;
+        this.optionInscripcion = true;
+        this.gestionSeleccionado = new TipoMatricula(0,0);
         this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
         this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
         this.tipoPersonaSeleccionado = new TipoPersona(0,"");
         this.tipoRolSeleccionado = new TipoRol(0,"");
         this.tipoEstadoSeleccionado = new TipoEstado(0, "");
+
+        this.tipoCursoMateriaSeleccionado = new TipoCursoMateria(0,"");
     }
     ocultarDialog(){
-        this.cursoMateriaDialog = false;
-        this.optionCursoMateria = false;
+        this.inscripcionDialog = false;
+        // this.optionCursoMateria = false;
     }
-
     listarCursoCombo(){
         this.cursoService.listaCursoCombo().subscribe(
             (result: any) => {
@@ -228,13 +240,13 @@ export class InscripcionCrudComponent implements OnInit {
         this.cursoService.listarCursoMateria().subscribe(
             (result: any) => {
                 this.listaCursosMaterias = result;
-                // console.log("Lista Cursos Materia", this.listaCursosMaterias)
+                // console.log("Combo Cursos Materia", this.listaCursosMaterias)
             }
         )
     }
 
     onSelectCurso(data: any){
-        console.log("id nivel curso: ", data.value.curnivel);
+        // console.log("id nivel curso: ", data.value.curnivel);
         const nivel = parseInt(data.value.curnivel);
 
         const criterio = {
@@ -257,13 +269,13 @@ export class InscripcionCrudComponent implements OnInit {
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result;
-                console.log("Combo roles: ", this.tipoRol);
+                // console.log("Combo roles: ", this.tipoRol);
             }
         )
     }
 
     onSelectPersona(data: any){
-        console.log("Datos del rol elejido: ", data.value);
+        // console.log("Datos del rol elejido: ", data.value);
         const nombre = data.value.rolnombre;
         const criterio = {
             rolnombre: nombre
@@ -273,7 +285,7 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     seleccionarPersona(data: any){
-        console.log("rol Nombre: ", data);
+        // console.log("rol Nombre: ", data);
         const nombre = data;
         const criterio = {
             rolnombre: nombre
@@ -301,33 +313,36 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     setData(){
-        this.cursoMateria.curmatfecini = new Date(this.cursoMateria.curmatfecini);
-        this.cursoMateria.curmatfecfin = new Date(this.cursoMateria.curmatfecfin);
-        this.tipoCursoSeleccionado = new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel);
+        // this.tipoCursoSeleccionado = new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel);
+        // console.log("setData:", this.inscripcion);
+        this.gestionSeleccionado = new TipoMatricula(this.inscripcion.matricula[0].matrid, this.inscripcion.matricula[0].matrgestion);
+        // console.log("Gestion: ",this.gestionSeleccionado);
 
-        const curnivel = {
-            curnivel: this.tipoCursoSeleccionado.curnivel
-        };
-        this.diccionarioService.getTipoMateria(curnivel).subscribe(
-            (result: any) => {
-                this.tipoMateria = result;
-            }
-        )
-        this.tipoMateriaSeleccionado = new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel);
-        this.tipoRolSeleccionado = new TipoRol(this.cursoMateria.curmatidrol, this.cursoMateria.curmatidroldes);
+        this.tipoCursoMateriaSeleccionado = new TipoCursoMateria(this.inscripcion.curso_materia[0].curmatid, this.inscripcion.curso_materia[0].curmatdescripcion);
+        // const curnivel = {
+        //     curnivel: this.tipoCursoSeleccionado.curnivel
+        // };
+        // this.diccionarioService.getTipoMateria(curnivel).subscribe(
+        //     (result: any) => {
+        //         this.tipoMateria = result;
+        //     }
+        // )
+        // this.tipoMateriaSeleccionado = new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel);
+        this.tipoRolSeleccionado = new TipoRol(this.inscripcion.estudiante[0].peridrol, this.inscripcion.estudiante[0].rolnombre);
 
         const rolnombre = {
-            rolnombre: this.tipoRolSeleccionado.rolnombre
+             rolnombre: this.inscripcion.estudiante[0].rolnombre
         };
         this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe(
             (result: any) => {
                 this.tipoPersona = result;
             }
         )
-        this.tipoPersonaSeleccionado = new TipoPersona(this.cursoMateria.periddocente, this.cursoMateria.pernombrecompleto);
-        this.tipoEstadoSeleccionado = new TipoEstado(this.cursoMateria.curmatestado, this.cursoMateria.curmatestadodescripcion);
+        this.tipoPersonaSeleccionado = new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante);
+        this.tipoEstadoSeleccionado = new TipoEstado(this.inscripcion.insestado, this.inscripcion.insestadodescripcion);
     }
     obtenerBody(){
+        /*
         this.cursoMateria.curid = this.tipoCursoSeleccionado.curid;
         this.cursoMateria.matid = this.tipoMateriaSeleccionado.matid;
         this.cursoMateria.periddocente = this.tipoPersonaSeleccionado.perid;
@@ -338,17 +353,61 @@ export class InscripcionCrudComponent implements OnInit {
         this.cursoMateria.curmatusumod = "Ivan Mod";
         this.cursoMateria.curmatestadodescripcion = this.tipoEstadoSeleccionado.desTipoEstado;
 
-        const body = { ...this.cursoMateria }
-        return body;
+        this.matricula.matrgestion = this.gestionSeleccionado;
+        this.matricula.matrestado = this.tipoEstadoMatriculaSeleccionado.matrestado;
+        this.matricula.matrestadodescripcion = this.tipoEstadoMatriculaSeleccionado.matrestadodescripcion;
+        this.matricula.matrfchini = this.fechaInicio;
+        this.matricula.matrfchfin = this.fechaFinal;
+        this.matricula.matrusureg = 'Usuario Reg';
+        this.matricula.matrcos = this.costo;
+        */
+        // this.inscripcionRegistro.ins = this.gestionSeleccionado;
+        // const criterio = {
+        //     curid: this.tipoCursoSeleccionado.curnivel,
+        //     matid: this.tipoCursoSeleccionado.curnivel
+        // };
+
+        // console.log("Criterio", criterio);
+        // const curmatid = 0;
+        // this.inscripcionService.obtenerCursoMateria(criterio).subscribe((result: any) => {
+        //     this.curmatid = result;
+        //     console.log("Número de CursoMateria", this.curmatid);
+
+        //     if (this.curmatid && this.curmatid.length > 0) {
+        //         const primerElemento = this.curmatid[0]; // Accede al primer elemento del arreglo
+        //         this.inscripcionRegistro.curmatid = primerElemento.curmatid; // Accede a la propiedad curmatid del primer elemento
+        //         console.log("NUMERO CURSOMATERIA:", this.inscripcionRegistro.curmatid);
+        //     } else {
+        //         console.log("El arreglo curmatid está vacío o no está definido.");
+        //         this.messageService.add({ severity: 'warn', summary: 'Error!', detail: 'Error no se encuentra el curso_materia', life: 3000 });
+
+        //     }
+        // });
+        this.inscripcionRegistro.insid = this.inscripcion.insid;
+        this.inscripcionRegistro.matrid = this.gestionSeleccionado.matrid;
+        this.inscripcionRegistro.curmatid = this.tipoCursoMateriaSeleccionado.curmatid;
+        this.inscripcionRegistro.peridestudiante = this.tipoPersonaSeleccionado.perid;
+        this.inscripcionRegistro.pagid = null;
+        this.inscripcionRegistro.insusureg = "Ivan Reg Front";
+        this.inscripcionRegistro.insestado = this.tipoEstadoSeleccionado.codTipoEstado;
+        this.inscripcionRegistro.insestadodescripcion = this.tipoEstadoSeleccionado.desTipoEstado;
+        this.inscripcionRegistro.insusumod = "Ivan Mod Front";
+        console.log("BODY", this.inscripcion);
+        const body = { ...this.inscripcionRegistro }
+
+         return body;
+
     }
-    guardarCursoMateria(){
+    guardarInscripcion(){
         this.obtenerBody();
-        if(this.optionCursoMateria){
-            this.cursoService.insertarCursoMateria(this.cursoMateria).subscribe(
+        console.log("Datos a ingresar: ", this.inscripcionRegistro);
+        if(this.optionInscripcion){
+            console.log("Insertar");
+            this.inscripcionService.insertarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia Insertardo', life: 3000 });
-                    this.listarCursoMateria();
-                    this.cursoMateria = {};
+                    this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Inscripción Insertardo', life: 3000 });
+                    this.listarInscripciones();
+                    this.inscripcionRegistro = {};
                     this.ocultarDialog();
                 },
                 error => {
@@ -359,11 +418,12 @@ export class InscripcionCrudComponent implements OnInit {
             );
         }
         else{
-            this.cursoService.modificarCursoMateria(this.cursoMateria).subscribe(
+            console.log("Modificar");
+            this.inscripcionService.modificarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Exitosa', detail: 'Modificación Curso-Materia Existosamente!', life: 3000 });
-                    this.listarCursoMateria();
-                    this.cursoMateria = {};
+                    this.messageService.add({ severity: 'success', summary: 'Exitosa', detail: 'Modificación Inscripcion Existosamente!', life: 3000 });
+                    this.listarInscripciones();
+                    this.inscripcionRegistro = {};
                     this.ocultarDialog();
                 },
                 error => {
@@ -374,23 +434,23 @@ export class InscripcionCrudComponent implements OnInit {
             )
         }
     }
-    eliminarCursoMateria(data: CursoMateria) {
-        this.eliminarCursoMateriaDialog = true;
-        this.cursoMateria = { ...data };
-        console.log("CursoMateria:", this.cursoMateria);
+    eliminarInscripcion(data: Inscripcion) {
+        this.eliminarInscripcionDialog = true;
+        this.inscripcion = { ...data };
+        // console.log("eliminarInscripcion:", this.inscripcion);
     }
     confirmarEliminar() {
-        console.log("confirmarEliminar: ", this.cursoMateria)
+        // console.log("confirmarEliminar: ", this.inscripcion);
         const criterio = {
-            curmatid: this.cursoMateria.curmatid
+            insid: this.inscripcion.insid
         }
         console.log("criterio: ", criterio)
-        this.cursoService.eliminarCursoMateria(criterio).subscribe(
+        this.inscripcionService.eliminarInscripcion(criterio).subscribe(
             (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia Eliminado', life: 3000 });
-                this.listarCursoMateria();
-                this.eliminarCursoMateriaDialog = false;
-                this.cursoMateria = {};
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Inscripción Eliminado', life: 3000 });
+                this.listarInscripciones();
+                this.eliminarInscripcionDialog = false;
+                // this.inscripcion = {};
             },
             error => {
             console.log("error",error);
@@ -399,6 +459,28 @@ export class InscripcionCrudComponent implements OnInit {
             }
         );
     }
+    // getSeverity(status: string) {
+    //     switch (status) {
+    //         case 'INSTOCK':
+    //             return 'success';
+    //         case 'LOWSTOCK':
+    //             return 'warning';
+    //         case 'OUTOFSTOCK':
+    //             return 'danger';
+    //     }
+    // }
+
+    // getStatusSeverity(status: string){
+    //     switch (status) {
+    //         case 'PENDING':
+    //             return 'warning';
+    //         case 'DELIVERED':
+    //             return 'success';
+    //         case 'CANCELLED':
+    //             return 'danger'
+    //     }
+    // }
 
     // ------------------------------ Funciones Curso Materia -----------------------------
+
 }

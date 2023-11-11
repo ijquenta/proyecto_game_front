@@ -11,13 +11,22 @@ export class InscripcionService {
     listarInscripcion(){
         return this.http.get(`${API_URL}/listarInscripcion`);
     }
-    insertarNivel(criterio: any){
-        return this.http.post(`${API_URL}/insertarNivel`, criterio);
+    insertarInscripcion(criterio: any){
+        return this.http.post(`${API_URL}/insertarInscripcion`, criterio);
     }
-    eliminarNivel(criterio: any){
-        return this.http.post(`${API_URL}/eliminarNivel`, criterio);
+    eliminarInscripcion(criterio: any){
+        return this.http.post(`${API_URL}/eliminarInscripcion`, criterio);
     }
-    modificarNivel(criterio: any){
-        return this.http.post(`${API_URL}/modificarNivel`, criterio);
+    modificarInscripcion(criterio: any){
+        return this.http.post(`${API_URL}/modificarInscripcion`, criterio);
+    }
+    obtenerCursoMateria(criterio: any){
+        return this.http.post(`${API_URL}/obtenerCursoMateria`, criterio);
+    }
+    listarComboCursoMateria(){
+        return this.http.get(`${API_URL}/listarComboCursoMateria`);
+    }
+    listarComboMatricula(){
+        return this.http.get(`${API_URL}/listarComboMatricula`)
     }
 }

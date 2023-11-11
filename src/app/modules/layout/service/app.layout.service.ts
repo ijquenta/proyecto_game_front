@@ -25,11 +25,16 @@ interface LayoutState {
 export class LayoutService {
 
     config: AppConfig = {
-        ripple: false,
-        inputStyle: 'outlined',
-        menuMode: 'static',
+        // ripple: false,
+        ripple: true,
+        inputStyle: 'filled',
+        // menuMode: 'overlay',
+        menuMode: 'overlay',
+        // menuMode: 'static',
         colorScheme: 'light',
-        theme: 'lara-light-indigo',
+        // colorScheme: 'dark',
+        theme: 'theme-light',
+        // theme: 'bootstrap4-dark-purple',
         scale: 14,
     };
 

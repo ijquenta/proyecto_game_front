@@ -3,191 +3,282 @@
         <p-card header="INSCRIPCIÓN">
             <p-toast></p-toast>
             <div class="flex">
-                <div class="col-6">
+                <!-- <div class="col-6">
                     <p-panel header="Inscripción de estudiantes">
                         <p>
                             Es esta sección se puede realizar los registros de la inscripcion de los estudiantes a las diferentes materias.
                         </p>
                     </p-panel>
+                </div> -->
+                <!-- <div class="col-3"> -->
+                <!-- <p-panel header="Opciones"> -->
+                <div class="my-2">
+                    <button pButton pRipple label="Nuevo" icon="pi pi-plus"
+                        class="p-button-rounded p-button-success mr-2" (click)="abrirNuevo()"></button>
                 </div>
-                <div class="col-6">
-                    <p-panel header="Opciones">
-                            <div class="my-2">
-                                <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-rounded p-button-success mr-2" (click)="abrirNuevo()"></button>
-                                <!-- <button pButton pRipple label="Reporte" icon="pi pi-file-pdf" class="p-button-rounded p-button-info mr-2" (click)="reporte.rptUsuarios()"></button> -->
-                            </div>
-                    </p-panel>
-                </div>
+                <!-- </p-panel> -->
+                <!-- </div> -->
             </div>
-            <!-- <p-table [value]="listaCursosMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" >
+            <!-- <div class="card"> -->
+            <p-table [value]="inscripciones" dataKey="insid" [tableStyle]="{ 'min-width': '60rem' }">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="curmatid">
-                            Código
-                            <p-sortIcon field="curmatid"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="curid">
-                            Código Curso
-                            <p-sortIcon field="curid"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="curnombre">
-                            Nombre Curso
-                            <p-sortIcon field="curnombre"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="matnombre">
-                            Nombre Materia
-                            <p-sortIcon field="matnombre"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="pernombrecompleto">
-                            Impartido por
-                            <p-sortIcon field="pernombrecompleto"></p-sortIcon>
-                        </th>
-                        <th>Duración</th>
-                        <th pSortableColumn="curmatestadodescripcion">
-                            Estado <p-sortIcon field="curmatestadodescripcion"></p-sortIcon>
-                        </th>
-                        <th> Opciones </th>
-                        <th></th>
+                        <th style="width: 5rem"></th>
+                        <th>Código Inscripción</th>
+                        <th>Estudiante</th>
+                        <th>Registrado por</th>
+                        <th>Fecha de Registro</th>
+                        <th>Modificado por</th>
+                        <th>Fecha de Modificación</th>
+                        <th>Estado</th>
+                        <th>Opciones</th>
+
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-cursoMateria>
+                <ng-template pTemplate="body" let-inscripcion let-expanded="expanded">
                     <tr>
-                        <td style="width:5%; min-width:1rem;">
-                            {{cursoMateria.curmatid}}
+                        <td>
+                            <button type="button" pButton pRipple [pRowToggler]="inscripcion"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         </td>
-                        <td style="width:5%; min-width:1rem;">
-                            {{cursoMateria.curid}}
+                        <td>{{ inscripcion.insid }}</td>
+                        <td>
+                            {{ inscripcion.estudiante[0].peridestudiante }} :
+                            {{ inscripcion.estudiante[0].pernombrecompletoestudiante }}
                         </td>
-                        <td style="width:20%; min-width:20rem;">
+                        <td>
                             <p-chip>
                                 <div class="p-2">
-                            {{cursoMateria.curnombre}}
+                            Usuario:  {{ inscripcion.insusureg }}
                                 </div>
                             </p-chip>
                         </td>
-                        <td style="width:20%; min-width:20rem;">
+
+                        <td>
                             <p-chip>
                                 <div class="p-2">
-                                    Nivel {{cursoMateria.matnivel}}: Materia #{{cursoMateria.matid}} {{cursoMateria.matnombre}}
+                                    <ng-container *ngIf="inscripcion.insfecreg; else noModificado">
+                                        Fecha: {{ inscripcion.insfecreg | date:'dd/MM/yyyy'}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
                                 </div>
                             </p-chip>
                         </td>
-                        <td style="width:20%; min-width:20rem;">
 
+                        <td>
                             <p-chip>
-                                <div class="p-2">{{cursoMateria.pernombrecompleto}}</div>
-                            </p-chip>
-                            <p-chip>
-                                <div class="p-2">{{cursoMateria.curmatidrol}}:{{cursoMateria.curmatidroldes}}</div>
+                                <div class="p-2">
+                                    <ng-container *ngIf="inscripcion.insusumod; else noModificado">
+                                       Usuario: {{ inscripcion.insusumod }}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
                             </p-chip>
                         </td>
-
-                        <td style="width:20%; min-width:10rem;">
-                            <p-tag severity="info">{{cursoMateria.curmatfecini | date:'dd/MM/yyyy'}}</p-tag>
-                            <p-tag severity="warn">{{cursoMateria.curmatfecfin | date:'dd/MM/yyyy'}}</p-tag>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="inscripcion.insfecmod; else noModificado">
+                                        Fecha: {{ inscripcion.insfecmod | date:'dd/MM/yyyy'}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
                         </td>
-                        <td style="width:10%; min-width:5rem;">
-                            <p-tag severity="success">
-                                {{cursoMateria.curmatestado}}:{{cursoMateria.curmatestadodescripcion}}
-                            </p-tag>
+                        <td>
+                            <p-tag severity="Primary" [rounded]="true"> {{ inscripcion.insestadodescripcion}} </p-tag>
                         </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple
-                                    icon="pi pi-pencil"
-                                    class="p-button-rounded p-button mr-2"
-                                    (click)="editarCursoMateria(cursoMateria)"
-                                    pTooltip="Editar">
-                                </button>
-                                <button pButton pRipple
-                                    icon="pi pi-trash"
-                                    class="p-button-rounded p-button-danger"
-                                    (click)="eliminarCursoMateria(cursoMateria)"
-                                    pTooltip="Eliminar">
-                                </button>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarInscripcion(inscripcion)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="eliminarInscripcion(inscripcion)"></button>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
-            </p-table> -->
-            <p-table [value]="listaInscripcion" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th pSortableColumn="insid">
-                      Inscripción ID
-                      <p-sortIcon field="insid"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="matrid">
-                      Materia ID
-                      <p-sortIcon field="matrid"></p-sortIcon>
-                    </th>
-                    <th> Gestión de la Matricula</th>
-                    <th pSortableColumn="matrestadodescripcion">
-                      Estado Materia
-                      <p-sortIcon field="matrestadodescripcion"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="pernombrecompleto">
-                      Impartido por
-                      <p-sortIcon field="pernombrecompleto"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="pagdescripcion">
-                      Descripción de Pago
-                      <p-sortIcon field="pagdescripcion"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="pagmonto">
-                      Monto de Pago
-                      <p-sortIcon field="pagmonto"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="insfecreg">
-                      Fecha de Registro
-                      <p-sortIcon field="insfecreg"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="insfecmod">
-                      Fecha de Modificación
-                      <p-sortIcon field="insfecmod"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="insestado">
-                      Estado
-                      <p-sortIcon field="insestado"></p-sortIcon>
-                    </th>
-                    <th> Opciones </th>
-                    <th></th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-inscripcion>
-                  <tr>
-                    <td>{{ inscripcion.insid }}</td>
-                    <td>{{ inscripcion.matrgestion}}</td>
-                    <td>{{ inscripcion.matrid }}</td>
-                    <td>{{ inscripcion.matrestadodescripcion }}</td>
-                    <td>{{ inscripcion.pernombrecompleto }}</td>
-                    <td>{{ inscripcion.pagdescripcion }}</td>
-                    <td>{{ inscripcion.pagmonto }}</td>
-                    <td>{{ inscripcion.insfecreg | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ inscripcion.insfecmod | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ inscripcion.insestado }}</td>
-                    <td>
-                      <div class="flex">
-                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button mr-2"
-                          (click)="editarInscripcion(inscripcion)" pTooltip="Editar">
-                        </button>
-                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                          (click)="eliminarInscripcion(inscripcion)" pTooltip="Eliminar">
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
+                <ng-template pTemplate="rowexpansion" let-inscripcion>
+                    <tr>
+                        <td colspan="3">
+                            <div class="p-3">
+                                <table>
+                                    <tr>
+                                        <th colspan="3">Descripción del estudiante</th>
+                                    </tr>
+                                </table>
+                                <p-table [value]="inscripcion.estudiante" dataKey="peridestudiante">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Código Estudiante</th>
+                                            <th>Nombre Completo del Estudiante</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-estudiante>
+                                    <tr>
+                                        <td>{{ estudiante.peridestudiante }}</td>
+                                        <td>{{ estudiante.pernombrecompletoestudiante }}</td>
+                                    </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div class="p-3">
+                                <table>
+                                    <tr>
+                                        <th colspan="3">Descripción del docente</th>
+                                    </tr>
+                                </table>
+                                <p-table [value]="inscripcion.docente" dataKey="periddocente">
+                                    <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Código Docente </th>
+                                        <th>Nombre Completo del Docente Docente </th>
+                                    </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-docente>
+                                        <tr>
+                                            <td>{{ docente.periddocente }}</td>
+                                            <td>{{ docente.pernombrecompletodocente }}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
+                            <div class="p-3">
+                                <table>
+                                    <tr>
+                                        <th colspan="3">Descripción de la Curso y Materia</th>
+                                    </tr>
+                                </table>
+                                <p-table [value]="inscripcion.curso_materia" dataKey="curmatid">
+                                    <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Código del Curso-Materia</th>
+                                        <th>Código del Curso</th>
+                                        <th>Nombre del Curso</th>
+                                        <th>Código de la Materia</th>
+                                        <th>Nombre de la Materia</th>
+                                    </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-cursomateria>
+                                        <tr>
+                                            <td> {{ cursomateria.curmatid }}</td>
+                                            <td> {{ cursomateria.curid }} </td>
+                                            <td> {{ cursomateria.curnombre }} </td>
+                                            <td> {{ cursomateria.matid }} </td>
+                                            <td> {{ cursomateria.matnombre }} </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="p-3">
+                                <table>
+                                    <tr>
+                                        <th colspan="3">Descripción de la Matrícula</th>
+                                    </tr>
+                                </table>
+                                <p-table [value]="inscripcion.matricula" dataKey="matrid">
+                                    <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Código de la Matrícula</th>
+                                        <th>Gestión de la Matrícula</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-matricula>
+                                        <tr>
+                                            <td> {{ matricula.matrid }}</td>
+                                            <td> {{ matricula.matrgestion }} </td>
+                                            <td>
+                                            <p-chip>
+                                                <div class="p-2">
+                                                    {{ matricula.matrestado }} :
+                                                    {{ matricula.matrestadodescripcion }}
+                                                </div>
+                                            </p-chip>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <div class="p-3">
+                                <table>
+                                    <tr>
+                                        <th colspan="3">Descripción del pago</th>
+                                    </tr>
+                                </table>
+                                <ng-container *ngIf="inscripcion.pago[0].pagid != null; else noPayment">
+                                    <p-table [value]="inscripcion.pago" dataKey="matrid">
+                                        <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Código del Pago</th>
+                                            <th>Decripción del Pago</th>
+                                            <th>Monto</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-pago>
+                                            <tr>
+                                                <td>{{ pago.pagid }}</td>
+                                                <td>{{ pago.pagdescripcion }}</td>
+                                                <td>Bs. {{ pago.pagmonto }}</td>
+                                                <td>{{ pago.pagestado }} : {{ pago.pagestadodescripcion }} </td>
+                                            </tr>
+                                        </ng-template>
+                                        </p-table>
+                                </ng-container>
+                                <ng-template #noPayment>
+                                    <p-chip>
+                                        <div class="p-text-center">
+                                            No se realizó ningún pago.
+                                        </div>
+                                    </p-chip>
+                                </ng-template>
+                            </div>
+                        </td>
+                    </tr>
 
+                </ng-template>
+            </p-table>
         </p-card>
-
-        <p-dialog [(visible)]="cursoMateriaDialog" [style]="{width: '50%'}"
+        <p-dialog [(visible)]="inscripcionDialog" [style]="{width: '50%'}"
             header="INSCRIPCIÓN" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
             <div class="card p-fluid">
                 <div class="flex">
+
+                    <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
+                       <div class="col">
+                        <label for="status">Elegir Gestión de la Matricula</label>
+                        <p-dropdown inputId="ddgestion" appendTo="body" [options]="gestiones"
+                            [(ngModel)]="gestionSeleccionado" optionLabel="matrgestion" placeholder="Seleccionar Gestion"></p-dropdown>
+                       </div>
+                    </div>
+
+
+
+                </div>
+                <!-- <div class="flex">
                     <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
                         <div class="col">
                             <label for="status">Elegir Curso</label>
@@ -197,6 +288,8 @@
                         </p-dropdown>
                         </div>
                     </div>
+                </div> -->
+                <!-- <div class="flex">
                     <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
                         <div class="col">
                             <label for="status">Elegir Materia</label>
@@ -205,7 +298,18 @@
                             </p-dropdown>
                         </div>
                     </div>
+                </div> -->
+                <div class="flex">
+                    <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
+                        <div class="col">
+                            <label for="status">Elegir Curso Materia</label>
+                            <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoCursoMateria"
+                                [(ngModel)]="tipoCursoMateriaSeleccionado" optionLabel="curmatdescripcion" placeholder="Seleccionar Curso Materia">
+                            </p-dropdown>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="flex">
                     <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
                         <div class="col">
@@ -218,7 +322,7 @@
                     </div>
                     <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
                         <div class="col">
-                            <label for="status">Elegir Docente</label>
+                            <label for="status">Elegir Estudiante</label>
                             <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
                             [(ngModel)]="tipoPersonaSeleccionado" optionLabel="pernombrecompleto"
                                 placeholder="Seleccionar Docente">
@@ -229,26 +333,6 @@
                 <div class="flex">
                     <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
                         <div class="col">
-                            <span class="p-float-label">
-                                <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="cursoMateria.curmatfecini"
-                                    [showIcon]="true"></p-calendar>
-                                <label for="fecIni">Elegir Fecha Inicio</label>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                        <div class="col">
-                            <span class="p-float-label">
-                                <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="cursoMateria.curmatfecfin"
-                                    [showIcon]="true"></p-calendar>
-                                <label for="fecFin">Elegir Fecha Fin</label>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-content-center flex-wrap">
-                    <div class="flex align-items-center justify-content-center w-20rem h-5rem font-bold border-round m-5">
-                        <div class="col">
                             <label for="status">Elegir Estado</label>
                             <p-dropdown inputId="ddTipoEstado" appendTo="body" [options]="tipoEstado"
                                 [(ngModel)]="tipoEstadoSeleccionado" optionLabel="desTipoEstado"
@@ -257,27 +341,27 @@
                         </div>
                     </div>
                 </div>
+
             </div>
             </ng-template>
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                (click)="guardarCursoMateria()"></button>
+                (click)="guardarInscripcion()"></button>
                 <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                     (click)="ocultarDialog()"></button>
             </ng-template>
         </p-dialog>
-
-        <p-dialog [(visible)]="eliminarCursoMateriaDialog" header="Mensaje de Confirmación" [modal]="true"
+        <p-dialog [(visible)]="eliminarInscripcionDialog" header="Mensaje de Confirmación" [modal]="true"
             [style]="{width:'30%'}">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="cursoMateria">¿Estas seguro de eliminar: <b>{{cursoMateria.curnombre}}</b>?</span>
+                <span *ngIf="inscripcion">¿Estas seguro de eliminar la inscripcion número: <b>{{inscripcion.insid}}</b>?</span>
             </div>
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
                     (click)="confirmarEliminar()"></button>
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                    (click)="eliminarCursoMateriaDialog = false"></button>
+                    (click)="eliminarInscripcionDialog = false"></button>
             </ng-template>
         </p-dialog>
     </div>
