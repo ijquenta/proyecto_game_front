@@ -29,7 +29,7 @@ export class AppTopBarComponent {
         this.modelOption = [
             {
                 label: 'Perfil',
-                icon: 'pi pi-fw pi-apple',
+                icon: 'pi pi-fw pi-sort-down',
                 /*items: [
                     {
                         label: 'New',

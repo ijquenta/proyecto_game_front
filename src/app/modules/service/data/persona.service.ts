@@ -6,9 +6,16 @@ import { Usuario } from '../../models/usuario';
 import { Rol } from '../../models/rol';
 
 @Injectable()
-export class UsuarioService {
+export class PersonaService {
 
     constructor(private http: HttpClient) { }
+
+
+    gestionarPersona(criterio: any){
+        console.log("Datos a GestionarPersona: ", criterio);
+        return this.http.post(`${API_URL}/gestionarPersona`, criterio);
+    }
+
 
     getUsuario(){
         return this.http.get(`${API_URL}/listaUsuarios`);
@@ -36,14 +43,27 @@ export class UsuarioService {
         console.log("Service Eliminar Rol", criterio);
         return this.http.post(`${API_URL}/eliminarRol`, criterio);
     }
+    ListarPersona(){
+        console.log("ListarPersona");
+        return this.http.get(`${API_URL}/listarPersona`);
+    }
 
-    listaUsuario(){
-        return this.http.get(`${API_URL}/listaUsuario`);
+
+    getTipoDocumento(){
+      return this.http.get(`${API_URL}/tipoDocumento`)
     }
-    gestionarUsuario(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarUsuario`, criterio);
+    getTipoEstadoCivil(){
+      return this.http.get(`${API_URL}/tipoEstadoCivil`)
     }
-    getTipoPersona(){
-        return this.http.get(`${API_URL}/tipoPersona`)
+    getTipoGenero(){
+      return this.http.get(`${API_URL}/tipoGenero`)
     }
+    getTipoPais(){
+      return this.http.get(`${API_URL}/tipoPais`)
+    }
+    getTipoCiudad(){
+      return this.http.get(`${API_URL}/tipoCiudad`)
+    }
+
+
 }

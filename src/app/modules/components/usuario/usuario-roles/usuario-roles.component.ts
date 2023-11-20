@@ -11,10 +11,10 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
 
 @Component({
     // selector: './usuario-accesos.component',
-    templateUrl: './usuario-accesos.component.html',
+    templateUrl: './usuario-roles.component.html',
     providers: [MessageService],
 })
-export class UsuarioAccesosComponent implements OnInit {
+export class UsuarioRolesComponent implements OnInit {
     roles: Rol[] = [];
     rol: Rol;
     rolRegistro: Rol;

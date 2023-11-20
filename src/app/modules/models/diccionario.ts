@@ -191,3 +191,60 @@ export class TipoMatricula {
         this.matrgestion = matrgestion;
     }
 }
+
+
+//------------------------Persona--------------------------------//
+export class TipoDocumento {
+    tipodocid: number = 0;
+    tipodocnombre: string = '';
+    constructor(tipodocid: number, tipodocnombre: string) {
+        this.tipodocid = tipodocid;
+        this.tipodocnombre = tipodocnombre;
+    }
+}
+export class TipoEstadoCivil {
+    estadocivilid: number = 0;
+    estadocivilnombre: string = '';
+    constructor(estadocivilid: number, estadocivilnombre: string) {
+        this.estadocivilid = estadocivilid;
+        this.estadocivilnombre = estadocivilnombre;
+    }
+}
+export class TipoGenero {
+    generoid: number = 0;
+    generonombre: string = '';
+    constructor(generoid: number, generonombre: string) {
+        this.generoid = generoid;
+        this.generonombre = generonombre;
+    }
+}
+export class TipoPais {
+    paisid: number = 0;
+    paisnombre: string = '';
+    constructor(paisid: number, paisnombre: string) {
+        this.paisid = paisid;
+        this.paisnombre = paisnombre;
+    }
+}
+export class TipoCiudad {
+    ciudadid: number = 0;
+    ciudadnombre: string = '';
+    paisid: number = 0;
+    constructor(ciudadid: number, ciudadnombre: string, paisid: number) {
+        this.ciudadid = ciudadid;
+        this.ciudadnombre = ciudadnombre;
+        this.paisid = paisid;
+    }
+}
+
+// Usuario
+export class TipoPersona2 {
+    perid: number = 0;
+    pernomcompleto: string = '';
+    pernrodoc: number = 0;
+    constructor(perid: number, pernomcompleto: string, pernrodoc: number) {
+        this.perid = perid;
+        this.pernomcompleto = pernomcompleto;
+        this.pernrodoc = pernrodoc;
+    }
+}

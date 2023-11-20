@@ -18,13 +18,19 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { PasswordModule } from 'primeng/password';
 
-
 import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
 import { UsuarioPersonaComponent } from './usuario-persona.component';
 
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CalendarModule } from 'primeng/calendar';
+
+import { AutoCompleteModule } from "primeng/autocomplete";
+import { ChipsModule } from "primeng/chips";
+import { InputMaskModule } from "primeng/inputmask";
+import { CascadeSelectModule } from "primeng/cascadeselect";
+import { MultiSelectModule } from "primeng/multiselect";
+import { PersonaService } from 'src/app/modules/service/data/persona.service';
 
 @NgModule({
     imports: [
@@ -46,10 +52,17 @@ import { CalendarModule } from 'primeng/calendar';
         InputNumberModule,
         RatingModule,
         PasswordModule,
-        CalendarModule
+        CalendarModule,
+        CommonModule,
+		FormsModule,
+		AutoCompleteModule,
+		ChipsModule,
+		InputMaskModule,
+		CascadeSelectModule,
+		MultiSelectModule,
     ],
     declarations: [UsuarioPersonaComponent],
-    providers: [UsuarioService]
+    providers: [UsuarioService, PersonaService]
 })
 export class UsuarioPersonaModule { }
 

@@ -15,10 +15,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { UsuarioAccesosRoutingModule } from './usuario-accesos-routing.module';
+import { UsuarioRolesRoutingModule } from './usuario-roles-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
-import { UsuarioAccesosComponent } from './usuario-accesos.component';
+import { UsuarioRolesComponent } from './usuario-roles.component';
 
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
@@ -27,7 +27,7 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
 @NgModule({
     imports: [
         CommonModule,
-        UsuarioAccesosRoutingModule,
+        UsuarioRolesRoutingModule,
         TableModule,
         ButtonModule,
         TagModule,
@@ -45,7 +45,7 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
         RatingModule,
         ProgressSpinnerModule
     ],
-    declarations: [UsuarioAccesosComponent],
+    declarations: [UsuarioRolesComponent],
     providers: [UsuarioService, RolService]
 })
-export class UsuarioAccesosModule { }
+export class UsuarioRolesModule { }

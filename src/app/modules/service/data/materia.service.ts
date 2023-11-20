@@ -28,10 +28,10 @@ export class MateriaService {
     modificarRol(criterio: any){
         console.log("Service Modificar Rol", criterio);
         let registroModRol = new Rol();
-        registroModRol.rolId = criterio.rolid;
-        registroModRol.rolNombre = criterio.rolnombre;
-        registroModRol.rolDescripcion = criterio.roldescripcion;
-        registroModRol.rolUsuMod = 'Usu Modddd';
+        // registroModRol.rolId = criterio.rolid;
+        // registroModRol.rolNombre = criterio.rolnombre;
+        // registroModRol.rolDescripcion = criterio.roldescripcion;
+        // registroModRol.rolUsuMod = 'Usu Modddd';
         console.log("datos service->", registroModRol);
         return this.http.post(`${API_URL}/modificarRol`, registroModRol);
     }

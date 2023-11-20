@@ -42,3 +42,20 @@ Thumbs.db
 layout.css
 src/assets/release/styles/badges.css
 src/assets/release/styles/badges.css
+
+
+# Ignorar archivos de configuración específicos de Angular
+.angular-cli.json
+.angular-cli.json~
+
+# Ignorar archivos de configuración específicos de PrimeNG
+primeng.config.js
+primeng.config.js~
+
+# Ignorar archivos de configuración específicos de TypeScript
+tsconfig.json
+tsconfig.json~
+tslint.json
+
+# Ignorar archivos de configuración específicos de Node.js
+package-lock.json

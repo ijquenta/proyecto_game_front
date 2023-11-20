@@ -47,21 +47,26 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-user',
                         items: [
                             {
+                                label: 'Gestionar Persona',
+                                icon: 'pi pi-fw pi-users',
+                                routerLink: ['usuario/persona']
+                            },
+                            {
                                 label: 'Gestionar Usuarios',
                                 icon: 'pi pi-fw pi-users',
                                 routerLink: ['usuario/crud']
                             },
                             {
-                                label: 'Accesos Usuarios',
+                                label: 'Gestionar Roles',
+                                icon: 'pi pi-fw pi-wrench',
+                                routerLink: ['usuario/roles']
+                            },
+                            {
+                                label: 'Gestionar Accesos',
                                 icon: 'pi pi-fw pi-wrench',
                                 routerLink: ['usuario/accesos']
                             },
-                            {
-                                label: 'Gestionar Persona',
-                                icon: 'pi pi-fw pi-users',
-                                routerLink: ['usuario/persona']
-                            }
-                            ,
+
                             // {
                             //     label: 'Reporte Usuarios',
                             //     icon: 'pi pi-fw pi-file-pdf',
