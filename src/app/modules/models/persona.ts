@@ -1,6 +1,6 @@
 export class Persona {
     tipo: number;
-    perid: number;
+    perid: number | null = null;
     pernomcompleto: string = "";
     pernombres: string = "";
     perapepat: string = "";

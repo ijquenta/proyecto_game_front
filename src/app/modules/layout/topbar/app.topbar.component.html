@@ -15,7 +15,6 @@
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
 
 
-
         <!-- <button class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
@@ -38,7 +37,15 @@
             </div> -->
 
             <div class="flex align-items-center gap-2 flex-wrap">
-                <p-chip label="Administrador: Juan Perez" image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png"></p-chip>
+                <!-- <p-chip image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png"> -->
+            <div>
+                <p-chip>
+                    <p>Rol: {{usuario.rolnombre}}</p>
+                </p-chip>
+                <p-chip>
+                    <p>Usuario: {{usuario.usuname}}</p>
+                </p-chip>
+            </div>
             </div>
 
             <!-- <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">

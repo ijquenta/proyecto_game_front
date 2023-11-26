@@ -25,6 +25,7 @@ import { InputMaskModule } from "primeng/inputmask";
 import { CascadeSelectModule } from "primeng/cascadeselect";
 import { MultiSelectModule } from "primeng/multiselect";
 import { PasswordModule } from 'primeng/password';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 // import { FileUploadModule } from 'primeng/fileupload';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 
@@ -52,7 +53,7 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 		CascadeSelectModule,
 		MultiSelectModule,
         PasswordModule,
-        
+        ProgressSpinnerModule
     ],
     declarations: [UsuarioCrudComponent],
     providers: [UsuarioService, ReporteService]

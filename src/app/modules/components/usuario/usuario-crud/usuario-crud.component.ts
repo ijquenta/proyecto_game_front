@@ -9,6 +9,8 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { Usuarios } from 'src/app/modules/models/usuarios';
 import { Usuario,  } from 'src/app/modules/models/usuario';
 import { TipoPersona, TipoPersona2, TipoRol } from 'src/app/modules/models/diccionario';
+import { AuthService } from 'src/app/services/auth.service';
+
 
 interface FileWithUrl extends File {
     url: string;
@@ -19,7 +21,8 @@ interface UploadEvent {
 }
 @Component({
     templateUrl: './usuario-crud.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
+    styleUrls: ['./usuario-crud.component.css']
 })
 export class UsuarioCrudComponent implements OnInit {
 
@@ -28,9 +31,11 @@ export class UsuarioCrudComponent implements OnInit {
     // Tipo Persona
     tipoPersona: TipoPersona2[] = [];
     tipoPersonaSeleccionada:  TipoPersona2;
+    loading: boolean = false;
     // Usuario
     usuarios: Usuario[] = [];
     usuario: Usuario;
+    datosUsurio: Usuario;
     usuarioRegistro: Usuario;
     usuarioEditar: Usuario;
     usuarioDialog: boolean = false;
@@ -76,6 +81,7 @@ export class UsuarioCrudComponent implements OnInit {
                 // private productService: ProductService,
                 private messageService: MessageService,
                 private usuarioService: UsuarioService,
+                private authService: AuthService,
                 public reporte: ReporteService,)
                 {
                     // this.tipoPersonaSeleccionada = new TipoPersona2(0,'',0);
@@ -89,20 +95,22 @@ export class UsuarioCrudComponent implements OnInit {
                     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
                 }
     ngOnInit() {
+
         // console.log("ngOnInit")Roles
         // this.usuarioService.getUsuario().then(data => this.listaUsuarios = data);
         // console.log(this.listaUsuarios);
+        this.loading = true;
         this.listarUsuarios();
         this.usuarioService.getTipoPersona().subscribe(
             (result: any) => {
                 this.tipoPersona = result;
-                console.log("Tipo Persona: ", this.tipoPersona)
+                // console.log("Tipo Persona: ", this.tipoPersona)
             }
         )
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result;
-                console.log("Tipo Rol: ", this.tipoRol);
+                // console.log("Tipo Rol: ", this.tipoRol);
             }
         )
         this.cols = [
@@ -118,12 +126,34 @@ export class UsuarioCrudComponent implements OnInit {
             { label: 'LOWSTOCK', value: 'lowstock' },
             { label: 'OUTOFSTOCK', value: 'outofstock' }
         ];
+
+        this.authService.usuario$.subscribe((user => {
+            if (user) {
+                if (Array.isArray(user) && user.length > 0) {
+                    this.datosUsurio = user[0];
+                    // console.log("PRUEBA USUARIO IVANNN$: ", this.datosUsurio);
+                } else {
+                    // Manejar el caso en que user no es un array o es un array vacío
+                    // console.error("El objeto 'user' no es un array o es un array vacío.");
+                }
+            } else {
+                // Manejar el caso en que user es null
+                // console.error("El objeto 'user' es nulo.");
+            }
+        }));
     }
     listarUsuarios(){
+
         this.usuarioService.listaUsuario().subscribe(
             (result: any) => {
                 this.usuarios = result;
-                console.log("Lista Usuarios", this.usuarios)
+
+                // console.log("Lista Usuarios", this.usuarios)
+                setTimeout(() => {
+                    this.loading = false;
+                  }, 1000);
+                // console.log("spinner: ", this.loading);
+
             }
         )
     }
@@ -147,7 +177,7 @@ export class UsuarioCrudComponent implements OnInit {
     editarUsuario(data: Usuario){
         this.usuario = { ...data };
         this.usuarioEditar = { ...this.usuario };
-        console.log("editarUsuario: ",this.usuarioEditar);
+        // console.log("editarUsuario: ",this.usuarioEditar);
         this.tipoPersonaSeleccionada = new TipoPersona2(this.usuario.perid, this.usuario.pernomcompleto, this.usuario.pernrodoc)
         this.tipoRolSeleccionada = new TipoRol(this.usuario.rolid, this.usuario.rolnombre);
         this.usuarioDialog = true;
@@ -190,17 +220,17 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioRegistro.usuimagen = null;
         // this.usuarioRegistro.usuestado = 1;
         this.usuarioRegistro.usuusureg = 'ijquenta';
-        console.log("usuarioRegistro: ", this.usuarioRegistro);
+        // console.log("usuarioRegistro: ", this.usuarioRegistro);
         this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
             (result: any) => {
-                console.log("gestionarUsuario: ", result);
+                // console.log("gestionarUsuario: ", result);
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Eliminado.', life: 3000});
                 this.eliminarUsuarioDialog = false;
                 this.listarUsuarios();
             },
             (error) => {
                 this.errors = error;
-                console.log('error', error);
+                // console.log('error', error);
                 this.messageService.add({ severity: 'error', summary: 'Error de proceso', detail: 'Se produjo un error al intentar eliminar el usuario.', life: 3000});
             }
         )
@@ -217,9 +247,9 @@ export class UsuarioCrudComponent implements OnInit {
     enviarFormulario(){
         if(this.optionDialog){
             this.usuarioRegistro = { ...this.usuario};
-            console.log("EnviarFormulario: ", this.usuarioRegistro);
-            console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
-            console.log("tipoRol: ", this.tipoRolSeleccionada);
+            // console.log("EnviarFormulario: ", this.usuarioRegistro);
+            // console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
+            // console.log("tipoRol: ", this.tipoRolSeleccionada);
             this.usuarioRegistro.tipo = 1;
             this.usuarioRegistro.usuid = null;
             this.usuarioRegistro.perid = this.tipoPersonaSeleccionada.perid;
@@ -227,10 +257,10 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
             this.usuarioRegistro.usuusureg = 'ijquenta';
-            console.log("usuarioRegistro: ", this.usuarioRegistro);
+            // console.log("usuarioRegistro: ", this.usuarioRegistro);
             this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (result: any) => {
-                    console.log("gestionarUsuario: ", result);
+                    // console.log("gestionarUsuario: ", result);
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Proceso realizado correctamente.', life: 3000});
                     this.optionDialog = false;
                     this.usuarioDialog = false;
@@ -238,16 +268,16 @@ export class UsuarioCrudComponent implements OnInit {
                 },
                 (error) => {
                     this.errors = error;
-                    console.log('error', error);
+                    // console.log('error', error);
                     this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Se produjo un error al intentar registrar el usuario.', life: 3000});
                 }
             )
         }
         else{
             this.usuarioRegistro = { ...this.usuario};
-            console.log("EnviarFormulario: ", this.usuarioRegistro);
-            console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
-            console.log("tipoRol: ", this.tipoRolSeleccionada);
+            // console.log("EnviarFormulario: ", this.usuarioRegistro);
+            // console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
+            // console.log("tipoRol: ", this.tipoRolSeleccionada);
             this.usuarioRegistro.tipo = 2;
             // this.usuarioRegistro.usuid = ;
             this.usuarioRegistro.perid = this.tipoPersonaSeleccionada.perid;
@@ -255,10 +285,10 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
             this.usuarioRegistro.usuusureg = 'ijquenta';
-            console.log("usuarioRegistro: ", this.usuarioRegistro);
+            // console.log("usuarioRegistro: ", this.usuarioRegistro);
             this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (result: any) => {
-                    console.log("gestionarUsuario: ", result);
+                    // console.log("gestionarUsuario: ", result);
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Proceso de modificado realizado correctamente.', life: 3000});
                     this.optionDialog = false;
                     this.usuarioDialog = false;
@@ -266,7 +296,7 @@ export class UsuarioCrudComponent implements OnInit {
                 },
                 (error) => {
                     this.errors = error;
-                    console.log('error', error);
+                    // console.log('error', error);
                     this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Se produjo un error al intentar modificar el usuario.', life: 3000});
                 }
             )

@@ -1,3 +1,5 @@
+
+<p-toast></p-toast>
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="flex flex-column align-items-center justify-content-center">
       <!-- <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo_ibci' : 'logo_ibci'}}.png"
@@ -5,6 +7,7 @@
       <div
         style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
         <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+
           <div class="text-center mb-5">
             <!-- <img src="assets/release/images/login/avatar.png" alt="Image" height="50" class="mb-3"> -->
             <div class="text-900 text-3xl font-medium mb-3">Registrar</div>
@@ -17,20 +20,56 @@
             </p>
           </div> -->
           <div>
-            <label for="name1" class="block text-900 text-xl font-medium mb-2">Nombre Completo</label>
-            <input id="name1" type="text" placeholder="Ingrese su Nombre Completo" pInputText class="w-full md:w-30rem mb-5"
-              style="padding:1rem" [(ngModel)]="name">
+            <label for="name1" class="block text-900 text-xl font-medium mb-2">Usuario</label>
+            <input id="name1" type="text" placeholder="Ingrese nombre " pInputText class="w-full md:w-30rem mb-5"
+              style="padding:1rem" [(ngModel)]="usuario.usuname">
 
             <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
             <input id="email1" type="text" placeholder="Ingrese un correo electronico" pInputText class="w-full md:w-30rem mb-5"
-              style="padding:1rem" [(ngModel)]="email">
-  
-            <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
+              style="padding:1rem" [(ngModel)]="usuario.usuemail">
+
+            <!-- <label for="tipoRol" class="block text-900 text-xl font-medium mb-2">Tipo Rol</label>
+            <p-dropdown id="tipoRol" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoRol" [(ngModel)]="TipoRolSeleccionado" optionLabel="rolnombre"></p-dropdown> -->
+            <label for="tipoRol" class="block text-900 text-xl font-medium mb-2">Rol</label>
+            <div class="card col-12 flex justify-content-center">
+                <p-dropdown [options]="TipoRol" [(ngModel)]="TipoRolSeleccionado" appendTo="body" optionLabel="rolnombre" [showClear]="true" placeholder="Seleccionar rol"
+                ></p-dropdown>
+            </div>
+
+            <!-- <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
             <p-password id="password1" [(ngModel)]="password" placeholder="Ingrese una contraseña" [toggleMask]="true"
+              styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password> -->
+
+            <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
+            <!-- <div class="col-12"> -->
+                <!-- <span class="p-float-label"> -->
+                <p-password id="password2" [(ngModel)]="usuario.usupassword" placeholder="Ingrese una contraseña" [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem">
+                    <ng-template pTemplate="header" >
+                        <h6>Ingresar constraseña</h6>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <p-divider></p-divider>
+                        <p class="mt-2">Sugerencias</p>
+                        <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                            <li>Al menos una minúscula</li>
+                            <li>Al menos una mayuscula</li>
+                            <li>Al menos un número</li>
+                            <li>Mínimo 8 caracteres</li>
+                        </ul>
+                    </ng-template>
+                </p-password>
+                <!-- <label for="password">Volver a ingresar contraseña</label> -->
+                <!-- </span> -->
+            <!-- </div> -->
+
+            <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
+            <p-password id="password1" [(ngModel)]="usuario.usupasswordhash" placeholder="Ingrese una contraseña" [toggleMask]="true"
               styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
-  
-            
-            
+
+            <!-- <div class="card"> -->
+
+            <!-- </div> -->
+
             <div class="flex align-items-center justify-content-between mb-5 gap-5">
               <!-- <div class="flex align-items-center">
                 <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
@@ -47,4 +86,71 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- [closable]="false" -->
+  <p-dialog [(visible)]="personaDialog" [style]="{width: '70%'}" header="Registrar" [modal]="false" class="p-fluid"
+  [closable]="false"
+  >
+
+    <ng-template pTemplate="content">
+    <div class="card">
+        <p-toast></p-toast>
+        <h5>Formulario de Registro</h5>
+        <p>Debera ingresar todos los campos requeridos para realizar el registro <mark>correctamente</mark>.</p>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="apellidoPaterno" pInputText [(ngModel)]="persona.perapepat">
+                    <label for="apellidoPaterno">Apellido Paterno</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="apellidoMaterno" pInputText [(ngModel)]="persona.perapemat">
+                    <label for="apellidoMaterno">Apellido Materno</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="nombres" pInputText [(ngModel)]="persona.pernombres">
+                    <label for="nombres">Nombres</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoDocumento" [(ngModel)]="TipoDocumentoSeleccionado" optionLabel="tipodocnombre"></p-dropdown>
+                    <label for="tipoDocumento">Tipo Documento</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="numeroDocumento" pInputText [(ngModel)]="persona.pernrodoc">
+                    <label for="numeroDocumento">Número Documento</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="correoElectronico" pInputText [(ngModel)]="persona.peremail">
+                    <label for="correoElectronico">Correo Electrónico</label>
+                </span>
+            </div>
+        </div>
+    </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="grid p-fluid my-3 px-3">
+        <div class="col-6 md:col-offset-4 md:col-2">
+            <button pButton pRipple label="Siguiente" icon="pi pi-check" class="p-button-rounded p-button" (click)="enviarFormulario()"></button>
+        </div>
+        <div class="col-6 md:col-offset-0 md:col-1">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  [routerLink]="['/login']"></button>
+            <!-- <button pButton pRipple label="Sign In" class="w-full p-3 text-xl" [routerLink]="['/principal']"></button> -->
+        </div>
+    </div>
+    </ng-template>
+</p-dialog>

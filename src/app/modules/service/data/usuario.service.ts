@@ -5,7 +5,9 @@ import { API_URL } from 'src/environments/environment';
 import { Usuario } from '../../models/usuario';
 import { Rol } from '../../models/rol';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root', // o 'any' si se proporciona en algún otro lugar
+})
 export class UsuarioService {
 
     constructor(private http: HttpClient) { }

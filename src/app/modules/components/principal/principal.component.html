@@ -1,5 +1,11 @@
+<!-- <ng-container *ngIf="usuario$ | async as usuario"> -->
+    <h1>Hola, {{usuario?.pernomcompleto}}</h1>
     <div class="grid">
+        <div *ngIf="loading">
+            <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
+        </div>
         <div class="col-12 lg:col-6 xl:col-3">
+
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
@@ -167,7 +173,7 @@
                             <span class="text-teal-500 ml-3 font-medium">%40</span>
                         </div>
                     </li>
-                </ul> 
+                </ul>
             </div>-->
         </div>
 
@@ -237,3 +243,5 @@
     </div>
 </div>
 
+
+<!-- </ng-container> -->

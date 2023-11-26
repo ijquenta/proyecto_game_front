@@ -18,7 +18,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {CalendarModule} from 'primeng/calendar';
@@ -66,6 +66,8 @@ import { ReportesComponent } from './modules/components/reportes/reportes.compon
 // import { AsistenciaReporteComponent } from './modules/components/asistencia/asistencia-reporte/asistencia-reporte.component';
 // import { ReporteRou}
 
+import { TokenInterceptor } from './interceptors/token.interceptor';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -80,14 +82,14 @@ import { ReportesComponent } from './modules/components/reportes/reportes.compon
     imports: [
         AppRoutingModule, AppLayoutModule,
         PdfViewerModule, NgxSpinnerModule,
-        CalendarModule, TableModule, DialogModule, DynamicDialogModule, 
+        CalendarModule, TableModule, DialogModule, DynamicDialogModule,
         CommonModule, BrowserModule, HttpClientModule, FormsModule, AppRoutingModule,
-        ButtonModule, RippleModule, TableModule, DropdownModule, ToastModule, ConfirmDialogModule, 
+        ButtonModule, RippleModule, TableModule, DropdownModule, ToastModule, ConfirmDialogModule,
         MessagesModule, SidebarModule, AutoCompleteModule, DialogModule,
         InputTextModule, CalendarModule, DynamicDialogModule, InputNumberModule, SelectButtonModule,
-        CheckboxModule, TabViewModule, NgxSpinnerModule, PanelMenuModule, PdfViewerModule, 
+        CheckboxModule, TabViewModule, NgxSpinnerModule, PanelMenuModule, PdfViewerModule,
         InputTextareaModule, CalendarModule,
-        
+
         LoginRoutingModule,PasswordModule,
 
         ScrollPanelModule
@@ -99,7 +101,7 @@ import { ReportesComponent } from './modules/components/reportes/reportes.compon
         NodeService, PhotoService, ProductService, DialogService,
         PrimeIcons, ConfirmationService, MessageService,
         // AuthService,
-
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

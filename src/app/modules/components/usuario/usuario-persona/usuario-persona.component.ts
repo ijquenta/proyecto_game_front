@@ -72,7 +72,7 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log('ngOnInit-->');
+        // console.log('ngOnInit-->');
         this.ListarPersonas();
         this.LlenarTipoCombo();
 
@@ -86,38 +86,38 @@ export class UsuarioPersonaComponent implements OnInit {
         this.personaService.getTipoCiudad().subscribe((data: any) => {
             this.TipoCiudad = data;
             this.TipoCiudadRespaldo = data;
-            console.log('Ciudad: ', this.TipoCiudad);
+            // console.log('Ciudad: ', this.TipoCiudad);
         });
         this.personaService.getTipoPais().subscribe((data: any) => {
             this.TipoPais = data;
-            console.log('Pais: ', this.TipoPais);
+            // console.log('Pais: ', this.TipoPais);
         });
         this.personaService.getTipoDocumento().subscribe((data: any) => {
             this.TipoDocumento = data;
-            console.log('Documento: ', this.TipoDocumento);
+            // console.log('Documento: ', this.TipoDocumento);
         });
         this.personaService.getTipoGenero().subscribe((data: any) => {
             this.TipoGenero = data;
-            console.log('Genero: ', this.TipoGenero);
+            // console.log('Genero: ', this.TipoGenero);
         });
         this.personaService.getTipoEstadoCivil().subscribe((data: any) => {
             this.TipoEstadoCivil = data;
-            console.log('EstadoCivil: ', this.TipoEstadoCivil);
+            // console.log('EstadoCivil: ', this.TipoEstadoCivil);
         });
     }
     ListarPersonas() {
         this.personaService.ListarPersona().subscribe((data: any) => {
             this.Personas = data;
-            console.log('Personas->', this.Personas);
+            // console.log('Personas->', this.Personas);
         });
     }
     id: any;
     onChangeTipoPais(data: any){
         this.TipoCiudad = this.TipoCiudadRespaldo;
-        console.log("Datos del Pais: ", data.value);
+        // console.log("Datos del Pais: ", data.value);
         this.id = data.value.paisid;
         this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === this.id);
-        console.log("Filtro: ", this.TipoCiudad);
+        // console.log("Filtro: ", this.TipoCiudad);
     }
     /*
     CrearRol(rol_nombre: any, rol_descripcion: any) {

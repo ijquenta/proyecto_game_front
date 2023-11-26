@@ -5,28 +5,40 @@ import { ProductService } from '../../service/examples/product.service';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service';
 
+import { AuthService } from 'src/app/services/auth.service';
+import { Usuario } from '../../models/usuario';
 @Component({
     templateUrl: './principal.component.html',
+    styleUrls: ['./principal.component.css']
 })
 export class PrincipalComponent implements OnInit, OnDestroy {
 
     items!: MenuItem[];
 
     products!: Product[];
-
+    loading: boolean = false;
     chartData: any;
 
     chartOptions: any;
 
     subscription!: Subscription;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService) {
+    usuario: Usuario;
+    // usuario$ = this.authService.usuario$;
+
+    constructor(private productService: ProductService, public layoutService: LayoutService, private authService: AuthService) {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
             this.initChart();
         });
     }
 
     ngOnInit() {
+        // this.authService.getPerfil().subscribe(user => {
+        //     this.usuario = user[0];
+        //     console.log("Usuari Principal: ", this.usuario);
+        // })
+
+
         this.initChart();
         // this.productService.getProductsSmall().then(data => this.products = data);
 
@@ -34,6 +46,28 @@ export class PrincipalComponent implements OnInit, OnDestroy {
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
             { label: 'Remove', icon: 'pi pi-fw pi-minus' }
         ];
+        this.loading = true;
+        setTimeout(() => {
+            this.loading = false;
+        }, 1000);
+
+
+        this.authService.usuario$.subscribe((user => {
+            if (user) {
+                if (Array.isArray(user) && user.length > 0) {
+                    this.usuario = user[0];
+                    // console.log("PRUEBA USUARIO$: ", this.usuario);
+                } else {
+                    // Manejar el caso en que user no es un array o es un array vacío
+                    // console.error("El objeto 'user' no es un array o es un array vacío.");
+                }
+            } else {
+                // Manejar el caso en que user es null
+                // console.error("El objeto 'user' es nulo.");
+            }
+        }));
+
+
     }
 
     initChart() {

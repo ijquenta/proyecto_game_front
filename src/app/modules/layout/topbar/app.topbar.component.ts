@@ -1,14 +1,26 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { LayoutService } from "../service/app.layout.service";
-
 import { Input } from '@angular/core';
+import { Router } from '@angular/router';
+
+// Services
 import { MenuService } from "../menu/app.menu.service";
+import { LayoutService } from "../service/app.layout.service";
+import { AuthService } from 'src/app/services/auth.service';
+import { TokenService } from 'src/app/services/token.service';
+
+//Models
+import { Usuario } from '../../models/usuario';
+
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
 })
 export class AppTopBarComponent {
+
+    // Inicializa usuario con un objeto vacío
+    usuario: any = {};
+
 
     items!: MenuItem[];
 
@@ -26,10 +38,26 @@ export class AppTopBarComponent {
     modelOption: MenuItem[] | undefined;
 
     ngOnInit() {
+        this.authService.getPerfil().subscribe(
+            (result: any) => {
+
+              this.usuario = result[0];
+            //   console.log("result get perfil: ", this.usuario);
+              // Aquí puedes tratar los datos de la API como lo necesites
+            },
+            (error: any) => {
+              console.error("Error al obtener el perfil: ", error);
+              // Trata el error como sea necesario
+            }
+          );
+
         this.modelOption = [
             {
                 label: 'Perfil',
                 icon: 'pi pi-fw pi-sort-down',
+
+                //             icon: 'pi pi-fw pi-pencil',
+                //             routerLink: ['/usuario/crud']
                 /*items: [
                     {
                         label: 'New',
@@ -149,7 +177,13 @@ export class AppTopBarComponent {
             },
             {
                 label: 'Salir',
-                icon: 'pi pi-fw pi-power-off'
+                icon: 'pi pi-fw pi-power-off',
+                command: () => this.logout()
+            },
+            {
+                label: 'IsValidToken',
+                icon: 'pi pi-fw pi-users',
+                command: () => this.isValidToken()
             }
         ];
     }
@@ -157,7 +191,19 @@ export class AppTopBarComponent {
 
 
 
-    constructor(public layoutService: LayoutService, public menuService: MenuService) { }
+    constructor(public layoutService: LayoutService, public menuService: MenuService,
+                private authService: AuthService, private router: Router, private tokenService: TokenService) { }
+
+
+    logout(){
+        this.authService.logout();
+        this.router.navigate(['/login']);
+        console.log("logout");
+    }
+
+    isValidToken(){
+        console.log(this.tokenService.isValidToken())
+    }
 
     get visible(): boolean {
         return this.layoutService.state.configSidebarVisible;

@@ -44,7 +44,7 @@ export class UsuarioAccesosComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log('ngOnInit: ');
+        // console.log('ngOnInit: ');
         this.ListarRoles();
 
         this.statuses = [
@@ -56,7 +56,7 @@ export class UsuarioAccesosComponent implements OnInit {
     ListarRoles() {
         this.rolService.getListarRoles().subscribe((data: any) => {
             this.roles = data;
-            console.log('Lista Roles: ', this.roles);
+            // console.log('Lista Roles: ', this.roles);
         });
     }
     registroRol(){
