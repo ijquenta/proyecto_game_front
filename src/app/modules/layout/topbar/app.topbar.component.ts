@@ -14,7 +14,8 @@ import { Usuario } from '../../models/usuario';
 
 @Component({
     selector: 'app-topbar',
-    templateUrl: './app.topbar.component.html'
+    templateUrl: './app.topbar.component.html',
+    styleUrls: ['./app.topbar.component.css']
 })
 export class AppTopBarComponent {
 
@@ -35,7 +36,7 @@ export class AppTopBarComponent {
     scales: number[] = [12, 13, 14, 15, 16];
 
 
-    modelOption: MenuItem[] | undefined;
+    modelOption: any[] | undefined;
 
     ngOnInit() {
         this.authService.getPerfil().subscribe(

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { TokenService } from 'src/app/services/token.service'
 //models
 import { ResponseLogin } from './../modules/models/auth.model';
@@ -27,6 +27,8 @@ export class AuthService {
 
 
   usuario$ = new BehaviorSubject<Usuario | null>(null);
+
+  isLoggedIn$: Observable<boolean> = this.usuario$.pipe(map(Boolean));
 
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 
@@ -93,9 +95,19 @@ export class AuthService {
         })
     );
   }
+
+
+
   getDataUsuario(){
     return this.usuario$.getValue();
   }
+
+//   userrol: any;
+//   getRole(){
+//     this.userrol = this.usuario$.getValue();
+//     // console.log("Rol usuario: ", this.userrol)
+//     return this.userrol;
+//   }
 //   isAuthenticated() {
 //     const sesion = this.tokenService.getToken();
 //     return !(sesion === null);

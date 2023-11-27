@@ -5,8 +5,10 @@ import { CommonModule } from '@angular/common';
 // import { EmptyDemoComponent } from '../estudiante/empty/emptydemo.component';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { PanelMenuModule } from 'primeng/panelmenu';
+import { ShowForRolesDirective } from 'src/app/directives/show-for-roles.directive';
+
 @NgModule({
-    declarations: [],
+    declarations: [ShowForRolesDirective],
     imports: [
         CommonModule,
         ScrollPanelModule,
@@ -15,5 +17,6 @@ import { PanelMenuModule } from 'primeng/panelmenu';
         // ReporteRoutingModule,
         // EmptyDemoComponent
     ],
+    exports: [ShowForRolesDirective]
 })
 export class MenuModule {}

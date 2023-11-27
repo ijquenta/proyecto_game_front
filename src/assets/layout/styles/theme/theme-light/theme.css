@@ -1,3 +1,9 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+::ng-deep {
+  --font-family: 'Poppins', sans-serif;
+} */
+
 :root {
     --surface-a: #ffffff;
     --surface-b: #eff3f8;
@@ -1530,7 +1536,7 @@ p-inputswitch.ng-dirty.ng-invalid>.p-inputswitch {
     background: transparent
 }
 
-.p-listbox:not(.p-disabled) .p-listbox-item:not(.p-highlight):not(.p-disabled):hover {
+.p- listbox:not(.p-disabled) .p-listbox-item:not(.p-highlight):not(.p-disabled):hover {
     color: #043d75;
     background: #f6f9fc
 }
@@ -2036,7 +2042,7 @@ p-selectbutton.ng-dirty.ng-invalid>.p-selectbutton>.p-button {
     color: #fff
 }
 
-p-togglebutton.ng-dirty.ng-invalid>.p-togglebutton.p-button {
+p- togglebutton.ng-dirty.ng-invalid>.p-togglebutton.p-button {
     border-color: #ff6767
 }
 
@@ -2512,7 +2518,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 
 .p-button.p-button-info.p-button-text:enabled:hover,
 .p-buttonset.p-button-info>.p-button.p-button-text:enabled:hover,
-.p-splitbutton.p-button-info>.p-button.p-button-text:enabled:hover {
+.p-splitbutton.p-button- info>.p-button.p-button-text:enabled:hover {
     background: rgba(84, 134, 243, .04);
     border-color: transparent;
     color: #5486f3
@@ -2875,7 +2881,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     font-size: 1.3rem
 }
 
-.p-speeddial-button.p-button.p-button-icon-only .p-icon {
+.p-speeddial-button.p-button.p-button-icon-only .p- icon {
     width: 1.3rem;
     height: 1.3rem
 }
@@ -3250,11 +3256,12 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: #ea5455
 }
 
-.p-splitbutton.p-button-danger.p-button-outlined>.p-button:enabled:active,
-.p-splitbutton.p-button-danger.p-button-outlined>.p-button:not(button):not(a):not(.p-disabled):active {
-    background: rgba(234, 84, 85, .16);
-    color: #ea5455
+.p-splitbutton.p-button-danger.p-button-outlined > .p-button:enabled:active,
+.p-splitbutton.p-button-danger.p-button-outlined > .p-button:not(button):not(a):not(.p-disabled):active {
+    background: rgba(234, 84, 85, 0.16);
+    color: #ea5455;
 }
+
 
 .p-splitbutton.p-button-danger.p-button-text>.p-button {
     background-color: transparent;
@@ -4143,7 +4150,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 
 .fc.fc-theme-standard .fc-toolbar .fc-button.fc-dayGridMonth-button:hover,
 .fc.fc-theme-standard .fc-toolbar .fc-button.fc-timeGridWeek-button:hover,
-.fc.fc-theme-standard .fc-toolbar .fc-button.fc-timeGridDay-button:hover {
+.fc.fc-theme-standard .fc-toolbar .fc-button.fc-timeGridDay- button:hover {
     background: #f6f9fc;
     border-color: #d3dbe3;
     color: #043d75
@@ -4626,7 +4633,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: #7254f3
 }
 
-.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-tree-toggler:hover,
+.p-tree .p-tree-container .p- treenode .p-treenode-content.p-highlight .p-tree-toggler:hover,
 .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-treenode-icon:hover {
     color: #7254f3
 }
@@ -6268,7 +6275,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: #708da9
 }
 
-.p-menubar .p-menubar-root-list>.p-menuitem>.p-menuitem-link:not(.p-disabled):hover .p-submenu-icon {
+.p- menubar .p-menubar-root-list>.p-menuitem>.p-menuitem-link:not(.p-disabled):hover .p-submenu-icon {
     color: #708da9
 }
 
@@ -7337,7 +7344,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background-color: #d3dbe3;
     width: 1rem;
     height: 1rem;
-    transition: background-color .2s, color .2s, box-shadow .2s;
+    transition: background- color .2s, color .2s, box-shadow .2s;
     border-radius: 50%
 }
 

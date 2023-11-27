@@ -1,3 +1,4 @@
+import { Role } from './roles.type';
 export class Usuario {
     // id: number = 0;
     // usuario: string = '';
@@ -28,3 +29,14 @@ interface InventoryStatus {
     label: string;
     value: string;
 }
+
+
+
+// export interface User {
+//   username: string;
+//   role: Role;
+// }
+
+// export interface UserWithToken extends User {
+//   token: string;
+// }

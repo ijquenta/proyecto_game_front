@@ -5,29 +5,29 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuService } from './app.menu.service';
 import { LayoutService } from '../service/app.layout.service';
-
+import { AuthService } from 'src/app/services/auth.service';
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: '[app-menuitem]',
     template: `
 		<ng-container>
             <div *ngIf="root && item.visible !== false" class="layout-menuitem-root-text">{{item.label}}</div>
-			<a *ngIf="(!item.routerLink || item.items) && item.visible !== false" [attr.href]="item.url" (click)="itemClick($event)"
-			   [ngClass]="item.class" [attr.target]="item.target" tabindex="0" pRipple>
-				<i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-				<span class="layout-menuitem-text">{{item.label}}</span>
-				<i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
-			</a>
-			<a *ngIf="(item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)" [ngClass]="item.class" 
-			   [routerLink]="item.routerLink" routerLinkActive="active-route" [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
-               [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling" [preserveFragment]="item.preserveFragment" 
-               [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state" [queryParams]="item.queryParams"
-               [attr.target]="item.target" tabindex="0" pRipple>
-				<i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-				<span class="layout-menuitem-text">{{item.label}}</span>
-				<i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
-			</a>
+			<a *ngIf="shouldDisplayItem(item) && (!item.routerLink || item.items) && item.visible !== false" [attr.href]="item.url" (click)="itemClick($event)"
+            [ngClass]="item.class" [attr.target]="item.target" tabindex="0" pRipple>
+                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+                <span class="layout-menuitem-text">{{item.label}}</span>
+                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
+            </a>
 
+            <a *ngIf="shouldDisplayItem(item) && (item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)" [ngClass]="item.class"
+            [routerLink]="item.routerLink" routerLinkActive="active-route" [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
+            [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling" [preserveFragment]="item.preserveFragment"
+            [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state" [queryParams]="item.queryParams"
+            [attr.target]="item.target" tabindex="0" pRipple>
+                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+                <span class="layout-menuitem-text">{{item.label}}</span>
+                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
+            </a>
 			<ul *ngIf="item.items && item.visible !== false" [@children]="submenuAnimation">
 				<ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
 					<li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
@@ -64,8 +64,8 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     menuResetSubscription: Subscription;
 
     key: string = "";
-
-    constructor(public layoutService: LayoutService, private cd: ChangeDetectorRef, public router: Router, private menuService: MenuService) {
+    userRoles: any[] = [];
+    constructor(public layoutService: LayoutService, private cd: ChangeDetectorRef, public router: Router, private menuService: MenuService, private authService: AuthService) {
         this.menuSourceSubscription = this.menuService.menuSource$.subscribe(value => {
             Promise.resolve(null).then(() => {
                 if (value.routeEvent) {
@@ -90,13 +90,31 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
                 }
             });
     }
-
+    shouldDisplayItem(item: any): boolean {
+        if (item.roles) {
+            if (this.userRoles) {
+                return this.userRoles.some(role => item.roles.includes(role));
+            } else {
+                // Manejar el caso en que this.userRoles es null o undefined
+                return false;
+            }
+        }
+        return true;
+    }
     ngOnInit() {
         this.key = this.parentKey ? this.parentKey + '-' + this.index : String(this.index);
 
         if (this.item.routerLink) {
             this.updateActiveStateFromRoute();
         }
+
+        this.authService.usuario$.subscribe(usuario => {
+            if (usuario && Array.isArray(usuario) && usuario.length > 0) {
+                this.userRoles = Array.isArray(usuario[0].rolnombre) ? usuario[0].rolnombre : [usuario[0].rolnombre];
+                // console.log("ini: ", userRoles);
+                // Resto del código
+            }
+        });
     }
 
     updateActiveStateFromRoute() {
@@ -131,7 +149,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
         return this.root ? 'expanded' : (this.active ? 'expanded' : 'collapsed');
     }
 
-    @HostBinding('class.active-menuitem') 
+    @HostBinding('class.active-menuitem')
     get activeClass() {
         return this.active && !this.root;
     }

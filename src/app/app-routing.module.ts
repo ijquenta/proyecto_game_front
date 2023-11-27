@@ -3,12 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 // import { NotfoundComponent } from './modules/components/notfound/notfound.component';
 import { AppLayoutComponent } from "./modules/layout/app.layout.component";
+import { IsLoggedInGuard } from './guards/is-logged-in.guard';
 
 // import { LoginComponent } from './release/components/auth/login/login.component';
 
 // importamos el guardian
 import { AuthGuard } from './guards/auth.guard';
 import { RedirectGuard } from './guards/redirect.guard';
+import { HasRoleGuard } from './guards/has-role.guard';
 
 const routes: Routes = [
   {
@@ -30,6 +32,7 @@ const routes: Routes = [
                     // { path: 'documentation', loadChildren: () => import('./release/components/documentation/documentation.module').then(m => m.DocumentationModule) },
                     // { path: 'blocks', loadChildren: () => import('./release/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
                     // { path: 'pages', loadChildren: () => import('./release/components/pages/pages.module').then(m => m.PagesModule) },
+                    // { path: 'usuario', canLoad: [HasRoleGuard], data: { allowedRoles: ['usuario', 'Administrador']}, loadChildren: () => import('./modules/components/usuario/usuario.module').then(m => m.UsuarioModule), canActivate: [ AuthGuard ] },
                     { path: 'usuario', loadChildren: () => import('./modules/components/usuario/usuario.module').then(m => m.UsuarioModule), canActivate: [ AuthGuard ] },
                     // para estudiantes
                     { path: 'estudiante', loadChildren: () => import('./modules/components/estudiante/estudiante.module').then(m => m.EstudianteModule), canActivate: [ AuthGuard ] },

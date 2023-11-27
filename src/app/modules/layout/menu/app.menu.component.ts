@@ -2,6 +2,7 @@ import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
 import { MenuItem } from 'primeng/api';
+
 @Component({
     selector: 'app-menu',
     templateUrl: './app.menu.component.html'
@@ -11,32 +12,19 @@ export class AppMenuComponent implements OnInit {
     model: any[] = [];
     items: MenuItem[];
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService) {
+     }
 
     ngOnInit() {
+
         this.model = [
-            // {
-            //     label: 'Usuarios',
-            //     icon: 'pi pi-fw pi-briefcase',
-            //     items: [
-            //         {
-            //             label: 'Administrar Usuarios',
-            //             icon: 'pi pi-fw pi-pencil',
-            //             routerLink: ['/usuario/crud']
-            //         },
-            //         {
-            //             label: 'Buscar',
-            //             icon: 'pi pi-fw pi-circle-off',
-            //             routerLink: ['/usuario/empty']
-            //         },
-            //     ]
-            // },
+
             {
                 label: 'Principal',
                 icon: 'pi pi-fw pi-home',
                 items: [
                     { label: 'Panel de Control', icon: 'pi pi-fw pi-home', routerLink: ['/principal'] }
-                ]
+                ],
             },
             {
                 label: 'Usuario',
@@ -49,32 +37,37 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Persona',
                                 icon: 'pi pi-fw pi-users',
-                                routerLink: ['usuario/persona']
+                                routerLink: ['usuario/persona'],
+                                roles: ['Invitado', 'Administrador']
                             },
                             {
                                 label: 'Gestionar Usuarios',
                                 icon: 'pi pi-fw pi-users',
-                                routerLink: ['usuario/crud']
+                                routerLink: ['usuario/crud'],
+                                roles: ['Administrador']
                             },
                             {
                                 label: 'Gestionar Roles',
                                 icon: 'pi pi-fw pi-wrench',
-                                routerLink: ['usuario/roles']
+                                routerLink: ['usuario/roles'],
+                                roles: ['Administrador']
                             },
                             {
                                 label: 'Gestionar Accesos',
                                 icon: 'pi pi-fw pi-wrench',
-                                routerLink: ['usuario/accesos']
+                                routerLink: ['usuario/accesos'],
+                                roles: ['Administrador']
                             },
 
-                            // {
-                            //     label: 'Reporte Usuarios',
-                            //     icon: 'pi pi-fw pi-file-pdf',
-                            //     routerLink: ['usuario/reporte']
-                            // }
+                            {
+                                label: 'Reporte Usuarios',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                routerLink: ['usuario/reporte'],
+                                roles: ['Invitado', 'Administrador']
+                            }
                         ]
                     }
-                ]
+                ],
             },
             {
                 label: 'Estudiantes',
@@ -202,8 +195,8 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Administración Matricula', icon: 'pi pi-fw pi-list',
                                 items: [
-                                    { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-plus', routerLink: ['matricula/nuevo'] },
-                                    { label: 'Listar Matriculas', icon: 'pi pi-fw pi-users', routerLink: ['matricula/listar'] },
+                                    { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-plus', routerLink: ['matricula/nuevo'], roles: ['Administrador'] },
+                                    { label: 'Listar Matriculas', icon: 'pi pi-fw pi-users', routerLink: ['matricula/listar'],  roles: ['Invitado', 'Administrador']},
 
                                 ]
                             },
@@ -778,4 +771,12 @@ export class AppMenuComponent implements OnInit {
             }
         ];
     }
+
+
+
+
+
+
+
+
 }
