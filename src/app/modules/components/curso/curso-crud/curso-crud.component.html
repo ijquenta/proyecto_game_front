@@ -1,8 +1,9 @@
+<p-toast></p-toast>
 <div class="grid">
     <div class="col-12">
         <p-card header="CURSOS">
-            <p-toast></p-toast>
-            <div class="flex">
+
+            <!-- <div class="flex">
                 <div class="col-6">
                     <p-panel header="Asignación de Materias a Cursos">
                         <p>
@@ -18,19 +19,33 @@
                             </div>
                     </p-panel>
                 </div>
-            </div>
+            </div> -->
             <p-table [value]="listaCursosMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" >
+
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="abrirNuevo()"></button>
+                        <h5 class="m-0">Administrar Cursos</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
+                            <button pButton pRipple label="Reporte" icon="pi pi-file-pdf" class="p-button-rounded p-button-info mr-2" (click)="reporte.rptUsuarios()"></button>
+                        </span>
+                    </div>
+                </ng-template>
+
                 <ng-template pTemplate="header">
                     <tr>
                         <th pSortableColumn="curmatid">
                             Código
                             <p-sortIcon field="curmatid"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="curid">
+                        <!-- <th pSortableColumn="curid">
                             Código Curso
                             <p-sortIcon field="curid"></p-sortIcon>
-                        </th>
+                        </th> -->
                         <th pSortableColumn="curnombre">
                             Nombre Curso
                             <p-sortIcon field="curnombre"></p-sortIcon>
@@ -44,9 +59,9 @@
                             <p-sortIcon field="pernombrecompleto"></p-sortIcon>
                         </th>
                         <th>Duración</th>
-                        <th pSortableColumn="curmatestadodescripcion">
+                        <!-- <th pSortableColumn="curmatestadodescripcion">
                             Estado <p-sortIcon field="curmatestadodescripcion"></p-sortIcon>
-                        </th>
+                        </th> -->
                         <th> Opciones </th>
                         <th></th>
                     </tr>
@@ -56,10 +71,10 @@
                         <td style="width:5%; min-width:1rem;">
                             {{cursoMateria.curmatid}}
                         </td>
-                        <td style="width:5%; min-width:1rem;">
+                        <!-- <td style="width:5%; min-width:1rem;">
                             {{cursoMateria.curid}}
-                        </td>
-                        <td style="width:20%; min-width:20rem;">
+                        </td> -->
+                        <td style="width:30%; min-width:20rem;">
                             <p-chip>
                                 <div class="p-2">
                             {{cursoMateria.curnombre}}
@@ -69,29 +84,29 @@
                         <td style="width:20%; min-width:20rem;">
                             <p-chip>
                                 <div class="p-2">
-                                    Nivel {{cursoMateria.matnivel}}: Materia #{{cursoMateria.matid}} {{cursoMateria.matnombre}}
+                                    {{cursoMateria.matnombre}}
                                 </div>
                             </p-chip>
                         </td>
-                        <td style="width:20%; min-width:20rem;">
+                        <td style="width:30%; min-width:20rem;">
 
                             <p-chip>
-                                <div class="p-2">{{cursoMateria.pernombrecompleto}}</div>
+                                <div class="p-2">{{cursoMateria.curmatidroldes}}: {{cursoMateria.pernomcompleto}}</div>
                             </p-chip>
-                            <p-chip>
-                                <div class="p-2">{{cursoMateria.curmatidrol}}:{{cursoMateria.curmatidroldes}}</div>
-                            </p-chip>
+                            <!-- <p-chip>
+                                <div class="p-2">{{cursoMateria.curmatidroldes}}</div>
+                            </p-chip> -->
                         </td>
 
-                        <td style="width:20%; min-width:10rem;">
+                        <td style="width:10%; min-width:10rem;">
                             <p-tag severity="info">{{cursoMateria.curmatfecini | date:'dd/MM/yyyy'}}</p-tag>
                             <p-tag severity="warn">{{cursoMateria.curmatfecfin | date:'dd/MM/yyyy'}}</p-tag>
                         </td>
-                        <td style="width:10%; min-width:5rem;">
+                        <!-- <td style="width:10%; min-width:5rem;">
                             <p-tag severity="success">
                                 {{cursoMateria.curmatestado}}:{{cursoMateria.curmatestadodescripcion}}
                             </p-tag>
-                        </td>
+                        </td> -->
                         <td>
                             <div class="flex">
                                 <button pButton pRipple
@@ -113,10 +128,10 @@
             </p-table>
         </p-card>
 
-        <p-dialog [(visible)]="cursoMateriaDialog" [style]="{width: '50%'}"
+        <p-dialog [(visible)]="cursoMateriaDialog" [style]="{width: '60%'}"
             header="CURSO" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-            <div class="card p-fluid">
+            <!-- <div class="card p-fluid"> -->
                 <div class="flex">
                     <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
                         <div class="col">
@@ -150,7 +165,7 @@
                         <div class="col">
                             <label for="status">Elegir Docente</label>
                             <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
-                            [(ngModel)]="tipoPersonaSeleccionado" optionLabel="pernombrecompleto"
+                            [(ngModel)]="tipoPersonaSeleccionado" optionLabel="pernomcompleto"
                                 placeholder="Seleccionar Docente">
                             </p-dropdown>
                         </div>
@@ -176,7 +191,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-content-center flex-wrap">
+                <!-- <div class="flex justify-content-center flex-wrap">
                     <div class="flex align-items-center justify-content-center w-20rem h-5rem font-bold border-round m-5">
                         <div class="col">
                             <label for="status">Elegir Estado</label>
@@ -186,14 +201,15 @@
                             </p-dropdown>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> -->
+            <!-- </div> -->
             </ng-template>
             <ng-template pTemplate="footer">
-                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                (click)="guardarCursoMateria()"></button>
+
                 <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                     (click)="ocultarDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="guardarCursoMateria()"></button>
             </ng-template>
         </p-dialog>
 

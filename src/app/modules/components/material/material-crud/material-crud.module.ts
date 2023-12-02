@@ -19,6 +19,15 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
+import { AutoCompleteModule } from "primeng/autocomplete";
+import { ChipsModule } from "primeng/chips";
+import { InputMaskModule } from "primeng/inputmask";
+import { CascadeSelectModule } from "primeng/cascadeselect";
+import { MultiSelectModule } from "primeng/multiselect";
+import { PersonaService } from 'src/app/modules/service/data/persona.service';
+import { NotaService } from 'src/app/modules/service/data/nota.service';
+import { CalendarModule } from 'primeng/calendar';
+import { MaterialService } from 'src/app/modules/service/data/material.service';
 @NgModule({
     imports: [
         CommonModule,
@@ -36,9 +45,15 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        AutoCompleteModule,
+        ChipsModule,
+        InputMaskModule,
+        CascadeSelectModule,
+        MultiSelectModule,
+        CalendarModule
     ],
     declarations: [MaterialCrudComponent],
-    providers: [UsuarioService, ReporteService]
+    providers: [UsuarioService, ReporteService, MaterialService, NotaService, PersonaService]
 })
 export class MaterialCrudModule { }

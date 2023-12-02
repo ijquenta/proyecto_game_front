@@ -25,9 +25,12 @@ export class Persona {
     perestado: number = 1;
 	pertipodoc: number;
     tipodocnombre: string;
-	pernrodoc: number;
+	pernrodoc: any;
 	perciudad: number;
     ciudadnombre: string;
+    usuid: any;
+    usuname: string;
+    usuemail: string;
 
     // constructor(
     //     tipo: number,

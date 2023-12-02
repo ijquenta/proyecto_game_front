@@ -1,10 +1,10 @@
+<p-toast></p-toast>
 <div class="grid">
-
     <div class="col-12">
-        <div class="card px-6 py-6">
-            <h2>Administración de Materias</h2>
-            <p-toast></p-toast>
-            <p-toolbar styleClass="mb-4">
+        <div class="card">
+            <!-- <h2>Administración de Materias</h2> -->
+
+            <!-- <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
                         <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2"
@@ -13,35 +13,53 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <!-- <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button> -->
+                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button>
                 </ng-template>
-            </p-toolbar>
+            </p-toolbar> -->
 
             <p-table #dt [value]="listaMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true">
+
+                <!-- <ng-template pTemplate="caption">
+                    <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button>
+                        <h5 class="m-0">Lista de Materias</h5>
+                    <span class="block mt-2 md:mt-0 p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                            class="w-full sm:w-auto" />
+                    </span>
+                </ng-template> -->
+
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Lista de Materias</h5>
+                        <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="abrirNuevo()"></button>
+                        <h5 class="m-0">Administrar Materias</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
+                        </span>
                     </div>
                 </ng-template>
+
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="matid">CÓDIGO<p-sortIcon field="matid"></p-sortIcon></th>
-                        <th pSortableColumn="matnombre">NOMBRE DE LA MATERIA<p-sortIcon field="matnombre"></p-sortIcon>
+                        <th pSortableColumn="matid">Código<p-sortIcon field="matid"></p-sortIcon></th>
+                        <th pSortableColumn="matnombre">Nombre<p-sortIcon field="matnombre"></p-sortIcon>
                         </th>
-                        <th>DESCRIPCIÓN</th>
-                        <th pSortableColumn="matnivel">TIPO MÓDULO<p-sortIcon field="matnivel"></p-sortIcon></th>
-                        <th>REGISTRADO POR</th>
-                        <th>MODIFICADO POR</th>
-                        <th pSortableColumn="curestado">ESTADO<p-sortIcon field="curestado"></p-sortIcon></th>
-                        <th> OPCIONES </th>
+                        <th>Descripción</th>
+                        <th pSortableColumn="matnivel">Módulo<p-sortIcon field="matnivel"></p-sortIcon></th>
+                        <th>Registrado</th>
+                        <th>Modifcado</th>
+                        <!-- <th>Estado</th> -->
+                        <th> Opciones </th>
                         <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-materia>
                     <tr>
 
-                        <td style="width:1%;">
+                        <td style="width:10%;">
                             {{materia.matid}}
                         </td>
                         <td style="width:30%; min-width:10rem;">
@@ -51,7 +69,7 @@
                             {{materia.matdescripcion}}
                         </td>
                         <td style="width:14%; min-width:10rem;">
-                            <p-tag severity="warning"> {{materia.matnivel}}-{{materia.matdesnivel}} </p-tag>
+                            <p-tag severity="warning"> {{materia.matdesnivel}} </p-tag>
                         </td>
                         <td style="width:14%; min-width:8rem;">
                             <p-chip>
@@ -72,10 +90,10 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td style="width:15%; min-width:10rem;">
+                        <!-- <td style="width:15%; min-width:10rem;">
 
                             <p-tag severity="Primary" [rounded]="true"> {{materia.matestado}}:{{materia.matestadodescripcion}} </p-tag>
-                        </td>
+                        </td> -->
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarMateria(materia)"></button>
@@ -92,7 +110,7 @@
 
             <ng-template pTemplate="content">
 
-                <div class="card p-fluid">
+                <!-- <div class="card p-fluid"> -->
                     <div class="field">
                         <label for="curnombre">Nombre de la materia</label>
                         <!-- <h5> Nombre del Curso</h5> -->
@@ -101,24 +119,22 @@
 
                     <div class="field">
                         <label for="descripcion">Descripción de la Materia</label>
-                        <textarea id="descripcion" pInputTextarea [(ngModel)]="materia.matdescripcion" required rows="3"
+                        <textarea id="descripcion" pInputTextarea [(ngModel)]="materia.matdescripcion" required rows="1"
                             cols="20"></textarea>
                     </div>
-                </div>
-                <div class="card p-fluid">
                     <div class="field">
                         <label for="status">Elegir Modulo</label>
                         <p-dropdown inputId="ddTipoModulo" appendTo="body" [options]="tipoModulo"
                             [(ngModel)]="tipoModuloSeleccionado" optionLabel="desTipoModulo"
                             placeholder="Seleccionar Modulo"></p-dropdown>
                     </div>
-                    <div class="field">
+                    <!-- <div class="field">
                         <label for="status">Elegir Estado:</label>
                         <p-dropdown inputId="ddTipoEstado" appendTo="body" [options]="tipoEstado"
                             [(ngModel)]="tipoEstadoSeleccionado" optionLabel="desTipoEstado"
                             placeholder="Seleccionar Estado"></p-dropdown>
-                    </div>
-                </div>
+                    </div> -->
+                <!-- </div> -->
 
             </ng-template>
             <ng-template pTemplate="footer">

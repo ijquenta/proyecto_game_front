@@ -1,9 +1,9 @@
 <div class="grid">
     <div class="col-12">
         <div class="card px-6 py-6">
-            <h2>Administración de Niveles</h2>
+            <!-- <h2>Administración de Niveles</h2> -->
             <p-toast></p-toast>
-            <p-toolbar styleClass="mb-4">
+            <!-- <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
                         <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button>
@@ -13,12 +13,26 @@
                 <ng-template pTemplate="right">
                     <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button>
                 </ng-template>
-            </p-toolbar>
+            </p-toolbar> -->
 
             <p-table [value]="listaNiveles" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <h5 class="m-0">Lista de todos los Niveles</h5>
+                    </div>
+                </ng-template>
+
+
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <button pButton pRipple label="Nuevo nivel" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="abrirNuevo()"></button>
+                        <h5 class="m-0">Administrar Nivel</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
+                            <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button>
+                        </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
@@ -29,8 +43,8 @@
                         <th pSortableColumn="curnivel">Nivel <p-sortIcon field="curnivel"></p-sortIcon></th>
                         <th pSortableColumn="curfecini">Fecha Inicio <p-sortIcon field="curfecini"></p-sortIcon></th>
                         <th pSortableColumn="curfecfin">Fecha Final <p-sortIcon field="curfecfin"></p-sortIcon></th>
-                        <th pSortableColumn="curestadodescripcion">Estado <p-sortIcon field="curestadodescripcion"></p-sortIcon></th>
-                        <th pSortableColumn="curestado">Estado <p-sortIcon field="curestado"></p-sortIcon></th>
+                        <!-- <th pSortableColumn="curestadodescripcion">Estado <p-sortIcon field="curestadodescripcion"></p-sortIcon></th> -->
+                        <!-- <th pSortableColumn="curestado">Estado <p-sortIcon field="curestado"></p-sortIcon></th> -->
                         <th>Fecha de creación</th>
                         <th>Fecha de modificación</th>
                         <th> Opciones</th>
@@ -58,12 +72,12 @@
                         <td style="width:14%; min-width:10rem;">
                             {{nivel.curfchfin | date:'dd/MM/yyyy'}}
                         </td>
-                        <td style="width:14%; min-width:10rem;">
+                        <!-- <td style="width:14%; min-width:10rem;">
                             <p-tag [severity]="obtenerEstadoSeverity(nivel.curestado)" [rounded]="true"> {{nivel.curestadodescripcion}} </p-tag>
-                        </td>
-                        <td style="width:5%; min-width:3rem;">
+                        </td> -->
+                        <!-- <td style="width:5%; min-width:3rem;">
                             {{nivel.curestado}}
-                        </td>
+                        </td> -->
                         <td style="width:5%; min-width:3rem;">
                             <p-chip>
                                 <div class="p-2"> {{nivel.curusureg}} {{nivel.curfecreg | date:'dd/MM/yyyy h:mm:ss a'}} </div>
@@ -88,11 +102,11 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="nivelDialog" [style]="{width: '700px'}" header="Nivel" [modal]="true" class="p-fluid">
+        <p-dialog [(visible)]="nivelDialog" [style]="{width: '40%'}" header="Nivel" [modal]="true" class="p-fluid">
 
             <ng-template pTemplate="content">
 
-                <div class="card p-fluid">
+                <!-- <div class="card p-fluid"> -->
                     <div class="field">
                         <label for="curnombre">Nombre del Curso</label>
                         <!-- <h5> Nombre del Curso</h5> -->
@@ -111,7 +125,7 @@
                                 <div style="max-width: 100px;">{{tipoModulo.desTipoModulo}}</div>
                             </ng-template>
                     </div>
-                </div>
+                <!-- </div> -->
 
                 <div class="card p-fluid">
                         <div class="flex p-formgrid grid">
@@ -130,7 +144,7 @@
                         </div>
                 </div>
 
-                <div class="card p-fluid">
+                <!-- <div class="card p-fluid">
                     <div class="field">
                         <label for="status">Elegir Estado del Nivel:</label>
                             <p-dropdown inputId="ddTipoNivelEstado" appendTo="body" [options]="tipoNivelEstado" [(ngModel)]="tipoNivelEstadoSeleccionado" optionLabel="desTipoNivelEstado" placeholder="Seleccionar Estado" ></p-dropdown>
@@ -138,7 +152,7 @@
                                 <div style="max-width: 100px;">{{tipoNivelEstado.desTipoNivelEstado}}</div>
                             </ng-template>
                     </div>
-                </div>
+                </div> -->
 
             </ng-template>
 

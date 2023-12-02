@@ -1,40 +1,38 @@
+<p-toast></p-toast>
 <div class="grid">
-
     <div class="col-12">
-
         <div class="card px-6 py-6">
-            <h1>Hola, {{datosUsurio?.pernomcompleto}}</h1>
-            <h2>Administrar Usuarios</h2>
-            <p-toast></p-toast>
-            <p-toolbar styleClass="mb-4">
+            <h5>Hola, {{datosUsurio?.pernomcompleto}}</h5>
+            <!-- <h2>Administrar Usuarios</h2> -->
+            <div *ngIf="loading">
+                <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
+                    animationDuration=".5s"></p-progressSpinner>
+            </div>
+            <!-- <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
                         <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
-                        <!-- <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button> -->
-
-                    <div *ngIf="loading">
-                        <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
-                    </div>
                     </div>
                 </ng-template>
-
                 <ng-template pTemplate="right">
-                    <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload> -->
-                    <!-- <button pButton pRipple label="Descargar" icon="pi pi-file" class="p-button-success" (click)="dt.exportCSV()"></button> -->
-                    <!-- <button pButton pRipple label="Exportar" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button> -->
-                    <!-- <button (click)="reporte.rptUsuarios()" pButton="pButton" pRipple="pRipple" type="button" label="Reporte Prueba" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button> -->
                     <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button>
                 </ng-template>
-            </p-toolbar>
-
-            <p-table #dt [value]="usuarios" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id">
+            </p-toolbar> -->
+            <p-table #dt [value]="usuarios" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Lista de Usuarios</h5>
-                        <!-- <span class="block mt-2 md:mt-0 p-input-icon-left"> -->
-                            <!-- <i class="pi pi-search"></i> -->
-                            <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/> -->
-                        <!-- </span> -->
+                        <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()"></button>
+                        <h5 class="m-0">Administrar Usuarios</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" />
+                        </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
@@ -42,13 +40,15 @@
                         <!-- <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th> -->
-                        <th pSortableColumn="usuid">Id <p-sortIcon field="usuid"></p-sortIcon></th>
-                        <th pSortableColumn="usuname">Usuario <p-sortIcon field="usuname"></p-sortIcon></th>
-                        <th pSortableColumn="pernomcompleto">Persona <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
-                        <th pSortableColumn="rolnombre">Rol <p-sortIcon field="rolnombre"></p-sortIcon></th>
-                        <th pSortableColumn="usuemail">Email <p-sortIcon field="usuemail"></p-sortIcon></th>
+                        <!-- <th pSortableColumn="usuid">Id <p-sortIcon field="usuid"></p-sortIcon></th> -->
+                        <th pSortableColumn="usuname">Usuario<p-sortIcon field="usuname"></p-sortIcon></th>
+                        <th pSortableColumn="pernomcompleto">Persona<p-sortIcon field="pernomcompleto"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="rolnombre">Rol<p-sortIcon field="rolnombre"></p-sortIcon></th>
+                        <th pSortableColumn="usuemail">Correo electrónico<p-sortIcon field="usuemail"></p-sortIcon></th>
                         <!-- <th>Imagen</th> -->
-                        <th pSortableColumn="usudescripcion">Descripción<p-sortIcon field="usudescripcion"></p-sortIcon></th>
+                        <th pSortableColumn="usudescripcion">Observación<p-sortIcon field="usudescripcion"></p-sortIcon>
+                        </th>
                         <th> Registrado por </th>
                         <th> Modificado por </th>
                         <th> Opciones</th>
@@ -62,17 +62,17 @@
                         <!-- <td>
                             <p-tableCheckbox [value]="selectedProducts"></p-tableCheckbox>
                         </td> -->
-                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">Codigo</span>
+                        <!-- <td style="width:14%; min-width:10rem;"><span class="p-column-title">Codigo</span>
                             {{usuario.usuid}}
-                        </td>
-                        <td style="width:14%; min-width:10rem;">
+                        </td> -->
+                        <td style="width:10%; min-width:10rem;">
                             {{usuario.usuname}}
                         </td>
-                        <td style="width:14%; min-width:10rem;">
-                            {{usuario.perid}} {{usuario.pernomcompleto}}
+                        <td style="width:22%; min-width:13rem;">
+                            {{usuario.pernomcompleto}}
                         </td>
-                        <td style="width:14%; min-width:10rem;">
-                            {{usuario.rolid}} {{usuario.rolnombre}}
+                        <td style="width:10%; min-width:10rem;">
+                            {{usuario.rolnombre}}
                         </td>
                         <!-- <td style="width:14%; min-width:10rem;"><span class="p-column-title">Image</span>
                             <img [src]="'assets/release/images/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" />
@@ -104,8 +104,11 @@
                         </td> -->
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarUsuario(usuario)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="eliminarUsuario(usuario)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editarUsuario(usuario)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="eliminarUsuario(usuario)"></button>
                             </div>
                         </td>
                     </tr>
@@ -116,9 +119,9 @@
         <p-dialog [(visible)]="usuarioDialog" [style]="{width: '70%'}" header="Usuario" [modal]="true" class="p-fluid">
 
             <ng-template pTemplate="content">
-            <div class="card">
-                <h5>Formulario Usuario</h5>
-                <p>Debera ingresar todos los campos requeridos para realizar el registro <mark>correctamente</mark> en la base de datos.</p>
+                <!-- <div class="card"> -->
+                <!-- <h5>Formulario Usuario</h5>
+                <p>Debera ingresar todos los campos requeridos para realizar el registro <mark>correctamente</mark> en la base de datos.</p> -->
                 <div class="grid p-fluid mt-3">
                     <div class="field col-12 md:col-4">
                         <span class="p-float-label">
@@ -135,49 +138,51 @@
                     </div> -->
                     <div class="field col-12 md:col-4">
                         <span class="p-float-label">
-                        <p-password [(ngModel)]="usuario.usupassword" appendTo="body" [toggleMask]="true">
-                            <ng-template pTemplate="header">
-                                <h6>Ingresar constraseña</h6>
-                            </ng-template>
-                            <ng-template pTemplate="footer">
-                                <p-divider></p-divider>
-                                <p class="mt-2">Sugerencias</p>
-                                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                                    <li>Al menos una minúscula</li>
-                                    <li>Al menos una mayuscula</li>
-                                    <li>Al menos un número</li>
-                                    <li>Mínimo 8 caracteres</li>
-                                </ul>
-                            </ng-template>
-                        </p-password>
-                        <label for="password">Contraseña</label>
+                            <p-password [(ngModel)]="usuario.usupassword" appendTo="body" [toggleMask]="true">
+                                <ng-template pTemplate="header">
+                                    <h6>Ingresar constraseña</h6>
+                                </ng-template>
+                                <ng-template pTemplate="footer">
+                                    <p-divider></p-divider>
+                                    <p class="mt-2">Sugerencias</p>
+                                    <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                                        <li>Al menos una minúscula</li>
+                                        <li>Al menos una mayuscula</li>
+                                        <li>Al menos un número</li>
+                                        <li>Mínimo 8 caracteres</li>
+                                    </ul>
+                                </ng-template>
+                            </p-password>
+                            <label for="password">Contraseña</label>
                         </span>
                     </div>
 
                     <div class="field col-12 md:col-4">
                         <span class="p-float-label">
-                        <p-password [(ngModel)]="usuario.usupasswordhash" appendTo="body" [toggleMask]="true">
-                            <ng-template pTemplate="header">
-                                <h6>Ingresar constraseña</h6>
-                            </ng-template>
-                            <ng-template pTemplate="footer">
-                                <p-divider></p-divider>
-                                <p class="mt-2">Sugerencias</p>
-                                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                                    <li>Al menos una minúscula</li>
-                                    <li>Al menos una mayuscula</li>
-                                    <li>Al menos un número</li>
-                                    <li>Mínimo 8 caracteres</li>
-                                </ul>
-                            </ng-template>
-                        </p-password>
-                        <label for="password">Volver a ingresar contraseña</label>
+                            <p-password [(ngModel)]="usuario.usupasswordhash" appendTo="body" [toggleMask]="true">
+                                <ng-template pTemplate="header">
+                                    <h6>Ingresar constraseña</h6>
+                                </ng-template>
+                                <ng-template pTemplate="footer">
+                                    <p-divider></p-divider>
+                                    <p class="mt-2">Sugerencias</p>
+                                    <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                                        <li>Al menos una minúscula</li>
+                                        <li>Al menos una mayuscula</li>
+                                        <li>Al menos un número</li>
+                                        <li>Mínimo 8 caracteres</li>
+                                    </ul>
+                                </ng-template>
+                            </p-password>
+                            <label for="password">Volver a ingresar contraseña</label>
                         </span>
                     </div>
 
                     <div class="fild col-12 md:col-4">
                         <span class="p-float-label">
-                            <p-dropdown [options]="tipoPersona" [(ngModel)]="tipoPersonaSeleccionada" appendTo="body" optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true" placeholder="Seleccionar Persona">
+                            <p-dropdown [options]="tipoPersona" [(ngModel)]="tipoPersonaSeleccionada" appendTo="body"
+                                optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto"
+                                [showClear]="true" placeholder="Seleccionar Persona">
                                 <ng-template pTemplate="selectedItem">
                                     <div class="flex align-items-center gap-2" *ngIf="tipoPersonaSeleccionada">
                                         <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + selectedCountry.code.toLowerCase()" style="width: 18px"/> -->
@@ -197,7 +202,8 @@
 
                     <div class="field col-12 md:col-4">
                         <span class="p-float-label">
-                            <p-dropdown id="tipoRol" [autoDisplayFirst]="false"  appendTo="body" [options]="tipoRol" [(ngModel)]="tipoRolSeleccionada" optionLabel="rolnombre"></p-dropdown>
+                            <p-dropdown id="tipoRol" [autoDisplayFirst]="false" appendTo="body" [options]="tipoRol"
+                                [(ngModel)]="tipoRolSeleccionada" optionLabel="rolnombre"></p-dropdown>
                             <label for="tipoRol">Eligir Rol</label>
                         </span>
                     </div>
@@ -210,8 +216,9 @@
                     </div>
                     <div class="field col-12 md:col-4">
                         <span class="p-float-label">
-                            <textarea inputId="descripcion" rows="3" cols="30" [(ngModel)]="usuario.usudescripcion" appendTo="body" pInputTextarea></textarea>
-                            <label for="descripcion">Descripción</label>
+                            <textarea inputId="descripcion" rows="1" cols="30" [(ngModel)]="usuario.usudescripcion"
+                                appendTo="body" pInputTextarea></textarea>
+                            <label for="descripcion">Observación</label>
                         </span>
                     </div>
                     <!-- <div class="field col-12">
@@ -373,31 +380,22 @@
                         </span>
                     </div> -->
                 </div>
-            </div>
+                <!-- </div> -->
             </ng-template>
 
             <ng-template pTemplate="footer">
-                <!-- <button pButton pRipple label="Registrar" icon="pi pi-check" class="p-button-rounded p-button" (click)="CrearRol(rol_nuevo.rolnombre,rol_nuevo.roldescripcion)"></button>
-            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  (click)="hideDialog()"></button>
-        -->
                 <!-- <div class="grid p-fluid my-3 px-3">
-                    <div class="col-6 md:col-offset-3 md:col-2">
-                        <button (click)="enviarFormulario()" pButton="pButton" pRipple="pRipple" type="button"
-                            label="Registrar" class="p-button-raised p-button-success"></button>
-                    </div>
-                    <div class="col-6 md:col-offset-2 md:col-2">
-                        <button (click)="clearData()" pButton="pButton" pRipple="pRipple" type="button"
-                            label="Cancelar" class="p-button-raised p-button-danger"></button>
-                    </div>
-                </div> -->
-                <div class="grid p-fluid my-3 px-3">
                 <div class="col-6 md:col-offset-4 md:col-2">
                     <button pButton pRipple label="Registrar" icon="pi pi-check" class="p-button-rounded p-button" (click)="enviarFormulario()"></button>
                 </div>
                 <div class="col-6 md:col-offset-0 md:col-1">
                     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  (click)="ocultarDialog()"></button>
                 </div>
-            </div>
+            </div> -->
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                    (click)="ocultarDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="enviarFormulario()"></button>
             </ng-template>
         </p-dialog>
 
@@ -408,8 +406,10 @@
 
             </div>
             <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="eliminarUsuarioDialog = false"></button>
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="confirmarEliminar()"></button>
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="eliminarUsuarioDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+                    (click)="confirmarEliminar()"></button>
             </ng-template>
         </p-dialog>
     </div>

@@ -18,6 +18,16 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { EstudianteService } from 'src/app/modules/service/data/estudiante.service';
+import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
+import { PasswordModule } from 'primeng/password';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { TooltipModule } from 'primeng/tooltip';
+import { DocenteService } from 'src/app/modules/service/data/docente.service';
 
 @NgModule({
     imports: [
@@ -36,9 +46,17 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        CalendarModule,
+        CheckboxModule,
+        PasswordModule,
+        ConfirmDialogModule,
+        ProgressSpinnerModule,
+        TagModule,
+        ChipModule,
+        TooltipModule
     ],
     declarations: [DocenteCrudComponent],
-    providers: [UsuarioService, ReporteService]
+    providers: [UsuarioService, ReporteService, EstudianteService,DocenteService]
 })
 export class DocenteCrudModule { }

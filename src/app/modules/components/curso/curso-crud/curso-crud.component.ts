@@ -129,7 +129,7 @@ export class CursoCrudComponent implements OnInit {
         this.usuarioServicie.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result;
-                console.log("Combo roles: ", this.tipoRol);
+                // console.log("Combo roles: ", this.tipoRol);
             }
         )
     }
@@ -196,7 +196,7 @@ export class CursoCrudComponent implements OnInit {
                 this.tipoPersona = result;
             }
         )
-        this.tipoPersonaSeleccionado = new TipoPersona(this.cursoMateria.periddocente, this.cursoMateria.pernombrecompleto);
+        this.tipoPersonaSeleccionado = new TipoPersona(this.cursoMateria.periddocente, this.cursoMateria.pernomcompleto)
         this.tipoEstadoSeleccionado = new TipoEstado(this.cursoMateria.curmatestado, this.cursoMateria.curmatestadodescripcion);
     }
     obtenerBody(){
@@ -206,10 +206,9 @@ export class CursoCrudComponent implements OnInit {
         this.cursoMateria.curmatidrol = this.tipoRolSeleccionado.rolid;
         this.cursoMateria.curmatidroldes = this.tipoRolSeleccionado.rolnombre;
         this.cursoMateria.curmatestado = this.tipoEstadoSeleccionado.codTipoEstado;
-        this.cursoMateria.curmatusureg = "Ivan Reg";
-        this.cursoMateria.curmatusumod = "Ivan Mod";
+        this.cursoMateria.curmatusureg = "ijquenta";
+        this.cursoMateria.curmatusumod = "ijquenta";
         this.cursoMateria.curmatestadodescripcion = this.tipoEstadoSeleccionado.desTipoEstado;
-
         const body = { ...this.cursoMateria }
         return body;
     }

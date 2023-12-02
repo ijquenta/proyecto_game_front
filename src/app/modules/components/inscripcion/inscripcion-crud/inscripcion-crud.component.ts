@@ -139,7 +139,7 @@ export class InscripcionCrudComponent implements OnInit {
        this.inscripcionService.listarComboCursoMateria().subscribe(
         (result: any) => {
           this.tipoCursoMateria = result;
-        //   console.log("Lista Curso Materia: ", this.tipoCursoMateria);
+          console.log("Lista Curso Materia: ", this.tipoCursoMateria);
         }
       );
 
@@ -268,8 +268,9 @@ export class InscripcionCrudComponent implements OnInit {
     obtenerRoles(){
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
-                this.tipoRol = result;
-                // console.log("Combo roles: ", this.tipoRol);
+                // this.tipoRol = result;
+                this.tipoRol = result.filter(rol => rol.rolnombre === "Estudiante");
+                console.log("Combo roles: ", this.tipoRol);
             }
         )
     }
@@ -318,7 +319,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.gestionSeleccionado = new TipoMatricula(this.inscripcion.matricula[0].matrid, this.inscripcion.matricula[0].matrgestion);
         // console.log("Gestion: ",this.gestionSeleccionado);
 
-        this.tipoCursoMateriaSeleccionado = new TipoCursoMateria(this.inscripcion.curso_materia[0].curmatid, this.inscripcion.curso_materia[0].curmatdescripcion);
+        this.tipoCursoMateriaSeleccionado = new TipoCursoMateria(this.inscripcion.curso_materia[0].curmatid, this.inscripcion.curso_materia[0].curnombre + ' - ' + this.inscripcion.curso_materia[0].matnombre);
         // const curnivel = {
         //     curnivel: this.tipoCursoSeleccionado.curnivel
         // };
@@ -328,10 +329,12 @@ export class InscripcionCrudComponent implements OnInit {
         //     }
         // )
         // this.tipoMateriaSeleccionado = new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel);
-        this.tipoRolSeleccionado = new TipoRol(this.inscripcion.estudiante[0].peridrol, this.inscripcion.estudiante[0].rolnombre);
+        // this.tipoRolSeleccionado = new TipoRol(this.inscripcion.estudiante[0].peridrol, this.inscripcion.estudiante[0].rolnombre);
+        this.tipoRolSeleccionado = new TipoRol(4, 'Estudiante');
 
         const rolnombre = {
-             rolnombre: this.inscripcion.estudiante[0].rolnombre
+            //  rolnombre: this.inscripcion.estudiante[0].rolnombre
+             rolnombre: 'Estudiante'
         };
         this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe(
             (result: any) => {
@@ -383,25 +386,24 @@ export class InscripcionCrudComponent implements OnInit {
 
         //     }
         // });
-        this.inscripcionRegistro.insid = this.inscripcion.insid;
+
         this.inscripcionRegistro.matrid = this.gestionSeleccionado.matrid;
         this.inscripcionRegistro.curmatid = this.tipoCursoMateriaSeleccionado.curmatid;
         this.inscripcionRegistro.peridestudiante = this.tipoPersonaSeleccionado.perid;
         this.inscripcionRegistro.pagid = null;
-        this.inscripcionRegistro.insusureg = "Ivan Reg Front";
+        this.inscripcionRegistro.insusureg = "ijquenta";
         this.inscripcionRegistro.insestado = this.tipoEstadoSeleccionado.codTipoEstado;
         this.inscripcionRegistro.insestadodescripcion = this.tipoEstadoSeleccionado.desTipoEstado;
-        this.inscripcionRegistro.insusumod = "Ivan Mod Front";
+        this.inscripcionRegistro.insusumod = "ijquenta";
         console.log("BODY", this.inscripcion);
         const body = { ...this.inscripcionRegistro }
-
-         return body;
-
+        return body;
     }
     guardarInscripcion(){
         this.obtenerBody();
         console.log("Datos a ingresar: ", this.inscripcionRegistro);
         if(this.optionInscripcion){
+            this.inscripcionRegistro.insid = null;
             console.log("Insertar");
             this.inscripcionService.insertarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
@@ -412,13 +414,14 @@ export class InscripcionCrudComponent implements OnInit {
                 },
                 error => {
                 console.log("error",error);
-                const descripcionError = error.error.message;
-                    this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                    this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal. No puede registrar al mismo estudiante.'})
                 }
             );
+
         }
         else{
             console.log("Modificar");
+            this.inscripcionRegistro.insid = this.inscripcion.insid;
             this.inscripcionService.modificarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa', detail: 'Modificación Inscripcion Existosamente!', life: 3000 });
@@ -427,10 +430,8 @@ export class InscripcionCrudComponent implements OnInit {
                     this.ocultarDialog();
                 },
                 error => {
-                    const descripcionError = error.erro.message;
                     this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal.'})
                 }
-
             )
         }
     }

@@ -119,8 +119,8 @@ export class MateriaCrudComponent implements OnInit {
         this.materia.matdesnivel = this.tipoModuloSeleccionado.desTipoModulo;
         this.materia.matestado = this.tipoEstadoSeleccionado.codTipoEstado;
         this.materia.matestadodescripcion = this.tipoEstadoSeleccionado.desTipoEstado;
-        this.materia.matusureg = 'Usuario Reg';
-        this.materia.matusumod = 'Usuario Mod';
+        this.materia.matusureg = 'ijquenta';
+        this.materia.matusumod = 'ijquenta';
         const body = {...this.materia}
         return body;
     }

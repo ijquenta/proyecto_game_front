@@ -123,10 +123,10 @@ export class TipoRol {
 }
 export class TipoPersona {
     perid: number = 0;
-    pernombrecompleto: string = '';
+    pernomcompleto: string = '';
     constructor(codperid: number, despernombrecompleto: string){
         this.perid = codperid;
-        this.pernombrecompleto = despernombrecompleto;
+        this.pernomcompleto = despernombrecompleto;
     }
 }
 //--------------------- CursoMateria ---------------------//

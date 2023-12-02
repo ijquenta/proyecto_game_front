@@ -87,13 +87,13 @@ export class UsuarioCrudComponent implements OnInit {
                     // this.tipoPersonaSeleccionada = new TipoPersona2(0,'',0);
                 }
 
-                onUpload(event:UploadEvent) {
-                    for(let file of event.files) {
-                        this.uploadedFiles.push(file);
-                    }
+                // onUpload(event:UploadEvent) {
+                //     for(let file of event.files) {
+                //         this.uploadedFiles.push(file);
+                //     }
 
-                    this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
-                }
+                //     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+                // }
     ngOnInit() {
 
         // console.log("ngOnInit")Roles
@@ -219,7 +219,7 @@ export class UsuarioCrudComponent implements OnInit {
         // this.usuarioRegistro.rolid = this.tipoRolSeleccionada.rolid;
         this.usuarioRegistro.usuimagen = null;
         // this.usuarioRegistro.usuestado = 1;
-        this.usuarioRegistro.usuusureg = 'ijquenta';
+        this.usuarioRegistro.usuusureg = this.datosUsurio.usuname;
         // console.log("usuarioRegistro: ", this.usuarioRegistro);
         this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
             (result: any) => {
@@ -256,7 +256,7 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.rolid = this.tipoRolSeleccionada.rolid;
             this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
-            this.usuarioRegistro.usuusureg = 'ijquenta';
+            this.usuarioRegistro.usuusureg = this.datosUsurio.usuname;
             // console.log("usuarioRegistro: ", this.usuarioRegistro);
             this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (result: any) => {
@@ -284,7 +284,7 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.rolid = this.tipoRolSeleccionada.rolid;
             this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
-            this.usuarioRegistro.usuusureg = 'ijquenta';
+            this.usuarioRegistro.usuusureg = this.datosUsurio.usuname;
             // console.log("usuarioRegistro: ", this.usuarioRegistro);
             this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (result: any) => {

@@ -88,15 +88,15 @@ export class MatriculaListarComponent implements OnInit {
                 // matrestado?: number = 0;
     obtenerBody(){
         // console.log("Obtener Body: ", this.matricula);
-        this.matricula.matrgestion = this.gestionSeleccionado;
-        this.matricula.matrestado = this.tipoEstadoMatriculaSeleccionado.matrestado;
+        // this.matricula.matrgestion = thi;
+        this.matricula.matrestado = 1;
         this.matricula.matrestadodescripcion = this.tipoEstadoMatriculaSeleccionado.matrestadodescripcion;
         this.matricula.matrfchini = this.fechaInicio;
         this.matricula.matrfchfin = this.fechaFinal;
         this.matricula.matrusureg = 'Usuario Reg';
         this.matricula.matrcos = this.costo;
 
-        // console.log("Matricula LLena: ", this.matricula);
+        console.log("Matricula LLena: ", this.matricula);
         const body = {...this.matricula}
         return body;
     }
@@ -107,7 +107,9 @@ export class MatriculaListarComponent implements OnInit {
         this.fechaFinal = new Date(this.matricula.matrfchfin);
         this.costo = this.matricula.matrcos;
         this.gestionSeleccionado = this.matricula.matrgestion;
-        this.matricula.matrusumod = "Ivan Mod Matricual";
+        this.matricula.matrusumod = "ijquenta";
+        this.matricula.matrestadodescripcion = null;
+        console.log("Nombre matricula", this.matricula)
     }
     editarMatricula(data: any) {
         this.matricula = { ...data };

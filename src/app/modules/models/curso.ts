@@ -8,7 +8,7 @@ export class CursoMateria {
 	pernombres?: string | null = null;
 	perapepat?: string | null = null;
 	perapemat?: string | null = null;
-    pernombrecompleto?: string | null = null;
+    pernomcompleto?: string | null = null;
 	periddocente?: number = 0;
 	curmatfecini?: any;
 	curmatfecfin?: any;
