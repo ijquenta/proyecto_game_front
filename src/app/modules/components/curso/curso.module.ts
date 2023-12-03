@@ -5,7 +5,8 @@ import { CursoRoutingModule } from './curso-routing.module';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     CommonModule,
     CursoRoutingModule

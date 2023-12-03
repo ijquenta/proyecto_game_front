@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { NotaRoutingModule } from './nota-routing.module';
 
 @NgModule({
-    declarations: [],
+    declarations: [
+  ],
     imports: [
         CommonModule,
         NotaRoutingModule

@@ -30,7 +30,7 @@ export class LayoutService {
         inputStyle: 'filled',
         // menuMode: 'static',
         // menuMode: 'overlay',
-        menuMode: 'overlay',
+        menuMode: 'static',
         colorScheme: 'light',
         // colorScheme: 'dark',
         theme: 'theme-light',

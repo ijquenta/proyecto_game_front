@@ -11,28 +11,28 @@ import { AuthService } from 'src/app/services/auth.service';
     selector: '[app-menuitem]',
     template: `
 		<ng-container>
-            <div *ngIf="root && item.visible !== false" class="layout-menuitem-root-text">{{item.label}}</div>
-			<a *ngIf="shouldDisplayItem(item) && (!item.routerLink || item.items) && item.visible !== false" [attr.href]="item.url" (click)="itemClick($event)"
-            [ngClass]="item.class" [attr.target]="item.target" tabindex="0" pRipple>
-                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{item.label}}</span>
-                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
-            </a>
+            <div *ngIf="shouldDisplayItem(item) && root && item.visible !== false" class="layout-menuitem-root-text">{{item.label}}</div>
+                <a *ngIf="shouldDisplayItem(item) && (!item.routerLink || item.items) && item.visible !== false" [attr.href]="item.url" (click)="itemClick($event)"
+                [ngClass]="item.class" [attr.target]="item.target" tabindex="0" pRipple>
+                    <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+                    <span class="layout-menuitem-text">{{item.label}}</span>
+                    <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
+                </a>
 
-            <a *ngIf="shouldDisplayItem(item) && (item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)" [ngClass]="item.class"
-            [routerLink]="item.routerLink" routerLinkActive="active-route" [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
-            [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling" [preserveFragment]="item.preserveFragment"
-            [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state" [queryParams]="item.queryParams"
-            [attr.target]="item.target" tabindex="0" pRipple>
-                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{item.label}}</span>
-                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
-            </a>
-			<ul *ngIf="item.items && item.visible !== false" [@children]="submenuAnimation">
-				<ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
-					<li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
-				</ng-template>
-			</ul>
+                <a *ngIf="shouldDisplayItem(item) && (item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)" [ngClass]="item.class"
+                [routerLink]="item.routerLink" routerLinkActive="active-route" [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
+                [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling" [preserveFragment]="item.preserveFragment"
+                [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state" [queryParams]="item.queryParams"
+                [attr.target]="item.target" tabindex="0" pRipple>
+                    <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+                    <span class="layout-menuitem-text" *ngIf="shouldDisplayItem(item)">{{item.label}}</span>
+                    <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
+                </a>
+                <ul *ngIf="item.items && item.visible !== false" [@children]="submenuAnimation">
+                    <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
+                        <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
+                    </ng-template>
+                </ul>
 		</ng-container>
     `,
     animations: [

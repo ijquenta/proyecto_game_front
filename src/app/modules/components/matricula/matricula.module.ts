@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatriculaRoutingModule } from './matricula-routing.module';
 
 @NgModule({
-    declarations: [],
+    declarations: [
+  ],
     imports: [
         CommonModule,
         MatriculaRoutingModule

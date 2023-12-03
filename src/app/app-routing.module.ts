@@ -45,7 +45,8 @@ const routes: Routes = [
                     { path: 'material', loadChildren: () => import('./modules/components/material/material.module').then(m => m.MaterialModule), canActivate: [ AuthGuard ] },
                     { path: 'matricula', loadChildren: () => import('./modules/components/matricula/matricula.module').then(m => m.MatriculaModule), canActivate: [ AuthGuard ]},
                     { path: 'nivel', loadChildren: () => import('./modules/components/nivel/nivel.module').then(m => m.NivelModule), canActivate: [ AuthGuard ]},
-                    { path: 'curso', loadChildren: () => import('./modules/components/curso/curso.module').then(m => m.CursoModule), canActivate: [ AuthGuard ]}
+                    { path: 'curso', loadChildren: () => import('./modules/components/curso/curso.module').then(m => m.CursoModule), canActivate: [ AuthGuard ]},
+                    { path: 'mensaje', loadChildren: () => import('./modules/components/mensaje/mensaje.module').then(m => m.MensajeModule), canActivate: [ AuthGuard ]}
 
                     // { path: 'login', loadChildren:() => import('./release/components/auth/login/login.module').then(m => m.LoginModule)},
                 ]

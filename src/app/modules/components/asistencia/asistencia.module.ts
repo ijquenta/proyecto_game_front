@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { AsistenciaRoutingModule } from './asistencia-routing.module';
 
-
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     CommonModule,
     AsistenciaRoutingModule

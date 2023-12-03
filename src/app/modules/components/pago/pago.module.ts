@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PagoRoutingModule } from './pago-routing.module';
 
 @NgModule({
-    declarations: [],
+    declarations: [
+  ],
     imports: [
         CommonModule,
         PagoRoutingModule

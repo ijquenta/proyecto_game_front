@@ -55,7 +55,7 @@ export class AppTopBarComponent {
         this.modelOption = [
             {
                 label: 'Perfil',
-                icon: 'pi pi-fw pi-sort-down',
+                icon: 'pi pi-fw pi-user',
 
                 //             icon: 'pi pi-fw pi-pencil',
                 //             routerLink: ['/usuario/crud']
@@ -181,11 +181,11 @@ export class AppTopBarComponent {
                 icon: 'pi pi-fw pi-power-off',
                 command: () => this.logout()
             },
-            {
-                label: 'IsValidToken',
-                icon: 'pi pi-fw pi-users',
-                command: () => this.isValidToken()
-            }
+            // {
+            //     label: 'IsValidToken',
+            //     icon: 'pi pi-fw pi-users',
+            //     command: () => this.isValidToken()
+            // }
         ];
     }
 

@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
     imports: [RouterModule.forChild([
         { path: 'crud', loadChildren: () => import('./materia-crud/materia-crud.module').then(m => m.MateriaCrudModule) },
         { path: 'reporte', loadChildren: () => import('./materia-reporte/materia-reporte.module').then(m => m.MateriaReporteModule) },
+        { path: 'estudiante', loadChildren: () => import('./materia-estudiante/materia-estudiante.module').then(m => m.MateriaEstudianteModule) },
+        { path: 'docente', loadChildren: () => import('./materia-docente/materia-docente.module').then(m => m.MateriaDocenteModule) },
         // { path: 'timeline', loadChildren: () => import('./timeline/timelinedemo.module').then(m => m.TimelineDemoModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],
