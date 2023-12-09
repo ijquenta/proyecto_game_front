@@ -19,6 +19,11 @@ export class EstudianteService {
         return this.http.post(`${API_URL}/gestionarPersona`, criterio);
     }
 
+    obtenerMateriasInscritas(criterio: any){
+        return this.http.post(`${API_URL}/obtenerMateriasInscritas`, criterio);
+    }
+
+
     registrarPersona(criterio: any){
         console.log("Datos a registarPersona: ", criterio);
         return this.http.post(`${API_URL}/registrarPersona`, criterio);

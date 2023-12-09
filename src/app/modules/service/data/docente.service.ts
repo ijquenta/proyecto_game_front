@@ -14,6 +14,9 @@ export class DocenteService {
 
     constructor(private http: HttpClient, private tokenService: TokenService) { }
 
+    obtenerMateriasAsignadas(criterio: any){
+        return this.http.post(`${API_URL}/obtenerMateriasAsignadas`, criterio);
+    }
 
     gestionarPersona(criterio: any){
         return this.http.post(`${API_URL}/gestionarPersona`, criterio);

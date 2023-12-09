@@ -9,8 +9,8 @@
 
                 <div class="text-center mb-5">
                     <!-- <img src="assets/release/images/login/avatar.png" alt="Image" height="50" class="mb-3"> -->
-                    <div class="text-900 text-3xl font-medium mb-3">Registrar</div>
-                    <span class="text-600 font-medium">Sistema de Seguimiento y Gestión Academico</span>
+                    <div class="text-900 text-3xl font-medium mb-3">Registrar usuario</div>
+                    <!-- <span class="text-600 font-medium">Sistema de Seguimiento y Gestión Academico</span> -->
                     <!-- <span class="text-600 font-medium">IBCI</span> -->
                 </div>
                 <!-- <div *ngIf="status === 'failed'">
@@ -18,7 +18,7 @@
             Las credenciales son invalidas!
             </p>
           </div> -->
-                <div>
+                <div #miDiv >
                     <label for="name1" class="block text-900 text-xl font-medium mb-2">Usuario</label>
                     <input id="name1" type="text" placeholder="Ingrese nombre " pInputText
                         class="w-full md:w-30rem mb-5" style="padding:1rem" [(ngModel)]="usuario.usuname">
@@ -26,15 +26,16 @@
                     <input id="email1" type="text" placeholder="Ingrese un correo electronico" pInputText
                         class="w-full md:w-30rem mb-5" style="padding:1rem" [(ngModel)]="usuario.usuemail">
                     <label for="tipoRol" class="block text-900 text-xl font-medium mb-2">Rol</label>
-                    <div class="card col-12 flex justify-content-center">
-                        <p-dropdown [options]="TipoRol" [(ngModel)]="TipoRolSeleccionado" appendTo="body"
-                            optionLabel="rolnombre" [showClear]="true" placeholder="Seleccionar rol"></p-dropdown>
+                    <div class="flex justify-content-center" >
+                        <p-dropdown [options]="TipoRol" [(ngModel)]="TipoRolSeleccionado" [appendTo]="miDiv"
+                            optionLabel="rolnombre" placeholder="Seleccionar rol" ></p-dropdown>
                     </div>
+
                     <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
                     <p-password id="password2" [(ngModel)]="usuario.usupassword" placeholder="Ingrese una contraseña"
                         [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem">
                         <ng-template pTemplate="header">
-                            <h6>Ingresar constraseña</h6>
+                            <!-- <h6>Ingresar constraseña</h6> -->
                         </ng-template>
                         <ng-template pTemplate="footer">
                             <p-divider></p-divider>
@@ -47,12 +48,12 @@
                             </ul>
                         </ng-template>
                     </p-password>
-                    <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
+                    <label for="password1" class="block text-900 font-medium text-xl mb-2">Confirmar contraseña</label>
                     <p-password id="password1" [(ngModel)]="usuario.usupasswordhash"
                         placeholder="Ingrese una contraseña" [toggleMask]="true" styleClass="mb-5"
                         inputStyleClass="w-full p-3 md:w-30rem"></p-password>
                     <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                        <p-button label="Small" icon="pi pi-check" label="Ingresar Cuenta" styleClass="p-button-sm"
+                        <p-button label="Small" icon="pi pi-check" label="Ingresar cuenta" styleClass="p-button-sm"
                             [routerLink]="['/login']"></p-button>
                     </div>
                     <button pButton pRipple label="Registrar" class="w-full p-3 text-xl"
@@ -64,14 +65,13 @@
 </div>
 
 <!-- [closable]="false" -->
-<p-dialog [(visible)]="personaDialog" [style]="{width: '70%'}" header="Registrar" [modal]="false" class="p-fluid"
+<p-dialog [(visible)]="personaDialog" [style]="{width: '40%'}" header="Registrar" [modal]="false" class="p-fluid"
     [closable]="false">
-
     <ng-template pTemplate="content">
-        <div class="card">
-            <p-toast></p-toast>
-            <h5>Formulario de Registro</h5>
-            <p>Debera ingresar todos los campos requeridos para realizar el registro <mark>correctamente</mark>.</p>
+        <!-- <div class="card"> -->
+            <!-- <p-toast></p-toast> -->
+            <!-- <h5>Formulario de Registro</h5>
+            <p>Debera ingresar todos los campos requeridos para realizar el registro <mark>correctamente</mark>.</p> -->
             <div class="grid p-fluid mt-3">
                 <div class="field col-12 md:col-4">
                     <span class="p-float-label">
@@ -116,11 +116,11 @@
                     </span>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <div class="grid p-fluid my-3 px-3">
+        <!-- <div class="grid p-fluid my-3 px-3">
             <div class="col-6 md:col-offset-4 md:col-2">
                 <button pButton pRipple label="Siguiente" icon="pi pi-check" class="p-button-rounded p-button"
                     (click)="enviarFormulario()"></button>
@@ -128,8 +128,12 @@
             <div class="col-6 md:col-offset-0 md:col-1">
                 <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"
                     [routerLink]="['/login']"></button>
-                <!-- <button pButton pRipple label="Sign In" class="w-full p-3 text-xl" [routerLink]="['/principal']"></button> -->
             </div>
-        </div>
+        </div> -->
+                <!-- <button pButton pRipple label="Sign In" class="w-full p-3 text-xl" [routerLink]="['/principal']"></button> -->
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Cancelar"
+            [routerLink]="['/login']"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Siguiente"
+            (click)="enviarFormulario()"></button>
     </ng-template>
 </p-dialog>

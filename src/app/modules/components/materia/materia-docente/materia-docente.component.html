@@ -1,1 +1,251 @@
-<p>materia-docente works!</p>
+<!-- <p>materia-estudiante works!</p> -->
+<!-- <ng-container *hasPermision="admPlanilla" > -->
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
+                <!-- <h4>Reporte de Materias</h4> -->
+                <!-- <p>This is your empty page template to start building beautiful applications.</p> -->
+
+
+
+
+    <!-- <ng-container> -->
+        <!-- <div class="flex justify-content-center my-2">
+            <p class="text-xl md:text-xl font-bold">Materias</p>
+        </div> -->
+
+        <div class="flex flex-column p-1 md:p-3">
+            <!-- <div class="grid px-2 md:px-3 border-1 m-1 border-round"> -->
+                <!-- <div class="md:col-6 col-12">
+                    <p class="font-bold text-lg">Busqueda de persona (Docente):</p>
+                    <div class="p-fluid grid pt-2">
+                        <div class="col-8">
+                            <span class="p-float-label">
+                                <div class="p-inputgroup">
+                                    <span class="p-float-label">
+                                        <input pInputText="pInputText" id="username" [(ngModel)]="nomCi" />
+                                        <label htmlFor="username">Introduzca Nombre o CI</label>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <p-button (click)="buscar()" label="Buscar" styleClass="p-button-rounded"
+                                icon="pi pi-search"></p-button>
+                        </div>
+                        <div class="col-1">
+                            <button (click)="init()" pButton="pButton" pRipple="pRipple" type="button"
+                                icon="pi pi-filter-slash" class="p-button p-button-outlined p-button-danger"
+                                pTooltip="Limpiar busqueda" tooltipPosition="top"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-offset-6"></div>
+                <div class="md:col-6 col-12 px-5" *ngFor="let docentedatos of docentedatos">
+                    <p class="font-bold text-lg my-1">Datos Personales:</p>
+                    <p class="pl-3 text-base my-1">
+                        <span class="font-bold">Nombre Completo:</span>
+                        {{docentedatos.nomCompleto}}
+                    </p>
+                    <p class="pl-3 text-base my-1">
+                        <span class="font-bold">CI:</span>
+                        {{docentedatos.ci}}
+                        {{docentedatos.ciExpedido}}
+                    </p>
+                </div>
+                <div class="md:col-6 col-12 px-5" *ngIf="docentedatos.length > 0">
+                    <div class="grid p-fluid">
+                        <div class="col-12">
+                            <p class="font-bold text-lg my-1">Opciones:</p>
+                        </div>
+                        <p-button icon="pi pi-plus" label="Registro Nuevo" styleClass="p-button-rounded p-button-success"
+                            (click)="NuevoRegistro()"></p-button>
+                    </div>
+                </div> -->
+                <!-- <p>Hola, {{usuario?.pernomcompleto}}</p> -->
+                <div class="col-12 py-0" *ngIf="verBeneficiosSocialesClicked">
+                    <!-- <reintegro-monto-reintegro [persona]="personaSeleccionada"></reintegro-monto-reintegro> -->
+                    <p-table [value]="inscripciones" responsiveLayout="scroll" class="m-2" [loading]="loading"
+                        styleClass="p-datatable-gridlines">
+                        <ng-template pTemplate="caption">
+                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                <!-- <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button> -->
+                                <h5 class="m-0">Materias</h5>
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                    <!-- <i class="pi pi-search"></i> -->
+                                    <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
+                                </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <!-- <th> Nro </th> -->
+                                <!-- <th> Matricula </th> -->
+                                <!-- <th> Cod. </th> -->
+                                <!-- <th> Nombre Completo </th> -->
+                                <!-- <th> Carnet de Identidad </th> -->
+                                <th> Curso </th>
+                                <th> Materia </th>
+                                <!-- <th> Fecha de conclusión</th> -->
+                                <!-- <th> Motivo </th> -->
+                                <!-- <th> Monto de Indemnización </th> -->
+                                <!-- <th> Fecha Mod. </th> -->
+                                <!-- <th> Usuario Mod. </th> -->
+                                <th> Opciones </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-datoscalculo>
+                            <tr>
+                                <!-- <td> {{datoscalculo.insid}} </td> -->
+                                <!-- <td> {{datoscalculo.matrgestion}} </td> -->
+                                <!-- <td> {{datoscalculo.codDocente}} </td> -->
+                                <!-- <td> {{datoscalculo.nomCompleto}} </td> -->
+                                <!-- <td> {{datoscalculo.nroCi}} </td> -->
+                                <td> {{datoscalculo.curnombre}} </td>
+                                <td> {{ datoscalculo.matnombre}} </td>
+                                <!-- <td> {{ datoscalculo.fecConclusion | date:'dd/MM/yyyy' }} </td>
+                                <td> {{datoscalculo.motivo}} </td>
+                                <td> {{datoscalculo.totalTindemnizacion}} </td> -->
+                                <!-- <td> {{ datoscalculo.fecMod | date:'dd/MM/yyyy' }} </td> -->
+                                <!-- <td> {{datoscalculo.usuMod}}</td> -->
+                                <td>
+                                    <!-- <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"
+                                        class="p-button-rounded p-button m-1" (click)="ModificarRegistro(datoscalculo)">
+                                    </button> -->
+                                    <!-- <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-trash"
+                                        class="p-button-rounded p-button-danger m-1"
+                                        (click)="EliminarRegistro(datoscalculo)"> </button> -->
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-eye"
+                                        class="p-button-rounded p-button-info m-1"
+                                        (click)="listarBeneficiosFacultad(datoscalculo)" *ngIf="!verBeneficiosFacultadClicked"> </button>
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-eye-slash"
+                                        class="p-button-rounded p-button-success m-1" (click)="ocultarGrilla(false)" *ngIf="verBeneficiosFacultadClicked">
+                                    </button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="col-12 py-0" *ngIf="verBeneficiosFacultadClicked">
+                    <!-- <div class="col-12 py-0" *ngIf="verBeneficiosFacultadClicked && docentedatos.length > 0"> -->
+                    <!-- <reintegro-monto-reintegro [persona]="personaSeleccionada"></reintegro-monto-reintegro> -->
+                    <p-table [value]="listabeneficios" responsiveLayout="scroll" class="m-2" [loading]="loading"
+                        styleClass="p-datatable-gridlines">
+                        <ng-template pTemplate="caption">
+                            <div class="flex flex-column">
+                                <h3 class="m-0">Lista de Beneficios Sociales Facultades</h3>
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th> Nro Liquidación </th>
+                                <th> Facultad </th>
+                                <th> Gestión </th>
+                                <th> Mes </th>
+                                <th> Cod. </th>
+                                <th> Nombre Completo </th>
+                                <th> Carnet de Identidad </th>
+                                <th> Nùmero Dictamen </th>
+                                <th> Opciones </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-datoscalculo2>
+                            <tr>
+                                <td> {{datoscalculo2.nroLiquidacion}} </td>
+                                <td> {{datoscalculo2.apeproFac}} </td>
+                                <td> {{datoscalculo2.ano}} </td>
+                                <td> {{datoscalculo2.mes}} </td>
+                                <td> {{datoscalculo2.codDocente}} </td>
+                                <td> {{datoscalculo2.nomCompleto}} </td>
+                                <td> {{datoscalculo2.nroCi}} </td>
+                                <td> {{datoscalculo2.nroDictamen}} </td>
+                                <td>
+                                    <!-- <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"
+                                        class="p-button-rounded p-button m-1" (click)="ModificarRegistro(datoscalculo)">
+                                    </button>                                 -->
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-calendar"
+                                        class="p-button-rounded p-button-help m-1" pTooltip="Mostrar Vacaciones" tooltipPosition="top" (click)="showTipo(datoscalculo2, 'V')">
+                                    </button>
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-money-bill"
+                                        class="p-button-rounded p-button-warning m-1" pTooltip="Mostrar Aguinaldo" tooltipPosition="top" (click)="showTipo(datoscalculo2, 'A')">
+                                    </button>
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-eye"
+                                        class="p-button-rounded p-button-info m-1"
+                                        (click)="listarBeneficiosDesignacion(datoscalculo2)" *ngIf="!verBeneficiosDesignacionClicked"> </button>
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-eye-slash"
+                                        class="p-button-rounded p-button-success m-1" (click)="verGrilla(false)" *ngIf="verBeneficiosDesignacionClicked">
+                                    </button>
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="col-12 py-0" *ngIf="verBeneficiosDesignacionClicked && docentedatos.length > 0">
+                    <p-table [value]="listabeneficios2" responsiveLayout="scroll" class="m-2" [loading]="loading"
+                        styleClass="p-datatable-gridlines">
+                        <ng-template pTemplate="caption">
+                            <div class="flex flex-column">
+                                <h3 class="m-0">Lista de Beneficios Sociales Designacion</h3>
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th> Designacion </th>
+                                <th> Carrera </th>
+                                <th> CH </th>
+                                <th> Cargo </th>
+                                <th> Categoria </th>
+                                <th> Item </th>
+                                <th> Monto Indemnizacion </th>
+                                <th> Opciones </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-datoscalculo3>
+                            <tr>
+                                <td> {{datoscalculo3.designacion}} </td>
+                                <td> {{datoscalculo3.carrera}} </td>
+                                <td> {{datoscalculo3.ch}} </td>
+                                <td> {{datoscalculo3.cargo}} </td>
+                                <td> {{datoscalculo3.categoria}} </td>
+                                <td> {{datoscalculo3.item}} </td>
+                                <td> {{datoscalculo3.montoIndemnizacion}} </td>
+                                <td>
+                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-money-bill"
+                                        class="p-button-rounded p-button-secondary m-1" pTooltip="Mostrar Deducciones" tooltipPosition="top"
+                                        (click)="showDeduccion(datoscalculo3)">
+                                    </button>
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        <!-- </div> -->
+
+
+    <!-- </ng-container> -->
+</div>
+</div>
+</div>
+
+    <p-dialog [(visible)]="displayDelete" [modal]="true" [breakpoints]="{'960px': '85vw', '640px': '100vw'}" [style]="{width: '30vw'}">
+        <ng-template pTemplate="header">
+            <h3>Eliminacion de Registro Beneficio Social</h3>
+        </ng-template>
+        <div class="p-fluid grid p-3 mt-2 text-center justify-content-center align-items-center ">
+            <div class="p-fluid grid ">
+                    <span class="p-float-label">
+                        <textarea id="float-input" pInputTextarea [(ngModel)]="obsEliminar"></textarea>
+                        <label for="float-input">Observaciones</label>
+                    </span>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button (click)="confirmEliminacionRegistro()" label="Eliminar Registro" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-dialog>
+

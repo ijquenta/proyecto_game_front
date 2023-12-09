@@ -1,0 +1,4 @@
+.full-width-dropdown {
+    width: 100% !important; /* Ajusta el ancho al 100% del contenedor */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}

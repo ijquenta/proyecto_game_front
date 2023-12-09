@@ -18,6 +18,7 @@ import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/a
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css'],
   styles: [`
     :host ::ng-deep .pi-eye,
     :host ::ng-deep .pi-eye-slash {
@@ -87,7 +88,7 @@ export class RegisterComponent implements OnInit {
     private http: HttpClient
   ) { }
   ngOnInit() {
-    console.log('ngOnInit-->');
+    // console.log('ngOnInit-->');
     this.usuario = new Usuario();
     this.llenarTipoCombo();
     this.nuevaPersona();
@@ -106,12 +107,14 @@ export class RegisterComponent implements OnInit {
 
         this.personaService.getTipoDocumento().subscribe((data: any) => {
             this.TipoDocumento = data;
-            console.log('Documento: ', this.TipoDocumento);
+            // console.log('Documento: ', this.TipoDocumento);
         });
         this.personaService.getRoles().subscribe((data: any) => {
-            this.TipoRol = data;
-            console.log('Rol: ', this.TipoRol);
+            // Filtrar los roles que no son "Secretaria" ni "Administrador"
+            this.TipoRol = data.filter((rol: any) => rol.rolnombre !== 'Secretaria' && rol.rolnombre !== 'Administrador');
+            // console.log('Rol: ', this.TipoRol);
         });
+
 
     }
     enviarFormulario() {
@@ -128,19 +131,19 @@ export class RegisterComponent implements OnInit {
             console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.registrarPersona(this.personaRegistro).subscribe(
                 (data : any) =>{
-                    console.log("Registrar Persona: ", data);
+                    // console.log("Registrar Persona: ", data);
                     this.personaDialog = false;
                     this.usuario = new Usuario();
                     this.usuario.perid = data['valor'];
-                    console.log("idpersona: ", this.usuario);
+                    // console.log("idpersona: ", this.usuario);
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registro correctamente en el sistema.', life: 3000 });
                     // this.ListarPersonas();
-                }),
+                },
                 (error: any)=>{
                     console.log("Error: ", error);
-                    this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en el registro de persona nueva, porfavor comunicarse con soporte.', life: 3000 });
-            }
+                    this.messageService.add({ severity: 'Error', summary: 'El usuario ya existe!', detail: 'Ocurrio un error en el registro de usuario nuevo, intente con otro usuario.', life: 3000 });
+                });
         }
 
         doRegister() {
@@ -176,10 +179,10 @@ export class RegisterComponent implements OnInit {
                     this.usuario.usuusureg = 'ijquenta';
                     this.usuario.usudescripcion = 'Registro login';
                     this.usuario.usuestado = 1;
-                    console.log("usuarioRegistro: ", this.usuario);
+                    // console.log("usuarioRegistro: ", this.usuario);
                     this.usuarioService.gestionarUsuario(this.usuario).subscribe(
                         (data : any) =>{
-                            console.log("Registrar Usuario: ", data);
+                            // console.log("Registrar Usuario: ", data);
                             this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El Usuario se registro correctamente en el sistema.', life: 3000 });
                             this.status = 'success';
                             // this.loading = false;
