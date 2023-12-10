@@ -2,14 +2,12 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
-
             <ng-container>
                 <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
                     data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
                     styleClass="p-datatable-gridlines">
                     <ng-template pTemplate="caption">
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <!-- <button pButton pRipple label="Nueva inscripción" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button> -->
                             <h5 class="m-0">Lista de notas</h5>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <!-- <i class="pi pi-search"></i> -->
@@ -23,7 +21,6 @@
                             <th> Nro </th>
                             <th> Curso </th>
                             <th> Materia</th>
-                            <!-- <th> Opciones </th> -->
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-notaMateria>
@@ -31,16 +28,6 @@
                             <td> {{notaMateria.insid}} </td>
                             <td> {{notaMateria.curnombre}} </td>
                             <td> {{notaMateria.matnombre}} </td>
-                            <!-- <td>
-                                <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-plus-circle"
-                                    pTooltip="Registrar Nuevo Finiquito" tooltipPosition="top"
-                                    class="p-button-rounded p-button-success m-1" label="Finiquito"
-                                    (click)="nuevoFiniquito(datoscalculo)"> </button>
-                                <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-trash"
-                                    pTooltip="Eliminar" tooltipPosition="top"
-                                    class="p-button-rounded p-button-danger m-1"
-                                    (click)="eliminarBeneficioSocial(datoscalculo)"> </button>
-                            </td> -->
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
@@ -67,7 +54,6 @@
                                 <th> Nota 2 </th>
                                 <th> Nota 3 </th>
                                 <th> Nota final </th>
-                                <!-- <th> Opciones </th> -->
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-nota>
@@ -75,18 +61,10 @@
                                 <td> {{nota.notid}} </td>
                                 <td> {{nota.curnombre}} </td>
                                 <td> {{nota.matnombre}} </td>
-                                <td> <p-chip> <div class="p-1">{{nota.not1}} </div> </p-chip> </td>
-                                <td> <p-chip> <div class="p-1">{{nota.not2}} </div> </p-chip> </td>
-                                <td> <p-chip> <div class="p-1">{{nota.not3}} </div> </p-chip> </td>
+                                <td> <p-chip> <div class="p-1">{{nota.not1}} pts </div> </p-chip> </td>
+                                <td> <p-chip> <div class="p-1">{{nota.not2}} pts </div> </p-chip> </td>
+                                <td> <p-chip> <div class="p-1">{{nota.not3}} pts </div> </p-chip> </td>
                                 <td> <p-chip> <div class="p-1">{{nota.notfinal}} </div> </p-chip> </td>
-
-                                <!-- <td>
-                                    <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-money-bill"
-                                        class="p-button-rounded p-button-secondary m-1" pTooltip="Mostrar Deducciones" tooltipPosition="top"
-                                        (click)="showDeduccion(datoscalculo3)">
-                                    </button>
-                                </td> -->
-
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">

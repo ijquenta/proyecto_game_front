@@ -16,13 +16,10 @@ import { Usuario } from 'src/app/modules/models/usuario';
   styleUrls: ['./nota-estudiante.component.scss']
 })
 
-// export class NotaEstudianteComponent implements OnInit, OnDestroy {
 export class NotaEstudianteComponent implements OnInit {
 
   @ViewChild('dtexc') dtexc: Table | undefined;
   @ViewChild('autocomplete') autocomplete:AutoComplete | undefined;
-
-// ------------- Datos Beneficio Social -------------
 
   criterio: any = '';
   loading: boolean = false;
@@ -44,7 +41,6 @@ export class NotaEstudianteComponent implements OnInit {
     private authService: AuthService
     ) {
     }
-
     ngOnInit(): void {
         this.verMateriaClicked = true;
         this.authService.usuario$.subscribe((user => {
@@ -64,9 +60,6 @@ export class NotaEstudianteComponent implements OnInit {
                         this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
                     }
                 );
-
-
-
             }
         }));
     }
@@ -83,8 +76,6 @@ export class NotaEstudianteComponent implements OnInit {
         this.listarNotaEstudianteMateria = result as Nota[];
         this.loading2 = false;
       this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
-    //   this.listarBenSoc();
-
     },
     error => {
       this.errors = error;
@@ -92,6 +83,4 @@ export class NotaEstudianteComponent implements OnInit {
       this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal!'});
     });
   }
-
 }
-

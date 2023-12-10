@@ -24,6 +24,7 @@ import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { NotaDocenteComponent } from './nota-docente.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { KnobModule } from 'primeng/knob';
 @NgModule({
     imports: [
         CommonModule,
@@ -46,8 +47,8 @@ import { TooltipModule } from 'primeng/tooltip';
         TagModule,
         ChipModule,
         CalendarModule,
-        TooltipModule
-
+        TooltipModule,
+        KnobModule
 
     ],
     declarations: [NotaDocenteComponent],

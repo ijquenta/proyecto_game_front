@@ -1,4 +1,5 @@
 export class Nota {
+    tipo: any;
 	notid: any;
 	insid: any;
 	not1: any;
