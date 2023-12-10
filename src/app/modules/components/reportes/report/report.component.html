@@ -1,22 +1,25 @@
-<div class="card" style="height: 100%;">
+<!-- <div class="card" style="height: 100%;"> -->
     <div class="card-container yellow-container overflow-hidden" style="height: 100%;">
-        <div class="relative bg-indigo-300 border-round border-1 border-indigo-300" style="height: 100%">
-            <div class="absolute top-0 left-0 px-4 py-1 w-full font-bold">
+        <div class="relative bg-gray-100 border-round border-1 border-gray-100" style="height: 100%">
+            <div class="absolute top-0 left-0 px-2 py-1 w-full font-bold">
                 <div class="flex justify-content-center">
-                    <button (click)="mas()" pButton pRipple type="button" icon="pi pi-plus" class="p-button-sm mx-1"></button>
-                    <button (click)="menos()" pButton pRipple type="button" icon="pi pi-minus" class="p-button-sm mx-1"></button>
-                    <button (click)="downloadPdf()" pButton pRipple type="button" label="Descargar" icon="pi pi-download" class="p-button-sm mx-1"></button>
+                    <!-- <button  pButton pRipple type="button" icon="pi pi-plus" class="p-button-sm mx-1"></button> -->
+                    <button pButton pRipple icon="pi pi-plus" (click)="mas()" class="p-button-rounded p-button mr-2"></button>
+                    <button pButton pRipple icon="pi pi-minus" (click)="menos()" class="p-button-rounded p-button mr-2"></button>
+                    <button pButton pRipple icon="pi pi-file-pdf"  label="Descargar" (click)="downloadPdf()" class="p-button-rounded p-button-danger mr-2"></button>
+                    <!-- <button  pButton pRipple type="button" icon="pi pi-minus" class="p-button-sm mx-1"></button> -->
+                    <!-- <button (click)="downloadPdf()" pButton pRipple type="button" label="Descargar" icon="pi pi-download" class="p-button-sm mx-1"></button> -->
                 </div>
             </div>
-            <div class="absolute overflow-auto surface-overlay mt-6 p-4 line-height-3" style="height: 90%; width: 100%;">
+            <div class="absolute overflow-auto surface-overlay mt-7 p-3" style="height: 90%; width: 100%;">
                 <div id="outerContainer">
                     <div class="pdf-container">
                       <pdf-viewer
                         [src]="reporteSRC"
-                        [original-size]="false"
+                        [original-size]="true"
                         [show-all]="true"
                         [render-text]="true"
-                        [fit-to-page]="false"
+                        [fit-to-page]="true"
                         [zoom]="zom"
                         [zoom-scale]="'page-width'"
                         [autoresize]="true"
@@ -28,4 +31,4 @@
             </div>
         </div>
     </div>
-</div>
+<!-- </div> -->

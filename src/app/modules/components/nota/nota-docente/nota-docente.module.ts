@@ -23,7 +23,7 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { NotaDocenteComponent } from './nota-docente.component';
-
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -45,7 +45,10 @@ import { NotaDocenteComponent } from './nota-docente.component';
         DialogModule,
         TagModule,
         ChipModule,
-        CalendarModule
+        CalendarModule,
+        TooltipModule
+
+
     ],
     declarations: [NotaDocenteComponent],
     providers: [UsuarioService, ReporteService, MateriaService]

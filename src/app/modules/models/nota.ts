@@ -10,5 +10,11 @@ export class Nota {
 	notusumod: any;
 	notfecmod: any;
 	notestado: any;
+    curid: any;
+    curnombre: any;
+    matid: any;
+    matnombre: any;
+    peridestudiante: any;
+    pernomcompleto: any;
 }
 
