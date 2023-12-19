@@ -1,4 +1,6 @@
 export class Pago {
+    tipo: any;
+
     pagid: any;
     pagdescripcion: any;
     pagestadodescripcion: any;
@@ -9,5 +11,13 @@ export class Pago {
     pagrusumod: any;
     pagrfecmod: any;
     pagestado: any;
+
+    insid: any ;
+    matrid: any ;
+    matrgestion: any ;
+    curmatid: any ;
+    curnombre: any ;
+    matnombre: any ;
+    peridestudiante: any ;
 }
 

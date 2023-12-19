@@ -19,5 +19,23 @@ export class PagoService {
         return this.http.get(`${API_URL}/listarPago`)
     }
 
+    listarPagoCurso(){
+        return this.http.get(`${API_URL}/listarPagoCurso`)
+    }
 
+    listarPagoEstudiante(data) {
+        return this.http.post(`${API_URL}/listarPagoEstudiante`, data);
+    }
+
+    listarPagoEstudianteMateria(data) {
+        return this.http.post(`${API_URL}/listarPagoEstudianteMateria`, data);
+    }
+
+    listarPagoEstudiantesMateria(data) {
+        return this.http.post(`${API_URL}/listarPagoEstudiantesMateria`, data);
+    }
+
+    gestionarPago(data) {
+        return this.http.post(`${API_URL}/gestionarPago`, data);
+    }
 }

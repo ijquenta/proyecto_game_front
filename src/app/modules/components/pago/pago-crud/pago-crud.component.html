@@ -1,192 +1,147 @@
-<p-toast></p-toast>
-<div class="grid">
-    <div class="col-12">
-        <div class="card">
+<!-- <ng-container *hasPermision="admPlanilla" > -->
+    <div class="grid">
+        <div class="col-12">
             <div class="card">
-                <p-table [value]="Pagos" [rows]="5" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
-                    [rowsPerPageOptions]="[5,10,20]">
-                    <ng-template pTemplate="caption">
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <button pButton pRipple label="Nuevo pago" icon="pi pi-plus"
-                                class="p-button-success mr-2" (click)="NuevoPersona()"></button>
-                            <h5 class="m-0">Administrar Pagos</h5>
-                            <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <i class="pi pi-search"></i>
-                                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
-                                    placeholder="Buscar..." class="w-full sm:w-auto" />
-                            </span>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="header" let-columns>
-                        <tr>
-                            <th>Código</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
-                            <th>Monto</th>
-                            <th>Registrado por</th>
-                            <th>Modificado por</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-persona>
-                        <tr>
-                            <td style="width:2%;">{{persona.pagid}}</td>
-                            <td style="width:15%;">{{persona.pagdescripcion}}</td>
-                            <td style="width:6%;"> {{persona.pagestadodescripcion}}</td>
-                            <td style="width:6%;"> {{persona.pagmonto}} </td>
-                            <td style="width:6%;"> {{persona.pagusureg}} {{persona.pagfecreg}}</td>
-                            <td style="width:6%;"> {{persona.pagusumod}} {{persona.pagfecmod}}</td>
-                            <ng-template #noRegistro>
-                                sin registrar
-                            </ng-template>
-                            <td>
-                                <div class="flex justify-content-center">
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-info mr-2"
-                                        (click)="modificarPersona(persona)"></button>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                                        (click)="confirmarEliminar(persona)"></button>
+                <ng-container>
+                    <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
+                        data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
+                        styleClass="p-datatable-gridlines">
+                        <ng-template pTemplate="caption">
+                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                <h5 class="m-0">Lista de materias</h5>
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                    <!-- <i class="pi pi-search"></i> -->
+                                    <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
+                                    <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button>
+                                </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th> Nro </th>
+                                <th> Curso </th>
+                                <th> Materia</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-notaMateria>
+                            <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
+                                <td> {{notaMateria.curmatid}} </td>
+                                <td> {{notaMateria.curnombre}} </td>
+                                <td> {{notaMateria.matnombre}} </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="9">No se encontraron cursos ni materias registrados.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div  *ngIf="verNotasClicked">
+                        <p-table [value]="listarNotaEstudianteMateria" responsiveLayout="scroll" class="m-2"
+                            [loading]="loading2" styleClass="p-datatable-gridlines">
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column">
+                                    <h5 class="m-0">Lista de pagos</h5>
                                 </div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </div>
 
-            <p-dialog [(visible)]="personaDialog" [style]="{width: '70%'}" header="Pago" [modal]="true"
-                class="p-fluid">
-
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <!-- <th> Nro </th> -->
+                                    <th> Curso </th>
+                                    <th> Materia </th>
+                                    <th> Estudiante </th>
+                                    <th> Nro pago </th>
+                                    <th> Descripción </th>
+                                    <th> Monto </th>
+                                    <th> Estado </th>
+                                    <th> Opciones </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-nota>
+                                <tr>
+                                    <!-- <td> {{nota.notid}} </td> -->
+                                    <td> {{nota.curnombre}} </td>
+                                    <td> {{nota.matnombre}} </td>
+                                    <td> {{nota.pernomcompleto}} </td>
+                                    <td>
+                                        <p-chip *ngIf="nota.pagid">
+                                            <div class="p-1"># {{nota.pagid}}</div>
+                                        </p-chip>
+                                    </td>
+                                    <td>
+                                        <p-chip *ngIf="nota.pagdescripcion">
+                                            <div class="p-1">{{nota.pagdescripcion}}</div>
+                                        </p-chip>
+                                    </td>
+                                    <td>
+                                        <p-chip *ngIf="nota.pagmonto">
+                                            <div class="p-1">{{nota.pagmonto}} Bs</div>
+                                        </p-chip>
+                                    </td>
+                                    <!-- <td> <p-chip> <div class="p-1">{{nota.pagestado}} </div> </p-chip> </td> -->
+                                    <td>
+                                        <p-tag [severity]="getSeverityColor(nota.pagestado)">
+                                            {{getText(nota.pagestado)}}
+                                        </p-tag>
+                                    </td>
+                                    <td>
+                                        <button *ngIf="!nota.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                                            icon="pi pi-plus" class="p-button-rounded p-button-success m-1"
+                                            pTooltip="Registrar pago" tooltipPosition="top" (click)="addNota(nota)">
+                                        </button>
+                                        <button *ngIf="nota.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                                            icon="pi pi-pencil" class="p-button-rounded p-button-info m-1"
+                                            pTooltip="Editar pago" tooltipPosition="top" (click)="updateNota(nota)">
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="9">No se encontraron estudiantes inscritos.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-container>
+                <p-dialog [(visible)]="pagoRegistroDialog"  header="Pago" [modal]="true" class="p-fluid">
                 <ng-template pTemplate="content">
                     <div class="grid p-fluid mt-3">
-                        <div class="field col-12 md:col-4">
+                        <div class="field col-12 md:col-6">
                             <span class="p-float-label">
-                                <input type="text" id="apellidoPaterno" pInputText [(ngModel)]="persona.perapepat">
-                                <label for="apellidoPaterno">Apellido Paterno</label>
+                                <input type="text" id="pagdescripcion" pInputText [(ngModel)]="pago.pagdescripcion">
+                                <label for="pagdescripcion"> Descripción </label>
                             </span>
                         </div>
-
-                        <div class="field col-12 md:col-4">
+                        <div class="field col-12 md:col-6">
                             <span class="p-float-label">
-                                <input type="text" id="apellidoMaterno" pInputText [(ngModel)]="persona.perapemat">
-                                <label for="apellidoMaterno">Apellido Materno</label>
+                                <p-calendar id="pagfecha"  appendTo="body" [(ngModel)]="pagofecha"></p-calendar>
+                                <label for="pagfecha"> Fecha </label>
                             </span>
                         </div>
-
-                        <div class="field col-12 md:col-4">
+                        <div class="field col-12 md:col-6">
                             <span class="p-float-label">
-                                <input type="text" id="nombres" pInputText [(ngModel)]="persona.pernombres">
-                                <label for="nombres">Nombres</label>
+                                <p-inputNumber inputId="inputnumber" appendTo="body" [(ngModel)]="pago.pagmonto"></p-inputNumber>
+                                <label for="inputnumber"> Monto </label>
                             </span>
                         </div>
-
-                        <div class="field col-12 md:col-4">
+                        <div class="field col-12 md:col-6">
                             <span class="p-float-label">
-                                <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoDocumento" [(ngModel)]="TipoDocumentoSeleccionado"
-                                    optionLabel="tipodocnombre"></p-dropdown>
-                                <label for="tipoDocumento">Tipo Documento</label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroDocumento" pInputText [(ngModel)]="persona.pernrodoc">
-                                <label for="numeroDocumento">Número Documento</label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy"
-                                    [(ngModel)]="persona.perfecnac"></p-calendar>
-                                <label for="fechaNacimiento">Fecha Nacimiento</label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroCelular" pInputText [(ngModel)]="persona.percelular">
-                                <label for="numeroCelular">Número de Celular</label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroTelefono" pInputText [(ngModel)]="persona.pertelefono">
-                                <label for="numeroTelefono">Número de Teléfono</label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="correoElectronico" pInputText [(ngModel)]="persona.peremail">
-                                <label for="correoElectronico">Correo Electrónico</label>
-                            </span>
-                        </div>
-
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoGenero" [(ngModel)]="TipoGeneroSeleccionado"
-                                    optionLabel="generonombre"></p-dropdown>
-                                <label for="tipoGenero">Tipo Género</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoPais" [autoDisplayFirst]="false"
-                                    (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais"
-                                    [(ngModel)]="TipoPaisSeleccionado" optionLabel="paisnombre"></p-dropdown>
-                                <label for="tipoPais">Pais</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoCiudad" [(ngModel)]="TipoCiudadSeleccionado"
-                                    optionLabel="ciudadnombre"></p-dropdown>
-                                <label for="tipoCiudad">Ciudad</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoEstadoCivil" [(ngModel)]="TipoEstadoCivilSeleccionado"
-                                    optionLabel="estadocivilnombre"></p-dropdown>
-                                <label for="tipoEstadoCivil">Estado Civil</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <textarea inputId="textarea" rows="1" cols="30" [(ngModel)]="persona.perdirec"
-                                    appendTo="body" pInputTextarea></textarea>
-                                <label for="textarea">Dirección de Domicilio</label>
+                                <p-dropdown id="tipoPago" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoPago" [(ngModel)]="tipoPagoSeleleccionado" optionLabel="pagestado"></p-dropdown>
+                                <label for="tipoPago"> Tipo Pago </label>
                             </span>
                         </div>
                     </div>
                 </ng-template>
-
                 <ng-template pTemplate="footer">
                     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                        (click)="ocultarDialog()"></button>
+                        (click)="hideDialog()"></button>
                     <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                        (click)="enviarFormulario()"></button>
+                        (click)="registrarNota()"></button>
                 </ng-template>
-            </p-dialog>
 
-
-            <p-dialog [(visible)]="eliminarPersonaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
-                <div class="flex align-items-center justify-content-center">
-                    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span *ngIf="persona">Esta seguro de eliminar este registro
-                        <b>{{persona.pernomcompleto}}</b>?</span>
-                </div>
-                <ng-template pTemplate="footer">
-                    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                        (click)="eliminarPersonaDialog = false"></button>
-                    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-                        (click)="eliminarPersona()"></button>
-                </ng-template>
             </p-dialog>
+            </div>
         </div>
     </div>

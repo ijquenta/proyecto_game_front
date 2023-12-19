@@ -27,6 +27,11 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { CalendarModule } from 'primeng/calendar';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { TooltipModule } from 'primeng/tooltip';
+
+
 
 @NgModule({
     imports: [
@@ -51,7 +56,11 @@ import { CalendarModule } from 'primeng/calendar';
         InputMaskModule,
         CascadeSelectModule,
         MultiSelectModule,
-        CalendarModule
+        CalendarModule,
+        TagModule,
+        ChipModule,
+        CalendarModule,
+        TooltipModule
     ],
     declarations: [PagoCrudComponent],
     providers: [UsuarioService, ReporteService, NotaService, PersonaService]

@@ -1,1 +1,97 @@
-<p>pago-estudiante works!</p>
+<!-- <ng-container *hasPermision="admPlanilla" > -->
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
+                <ng-container>
+                    <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
+                        data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
+                        styleClass="p-datatable-gridlines">
+                        <ng-template pTemplate="caption">
+                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                <h5 class="m-0">Lista de materias</h5>
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                    <!-- <i class="pi pi-search"></i> -->
+                                    <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
+                                    <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button>
+                                </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th> Nro </th>
+                                <th> Curso </th>
+                                <th> Materia</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-notaMateria>
+                            <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
+                                <td> {{notaMateria.insid}} </td>
+                                <td> {{notaMateria.curnombre}} </td>
+                                <td> {{notaMateria.matnombre}} </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="9">No se encontraron cursos ni materias registrados.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div  *ngIf="verNotasClicked">
+                        <p-table [value]="listarNotaEstudianteMateria" responsiveLayout="scroll" class="m-2"
+                            [loading]="loading2" styleClass="p-datatable-gridlines">
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column">
+                                    <h5 class="m-0">Lista de pagos</h5>
+                                </div>
+
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <!-- <th> Nro </th> -->
+                                    <th> Curso </th>
+                                    <th> Materia </th>
+                                    <th> Nro pago </th>
+                                    <th> Descripción </th>
+                                    <th> Monto </th>
+                                    <th> Estado </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-nota>
+                                <tr>
+                                    <!-- <td> {{nota.notid}} </td> -->
+                                    <td> {{nota.curnombre}} </td>
+                                    <td> {{nota.matnombre}} </td>
+                                    <td>
+                                        <p-chip *ngIf="nota.pagid">
+                                            <div class="p-1"># {{nota.pagid}}</div>
+                                        </p-chip>
+                                    </td>
+                                    <td>
+                                        <p-chip *ngIf="nota.pagdescripcion">
+                                            <div class="p-1">{{nota.pagdescripcion}}</div>
+                                        </p-chip>
+                                    </td>
+                                    <td>
+                                        <p-chip *ngIf="nota.pagmonto">
+                                            <div class="p-1">{{nota.pagmonto}} Bs</div>
+                                        </p-chip>
+                                    </td>
+                                    <!-- <td> <p-chip> <div class="p-1">{{nota.pagestado}} </div> </p-chip> </td> -->
+                                    <td>
+                                        <p-tag [severity]="getSeverityColor(nota.pagestado)">
+                                            {{getText(nota.pagestado)}}
+                                        </p-tag>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="9">No se encontraron notas registradas.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
