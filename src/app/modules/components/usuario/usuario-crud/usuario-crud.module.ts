@@ -28,9 +28,11 @@ import { PasswordModule } from 'primeng/password';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 // import { FileUploadModule } from 'primeng/fileupload';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
+import { DataViewModule } from 'primeng/dataview';
 
 @NgModule({
     imports: [
+        DataViewModule,
         CommonModule,
         CrudRoutingModule,
         TableModule,

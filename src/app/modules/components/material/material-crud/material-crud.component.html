@@ -1,6 +1,30 @@
 <p-toast></p-toast>
 <div class="grid">
     <div class="col-12">
+
+    <div class="card">
+
+        <p-fileUpload
+        name="demo[]"
+        url="https://www.primefaces.org/cdn/api/upload.php"
+        (onUpload)="onUpload($event)"
+        [multiple]="true"
+        accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        maxFileSize="5000000"
+      >
+        <ng-template pTemplate="content">
+          <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+          </ul>
+        </ng-template>
+      </p-fileUpload>
+    </div>
+</div>
+</div>
+
+
+<div class="grid">
+    <div class="col-12">
         <div class="card">
             <div class="card">
                 <p-table [value]="Materiales" [rows]="5" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"

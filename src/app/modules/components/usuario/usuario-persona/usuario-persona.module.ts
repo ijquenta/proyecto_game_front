@@ -15,22 +15,25 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { CheckboxModule } from 'primeng/checkbox';
 import { PasswordModule } from 'primeng/password';
-
-import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
-import { UsuarioPersonaComponent } from './usuario-persona.component';
-
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CalendarModule } from 'primeng/calendar';
-
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";
 import { CascadeSelectModule } from "primeng/cascadeselect";
 import { MultiSelectModule } from "primeng/multiselect";
+import { AvatarModule } from 'primeng/avatar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TooltipModule } from 'primeng/tooltip';
+import { SkeletonModule } from 'primeng/skeleton';
+
+import { UploadService } from 'src/app/modules/service/data/upload.service';
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
+
+import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
+import { UsuarioPersonaComponent } from './usuario-persona.component';
 
 @NgModule({
     imports: [
@@ -60,9 +63,13 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 		InputMaskModule,
 		CascadeSelectModule,
 		MultiSelectModule,
+        AvatarModule,
+        ProgressSpinnerModule,
+        TooltipModule,
+        SkeletonModule
     ],
     declarations: [UsuarioPersonaComponent],
-    providers: [UsuarioService, PersonaService]
+    providers: [UsuarioService, PersonaService, UploadService]
 })
 export class UsuarioPersonaModule { }
 

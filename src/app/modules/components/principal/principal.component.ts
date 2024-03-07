@@ -49,7 +49,7 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         this.loading = true;
         setTimeout(() => {
             this.loading = false;
-        }, 1000);
+        }, 100);
 
 
         this.authService.usuario$.subscribe((user => {

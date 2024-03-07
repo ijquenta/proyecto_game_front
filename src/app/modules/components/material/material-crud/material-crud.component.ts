@@ -16,11 +16,18 @@ import { Pago } from 'src/app/modules/models/pago';
 import { Material } from 'src/app/modules/models/material';
 import { MaterialService } from 'src/app/modules/service/data/material.service';
 
+interface UploadEvent {
+    originalEvent: Event;
+    files: File[];
+}
 @Component({
     templateUrl: './material-crud.component.html',
     providers: [MessageService],
 })
 export class MaterialCrudComponent implements OnInit {
+
+    uploadedFiles: any[] = [];
+
     Personas: Persona[] = [];
     Notas: Nota[] = [];
     Pagos: Pago[] = [];
@@ -76,7 +83,26 @@ export class MaterialCrudComponent implements OnInit {
             { label: 'Inactivo', value: 1 },
         ];
     }
+    onUpload(event:UploadEvent) {
+        for(let file of event.files) {
+            this.uploadedFiles.push(file);
+        }
 
+        console.log("Archivos: ", this.uploadedFiles)
+
+        this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+    }
+    getIconForFileType(fileType: string): string {
+        if (fileType.startsWith('application/pdf')) {
+          return 'assets/icons/pdf-icon.png'; // Ruta del ícono para PDF
+        } else if (fileType.startsWith('application/msword') || fileType.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+          return 'assets/icons/word-icon.png'; // Ruta del ícono para Word
+        } else if (fileType.startsWith('application/vnd.ms-excel') || fileType.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+          return 'assets/icons/excel-icon.png'; // Ruta del ícono para Excel
+        } else {
+          return 'assets/icons/default-icon.png'; // Ruta del ícono predeterminado para otros tipos de archivo
+        }
+      }
     LlenarTipoCombo() {
         this.personaService.getTipoCiudad().subscribe((data: any) => {
             this.TipoCiudad = data;

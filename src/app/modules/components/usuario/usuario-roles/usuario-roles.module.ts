@@ -7,7 +7,6 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
-import { FileUploadModule } from 'primeng/fileupload';
 import { RippleModule } from 'primeng/ripple';
 import { RatingModule } from 'primeng/rating';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,11 +16,10 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { UsuarioRolesRoutingModule } from './usuario-roles-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
+import { ChipModule } from 'primeng/chip';
 import { UsuarioRolesComponent } from './usuario-roles.component';
-
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+// import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 
 @NgModule({
@@ -35,7 +33,6 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
         ToolbarModule,
         DialogModule,
         FormsModule,
-        FileUploadModule,
         RippleModule,
         InputTextModule,
         InputTextareaModule,
@@ -43,7 +40,8 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
         RadioButtonModule,
         InputNumberModule,
         RatingModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        ChipModule
     ],
     declarations: [UsuarioRolesComponent],
     providers: [UsuarioService, RolService]

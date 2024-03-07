@@ -91,3 +91,41 @@ export class Persona {
     //     }
     // }
 }
+export class PersonaExpanded {
+    tipo?: number; // tipo de operación a realizar
+
+    perid?: number | null = null;
+    pernomcompleto?: string | null;
+    pernombres?: string | null;
+    perapepat?: string | null;
+    perapemat?: string | null;
+    pertipodoc?: number | null;;
+    tipodocnombre?: string | null;;
+    pernrodoc?: any | null;;
+    perfecnac?: any | null;;
+    pergenero?: number | null;;
+    generonombre?: string | null;;
+    perfoto?: any | null;;
+    perusureg?: string | null;
+    perobservacion?: string | null;
+    perfecreg?: Date = new Date();
+    perusumod?: string | null;
+    perfecmod?: Date = new Date();
+    perestado?: number | null;
+    datos: {
+        percod?: number | null;
+        perdirec?: string | null; // dirección
+        peremail?: string | null; // correo electronico
+        percelular?: string | null; // celular
+        pertelefono?: string | null; // telefono
+        perestcivil?: number | null; // id estado civil
+        estadocivilnombre?: string | null; // name estado civil
+        perpais?: number | null; // id pais
+        paisnombre?: string | null; // nombre del pais
+        perciudad?: number | null; // id pais
+        ciudadnombre?: string | null; // nombre de la ciudad
+    }[] = [];
+    usuid?: any | null;
+    usuname?: string | null;
+    usuemail?: string | null;
+  }

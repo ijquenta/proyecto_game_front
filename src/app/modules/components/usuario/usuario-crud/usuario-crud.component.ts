@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-
 // Services
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
 // Models
 import { Usuarios } from 'src/app/modules/models/usuarios';
 import { Usuario,  } from 'src/app/modules/models/usuario';
@@ -19,6 +17,8 @@ interface UploadEvent {
     originalEvent: Event;
     files: FileWithUrl[];
 }
+
+
 @Component({
     templateUrl: './usuario-crud.component.html',
     providers: [MessageService],
@@ -75,8 +75,8 @@ export class UsuarioCrudComponent implements OnInit {
 
 
 
-
-
+    layout: string = 'list';
+    customers!: any[];
     constructor(
                 // private productService: ProductService,
                 private messageService: MessageService,
@@ -147,11 +147,11 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.listaUsuario().subscribe(
             (result: any) => {
                 this.usuarios = result;
-
+                this.loading = false;
                 // console.log("Lista Usuarios", this.usuarios)
-                setTimeout(() => {
-                    this.loading = false;
-                  }, 1000);
+                // setTimeout(() => {
+
+                //   }, 1000);
                 // console.log("spinner: ", this.loading);
 
             }

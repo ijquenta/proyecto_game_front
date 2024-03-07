@@ -1,156 +1,130 @@
+
 <div class="grid">
+    <div *ngIf="loading">
+        <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
+            animationDuration=".5s"></p-progressSpinner>
+    </div>
+    <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
-            <p-toast></p-toast>
-            <!-- <h3>Roles de Usuario</h3>
-            <p>Administración de los Roles del Sistema: Administrativos, Docentes, Estudiantes</p>
-            <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Nuevo Rol" icon="pi pi-plus" class="p-button-success mr-2" (click)="NuevoRol()"></button>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="right">
-                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Lista de Usuarios" styleClass="p-button-raised p-button-purple-200"></p-button>
-                </ng-template>
 
-            </p-toolbar> -->
-
-            <div class="card ">
-                <p-table [value]="roles" [rows]="5" [tableStyle]="{'min-width': '20rem'}" [paginator]="true"
-                    [rowsPerPageOptions]="[5,10,20]">
-                    <ng-template pTemplate="caption">
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <button pButton pRipple label="Nuevo Rol" icon="pi pi-plus" class="p-button-success mr-2"
-                                (click)="NuevoRol()"></button>
-                            <h5 class="m-0">Administrar Roles</h5>
-                            <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <!-- <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."  class="w-full sm:w-auto"/> -->
-                            </span>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="header" let-columns>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nombre del Rol</th>
-                            <th>Descripción del Rol</th>
-                            <th>Registro por</th>
-                            <th>Modificado por</th>
-                            <!-- <th>Estado</th> -->
-                            <th>Opciones</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-rol>
-                        <tr>
-                            <td>{{rol.rolid}}</td>
-                            <td>{{rol.rolnombre}}</td>
-                            <td>{{rol.roldescripcion}}</td>
-                            <td>{{rol.rolusureg}}<br>{{rol.rolfecreg | date:'dd/MM/yyyy HH:mm:ss'}}</td>
-                            <td>{{rol.rolusumod}}<br>{{rol.rolfecmod | date:'dd/MM/yyyy HH:mm:ss'}}</td>
-                            <!-- <td>
-                            <p-tag [value]="obtenerDescripcion(rol.rolestado)" [severity]="obtenerSeverity(rol.rolestado)" [rounded]="true"></p-tag>
-                        </td>  -->
-                            <td>
-                                <div class="flex justify-content-center">
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-info mr-2"
-                                        (click)="modificarRol(rol)"></button>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                                        (click)="eliminarRol(rol)"></button>
-                                </div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Administrar</span> <span class="text-blue-600"> Roles</span>
             </div>
-            <p-dialog [(visible)]="roldialog" [style]="{width: '450px'}" header="Registro Rol" [modal]="true"
-                class="p-fluid">
-                <ng-template pTemplate="content">
-                    <div class="field">
-                        <label for="name">Nombre</label>
-                        <input type="text" pInputText id="name" [(ngModel)]="rol.rolnombre" required autofocus
-                            [ngClass]="{'ng-invalid ng-dirty': submitted && (!rol.rolnombre || !rol.rolnombre.trim())}" />
-                        <small class="ng-dirty ng-invalid"
-                            *ngIf="submitted && (!rol.rolnombre || !rol.rolnombre.trim())">
-                            El nombre de rol es requerido y no puede estar vacío.
-                        </small>
-                    </div>
-                    <div class="field">
-                        <label for="description">Descripción</label>
-                        <textarea id="description" pInputTextarea [(ngModel)]="rol.roldescripcion" required rows="3"
-                            cols="20"
-                            [ngClass]="{'ng-invalid ng-dirty': submitted && (!rol.roldescripcion || !rol.roldescripcion.trim())}"></textarea>
-                        <small class="ng-dirty ng-invalid"
-                            *ngIf="submitted && (!rol.roldescripcion || !rol.roldescripcion.trim())">
-                            La descripción es requerida y no puede estar vacía.
-                        </small>
+            <hr>
+            <p-table [value]="roles" [rows]="5" [tableStyle]="{'min-width': '20rem'}" [paginator]="true"
+            [rowsPerPageOptions]="[5,10,20]"  [loading]="loading">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <button pButton pRipple label="Adicionar rol" icon="pi pi-plus"
+                            class="p-button-success mr-2" (click)="NuevoRol()">
+                        </button>
                     </div>
                 </ng-template>
-
-                <ng-template pTemplate="footer">
-                    <!-- <button pButton pRipple label="Registrar" icon="pi pi-check" class="p-button-rounded p-button"
-                        (click)="registroRol()"></button>
-                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"
-                        (click)="ocultarDialog()"></button> -->
-
-                        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                        (click)="ocultarDialog()"></button>
-                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                        (click)="registroRol()"></button>
-
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Registro por</th>
+                        <th>Modificado por</th>
+                        <!-- <th>Estado</th> -->
+                        <th>Operaciones</th>
+                    </tr>
                 </ng-template>
-            </p-dialog>
-
-
-            <p-dialog [(visible)]="rolModificarDialog" [style]="{width: '400px'}" header="Modificar Rol" [modal]="true"
-                class="p-fluid">
-                <ng-template pTemplate="content">
-                    <div class="field">
-                        <label for="name">Nombre del Rol</label>
-                        <input type="text" pInputText id="name" [(ngModel)]="role.rolnombre" required autofocus
-                            [ngClass]="{'ng-invalid ng-dirty' : camposVacios && !role.rolnombre}" />
-                        <small class="ng-dirty ng-invalid" *ngIf="camposVacios && !role.rolnombre">El nombre de rol es
-                            requerido.</small>
-                    </div>
-                    <div class="field">
-                        <label for="description">Descripción</label>
-                        <textarea id="description" pInputTextarea [(ngModel)]="role.roldescripcion" required rows="1"
-                            cols="10"></textarea>
-                        <small class="ng-dirty ng-invalid" *ngIf="camposVacios && !role.roldescripcion">La descripción
-                            es requerida.</small>
-                    </div>
+                <ng-template pTemplate="body" let-rol>
+                    <tr>
+                        <td>{{rol.rolid}}</td>
+                        <td>{{rol.rolnombre}}</td>
+                        <td>{{rol.roldescripcion}}</td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                   {{ rol.rolusureg }} <br> {{ rol.rolfecreg }}
+                                </div>
+                             </p-chip>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                   {{rol.rolusumod}} <br> {{ rol.rolfecmod }}
+                                </div>
+                            </p-chip>
+                        </td>
+                        <!-- <td>
+                            <p-tag [value]="obtenerDescripcion(rol.rolestado)" [severity]="obtenerSeverity(rol.rolestado)" [rounded]="true"></p-tag>
+                        </td> -->
+                        <td>
+                            <div class="flex justify-content-center">
+                                <button pButton pRipple icon="pi pi-pencil" label="Editar" class="p-button-rounded p-button-info mr-2" (click)="modificarRol(rol)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" label="Eliminar" (click)="eliminarRol(rol)"></button>
+                            </div>
+                        </td>
+                    </tr>
                 </ng-template>
+            </p-table>
+        </div>
+    </div>
 
-                <ng-template pTemplate="footer">
-                    <!-- <button pButton pRipple label="Modificar" icon="pi pi-check" class="p-button-rounded p-button" (click)="enviarFormulario(role)"></button>
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  (click)="hideDialog()"></button> -->
+    <p-dialog [(visible)]="roldialog" [style]="{width: '450px'}" header="Registro rol" [modal]="true" class="p-fluid">
+        <div *ngIf="loading">
+            <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
+                animationDuration=".5s"></p-progressSpinner>
+        </div>
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label for="name">Nombre</label>
+                <input type="text"
+                       pInputText
+                       id="name"
+                       (ngModelChange)="onNameChange($event)"
+                       [(ngModel)]="rol.rolnombre"
+                       required
+                       [ngClass]="{'p-invalid': rol?.rolnombre?.trim() === null}"/>
+                <small class="p-error" *ngIf="submitted || !rol?.rolnombre?.trim()">
+                    El nombre de rol es requerido. (*)
+                </small>
+            </div>
 
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                (click)="hideDialog()"></button>
+            <div class="field">
+                <label for="description">Descripción</label>
+                <textarea id="description"
+                        name="description"
+                        pInputTextarea
+                        [ngModel]="rol.roldescripcion"
+                        (ngModelChange)="onDescriptionChange($event)"
+                        rows="3"
+                        cols="20"
+                        required
+                        [ngClass]="{'p-invalid': rol?.roldescripcion?.trim() == null}">
+                </textarea>
+                <small class="p-error" *ngIf="submitted || !rol.roldescripcion?.trim()">
+                    La descripción es requerida. (*)
+                </small>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                (click)="ocultarDialog()"></button>
             <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                (click)="enviarFormulario()"></button>
-                </ng-template>
-            </p-dialog>
+                (click)="registroRol()"></button>
+        </ng-template>
+    </p-dialog>
 
-            <p-dialog [(visible)]="eliminarRolDialog" header="Aviso: Confirmar" [modal]="true"
-                [style]="{width:'400px'}">
-                <div class="flex align-items-center justify-content-center">
-                    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span *ngIf="rolRegistro">Estas seguro de eliminar el registro
-                        <b>{{rolRegistro.rolnombre}}</b>?</span>
-                </div>
-                <ng-template pTemplate="footer">
-                    <!-- <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button" label="Si"
-                        (click)="confirmarEliminar()"></button>
-                    <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-danger" label="No"
-                        (click)="ocultarDialog()"></button> -->
-
-                        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+    <p-dialog [(visible)]="eliminarRolDialog" header="Aviso: Confirmar" [modal]="true" [style]="{width:'400px'}">
+        <div *ngIf="loading">
+            <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
+                animationDuration=".5s"></p-progressSpinner>
+        </div>
+        <div class="flex align-items-center justify-content-center">
+            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+            <span *ngIf="rolRegistro">Estas seguro de eliminar el registro
+                <b>{{rolRegistro.rolnombre}}</b>?</span>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                 (click)="ocultarDialog()"></button>
             <button pButton pRipple label="Eliminar" icon="pi pi-check" class="p-button-text"
                 (click)="confirmarEliminar()"></button>
-                </ng-template>
-            </p-dialog>
-        </div>
-    </div>
+        </ng-template>
+    </p-dialog>
