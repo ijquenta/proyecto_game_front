@@ -92,20 +92,19 @@ export class Persona {
     // }
 }
 export class PersonaExpanded {
-    tipo?: number; // tipo de operación a realizar
-
+    tipo?: number;
     perid?: number | null = null;
     pernomcompleto?: string | null;
     pernombres?: string | null;
     perapepat?: string | null;
     perapemat?: string | null;
-    pertipodoc?: number | null;;
-    tipodocnombre?: string | null;;
-    pernrodoc?: any | null;;
-    perfecnac?: any | null;;
+    pertipodoc?: number | null;
+    tipodocnombre?: string | null;
+    pernrodoc?: any | null;
+    perfecnac?: Date = new Date();
     pergenero?: number | null;;
-    generonombre?: string | null;;
-    perfoto?: any | null;;
+    generonombre?: string | null;
+    perfoto?: any | null;
     perusureg?: string | null;
     perobservacion?: string | null;
     perfecreg?: Date = new Date();
