@@ -50,7 +50,6 @@ export class UsuarioRolesComponent implements OnInit {
 
     ListarRoles() {
         this.rolService.getListarRoles().subscribe((data: any) => {
-        //   console.log(data)
           this.roles = data.map(rol => {
             return {
               ...rol,
@@ -74,6 +73,7 @@ export class UsuarioRolesComponent implements OnInit {
             this.rolRegistro.roldescripcion = this.rolRegistro.roldescripcion?.trim();
                 if((this.rolRegistro.rolnombre != null && this.rolRegistro.roldescripcion == null) || (this.rolRegistro.rolnombre == null && this.rolRegistro.roldescripcion != null) || (this.rolRegistro.rolnombre == null && this.rolRegistro.roldescripcion == null)){
                     this.messageService.add({
+                        key: 'tc', 
                         severity: 'warn',
                         summary: 'Advertencia',
                         detail: 'Por favor, complete todos los campos requeridos marcados con (*) antes de continuar. Asegúrese de proporcionar la información necesaria para el registro.',
@@ -86,6 +86,7 @@ export class UsuarioRolesComponent implements OnInit {
                         this.rolService.gestionarRol(this.rolRegistro).subscribe(
                             (result: any) => {
                                 this.messageService.add({
+                                    key: 'tc', 
                                     severity: 'success',
                                     summary: 'Registro Exitoso',
                                     detail: 'El rol se ha registrado correctamente en el sistema. Ahora está disponible para su uso según los permisos asignados.',
@@ -100,6 +101,7 @@ export class UsuarioRolesComponent implements OnInit {
                                 this.errors = error;
                                 console.log('error', error);
                                 this.messageService.add({
+                                    key: 'tc', 
                                     severity: 'error',
                                     summary: 'Error en el Registro',
                                     detail: 'Se ha producido un error al intentar registrar el rol. Por favor, verifica la información ingresada e intenta nuevamente. Si el problema persiste, contacta al soporte técnico para obtener asistencia.',
@@ -111,6 +113,7 @@ export class UsuarioRolesComponent implements OnInit {
                     }
                     else{
                         this.messageService.add({
+                            key: 'tc', 
                             severity: 'info',
                             summary: 'Advertencia',
                             detail: 'Por favor, complete todos los campos con datos válidos antes de continuar. Verifique la información ingresada y asegúrese de proporcionar la información requerida.',
@@ -128,6 +131,7 @@ export class UsuarioRolesComponent implements OnInit {
                 this.rolService.gestionarRol(this.rolRegistro).subscribe(
                     (result: any) => {
                         this.messageService.add({
+                            key: 'tc', 
                             severity: 'success',
                             summary: 'Modificación Exitosa',
                             detail: 'El rol se ha modificado correctamente en el sistema. Los cambios han sido actualizados y están ahora disponibles para su uso.',
@@ -143,6 +147,7 @@ export class UsuarioRolesComponent implements OnInit {
                         console.log('error', error);
                         this.submitted = false;
                         this.messageService.add({
+                            key: 'tc', 
                             severity: 'error',
                             summary: 'Error al Modificar Rol',
                             detail: 'Se ha producido un error al intentar modificar el rol. Por favor, verifica la información ingresada e inténtalo nuevamente. Si el problema persiste, contacta al soporte técnico.',
@@ -152,7 +157,7 @@ export class UsuarioRolesComponent implements OnInit {
                     }
                 );
             } else {
-                this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Ingrese un nombre válido.', life: 5000 });
+                this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Advertencia', detail: 'Ingrese un nombre válido.', life: 5000 });
             }
         }
     }
@@ -182,6 +187,7 @@ export class UsuarioRolesComponent implements OnInit {
           (result: any) => {
               // Mensaje de éxito al eliminar un rol
               this.messageService.add({
+                  key: 'tc', 
                   severity: 'success',
                   summary: 'Eliminación Exitosa',
                   detail: 'El rol se ha eliminado correctamente del sistema. Cualquier acción relacionada con este rol ha sido completada con éxito.',
@@ -195,6 +201,7 @@ export class UsuarioRolesComponent implements OnInit {
               this.errors = error;
               console.log('error', error);
               this.messageService.add({
+                key: 'tc', 
                 severity: 'error',
                 summary: 'Error al Eliminar Rol',
                 detail: 'Se ha producido un error al intentar eliminar el rol. Por favor, revisa si existen dependencias o inténtalo de nuevo más tarde.',
