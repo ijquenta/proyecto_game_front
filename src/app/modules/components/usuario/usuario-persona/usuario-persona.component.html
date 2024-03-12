@@ -1,33 +1,17 @@
-<p-toast></p-toast>
-<div *ngIf="loading">
-    <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
-        animationDuration=".5s"></p-progressSpinner>
-</div>
+<p-toast position="bottom-center" key="bc"></p-toast>
+<div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"> </p-progressSpinner> </div>
 <div class="grid">
     <div class="col-12">
         <div class="card">
-            <div class="font-bold text-3xl text-center">
-                <span class="text-900">Administrar</span> <span class="text-blue-600"> Personas</span>
-            </div>
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-blue-600"> Personas </span> </div>
             <hr>
-                <p-table
-                    responsiveLayout="scroll"
-                    #dt
-                    dataKey="perid"
-                    [value]="personas"
-                    [rows]="5"
-                    [tableStyle]="{'min-width': '50rem'}"
-                    [paginator]="true"
-                    [rowsPerPageOptions]="[5,10,20]"
-                    [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']">
+                <p-table [loading]="loading" responsiveLayout="scroll" #dt dataKey="perid" [value]="personas" [rows]="5" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rowsPerPageOptions]="[5,10,20]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']">
                     <ng-template pTemplate="caption">
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <button pButton pRipple label="Nuevo Persona" icon="pi pi-plus"
-                                class="p-button-success mr-2" (click)="NuevoPersona()" pTooltip="Registrar persona nueva"></button>
+                            <button pButton pRipple label="Nuevo Persona" icon="pi pi-plus" class="p-button-success mr-2" (click)="NuevoPersona()" pTooltip="Registrar persona nueva"></button>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search"></i>
-                                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
-                                    placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por apellidos o nombre" tooltipPosition="left"/>
+                                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por apellidos o nombre" tooltipPosition="left"/>
                             </span>
                         </div>
                     </ng-template>
@@ -48,83 +32,24 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-persona let-expanded="expanded">
                         <tr>
-                            <td>
-                                <button type="button" pButton pRipple [pRowToggler]="persona"
-                                    class="p-button-text p-button-rounded p-button-plain"
-                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                                    pTooltip="Mostrar más información de la persona" tooltipPosition="right"
-                                ></button>
-                            </td>
-                            <td>
+                            <td> <button type="button" pButton pRipple [pRowToggler]="persona" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Mostrar más información de la persona" tooltipPosition="right"></button> </td>
+                            <td> 
                                 <!-- <img [src]="'http://127.0.0.1:5001/static/uploads/' + persona.perfoto" [alt]="persona.perfoto" width="100" class="shadow-4" /> -->
                                 <p-avatar image="http://127.0.0.1:5001/static/uploads/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
                             </td>
-                            <td>
-                                <!-- <p-skeleton> -->
-                                <ng-container *ngIf="persona.perapepat; else noRegistro">
-                                    {{persona.perapepat}}
-                                </ng-container>
-                                <!-- </p-skeleton> -->
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.perapemat; else noRegistro">
-                                    {{persona.perapemat}}
-                                </ng-container>
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.pernombres; else noRegistro">
-                                    {{persona.pernombres}}
-                                </ng-container>
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.pernrodoc; else noRegistro">
-                                    {{persona.pernrodoc}}
-                                </ng-container>
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.perfecnac; else noRegistro">
-                                    {{persona.perfecnac | date:'dd/MM/yyyy'}}
-                                </ng-container>
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.pergenero; else noRegistro">
-                                    {{persona.generonombre}}
-                                </ng-container>
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.perusureg; else noRegistro">
-                                    <ng-container *ngIf="persona.perusureg">
-                                        <p-tag severity="success"> {{persona.perusureg}}
-                                         {{persona.perfecreg | date:'dd/MM/yyyy HH:mm:ss'}}</p-tag>
-                                    </ng-container>
-                                </ng-container>
-                            </td>
-                            <td>
-                                <ng-container *ngIf="persona.perusumod; else noRegistro">
-                                    <ng-container *ngIf="persona.perusumod">
-                                        <p-tag severity="warning"> {{persona.perusumod}}
-                                         {{persona.perfecmod | date:'dd/MM/yyyy HH:mm:ss'}}</p-tag>
-                                    </ng-container>
-                                </ng-container>
-                            </td>
-                            <ng-template #noRegistro>
-                                <p-tag severity="info">  sin registrar </p-tag>
-                            </ng-template>
-                            <!-- <td>
-                                <p-tag [severity]="obtenerSeverity(persona.rolid)"
-                                    [rounded]="true">{{persona.rolnombre}}</p-tag>
-                            </td> -->
+                            <td> <ng-container *ngIf="persona.perapepat; else noRegistro"> {{persona.perapepat}} </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.perapemat; else noRegistro"> {{persona.perapemat}} </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.pernombres; else noRegistro"> {{persona.pernombres}} </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.pernrodoc; else noRegistro"> {{persona.pernrodoc}} </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.perfecnac; else noRegistro"> {{persona.perfecnac | date:'dd/MM/yyyy':'UTC'}} </ng-container> </td>                            
+                            <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}} </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container *ngIf="persona.perusureg"> <p-chip> <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div> </p-chip> </ng-container> </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container *ngIf="persona.perusumod"> <p-chip> <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div> </p-chip> </ng-container> </ng-container> </td>
+                            <ng-template #noRegistro> <p-chip> <div class="p-2"> Sin Registrar </div> </p-chip> </ng-template>
                             <td>
                                 <div class="flex justify-content-center">
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-info mr-2"
-                                        (click)="modificarPersona(persona)"
-                                        pTooltip="Modificar persona" tooltipPosition="left"
-                                    ></button>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                                        (click)="confirmarEliminar(persona)"
-                                        pTooltip="Eliminar persona" tooltipPosition="left"
-                                    ></button>
+                                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar persona" tooltipPosition="left" ></button>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Eliminar persona" tooltipPosition="left" ></button>
                                 </div>
                             </td>
                         </tr>
@@ -148,343 +73,85 @@
                                 </ng-template>
                                 <ng-template pTemplate="body" let-datos>
                                   <tr>
-                                    <td>
-                                        <ng-container *ngIf="datos.perdirec; else noRegistro">
-                                            {{ datos.perdirec }}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="datos.peremail; else noRegistro">
-                                            {{ datos.peremail }}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="datos.percelular; else noRegistro">
-                                            {{ datos.percelular }}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="datos.pertelefono; else noRegistro">
-                                            {{ datos.pertelefono }}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="datos.estadocivilnombre; else noRegistro">
-                                            {{ datos.estadocivilnombre }}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="datos.paisnombre; else noRegistro">
-                                            {{ datos.paisnombre }}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="datos.ciudadnombre; else noRegistro">
-                                            {{ datos.ciudadnombre }}
-                                        </ng-container>
-                                    </td>
+                                    <td> <ng-container *ngIf="datos.perdirec; else noRegistro"> {{ datos.perdirec }} </ng-container> </td>
+                                    <td> <ng-container *ngIf="datos.peremail; else noRegistro"> {{ datos.peremail }} </ng-container> </td>
+                                    <td> <ng-container *ngIf="datos.percelular; else noRegistro"> {{ datos.percelular }} </ng-container> </td>
+                                    <td> <ng-container *ngIf="datos.pertelefono; else noRegistro"> {{ datos.pertelefono }} </ng-container> </td>
+                                    <td> <ng-container *ngIf="datos.estadocivilnombre; else noRegistro"> {{ datos.estadocivilnombre }} </ng-container> </td>
+                                    <td> <ng-container *ngIf="datos.paisnombre; else noRegistro"> {{ datos.paisnombre }} </ng-container> </td>
+                                    <td> <ng-container *ngIf="datos.ciudadnombre; else noRegistro"> {{ datos.ciudadnombre }} </ng-container> </td>
                                   </tr>
                                 </ng-template>
-                                <ng-template #noRegistro>
-                                    <p-tag severity="info">  sin registrar </p-tag>
-                                </ng-template>
+                                <ng-template #noRegistro> <p-tag severity="info">  sin registrar </p-tag> </ng-template>
                               </p-table>
                           </td>
                         </tr>
                       </ng-template>
                 </p-table>
-                <p-dialog [(visible)]="personaNuevoDialog" [style]="{width: '70%'}" header="Nueva Persona" [modal]="true"
-                class="p-fluid">
-                <div *ngIf="loading">
-                    <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s">
-                    </p-progressSpinner>
-                </div>
-                <ng-template pTemplate="content">
-                    <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p>
-                    <hr>
-                    <div class="grid p-fluid mt-3">
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="apellidoPaterno" pInputText [(ngModel)]="person.perapepat">
-                                <label for="apellidoPaterno">Apellido Paterno</label>
-                            </span>
+                <p-dialog [(visible)]="personaNuevoDialog" [style]="{width: '70%'}" header="Nueva Persona" [modal]="true" class="p-fluid">
+                    <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"> </p-progressSpinner> </div>
+                    <ng-template pTemplate="content">
+                        <!-- <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p> -->
+                        <!-- <hr> -->
+                        <div class="grid p-fluid mt-3">
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="apellidoPaterno" pInputText [(ngModel)]="person.perapepat"> <label for="apellidoPaterno">Apellido Paterno</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="apellidoMaterno" pInputText [(ngModel)]="person.perapemat"> <label for="apellidoMaterno">Apellido Materno</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="nombres" pInputText [(ngModel)]="person.pernombres"> <label for="nombres">Nombres</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body" [options]="TipoDocumento" [(ngModel)]="TipoDocumentoSeleccionado" optionLabel="tipodocnombre"> </p-dropdown> <label for="tipoDocumento">Tipo Documento</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="numeroDocumento" pInputText [(ngModel)]="person.pernrodoc"> <label for="numeroDocumento">Número Documento</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy" [(ngModel)]="person.perfecnac"></p-calendar> <label for="fechaNacimiento">Fecha Nacimiento</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="numeroCelular" pInputText [(ngModel)]="person.percelular"> <label for="numeroCelular">Número de Celular</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="numeroTelefono" pInputText [(ngModel)]="person.pertelefono"> <label for="numeroTelefono">Número de Teléfono</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="correoElectronico" pInputText [(ngModel)]="person.peremail"> <label for="correoElectronico">Correo Electrónico</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body" [options]="TipoGenero" [(ngModel)]="TipoGeneroSeleccionado" optionLabel="generonombre"></p-dropdown> <label for="tipoGenero">Tipo Género</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoPais" [autoDisplayFirst]="false" (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais" [(ngModel)]="TipoPaisSeleccionado" optionLabel="paisnombre" [filter]="true" filterBy="paisnombre"> </p-dropdown> <label for="tipoPais">Pais</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body" [options]="TipoCiudad" [(ngModel)]="TipoCiudadSeleccionado" optionLabel="ciudadnombre"></p-dropdown> <label for="tipoCiudad">Ciudad</label> </span></div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body" [options]="TipoEstadoCivil" [(ngModel)]="TipoEstadoCivilSeleccionado" optionLabel="estadocivilnombre"></p-dropdown> <label for="tipoEstadoCivil">Estado Civil</label> </span> </div>
+                            <div class="field col-12 md:col-4"> <span class="p-float-label"> <textarea inputId="textarea" rows="1" cols="30" [(ngModel)]="person.perdirec" appendTo="body" pInputTextarea></textarea> <label for="textarea">Dirección de Domicilio</label> </span> </div>
                         </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="apellidoMaterno" pInputText [(ngModel)]="person.perapemat">
-                                <label for="apellidoMaterno">Apellido Materno</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="nombres" pInputText [(ngModel)]="person.pernombres">
-                                <label for="nombres">Nombres</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoDocumento" [(ngModel)]="TipoDocumentoSeleccionado"
-                                    optionLabel="tipodocnombre">
-                                </p-dropdown>
-                                <label for="tipoDocumento">Tipo Documento</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroDocumento" pInputText [(ngModel)]="person.pernrodoc">
-                                <label for="numeroDocumento">Número Documento</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy"
-                                    [(ngModel)]="person.perfecnac"></p-calendar>
-                                <label for="fechaNacimiento">Fecha Nacimiento</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroCelular" pInputText [(ngModel)]="person.percelular">
-                                <label for="numeroCelular">Número de Celular</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroTelefono" pInputText [(ngModel)]="person.pertelefono">
-                                <label for="numeroTelefono">Número de Teléfono</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="correoElectronico" pInputText [(ngModel)]="person.peremail">
-                                <label for="correoElectronico">Correo Electrónico</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoGenero" [(ngModel)]="TipoGeneroSeleccionado"
-                                    optionLabel="generonombre"></p-dropdown>
-                                <label for="tipoGenero">Tipo Género</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoPais" [autoDisplayFirst]="false"
-                                    (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais"
-                                    [(ngModel)]="TipoPaisSeleccionado" optionLabel="paisnombre"></p-dropdown>
-                                <label for="tipoPais">Pais</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoCiudad" [(ngModel)]="TipoCiudadSeleccionado"
-                                    optionLabel="ciudadnombre"></p-dropdown>
-                                <label for="tipoCiudad">Ciudad</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoEstadoCivil" [(ngModel)]="TipoEstadoCivilSeleccionado"
-                                    optionLabel="estadocivilnombre"></p-dropdown>
-                                <label for="tipoEstadoCivil">Estado Civil</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <textarea inputId="textarea" rows="1" cols="30" [(ngModel)]="person.perdirec"
-                                    appendTo="body" pInputTextarea></textarea>
-                                <label for="textarea">Dirección de Domicilio</label>
-                            </span>
-                        </div>
-
-                    </div>
-                    <div class="field col-12">
-                        <p-fileUpload
-                            mode="advanced"
-                            chooseLabel="Elegir imagen"
-                            name="demo[]"
-                            url="https://www.primefaces.org/cdn/api/upload.php"
-                            accept="image/*"
-                            maxFileSize="3000000"
-                            (onSelect)="onUpload($event)"
-                            previewWidth="100"
-                            [showUploadButton]="false"
-                            [showCancelButton]="false"
-                            cancelLabel="Cancelar"
-                            [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
-                            [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'"
-                            [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
-                            [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"
-                        ></p-fileUpload>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="footer">
-                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                        (click)="ocultarDialog()"></button>
-                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                        (click)="enviarFormulario()"></button>
-                </ng-template>
+                        <div class="field col-12"> <p-fileUpload mode="advanced" chooseLabel="Elegir imagen" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="3000000" (onSelect)="onUpload($event)" previewWidth="100" [showUploadButton]="false" [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'" [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'" [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"></p-fileUpload> </div>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+                        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="enviarFormulario()"></button>
+                    </ng-template>
                 </p-dialog>
-
-                <p-dialog [(visible)]="personaDialog" [style]="{width: '70%'}" header="Persona" [modal]="true"
-                class="p-fluid">
-                <div *ngIf="loading">
-                    <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s">
-                    </p-progressSpinner>
-                </div>
+            
+            <p-dialog [(visible)]="personaDialog" [style]="{width: '70%'}" header="Modificar Persona" [modal]="true" class="p-fluid">
+                <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner> </div>
                 <ng-template pTemplate="content">
-                    <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p>
-                    <hr>
+                    <!-- <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p> -->
+                    <!-- <hr> -->
                     <div class="grid p-fluid mt-3">
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="apellidoPaterno" pInputText [(ngModel)]="persona.perapepat">
-                                <label for="apellidoPaterno">Apellido Paterno</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="apellidoMaterno" pInputText [(ngModel)]="persona.perapemat">
-                                <label for="apellidoMaterno">Apellido Materno</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="nombres" pInputText [(ngModel)]="persona.pernombres">
-                                <label for="nombres">Nombres</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoDocumento" [(ngModel)]="TipoDocumentoSeleccionado"
-                                    optionLabel="tipodocnombre">
-                                </p-dropdown>
-                                <label for="tipoDocumento">Tipo Documento</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroDocumento" pInputText [(ngModel)]="persona.pernrodoc">
-                                <label for="numeroDocumento">Número Documento</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy"
-                                    [(ngModel)]="persona.perfecnac"></p-calendar>
-                                <label for="fechaNacimiento">Fecha Nacimiento</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroCelular" pInputText [(ngModel)]="persona?.datos[0].percelular">
-                                <label for="numeroCelular">Número de Celular</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="numeroTelefono" pInputText [(ngModel)]="persona?.datos[0].pertelefono">
-                                <label for="numeroTelefono">Número de Teléfono</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <input type="text" id="correoElectronico" pInputText [(ngModel)]="persona?.datos[0].peremail">
-                                <label for="correoElectronico">Correo Electrónico</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoGenero" [(ngModel)]="TipoGeneroSeleccionado"
-                                    optionLabel="generonombre"></p-dropdown>
-                                <label for="tipoGenero">Tipo Género</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoPais" [autoDisplayFirst]="false"
-                                    (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais"
-                                    [(ngModel)]="TipoPaisSeleccionado" optionLabel="paisnombre"></p-dropdown>
-                                <label for="tipoPais">Pais</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoCiudad" [(ngModel)]="TipoCiudadSeleccionado"
-                                    optionLabel="ciudadnombre"></p-dropdown>
-                                <label for="tipoCiudad">Ciudad</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body"
-                                    [options]="TipoEstadoCivil" [(ngModel)]="TipoEstadoCivilSeleccionado"
-                                    optionLabel="estadocivilnombre"></p-dropdown>
-                                <label for="tipoEstadoCivil">Estado Civil</label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-4">
-                            <span class="p-float-label">
-                                <textarea inputId="textarea" rows="1" cols="30" [(ngModel)]="persona?.datos[0].perdirec"
-                                    appendTo="body" pInputTextarea></textarea>
-                                <label for="textarea">Dirección de Domicilio</label>
-                            </span>
-                        </div>
-
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="apellidoPaterno" pInputText [(ngModel)]="persona.perapepat"> <label for="apellidoPaterno">Apellido Paterno</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="apellidoMaterno" pInputText [(ngModel)]="persona.perapemat"> <label for="apellidoMaterno">Apellido Materno</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="nombres" pInputText [(ngModel)]="persona.pernombres"> <label for="nombres">Nombres</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body" [options]="TipoDocumento" [(ngModel)]="TipoDocumentoSeleccionado" optionLabel="tipodocnombre"> </p-dropdown> <label for="tipoDocumento">Tipo Documento</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="numeroDocumento" pInputText [(ngModel)]="persona.pernrodoc"> <label for="numeroDocumento">Número Documento</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy" [(ngModel)]="persona.perfecnac"></p-calendar> <label for="fechaNacimiento">Fecha Nacimiento</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="numeroCelular" pInputText [(ngModel)]="persona?.datos[0].percelular"> <label for="numeroCelular">Número de Celular</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="numeroTelefono" pInputText [(ngModel)]="persona?.datos[0].pertelefono"> <label for="numeroTelefono">Número de Teléfono</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <input type="text" id="correoElectronico" pInputText [(ngModel)]="persona?.datos[0].peremail"> <label for="correoElectronico">Correo Electrónico</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body" [options]="TipoGenero" [(ngModel)]="TipoGeneroSeleccionado" optionLabel="generonombre"></p-dropdown> <label for="tipoGenero">Tipo Género</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoPais" [autoDisplayFirst]="false" (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais" [(ngModel)]="TipoPaisSeleccionado" optionLabel="paisnombre" [filter]="true" filterBy="paisnombre"></p-dropdown> <label for="tipoPais">Pais</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body" [options]="TipoCiudad" [(ngModel)]="TipoCiudadSeleccionado" optionLabel="ciudadnombre"></p-dropdown> <label for="tipoCiudad">Ciudad</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body" [options]="TipoEstadoCivil" [(ngModel)]="TipoEstadoCivilSeleccionado" optionLabel="estadocivilnombre"></p-dropdown> <label for="tipoEstadoCivil">Estado Civil</label> </span> </div>
+                        <div class="field col-12 md:col-4"> <span class="p-float-label"> <textarea inputId="textarea" rows="1" cols="30" [(ngModel)]="persona?.datos[0].perdirec" appendTo="body" pInputTextarea></textarea> <label for="textarea">Dirección de Domicilio</label> </span> </div>
                     </div>
-                    <div class="field col-12">
-                        <p-fileUpload
-                            mode="advanced"
-                            chooseLabel="Elegir imagen"
-                            name="demo[]"
-                            url="https://www.primefaces.org/cdn/api/upload.php"
-                            accept="image/*"
-                            maxFileSize="3000000"
-                            (onSelect)="onUpload($event)"
-                            previewWidth="100"
-                            [showUploadButton]="false"
-                            [showCancelButton]="false"
-                            cancelLabel="Cancelar"
-                            [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
-                            [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'"
-                            [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
-                            [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"
-                        ></p-fileUpload>
-                    </div>
+                    <div class="field col-12"> <p-fileUpload mode="advanced" chooseLabel="Elegir imagen" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="3000000" (onSelect)="onUpload($event)" previewWidth="100" [showUploadButton]="false" [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'" [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'" [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'" ></p-fileUpload> </div>
                 </ng-template>
-
                 <ng-template pTemplate="footer">
-                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                        (click)="ocultarDialog()"></button>
-                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                        (click)="enviarFormulario()"></button>
+                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="enviarFormulario()"></button>
                 </ng-template>
-                </p-dialog>
-
+            </p-dialog>
 
             <p-dialog [(visible)]="eliminarPersonaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
-                <div *ngIf="loading">
-                    <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
-                        animationDuration=".5s"></p-progressSpinner>
-                </div>
-                <div class="flex align-items-center justify-content-center">
-                    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span *ngIf="persona">Esta seguro de eliminar este registro
-                        <b>{{persona.pernomcompleto}}</b>?</span>
-                </div>
+                <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner> </div>
+                <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> <span *ngIf="persona">Esta seguro de eliminar este registro <b>{{persona.pernomcompleto}}</b>?</span> </div>
                 <ng-template pTemplate="footer">
-                    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                        (click)="eliminarPersonaDialog = false"></button>
-                    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-                        (click)="eliminarPersona()"></button>
+                    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="eliminarPersonaDialog = false"></button>
+                    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="eliminarPersona()"></button>
                 </ng-template>
             </p-dialog>
         </div>

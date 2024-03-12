@@ -6,12 +6,14 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 // Service
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { PersonaService } from 'src/app/modules/service/data/persona.service';
+import { UploadService } from 'src/app/modules/service/data/upload.service';
 // Modelos
 import { Persona, PersonaExpanded } from 'src/app/modules/models/persona';
 import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from 'src/app/modules/models/diccionario';
-import { PersonaService } from 'src/app/modules/service/data/persona.service';
-import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { Usuario } from 'src/app/modules/models/usuario';
+// For validations
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     templateUrl: './usuario-persona.component.html',
@@ -19,19 +21,19 @@ import { Usuario } from 'src/app/modules/models/usuario';
     styleUrls: ['./usuario-persona.component.css']
 })
 export class UsuarioPersonaComponent implements OnInit {
-
-    // Variables <--------------------------
-    listaPersona: PersonaExpanded[] = [];
+    // Variable from Validations
+    personaForm: FormGroup;
+    // Variables 
+    persona: PersonaExpanded;
     personas: PersonaExpanded[] = [];
     elements: PersonaExpanded[];
-
-    Personas: Persona[] = [];
-    persona: PersonaExpanded;
+    listaPersona: PersonaExpanded[] = [];
     personaRegistro: PersonaExpanded;
+    Personas: Persona[] = [];
     personaRegistroNuevo: Persona;
     person: Persona;
-    imagenName: any;
 
+    // Variables tipo
     TipoPais: TipoPais[] = [];
     TipoPaisSeleccionado: TipoPais;
     TipoPaisSeleccionado2: TipoPais;
@@ -45,6 +47,8 @@ export class UsuarioPersonaComponent implements OnInit {
     TipoDocumento: TipoDocumento[] = [];
     TipoDocumentoSeleccionado: TipoDocumento;
 
+    // Otras variables
+    imagenName: any;
     eliminarPersonaDialog: boolean = false;
     errors: any;
     personaDialog: boolean = false;
@@ -65,19 +69,19 @@ export class UsuarioPersonaComponent implements OnInit {
     loading: boolean = false;
     originalEvent: Event;
     archivos: any;
+    
+
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
         public personaService: PersonaService,
         private uploadService: UploadService,
         private sanitizer: DomSanitizer,
-        private authService: AuthService
-    ) {
-
-    }
+        private authService: AuthService,
+        private formBuilder: FormBuilder // 
+    ) {}
 
     ngOnInit() {
-        // this.ListarPersonas();
         this.fListarPersonas();
         this.fLlenarTipoCombo();
         this.statuses = [
@@ -85,8 +89,14 @@ export class UsuarioPersonaComponent implements OnInit {
             { label: 'Inactivo', value: 1 },
         ];
         this.authService.getPerfil().subscribe(user => {
-            this.usuario = user[0]; // Obteniendo todos los datos del usuario logeado
-        })
+            this.usuario = user[0];
+        });
+        // Code to valitations 
+        this.personaForm = this.formBuilder.group({
+            apellidoPaterno: ['', [Validators.required, Validators.maxLength(5)]],
+            // Agrega otros campos aquí con sus respectivas validaciones
+        });
+
         this.loading = true;
     }
 
@@ -95,11 +105,12 @@ export class UsuarioPersonaComponent implements OnInit {
             (result: any) => {
                 this.elements = result;
                 this.personas = this.elements.map(item => this.fOrganizarDatosPersona(item));
+                // console.log("All persons: ",this.personas)
                 this.loading = false;
             }
         );
     }
-
+    
     fOrganizarDatosPersona(data: any): PersonaExpanded {
         const persona = new PersonaExpanded();
         persona.tipo = data.tipo;
@@ -111,7 +122,7 @@ export class UsuarioPersonaComponent implements OnInit {
         persona.pertipodoc = data.pertipodoc;
         persona.tipodocnombre = data.tipodocnombre;
         persona.pernrodoc = data.pernrodoc;
-        persona.perfecnac = data.perfecnac;
+        persona.perfecnac = this.convertirAFecha(data.perfecnac);
         persona.pergenero = data.pergenero;
         persona.generonombre = data.generonombre;
         persona.perfoto = data.perfoto;
@@ -138,6 +149,12 @@ export class UsuarioPersonaComponent implements OnInit {
             ciudadnombre: data.ciudadnombre,
         });
         return persona;
+    }
+
+    convertirAFecha(fechaStr: string): Date {
+        const partesFecha = fechaStr.split('/');
+        const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
+        return fecha;
     }
 
     fLlenarTipoCombo() {
@@ -172,13 +189,15 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     modificarPersona(data: PersonaExpanded) {
+        this.fLlenarTipoCombo();
         this.persona = { ...data };
         this.personaDialog = true;
+        this.TipoCiudadSeleccionado = new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais);
         this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(this.persona.datos[0].perestcivil, this.persona.datos[0].estadocivilnombre);
         this.TipoGeneroSeleccionado = new TipoGenero(this.persona.pergenero, this.persona.generonombre);
         this.TipoDocumentoSeleccionado = new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre);
         this.TipoPaisSeleccionado = new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre);
-        this.TipoCiudadSeleccionado = new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais);
+        console.log("mod ciudad: ", this.TipoCiudadSeleccionado)
         this.persona.perfecnac = new Date(this.persona.perfecnac);
         this.optionDialog = false;
     }
@@ -222,17 +241,18 @@ export class UsuarioPersonaComponent implements OnInit {
             this.personaRegistroNuevo.perciudad = this.TipoCiudadSeleccionado.ciudadid;
             this.personaRegistroNuevo.ciudadnombre = this.TipoCiudadSeleccionado.ciudadnombre;
             this.personaRegistroNuevo.perfoto = this.imagenName;
+            console.log("Add Person: ", this. personaRegistroNuevo)
             this.personaService.gestionarPersona(this.personaRegistroNuevo).subscribe(
                 (data: any) => {
                     this.personaNuevoDialog = false;
                     this.optionDialog = false;
-                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
+                    this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
                     // this.ListarPersonas();
                     this.fListarPersonas();
                 },
                 (error: any) => {
                     console.error("Error: ", error['message']);
-                    this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
+                    this.messageService.add({ key: 'bc', severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
                 }
             );
         }
@@ -252,7 +272,7 @@ export class UsuarioPersonaComponent implements OnInit {
                     (data: any) => {
                         this.personaDialog = false;
                         this.optionDialog = false;
-                        this.messageService.add({ severity: 'info', summary: 'Registro de Imagen!', detail: 'La imagen se registró correctamente en el sistema.', life: 2000 });
+                        this.messageService.add({ key: 'bc', severity: 'info', summary: 'Registro de Imagen!', detail: 'La imagen se registró correctamente en el sistema.', life: 2000 });
                         // this.ListarPersonas();
                         this.fListarPersonas();
                     },
@@ -289,20 +309,21 @@ export class UsuarioPersonaComponent implements OnInit {
             this.person.perdirec = this.persona.datos[0].perdirec;
             this.person.percelular = this.persona.datos[0].percelular;
             this.person.pertelefono = this.persona.datos[0].pertelefono;
+            console.log("update person: ", this.person)
             this.loading = true;
             this.personaService.gestionarPersona(this.person).subscribe(
                 (data: any) => {
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.person = new Persona();
-                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
+                    this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
                     this.fListarPersonas();
                     // this.ListarPersonas();
                     this.loading = false;
                 },
                 (error: any) => {
                     console.log("Error: ", error);
-                    this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
+                    this.messageService.add({ key: 'bc', severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
                     this.loading = false;
                 }
             );
@@ -334,12 +355,12 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     NuevoPersona() {
-
+        this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === 1);
         this.person = new Persona();
         this.TipoPaisSeleccionado = new TipoPais(1, "Ninguno");
         this.TipoCiudadSeleccionado = new TipoCiudad(1, "Ninguno", 1);
         this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(1, "Ninguno");
-        this.TipoGeneroSeleccionado = new TipoGenero(1, "Femenino");
+        this.TipoGeneroSeleccionado = new TipoGenero(0, "Ninguno");
         this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
         this.personaNuevoDialog = true;
         this.optionDialog = true;
@@ -354,14 +375,14 @@ export class UsuarioPersonaComponent implements OnInit {
             (data: any) => {
                 this.eliminarPersonaDialog = false;
                 this.optionDialog = false;
-                this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
+                this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
                 // this.ListarPersonas();
                 this.fListarPersonas();
                 this.loading = false;
             },
             (error: any) => {
                 console.log("Error: ", error);
-                this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en la eliminación de , porfavor comunicarse con soporte.', life: 3000 });
+                this.messageService.add({ key: 'bc', severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en la eliminación de , porfavor comunicarse con soporte.', life: 3000 });
                 this.loading = false;
             }
             )
@@ -380,8 +401,8 @@ export class UsuarioPersonaComponent implements OnInit {
 
     ocultarDialog() {
         this.personaDialog = false;
-
-
+        this.personaNuevoDialog = false;
+        this.fLlenarTipoCombo()
     }
 
     onGlobalFilter(table: Table, event: Event) {

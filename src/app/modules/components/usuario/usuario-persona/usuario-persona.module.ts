@@ -26,6 +26,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ChipModule } from 'primeng/chip';
 
 import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
@@ -34,6 +35,7 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 
 import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
 import { UsuarioPersonaComponent } from './usuario-persona.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -66,7 +68,9 @@ import { UsuarioPersonaComponent } from './usuario-persona.component';
         AvatarModule,
         ProgressSpinnerModule,
         TooltipModule,
-        SkeletonModule
+        SkeletonModule,
+        ChipModule,
+        ReactiveFormsModule
     ],
     declarations: [UsuarioPersonaComponent],
     providers: [UsuarioService, PersonaService, UploadService]
