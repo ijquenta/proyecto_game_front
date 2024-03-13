@@ -25,3 +25,9 @@
 .progress-spinner .pi-spinner {
     background-color: transparent;
 }
+.valid-field {
+  border-color: #29c76f;
+}
+.p-success {
+  color: #29c76f;
+}

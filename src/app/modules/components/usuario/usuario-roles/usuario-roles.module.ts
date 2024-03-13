@@ -17,10 +17,15 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { UsuarioRolesRoutingModule } from './usuario-roles-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChipModule } from 'primeng/chip';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+
 import { UsuarioRolesComponent } from './usuario-roles.component';
+
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 // import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
+
 
 @NgModule({
     imports: [
@@ -41,7 +46,9 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
         InputNumberModule,
         RatingModule,
         ProgressSpinnerModule,
-        ChipModule
+        ChipModule,
+        ReactiveFormsModule,
+        CardModule
     ],
     declarations: [UsuarioRolesComponent],
     providers: [UsuarioService, RolService]
