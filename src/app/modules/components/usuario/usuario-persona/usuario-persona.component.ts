@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -17,6 +17,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { FileUpload } from 'primeng/fileupload';
+// @ViewChild('fileUpload') fileUpload: any;
+
 @Component({
     templateUrl: './usuario-persona.component.html',
     providers: [MessageService],
@@ -24,6 +27,7 @@ import { map } from 'rxjs/operators';
 })
 export class UsuarioPersonaComponent implements OnInit {
     // Variable from Validations
+    @ViewChild('fileUpload') fileUpload: FileUpload;
     personaForm: FormGroup;
     // Variables 
     persona: PersonaExpanded;
@@ -72,7 +76,7 @@ export class UsuarioPersonaComponent implements OnInit {
     usuario: Usuario;
     loading: boolean = false;
     originalEvent: Event;
-    archivos: any;
+    archivos: any = {};
     
 
     constructor(
@@ -95,9 +99,7 @@ export class UsuarioPersonaComponent implements OnInit {
         this.authService.getPerfil().subscribe(user => {
             this.usuario = user[0];
         });
-        // Validaciones en los atributos de persona
         this.personaForm = this.formBuilder.group({
-
             pf_id: [''],
             pf_nombres: ['', [Validators.required]],
             pf_apePat: ['', [Validators.required]],
@@ -117,7 +119,7 @@ export class UsuarioPersonaComponent implements OnInit {
 
         this.loading = true;
     }
-    
+  
     validarEdadMinima(): AsyncValidatorFn {
         return (control: AbstractControl): Promise<ValidationErrors | null> => {
           return new Promise((resolve) => {
@@ -136,7 +138,7 @@ export class UsuarioPersonaComponent implements OnInit {
             resolve(null); // Si la fecha cumple con los requisitos, devuelve null (sin errores)
           });
         };
-      }
+    }
     
     // Método para crear un validador asíncrono para verificar si un número de documento ya existe
     validarDocumentoExistente(): AsyncValidatorFn {
@@ -168,7 +170,7 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.elements = result;
                 this.personas = this.elements.map(item => this.fOrganizarDatosPersona(item));
                 this.personasDuplicated = this.personas;
-                console.log("All persons: ",this.personasDuplicated)
+                // console.log("All persons: ",this.personasDuplicated)
                 this.loading = false;
             }
         );
@@ -258,7 +260,7 @@ export class UsuarioPersonaComponent implements OnInit {
         this.optionDialog = false;
         this.personaNuevoDialog = true;
         this.personaForm.get('pf_nroDoc')?.disable();
-        console.log("mod data: ", this.persona)
+        // console.log("mod data: ", this.persona)
         this.personaForm.reset();
         this.personaForm.patchValue({
             pf_id: this.persona.perid,
@@ -277,29 +279,27 @@ export class UsuarioPersonaComponent implements OnInit {
             pf_tipPais: new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre),
             pf_tipCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais)
         });
-        console.log("personForm mod: ", this.personaForm)
+        // console.log("personForm mod: ", this.personaForm)
     }
 
     cargarArchivos(currentFiles: File[]): void {
         if (currentFiles) {
-            console.log("curr", currentFiles)
-        const formData = new FormData();
-        for (let i = 0; i < currentFiles.length; i++) {
-            const file: File = currentFiles[i];
-            formData.append('files[]', file, file.name);
-            formData.forEach((value, key) => {
-            console.log(key, value);
-            });
-        }
-        
-        this.uploadService.uploadFiles(formData).subscribe(
-            (data: any) => {
-            this.messageService.add({ severity: 'info', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 2000 });
-            },
-            (error: any) => {
-            console.error('Error en la carga:', error);
+            const formData = new FormData();
+            for (let i = 0; i < currentFiles.length; i++) {
+                const file: File = currentFiles[i];
+                formData.append('files[]', file, file.name);
             }
-        );
+            this.uploadService.uploadFiles(formData).subscribe(
+                (data: any) => {
+                    // Limpiar el componente FileUpload después de cargar los archivos
+                    this.fileUpload.clear();
+    
+                    this.messageService.add({ severity: 'success', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 2000 });
+                },
+                (error: any) => {
+                    console.error('Error en la carga:', error);
+                }
+            );
         } else {
             console.warn('No se seleccionaron archivos.');
         }
@@ -366,8 +366,6 @@ export class UsuarioPersonaComponent implements OnInit {
             else{
                 this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Por favor, debe seleccionar una imagen de perfil.', life: 3000 });
             }
-         
-           
         }
         else {
             if(this.personaForm.invalid){
@@ -378,12 +376,14 @@ export class UsuarioPersonaComponent implements OnInit {
                     control.markAsDirty();
                 })   
             }
+            console.log("Archivos: ", this.archivos);
             if (!this.archivos?.currentFiles && this.personaForm.valid) {
                 this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Registro sin imagen.', life: 3000 });
                 this.tipoUpdate = 4;
                 this.imagenName = '';
             }
             if (this.archivos?.currentFiles && this.personaForm.valid) {
+                // this.messageService.add({ severity: 'info', summary: 'Si selecciono una imagen', detail: 'Registro con imagen.', life: 3000 });
                 this.cargarArchivos(this.archivos.currentFiles);
                 this.tipoUpdate = 2;
                 this.imagenName = this.archivos.currentFiles[0]?.name;
@@ -415,6 +415,7 @@ export class UsuarioPersonaComponent implements OnInit {
             this.personaRegistroModificar.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
 
             this.loading = true;
+            // console.log("Datos antes de modificar: ", this.personaRegistroModificar);
             this.personaService.gestionarPersona(this.personaRegistroModificar).subscribe(
                 (data: any) => {
                     this.personaNuevoDialog = false;
@@ -423,7 +424,6 @@ export class UsuarioPersonaComponent implements OnInit {
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
                     this.fListarPersonas();
                     this.loading = false;
-                    this.archivos.currentFiles.length = 0;
                 },
                 (error: any) => {
                     // console.log("Error: ", error);
