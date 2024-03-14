@@ -14,7 +14,9 @@ import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from
 import { Usuario } from 'src/app/modules/models/usuario';
 // For validations
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { AbstractControl, AsyncValidatorFn, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Component({
     templateUrl: './usuario-persona.component.html',
     providers: [MessageService],
@@ -26,11 +28,13 @@ export class UsuarioPersonaComponent implements OnInit {
     // Variables 
     persona: PersonaExpanded;
     personas: PersonaExpanded[] = [];
+    personasDuplicated: PersonaExpanded[] = [];
     elements: PersonaExpanded[];
     listaPersona: PersonaExpanded[] = [];
     personaRegistro: PersonaExpanded;
     Personas: Persona[] = [];
     personaRegistroNuevo: Persona;
+    personaRegistroModificar: Persona;
     person: Persona;
 
     // Variables tipo
@@ -91,21 +95,80 @@ export class UsuarioPersonaComponent implements OnInit {
         this.authService.getPerfil().subscribe(user => {
             this.usuario = user[0];
         });
-        // Code to valitations 
+        // Validaciones en los atributos de persona
         this.personaForm = this.formBuilder.group({
-            apellidoPaterno: ['', [Validators.required, Validators.maxLength(5)]],
-            // Agrega otros campos aquí con sus respectivas validaciones
+
+            pf_id: [''],
+            pf_nombres: ['', [Validators.required]],
+            pf_apePat: ['', [Validators.required]],
+            pf_apeMat: [''],
+            pf_tipDoc: ['',[Validators.required]],
+            pf_nroDoc: [{ value: '', disabled: false }, [Validators.required], [this.validarDocumentoExistente()]],
+            pf_fecNac: ['', [Validators.required], [this.validarEdadMinima()]],
+            pf_tipGen: ['', [Validators.required]],
+            pf_direc: ['', [Validators.required]],
+            pf_email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+            pf_celular: ['', [Validators.required]],
+            pf_telefono: [''],
+            pf_tipoEstCivil: ['', [Validators.required]],
+            pf_tipPais: ['', [Validators.required]],
+            pf_tipCiudad: ['', [Validators.required]],
         });
 
         this.loading = true;
     }
+    
+    validarEdadMinima(): AsyncValidatorFn {
+        return (control: AbstractControl): Promise<ValidationErrors | null> => {
+          return new Promise((resolve) => {
+            const fechaNacimientoStr: string = control.value; // Obtiene la fecha de nacimiento como una cadena de texto
+            const fechaNacimiento: Date = new Date(fechaNacimientoStr); // Parsea la fecha de nacimiento a un objeto de fecha
+      
+            if (!fechaNacimiento || isNaN(fechaNacimiento.getTime())) {
+              resolve({ formatoFechaInvalido: true }); // Devuelve un objeto de error indicando que el formato de fecha es inválido
+            }
+      
+            // Comprueba si el año de nacimiento es menor a 2009
+            if (fechaNacimiento.getFullYear() > 2009) {
+              resolve({ edadMinima: true }); // Devuelve un objeto de error indicando que la edad es menor que 15 años
+            }
+      
+            resolve(null); // Si la fecha cumple con los requisitos, devuelve null (sin errores)
+          });
+        };
+      }
+    
+    // Método para crear un validador asíncrono para verificar si un número de documento ya existe
+    validarDocumentoExistente(): AsyncValidatorFn {
+        // Se llama al método para obtener la lista de personas
+        this.fListarPersonas();
+        
+        // Se retorna una función que actúa como validador asíncrono
+        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
+            // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
+            const numeroDocumento = control.value;
+            // console.log('Número de documento:', numeroDocumento);
+
+            // Si el número de documento está vacío, no se realiza ninguna validación
+            if (!numeroDocumento) {
+                return of(null); // Se devuelve un observable que emite null
+            }
+            
+            // Se verifica si algún elemento en la lista de personas tiene el mismo número de documento
+            const existe = this.personasDuplicated.some(persona => persona.pernrodoc === numeroDocumento);
+            
+            // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
+            return of(existe ? { documentoExistente: true } : null);
+    };
+}
 
     fListarPersonas() {
         this.personaService.ListarPersona().subscribe(
             (result: any) => {
                 this.elements = result;
                 this.personas = this.elements.map(item => this.fOrganizarDatosPersona(item));
-                // console.log("All persons: ",this.personas)
+                this.personasDuplicated = this.personas;
+                console.log("All persons: ",this.personasDuplicated)
                 this.loading = false;
             }
         );
@@ -156,6 +219,7 @@ export class UsuarioPersonaComponent implements OnInit {
         const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
         return fecha;
     }
+    
 
     fLlenarTipoCombo() {
         this.personaService.getTipoCiudad().subscribe((data: any) => {
@@ -191,139 +255,179 @@ export class UsuarioPersonaComponent implements OnInit {
     modificarPersona(data: PersonaExpanded) {
         this.fLlenarTipoCombo();
         this.persona = { ...data };
-        this.personaDialog = true;
-        this.TipoCiudadSeleccionado = new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais);
-        this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(this.persona.datos[0].perestcivil, this.persona.datos[0].estadocivilnombre);
-        this.TipoGeneroSeleccionado = new TipoGenero(this.persona.pergenero, this.persona.generonombre);
-        this.TipoDocumentoSeleccionado = new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre);
-        this.TipoPaisSeleccionado = new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre);
-        console.log("mod ciudad: ", this.TipoCiudadSeleccionado)
-        this.persona.perfecnac = new Date(this.persona.perfecnac);
         this.optionDialog = false;
+        this.personaNuevoDialog = true;
+        this.personaForm.get('pf_nroDoc')?.disable();
+        console.log("mod data: ", this.persona)
+        this.personaForm.reset();
+        this.personaForm.patchValue({
+            pf_id: this.persona.perid,
+            pf_nombres: this.persona.pernombres,
+            pf_apePat: this.persona.perapepat,
+            pf_apeMat: this.persona.perapemat,
+            pf_tipDoc: new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre),
+            pf_nroDoc: this.persona.pernrodoc,
+            pf_fecNac: new Date(this.persona.perfecnac),
+            pf_tipGen: new TipoGenero(this.persona.pergenero, this.persona.generonombre),
+            pf_direc: this.persona.datos[0].perdirec,
+            pf_email: this.persona.datos[0].peremail,
+            pf_celular: this.persona.datos[0].percelular,
+            pf_telefono: this.persona.datos[0].pertelefono,
+            pf_tipoEstCivil: new TipoEstadoCivil(this.persona.datos[0].perestcivil, this.persona.datos[0].estadocivilnombre),
+            pf_tipPais: new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre),
+            pf_tipCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais)
+        });
+        console.log("personForm mod: ", this.personaForm)
     }
 
+    cargarArchivos(currentFiles: File[]): void {
+        if (currentFiles) {
+            console.log("curr", currentFiles)
+        const formData = new FormData();
+        for (let i = 0; i < currentFiles.length; i++) {
+            const file: File = currentFiles[i];
+            formData.append('files[]', file, file.name);
+            formData.forEach((value, key) => {
+            console.log(key, value);
+            });
+        }
+        
+        this.uploadService.uploadFiles(formData).subscribe(
+            (data: any) => {
+            this.messageService.add({ severity: 'info', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 2000 });
+            },
+            (error: any) => {
+            console.error('Error en la carga:', error);
+            }
+        );
+        } else {
+            console.warn('No se seleccionaron archivos.');
+        }
+    }
+  
     enviarFormulario() {
+        
         if (this.optionDialog) {
-            if (this.archivos.currentFiles) {
-                this.imagenName = this.archivos.currentFiles[0].name;
-                const formData = new FormData();
-                for (let i = 0; i < this.archivos.currentFiles.length; i++) {
-                    const file: File = this.archivos.currentFiles[i];
-                    formData.append('files[]', file, file.name);
-                    formData.forEach((value, key) => {
-                        console.log(key, value);
-                    });
-                }
-                this.uploadService.uploadFiles(formData).subscribe(
+            // console.log("True: ", this.optionDialog)
+            // this.messageService.add({ severity: 'info', summary: 'Verdad', detail: 'True', life: 2000 });
+            if(this.personaForm.invalid){
+                // console.log("personaForm.value: ", this.personaForm.value);
+                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+                return Object.values(this.personaForm.controls).forEach(control=>{
+                    control.markAllAsTouched();
+                    control.markAsDirty();
+                })   
+            }
+            if (this.archivos?.currentFiles && this.personaForm.valid) {
+                this.cargarArchivos(this.archivos.currentFiles);
+                // console.log("personaForm.value: ", this.personaForm.value, this.archivos.currentFiles.file);
+                this.personaRegistroNuevo = new Persona();
+                this.personaRegistroNuevo.tipo = 1;
+                this.personaRegistroNuevo.perid = null;
+                this.personaRegistroNuevo.perusureg = this.usuario.usuname;
+                this.personaRegistroNuevo.perapepat = this.personaForm.value.pf_apePat;
+                this.personaRegistroNuevo.perapemat = this.personaForm.value.pf_apeMat;
+                this.personaRegistroNuevo.pernombres = this.personaForm.value.pf_nombres;
+                this.personaRegistroNuevo.pernrodoc = this.personaForm.value.pf_nroDoc;
+                this.personaRegistroNuevo.perfecnac = this.personaForm.value.pf_fecNac;
+                this.personaRegistroNuevo.percelular = this.personaForm.value.pf_celular;
+                this.personaRegistroNuevo.pertelefono = this.personaForm.value.pf_telefono;
+                this.personaRegistroNuevo.peremail = this.personaForm.value.pf_email;
+                this.personaRegistroNuevo.perdirec = this.personaForm.value.pf_direc;
+                this.personaRegistroNuevo.perfoto = this.archivos.currentFiles[0]?.name;
+                this.personaRegistroNuevo.perestcivil = this.personaForm.value.pf_tipoEstCivil.estadocivilid;
+                this.personaRegistroNuevo.estadocivilnombre = this.personaForm.value.pf_tipoEstCivil.estadocivilnombre;
+                this.personaRegistroNuevo.pertipodoc = this.personaForm.value.pf_tipDoc.tipodocid;
+                this.personaRegistroNuevo.tipodocnombre = this.personaForm.value.pf_tipDoc.tipodocid;
+                this.personaRegistroNuevo.pergenero = this.personaForm.value.pf_tipGen.generoid;
+                this.personaRegistroNuevo.generonombre = this.personaForm.value.pf_tipGen.generonombre;
+                this.personaRegistroNuevo.perpais = this.personaForm.value.pf_tipPais.paisid;
+                this.personaRegistroNuevo.paisnombre = this.personaForm.value.pf_tipPais.paisnombre;
+                this.personaRegistroNuevo.perciudad = this.personaForm.value.pf_tipCiudad.ciudadid;
+                this.personaRegistroNuevo.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
+                // console.log("Add Person: ", this. personaRegistroNuevo)
+                this.loading = true;
+                this.personaService.gestionarPersona(this.personaRegistroNuevo).subscribe(
                     (data: any) => {
-                        this.personaDialog = false;
+                        this.personaNuevoDialog = false;
                         this.optionDialog = false;
-                        this.messageService.add({ severity: 'info', summary: 'Registro de Imagen!', detail: 'La imagen se registró correctamente en el sistema.', life: 2000 });
-                        this.ListarPersonas();
+                        this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
+                        this.fListarPersonas();
+                        this.archivos.currentFiles.length = 0;
+                        this.loading = false;
                     },
                     (error: any) => {
-                        console.error('Error en la carga:', error);
+                        console.error("Error: ", error['message']);
+                        this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
+                        this.loading = false;
                     }
                 );
-            } else {
-                console.warn('No se seleccionaron archivos.');
+            } 
+            else{
+                this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Por favor, debe seleccionar una imagen de perfil.', life: 3000 });
             }
-            this.personaRegistroNuevo = { ...this.person };
-            this.personaRegistroNuevo.tipo = 1;
-            this.personaRegistroNuevo.perid = null;
-            this.personaRegistroNuevo.perusureg = this.usuario.usuname;
-            this.personaRegistroNuevo.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
-            this.personaRegistroNuevo.estadocivilnombre = this.TipoEstadoCivilSeleccionado.estadocivilnombre;
-            this.personaRegistroNuevo.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
-            this.personaRegistroNuevo.pergenero = this.TipoGeneroSeleccionado.generoid;
-            this.personaRegistroNuevo.perpais = this.TipoPaisSeleccionado.paisid;
-            this.personaRegistroNuevo.paisnombre = this.TipoPaisSeleccionado.paisnombre;
-            this.personaRegistroNuevo.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            this.personaRegistroNuevo.ciudadnombre = this.TipoCiudadSeleccionado.ciudadnombre;
-            this.personaRegistroNuevo.perfoto = this.imagenName;
-            console.log("Add Person: ", this. personaRegistroNuevo)
-            this.personaService.gestionarPersona(this.personaRegistroNuevo).subscribe(
+         
+           
+        }
+        else {
+            if(this.personaForm.invalid){
+                // console.log("personaForm.value: ", this.personaForm.value);
+                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+                return Object.values(this.personaForm.controls).forEach(control=>{
+                    control.markAllAsTouched();
+                    control.markAsDirty();
+                })   
+            }
+            if (!this.archivos?.currentFiles && this.personaForm.valid) {
+                this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Registro sin imagen.', life: 3000 });
+                this.tipoUpdate = 4;
+                this.imagenName = '';
+            }
+            if (this.archivos?.currentFiles && this.personaForm.valid) {
+                this.cargarArchivos(this.archivos.currentFiles);
+                this.tipoUpdate = 2;
+                this.imagenName = this.archivos.currentFiles[0]?.name;
+            }
+
+            this.personaRegistroModificar = new Persona();
+            this.personaRegistroModificar.tipo = this.tipoUpdate;
+            this.personaRegistroModificar.perid = this.personaForm.value.pf_id;
+            this.personaRegistroModificar.perusumod = this.usuario.usuname;
+            this.personaRegistroModificar.perapepat = this.personaForm.value.pf_apePat;
+            this.personaRegistroModificar.perapemat = this.personaForm.value.pf_apeMat;
+            this.personaRegistroModificar.pernombres = this.personaForm.value.pf_nombres;
+            this.personaRegistroModificar.pernrodoc = this.personaForm.value.pf_nroDoc;
+            this.personaRegistroModificar.perfecnac = this.personaForm.value.pf_fecNac;
+            this.personaRegistroModificar.percelular = this.personaForm.value.pf_celular;
+            this.personaRegistroModificar.pertelefono = this.personaForm.value.pf_telefono;
+            this.personaRegistroModificar.peremail = this.personaForm.value.pf_email;
+            this.personaRegistroModificar.perdirec = this.personaForm.value.pf_direc;
+            this.personaRegistroModificar.perfoto = this.imagenName;
+            this.personaRegistroModificar.perestcivil = this.personaForm.value.pf_tipoEstCivil.estadocivilid;
+            this.personaRegistroModificar.estadocivilnombre = this.personaForm.value.pf_tipoEstCivil.estadocivilnombre;
+            this.personaRegistroModificar.pertipodoc = this.personaForm.value.pf_tipDoc.tipodocid;
+            this.personaRegistroModificar.tipodocnombre = this.personaForm.value.pf_tipDoc.tipodocid;
+            this.personaRegistroModificar.pergenero = this.personaForm.value.pf_tipGen.generoid;
+            this.personaRegistroModificar.generonombre = this.personaForm.value.pf_tipGen.generonombre;
+            this.personaRegistroModificar.perpais = this.personaForm.value.pf_tipPais.paisid;
+            this.personaRegistroModificar.paisnombre = this.personaForm.value.pf_tipPais.paisnombre;
+            this.personaRegistroModificar.perciudad = this.personaForm.value.pf_tipCiudad.ciudadid;
+            this.personaRegistroModificar.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
+
+            this.loading = true;
+            this.personaService.gestionarPersona(this.personaRegistroModificar).subscribe(
                 (data: any) => {
                     this.personaNuevoDialog = false;
                     this.optionDialog = false;
-                    this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
-                    // this.ListarPersonas();
+                    this.personaRegistroModificar = new Persona();
+                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
                     this.fListarPersonas();
-                },
-                (error: any) => {
-                    console.error("Error: ", error['message']);
-                    this.messageService.add({ key: 'bc', severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
-                }
-            );
-        }
-        else {
-            if (this.archivos?.currentFiles) {
-                this.imagenName = this.archivos.currentFiles[0].name;
-                this.tipoUpdate = 2;
-                const formData = new FormData();
-                for (let i = 0; i < this.archivos.currentFiles.length; i++) {
-                    const file: File = this.archivos.currentFiles[i];
-                    formData.append('files[]', file, file.name);
-                    formData.forEach((value, key) => {
-                        console.log(key, value);
-                    });
-                }
-                this.uploadService.uploadFiles(formData).subscribe(
-                    (data: any) => {
-                        this.personaDialog = false;
-                        this.optionDialog = false;
-                        this.messageService.add({ key: 'bc', severity: 'info', summary: 'Registro de Imagen!', detail: 'La imagen se registró correctamente en el sistema.', life: 2000 });
-                        // this.ListarPersonas();
-                        this.fListarPersonas();
-                    },
-                    (error: any) => {
-                        console.error('Error en la carga:', error);
-                    }
-                );
-            } else {
-                this.tipoUpdate = 4;
-                this.imagenName = null;
-            }
-
-            // this.personaRegistro = { ...this.persona };
-            this.person = new Persona();
-            this.person.tipo = this.tipoUpdate;
-            this.person.perid = this.persona.perid;
-            this.person.pernomcompleto = this.persona.pernomcompleto;
-            this.person.perapepat = this.persona.perapepat;
-            this.person.perapemat = this.persona.perapemat;
-            this.person.pernombres = this.persona.pernombres;
-            this.person.pernrodoc = this.persona.pernrodoc;
-            this.person.perfoto = this.imagenName;
-            this.person.perusumod = this.usuario.usuname;
-            this.person.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
-            this.person.estadocivilnombre = this.TipoEstadoCivilSeleccionado.estadocivilnombre;
-            this.person.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
-            this.person.pergenero = this.TipoGeneroSeleccionado.generoid;
-            this.person.perpais = this.TipoPaisSeleccionado.paisid;
-            this.person.paisnombre = this.TipoPaisSeleccionado.paisnombre;
-            this.person.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            this.person.ciudadnombre = this.TipoCiudadSeleccionado.ciudadnombre;
-            this.person.perfecnac = this.persona.perfecnac;
-            this.person.peremail = this.persona.datos[0].peremail;
-            this.person.perdirec = this.persona.datos[0].perdirec;
-            this.person.percelular = this.persona.datos[0].percelular;
-            this.person.pertelefono = this.persona.datos[0].pertelefono;
-            console.log("update person: ", this.person)
-            this.loading = true;
-            this.personaService.gestionarPersona(this.person).subscribe(
-                (data: any) => {
-                    this.personaDialog = false;
-                    this.optionDialog = false;
-                    this.person = new Persona();
-                    this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
-                    this.fListarPersonas();
-                    // this.ListarPersonas();
                     this.loading = false;
+                    this.archivos.currentFiles.length = 0;
                 },
                 (error: any) => {
-                    console.log("Error: ", error);
-                    this.messageService.add({ key: 'bc', severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
+                    // console.log("Error: ", error);
+                    this.messageService.add({severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
                     this.loading = false;
                 }
             );
@@ -355,13 +459,15 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     NuevoPersona() {
-        this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === 1);
+        // this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === 1);
         this.person = new Persona();
-        this.TipoPaisSeleccionado = new TipoPais(1, "Ninguno");
-        this.TipoCiudadSeleccionado = new TipoCiudad(1, "Ninguno", 1);
-        this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(1, "Ninguno");
-        this.TipoGeneroSeleccionado = new TipoGenero(0, "Ninguno");
-        this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
+        // this.TipoPaisSeleccionado = new TipoPais(1, "Ninguno");
+        // this.TipoCiudadSeleccionado = new TipoCiudad(1, "Ninguno", 1);
+        // this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(1, "Ninguno");
+        // this.TipoGeneroSeleccionado = new TipoGenero(0, "Ninguno");
+        // this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
+        this.personaForm.reset();
+        this.personaForm.get('pf_nroDoc')?.enable();
         this.personaNuevoDialog = true;
         this.optionDialog = true;
     }
