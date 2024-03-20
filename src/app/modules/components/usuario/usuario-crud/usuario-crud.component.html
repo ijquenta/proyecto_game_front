@@ -6,57 +6,80 @@
 
 <p-dialog [(visible)]="usuarioDialog" header="Usuario" [modal]="true" class="p-fluid">
 
-    <ng-template pTemplate="content">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input type="text" id="nombres" pInputText [(ngModel)]="usuario.usuname">
-                    <label for="nombres">Nombre de Usuario</label>
-                </span>
-            </div>
-            <div class="fild col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown [options]="tipoPersona" [(ngModel)]="tipoPersonaSeleccionada" appendTo="body"
-                        optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
-                        placeholder="Seleccionar Persona">
-                        <ng-template pTemplate="selectedItem">
-                            <div class="flex align-items-center gap-2" *ngIf="tipoPersonaSeleccionada">
-                                <div>{{ tipoPersonaSeleccionada.pernomcompleto }}</div>
-                            </div>
-                        </ng-template>
-                        <ng-template let-persona pTemplate="item">
-                            <div class="flex align-items-center gap-2">
-                                <div>{{ persona.pernomcompleto }} - {{persona.pernrodoc}} </div>
-                            </div>
-                        </ng-template>
-                    </p-dropdown>
-                    <label for="tipoPersona">Elegir Persona</label>
-                </span>
-            </div>
+    <!-- <ng-template pTemplate="content"> -->
+    <form [formGroup]="usuarioForm" novalidate>
+            <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p>
+            <hr>
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <input type="text" id="nombres" pInputText formControlName="uf_usuname" [ngClass]="{ 'ng-dirty': this.usuarioForm.get('uf_usuname').touched, 'valid-field': this.usuarioForm.get('uf_usuname').valid}">
+                        <label for="nombres">Nombre de Usuario</label>
+                    </span>
+                    <small class="p-error block" *ngIf="usuarioForm.get('uf_usuname').invalid && usuarioForm.get('uf_usuname').dirty">
+                        <span *ngIf="usuarioForm.get('uf_usuname').errors?.required">El nombre de usuario es requerido.</span>
+                        (*)
+                    </small>
+                    <small class="p-success block" *ngIf="usuarioForm.get('uf_usuname')?.valid"> El nombre de usuario es valido. </small>
+                </div>
+                <div class="fild col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-dropdown [options]="tipoPersona" formControlName="uf_tipPerSel" appendTo="body"
+                            optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
+                            placeholder="Seleccionar Persona">
 
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown id="tipoRol" [autoDisplayFirst]="false" appendTo="body" [options]="tipoRol"
-                        [(ngModel)]="tipoRolSeleccionada" optionLabel="rolnombre"></p-dropdown>
-                    <label for="tipoRol">Eligir Rol</label>
-                </span>
+                            <ng-template let-persona pTemplate="item">
+                                <div class="flex align-items-center">
+                                    <div> <p-avatar image="http://127.0.0.1:5001/static/uploads/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar></div>
+                                    <div> {{ persona.pernomcompleto }} - Nro: {{persona.pernrodoc}} </div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <label for="tipoPersona">Elegir Persona</label>
+                    </span>
+                    <small class="p-success block" *ngIf="usuarioForm.get('uf_tipPerSel').valid">
+                        La persona seleccionada es valida.
+                    </small>
+                    <small class="p-error block" *ngIf="usuarioForm.get('uf_tipPerSel').invalid && usuarioForm.get('uf_tipPerSel').touched">
+                        <span *ngIf="usuarioForm.get('uf_tipPerSel').errors?.required">La persona es requerida.</span>
+                        (*)
+                    </small>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-dropdown id="tipoRol" formControlName="uf_tipRolSel" [autoDisplayFirst]="false" appendTo="body" [options]="tipoRol"
+                             optionLabel="rolnombre"></p-dropdown>
+                        <label for="tipoRol">Eligir Rol</label>
+                    </span>
+                    <small class="p-success block" *ngIf="usuarioForm.get('uf_tipRolSel').valid">
+                        El rol es valido.
+                    </small>
+                    <small class="p-error block" *ngIf="usuarioForm.get('uf_tipRolSel').invalid && usuarioForm.get('uf_tipRolSel').touched">
+                        <span *ngIf="usuarioForm.get('uf_tipRolSel').errors?.required">El rol es requerido.</span>
+                        (*)
+                    </small>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <input type="email" id="email" pInputText formControlName="uf_email" [ngClass]="{ 'ng-dirty': this.usuarioForm.get('uf_email').touched, 'valid-field': this.usuarioForm.get('uf_email').valid}">
+                        <label for="email">Correo Electrónico</label>
+                    </span>
+                    <small class="p-error block" *ngIf="usuarioForm.get('uf_email').invalid && usuarioForm.get('uf_email').dirty">
+                        <span *ngIf="usuarioForm.get('uf_email').errors?.required">El correo electrónico es requerido. (*)</span>
+                        <span *ngIf="usuarioForm.get('uf_email').errors?.pattern">El formato del correo electrónico es inválido. </span>
+                    </small>
+                    <small class="p-success block" *ngIf="usuarioForm.get('uf_email')?.valid"> El correo electrónico es válido.</small>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <textarea inputId="descripcion" rows="1" cols="30" formControlName="uf_descripcion"
+                            appendTo="body" pInputTextarea></textarea>
+                        <label for="descripcion">Observación</label>
+                    </span>
+                </div>
             </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input type="text" id="email" pInputText [(ngModel)]="usuario.usuemail">
-                    <label for="email">Correo Electrónico</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <textarea inputId="descripcion" rows="1" cols="30" [(ngModel)]="usuario.usudescripcion"
-                        appendTo="body" pInputTextarea></textarea>
-                    <label for="descripcion">Observación</label>
-                </span>
-            </div>
-        </div>
-    </ng-template>
+        </form>
+    <!-- </ng-template> -->
 
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
@@ -94,7 +117,7 @@
                     <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
                         <!-- <p-dropdown [options]="sortOptions" placeholder="Ordenar por Rol" (onChange)="onSortChange($event)"  [emptyMessage]="'No se encontraron resultados'"></p-dropdown> -->
                         <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="openNew()" pTooltip="Registrar usuario nuevo"></button>
+                            (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"></button>
                         <span class="p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
@@ -176,7 +199,7 @@
             <div class="surface-section px-4 py-8 md:px-6 lg:px-8">
                 <div class="text-center" style="background: radial-gradient(50% 109137.91% at 50% 50%, rgba(233, 30, 99, 0.1) 0%, rgba(254, 244, 247, 0) 100%);"><span class="bg-white text-pink-500 font-bold text-2xl inline-block px-3">404</span></div>
                 <div class="flex flex-column lg:flex-row justify-content-center align-items-center gap-7">
-                    
+
                     <div class="text-center lg:text-right">
                         <div class="mt-6 mb-3 font-bold text-6xl text-900">¿Estás perdido?</div>
                         <p class="text-700 text-3xl mt-0 mb-6">Lo sentimos, no pudimos encontrar la página.

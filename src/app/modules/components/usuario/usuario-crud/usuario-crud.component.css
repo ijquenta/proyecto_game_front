@@ -51,3 +51,11 @@
 .mr-5 {
   margin-right: 0rem !important;
 }
+
+.valid-field {
+  border-color: #29c76f;
+}
+
+.p-success {
+  color: #29c76f;
+}

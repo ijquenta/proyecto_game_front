@@ -31,6 +31,9 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { DataViewModule } from 'primeng/dataview';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TagModule } from 'primeng/tag';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 @NgModule({
     imports: [
         DataViewModule,
@@ -58,7 +61,10 @@ import { TagModule } from 'primeng/tag';
         PasswordModule,
         ProgressSpinnerModule,
         SplitButtonModule,
-        TagModule
+        TagModule,
+        ReactiveFormsModule,
+        AvatarModule,
+        AvatarGroupModule
     ],
     declarations: [UsuarioCrudComponent],
     providers: [UsuarioService, ReporteService]
