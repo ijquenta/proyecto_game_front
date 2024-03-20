@@ -25,3 +25,29 @@
 .progress-spinner .pi-spinner {
     background-color: transparent;
 }
+
+
+/* Estilos CSS para controlar el tamaño y el recorte de la imagen */
+.w-9 {
+  width: 9rem; /* Tamaño de ancho para pantallas pequeñas */
+}
+
+.md\\:w-10rem {
+  width: 10rem; /* Tamaño de ancho para pantallas medianas */
+}
+
+.h-9 {
+  height: 9rem; /* Tamaño de altura para pantallas pequeñas */
+}
+
+.md\\:h-10rem {
+  height: 10rem; /* Tamaño de altura para pantallas medianas */
+}
+
+.object-cover {
+  object-fit: cover; /* Recortar la imagen para ajustarla al tamaño especificado */
+}
+
+.mr-5 {
+  margin-right: 0rem !important;
+}

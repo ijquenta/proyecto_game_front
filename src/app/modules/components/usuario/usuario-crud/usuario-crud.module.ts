@@ -29,7 +29,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 // import { FileUploadModule } from 'primeng/fileupload';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { DataViewModule } from 'primeng/dataview';
-
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { TagModule } from 'primeng/tag';
 @NgModule({
     imports: [
         DataViewModule,
@@ -55,7 +56,9 @@ import { DataViewModule } from 'primeng/dataview';
 		CascadeSelectModule,
 		MultiSelectModule,
         PasswordModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        SplitButtonModule,
+        TagModule
     ],
     declarations: [UsuarioCrudComponent],
     providers: [UsuarioService, ReporteService]

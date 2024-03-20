@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 // Services
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
@@ -8,16 +8,8 @@ import { Usuarios } from 'src/app/modules/models/usuarios';
 import { Usuario,  } from 'src/app/modules/models/usuario';
 import { TipoPersona, TipoPersona2, TipoRol } from 'src/app/modules/models/diccionario';
 import { AuthService } from 'src/app/services/auth.service';
-
-
-interface FileWithUrl extends File {
-    url: string;
-}
-interface UploadEvent {
-    originalEvent: Event;
-    files: FileWithUrl[];
-}
-
+// For validations
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     templateUrl: './usuario-crud.component.html',
@@ -26,13 +18,11 @@ interface UploadEvent {
 })
 export class UsuarioCrudComponent implements OnInit {
 
-    // Variables
-    uploadedFiles: FileWithUrl[] = [];
+    layout: string = 'list';
     // Tipo Persona
     tipoPersona: TipoPersona2[] = [];
     tipoPersonaSeleccionada:  TipoPersona2;
     loading: boolean = false;
-    // Usuario
     usuarios: Usuario[] = [];
     usuario: Usuario;
     datosUsurio: Usuario;
@@ -45,121 +35,88 @@ export class UsuarioCrudComponent implements OnInit {
     tipoRolSeleccionada: TipoRol;
     // Variables any
     errors: any;
-
     eliminarUsuarioDialog: boolean = false;
-
-
-
     productDialog: boolean = false;
-
     deleteProductDialog: boolean = false;
-
     deleteProductsDialog: boolean = false;
-
     products: Usuario[] = [];
-
-    // product: Product = {};
     product: Usuarios = {};
-
-
-
     selectedProducts: Usuario[] = [];
-
     submitted: boolean = false;
-
     cols: any[] = [];
-
     statuses: any[] = [];
-
     rowsPerPageOptions = [5, 10, 20];
-
-
-
-    layout: string = 'list';
     customers!: any[];
+    // Variables for Dataview
+    sortOrder: number = 0;
+    sortField: string = '';
+    filteredUsuarios: any[] = [];
+    searchText: string = '';
+    items: MenuItem[];
+    // --------- Variables para validaciones ---------
+    usuarioForm: FormGroup;
+
     constructor(
-                // private productService: ProductService,
                 private messageService: MessageService,
                 private usuarioService: UsuarioService,
                 private authService: AuthService,
-                public reporte: ReporteService,)
-                {
-                    // this.tipoPersonaSeleccionada = new TipoPersona2(0,'',0);
-                }
-
-                // onUpload(event:UploadEvent) {
-                //     for(let file of event.files) {
-                //         this.uploadedFiles.push(file);
-                //     }
-
-                //     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
-                // }
+                public reporte: ReporteService,
+                private formBuilder: FormBuilder
+                )
+                {}
     ngOnInit() {
-
-        // console.log("ngOnInit")Roles
-        // this.usuarioService.getUsuario().then(data => this.listaUsuarios = data);
-        // console.log(this.listaUsuarios);
         this.loading = true;
         this.listarUsuarios();
+
         this.usuarioService.getTipoPersona().subscribe(
             (result: any) => {
                 this.tipoPersona = result;
-                // console.log("Tipo Persona: ", this.tipoPersona)
             }
         )
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result;
-                // console.log("Tipo Rol: ", this.tipoRol);
             }
         )
-        this.cols = [
-            { field: 'product', header: 'Product' },
-            { field: 'price', header: 'Price' },
-            { field: 'category', header: 'Category' },
-            { field: 'rating', header: 'Reviews' },
-            { field: 'inventoryStatus', header: 'Status' }
-        ];
-
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
-        ];
 
         this.authService.usuario$.subscribe((user => {
             if (user) {
                 if (Array.isArray(user) && user.length > 0) {
                     this.datosUsurio = user[0];
-                    // console.log("PRUEBA USUARIO IVANNN$: ", this.datosUsurio);
-                } else {
-                    // Manejar el caso en que user no es un array o es un array vacío
-                    // console.error("El objeto 'user' no es un array o es un array vacío.");
-                }
-            } else {
-                // Manejar el caso en que user es null
-                // console.error("El objeto 'user' es nulo.");
+                } 
             }
         }));
-    }
-    listarUsuarios(){
 
+        this.usuarioForm = this.formBuilder.group({
+            uf_id: [''],
+            uf_usuname: ['', Validators.required],
+            uf_tipPerSel: ['', Validators.required],
+            uf_tipRolSel: ['', Validators.required],
+            uf_email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+            uf_descripcion: ['']
+        })
+    }
+
+    filterUsuarios(){
+        this.filteredUsuarios = this.usuarios.filter(usuario => usuario.pernomcompleto.toLowerCase().includes(this.searchText.toLowerCase()));
+    }
+
+    listarUsuarios(){
         this.usuarioService.listaUsuario().subscribe(
             (result: any) => {
                 this.usuarios = result;
+                this.filteredUsuarios = this.usuarios;
                 this.loading = false;
-                // console.log("Lista Usuarios", this.usuarios)
-                // setTimeout(() => {
-
-                //   }, 1000);
-                // console.log("spinner: ", this.loading);
-
             }
         )
     }
+  
     openNew() {
         this.product = {};
         this.usuario = new Usuario();
+        this.usuarioRegistro = new Usuario();
+        this.tipoPersonaSeleccionada = null;
+        this.tipoRolSeleccionada = null;
         this.submitted = false;
         this.usuarioDialog = true;
         this.optionDialog = true;
@@ -177,7 +134,6 @@ export class UsuarioCrudComponent implements OnInit {
     editarUsuario(data: Usuario){
         this.usuario = { ...data };
         this.usuarioEditar = { ...this.usuario };
-        // console.log("editarUsuario: ",this.usuarioEditar);
         this.tipoPersonaSeleccionada = new TipoPersona2(this.usuario.perid, this.usuario.pernomcompleto, this.usuario.pernrodoc)
         this.tipoRolSeleccionada = new TipoRol(this.usuario.rolid, this.usuario.rolnombre);
         this.usuarioDialog = true;
@@ -202,35 +158,20 @@ export class UsuarioCrudComponent implements OnInit {
         this.selectedProducts = [];
     }
 
-    confirmDelete() {
-        // this.deleteProductDialog = false;
-        // this.products = this.products.filter(val => val.id !== this.product.id);
-        // this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        // this.product = {};
-    }
     confirmarEliminar() {
 
         this.usuarioRegistro = { ...this.usuario};
-        // console.log("EnviarFormulario: ", this.usuarioRegistro);
-        // console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
-        // console.log("tipoRol: ", this.tipoRolSeleccionada);
         this.usuarioRegistro.tipo = 3;
-        // this.usuarioRegistro.perid = this.tipoPersonaSeleccionada.perid;
-        // this.usuarioRegistro.rolid = this.tipoRolSeleccionada.rolid;
         this.usuarioRegistro.usuimagen = null;
-        // this.usuarioRegistro.usuestado = 1;
         this.usuarioRegistro.usuusureg = this.datosUsurio.usuname;
-        // console.log("usuarioRegistro: ", this.usuarioRegistro);
         this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
             (result: any) => {
-                // console.log("gestionarUsuario: ", result);
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Eliminado.', life: 3000});
                 this.eliminarUsuarioDialog = false;
                 this.listarUsuarios();
             },
             (error) => {
                 this.errors = error;
-                // console.log('error', error);
                 this.messageService.add({ severity: 'error', summary: 'Error de proceso', detail: 'Se produjo un error al intentar eliminar el usuario.', life: 3000});
             }
         )
@@ -247,9 +188,6 @@ export class UsuarioCrudComponent implements OnInit {
     enviarFormulario(){
         if(this.optionDialog){
             this.usuarioRegistro = { ...this.usuario};
-            // console.log("EnviarFormulario: ", this.usuarioRegistro);
-            // console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
-            // console.log("tipoRol: ", this.tipoRolSeleccionada);
             this.usuarioRegistro.tipo = 1;
             this.usuarioRegistro.usuid = null;
             this.usuarioRegistro.perid = this.tipoPersonaSeleccionada.perid;
@@ -257,10 +195,8 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
             this.usuarioRegistro.usuusureg = this.datosUsurio.usuname;
-            // console.log("usuarioRegistro: ", this.usuarioRegistro);
             this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (result: any) => {
-                    // console.log("gestionarUsuario: ", result);
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Proceso realizado correctamente.', life: 3000});
                     this.optionDialog = false;
                     this.usuarioDialog = false;
@@ -268,27 +204,20 @@ export class UsuarioCrudComponent implements OnInit {
                 },
                 (error) => {
                     this.errors = error;
-                    // console.log('error', error);
                     this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Se produjo un error al intentar registrar el usuario.', life: 3000});
                 }
             )
         }
         else{
             this.usuarioRegistro = { ...this.usuario};
-            // console.log("EnviarFormulario: ", this.usuarioRegistro);
-            // console.log("tipoPersona: ",this.tipoPersonaSeleccionada);
-            // console.log("tipoRol: ", this.tipoRolSeleccionada);
             this.usuarioRegistro.tipo = 2;
-            // this.usuarioRegistro.usuid = ;
             this.usuarioRegistro.perid = this.tipoPersonaSeleccionada.perid;
             this.usuarioRegistro.rolid = this.tipoRolSeleccionada.rolid;
             this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
             this.usuarioRegistro.usuusureg = this.datosUsurio.usuname;
-            // console.log("usuarioRegistro: ", this.usuarioRegistro);
             this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (result: any) => {
-                    // console.log("gestionarUsuario: ", result);
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Proceso de modificado realizado correctamente.', life: 3000});
                     this.optionDialog = false;
                     this.usuarioDialog = false;
@@ -296,7 +225,6 @@ export class UsuarioCrudComponent implements OnInit {
                 },
                 (error) => {
                     this.errors = error;
-                    // console.log('error', error);
                     this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Se produjo un error al intentar modificar el usuario.', life: 3000});
                 }
             )

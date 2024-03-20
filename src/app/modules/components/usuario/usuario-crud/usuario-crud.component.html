@@ -1,136 +1,12 @@
-<p-toast></p-toast>
-<div class="grid">
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <!-- <h5>Hola, {{datosUsurio?.pernomcompleto}}</h5> -->
-            <!-- <h2>Administrar Usuarios</h2> -->
-            <div *ngIf="loading">
-                <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
-                    animationDuration=".5s"></p-progressSpinner>
-            </div>
-            <!-- <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="right">
-                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button>
-                </ng-template>
-            </p-toolbar> -->
-            <p-table
-                #dt
-                [value]="usuarios"
-                [columns]="cols"
-                responsiveLayout="scroll"
-                [rows]="3"
-                [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true"
-                [rowsPerPageOptions]="[5,10,20]" [showCurrentPageReport]="true"
-                [(selection)]="selectedProducts"
-                selectionMode="multiple"
-                [rowHover]="true"
-                dataKey="id"
-            >
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="openNew()"></button>
-                        <h5 class="m-0">Administrar Usuarios</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" />
-                        </span>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <!-- <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th> -->
-                        <!-- <th pSortableColumn="usuid">Id <p-sortIcon field="usuid"></p-sortIcon></th> -->
-                        <th pSortableColumn="usuname">Usuario<p-sortIcon field="usuname"></p-sortIcon></th>
-                        <th pSortableColumn="pernomcompleto">Persona<p-sortIcon field="pernomcompleto"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="rolnombre">Rol<p-sortIcon field="rolnombre"></p-sortIcon></th>
-                        <th pSortableColumn="usuemail">Correo electrónico<p-sortIcon field="usuemail"></p-sortIcon></th>
-                        <!-- <th>Imagen</th> -->
-                        <th pSortableColumn="usudescripcion">Observación<p-sortIcon field="usudescripcion"></p-sortIcon>
-                        </th>
-                        <th> Registrado por </th>
-                        <th> Modificado por </th>
-                        <th> Opciones</th>
-                        <!-- <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th> -->
-                        <!-- <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon></th> -->
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-usuario>
-                    <tr>
-                        <!-- <td>
-                            <p-tableCheckbox [value]="selectedProducts"></p-tableCheckbox>
-                        </td> -->
-                        <!-- <td style="width:14%; min-width:10rem;"><span class="p-column-title">Codigo</span>
-                            {{usuario.usuid}}
-                        </td> -->
-                        <td style="width:10%; min-width:10rem;">
-                            {{usuario.usuname}}
-                        </td>
-                        <td style="width:22%; min-width:13rem;">
-                            {{usuario.pernomcompleto}}
-                        </td>
-                        <td style="width:10%; min-width:10rem;">
-                            {{usuario.rolnombre}}
-                        </td>
-                        <!-- <td style="width:14%; min-width:10rem;"><span class="p-column-title">Image</span>
-                            <img [src]="'assets/release/images/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" />
-                        </td> -->
-                        <td style="width:14%; min-width:8rem;">
-                            <span class="p-column-title">Contraseña</span>
-                            {{usuario.usuemail}}
-                        </td>
-                        <!-- <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Nombre Completo</span>
-                            {{usuario.usuimagen}}
-                        </td> -->
-                        <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Descripción</span>
-                            {{usuario.usudescripcion}}
-                        </td>
-                        <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Usuario de registro</span>
-                            {{usuario.usuusureg}} {{usuario.usufecreg | date: 'dd/MM/yy HH:mm:ss'}}
-                        </td>
-                        <td style="width:14%; min-width:10rem;">
-                            {{usuario.usuusumod}} {{usuario.usufecmod | date: 'dd/MM/yy HH:mm:ss'}}
-                        </td>
-                        <!-- <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Reviews</span>
-                            <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
-                        </td>
-                        <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Status</span>
-                            <span [class]="'product-badge status-' + (product.inventoryStatus ? product.inventoryStatus.toLowerCase() : '')">{{product.inventoryStatus}}</span>
-                        </td> -->
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-success mr-2"
-                                    (click)="editarUsuario(usuario)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                                    (click)="eliminarUsuario(usuario)"></button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
+<div *ngIf="loading">
+    <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
+        animationDuration=".5s"></p-progressSpinner>
 </div>
-<p-dialog [(visible)]="usuarioDialog" [style]="{width: '70%'}" header="Usuario" [modal]="true" class="p-fluid">
+<p-toast></p-toast>
+
+<p-dialog [(visible)]="usuarioDialog" header="Usuario" [modal]="true" class="p-fluid">
 
     <ng-template pTemplate="content">
-        <!-- <div class="card"> -->
-        <!-- <h5>Formulario Usuario</h5>
-        <p>Debera ingresar todos los campos requeridos para realizar el registro <mark>correctamente</mark> en la base de datos.</p> -->
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
@@ -138,69 +14,18 @@
                     <label for="nombres">Nombre de Usuario</label>
                 </span>
             </div>
-
-            <!-- <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown id="tipoPersona" [autoDisplayFirst]="false"  appendTo="body" [options]="tipoPersona" [(ngModel)]="tipoPersonaSeleccionada" optionLabel="pernomcompleto"></p-dropdown>
-                    <label for="tipoPersona">Eligir Persona</label>
-                </span>
-            </div> -->
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-password [(ngModel)]="usuario.usupassword" appendTo="body" [toggleMask]="true">
-                        <ng-template pTemplate="header">
-                            <h6>Ingresar constraseña</h6>
-                        </ng-template>
-                        <ng-template pTemplate="footer">
-                            <p-divider></p-divider>
-                            <p class="mt-2">Sugerencias</p>
-                            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                                <li>Al menos una minúscula</li>
-                                <li>Al menos una mayuscula</li>
-                                <li>Al menos un número</li>
-                                <li>Mínimo 8 caracteres</li>
-                            </ul>
-                        </ng-template>
-                    </p-password>
-                    <label for="password">Contraseña</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-password [(ngModel)]="usuario.usupasswordhash" appendTo="body" [toggleMask]="true">
-                        <ng-template pTemplate="header">
-                            <h6>Ingresar constraseña</h6>
-                        </ng-template>
-                        <ng-template pTemplate="footer">
-                            <p-divider></p-divider>
-                            <p class="mt-2">Sugerencias</p>
-                            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                                <li>Al menos una minúscula</li>
-                                <li>Al menos una mayuscula</li>
-                                <li>Al menos un número</li>
-                                <li>Mínimo 8 caracteres</li>
-                            </ul>
-                        </ng-template>
-                    </p-password>
-                    <label for="password">Volver a ingresar contraseña</label>
-                </span>
-            </div>
-
             <div class="fild col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown [options]="tipoPersona" [(ngModel)]="tipoPersonaSeleccionada" appendTo="body"
-                        optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto"
-                        [showClear]="true" placeholder="Seleccionar Persona">
+                        optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
+                        placeholder="Seleccionar Persona">
                         <ng-template pTemplate="selectedItem">
                             <div class="flex align-items-center gap-2" *ngIf="tipoPersonaSeleccionada">
-                                <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + selectedCountry.code.toLowerCase()" style="width: 18px"/> -->
                                 <div>{{ tipoPersonaSeleccionada.pernomcompleto }}</div>
                             </div>
                         </ng-template>
                         <ng-template let-persona pTemplate="item">
                             <div class="flex align-items-center gap-2">
-                                <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + country.code.toLowerCase()" style="width: 18px"/> -->
                                 <div>{{ persona.pernomcompleto }} - {{persona.pernrodoc}} </div>
                             </div>
                         </ng-template>
@@ -230,177 +55,10 @@
                     <label for="descripcion">Observación</label>
                 </span>
             </div>
-            <!-- <div class="field col-12">
-                <p-fileUpload name="demo[]"
-                            url="https://www.primefaces.org/cdn/api/upload.php"
-                            (onUpload)="onUpload($event)"
-                            [multiple]="true"
-                            accept="image/*, application/pdf"
-                            maxFileSize="10000000">
-                    <ng-template pTemplate="content">
-                        <ul *ngIf="uploadedFiles.length">
-                            <li *ngFor="let file of uploadedFiles">
-                                {{ file.name }} - {{ file.size }} bytes
-                                <a [href]="file.name" >Ver/Descargar</a>
-                            </li>
-                        </ul>
-                    </ng-template>
-                </p-fileUpload>
-
-            </div> -->
-
-            <!-- <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input type="text" id="numeroDocumento" pInputText [(ngModel)]="persona.pernrodoc">
-                    <label for="numeroDocumento">Número Documento</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-calendar id="fechaNacimiento"  appendTo="body" [(ngModel)]="persona.perfecnac"></p-calendar>
-                    <label for="fechaNacimiento">Fecha Nacimiento</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input type="text" id="numeroCelular" pInputText [(ngModel)]="persona.percelular">
-                    <label for="numeroCelular">Número de Celular</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input type="text" id="numeroTelefono" pInputText [(ngModel)]="persona.pertelefono">
-                    <label for="numeroTelefono">Número de Teléfono</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input type="text" id="correoElectronico" pInputText [(ngModel)]="persona.peremail">
-                    <label for="correoElectronico">Correo Electrónico</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown id="tipoGenero" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoGenero" [(ngModel)]="TipoGeneroSeleccionado" optionLabel="generonombre"></p-dropdown>
-                    <label for="tipoGenero">Tipo Género</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown id="tipoPais" [autoDisplayFirst]="false" (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais" [(ngModel)]="TipoPaisSeleccionado" optionLabel="paisnombre"></p-dropdown>
-                    <label for="tipoPais">Pais</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoCiudad" [(ngModel)]="TipoCiudadSeleccionado" optionLabel="ciudadnombre"></p-dropdown>
-                    <label for="tipoCiudad">Ciudad</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoEstadoCivil" [(ngModel)]="TipoEstadoCivilSeleccionado" optionLabel="estadocivilnombre"></p-dropdown>
-                    <label for="tipoEstadoCivil">Estado Civil</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <textarea inputId="textarea" rotextareaws="3" cols="30" [(ngModel)]="persona.perdirec"  appendTo="body" pInputTextarea></textarea>
-                    <label for="textarea">Dirección de Domicilio</label>
-                </span>
-            </div> -->
-            <!-- <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-autoComplete inputId="autocomplete" appendTo="body" [(ngModel)]="value2" [suggestions]="filteredCountries"
-                    (completeMethod)="searchCountry($event)" field="name"></p-autoComplete>
-                    <label for="autocomplete">AutoComplete</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label p-input-icon-left">
-                    <i class="pi pi-search"></i>
-                    <input type="text" id="lefticon" appendTo="body" pInputText [(ngModel)]="value3">
-                    <label for="lefticon">Left Icon</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label p-input-icon-right">
-                    <input type="text" id="righticon" appendTo="body" pInputText [(ngModel)]="value4">
-                    <label for="righticon">Right Icon</label>
-                    <i class="pi pi-spin pi-spinner"></i>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-calendar inputId="calendar" appendTo="body" [(ngModel)]="value5"></p-calendar>
-                    <label for="calendar">Calendar</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-chips inputId="chips" [(ngModel)]="value6"></p-chips>
-                    <label for="chips">Chips</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-inputMask inputId="inputmask" appendTo="body" mask="99/99/9999" [(ngModel)]="value7"></p-inputMask>
-                    <label for="inputmask">InputMask</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-inputNumber inputId="inputnumber" appendTo="body" [(ngModel)]="value8"></p-inputNumber>
-                    <label for="inputnumber">InputNumber</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon">
-                        <i class="pi pi-user"></i>
-                    </span>
-                    <span class="p-float-label">
-                        <input type="text" inputId="inputgroup" appendTo="body" pInputText [(ngModel)]="value9">
-                        <label for="inputgroup">InputGroup</label>
-                    </span>
-                </div>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" appendTo="body" [options]="cities" [(ngModel)]="value10" optionLabel="name"></p-dropdown>
-                    <label for="dropdown">Dropdown</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-multiSelect inputId="multiselect" [options]="cities" appendTo="body" [(ngModel)]="value11" optionLabel="name" [filter]="false"></p-multiSelect>
-                    <label for="multiselect">MultiSelect</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <textarea inputId="textarea" rows="3" cols="30" [(ngModel)]="value12"  appendTo="body" pInputTextarea></textarea>
-                    <label for="textarea">Textarea</label>
-                </span>
-            </div> -->
         </div>
-        <!-- </div> -->
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <!-- <div class="grid p-fluid my-3 px-3">
-        <div class="col-6 md:col-offset-4 md:col-2">
-            <button pButton pRipple label="Registrar" icon="pi pi-check" class="p-button-rounded p-button" (click)="enviarFormulario()"></button>
-        </div>
-        <div class="col-6 md:col-offset-0 md:col-1">
-            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  (click)="ocultarDialog()"></button>
-        </div>
-    </div> -->
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
             (click)="ocultarDialog()"></button>
         <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
@@ -408,11 +66,10 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="eliminarUsuarioDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+<p-dialog [(visible)]="eliminarUsuarioDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         <span *ngIf="usuario">Esta seguro de eliminar este registro <b>{{usuario.pernomcompleto}}</b>?</span>
-
     </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
@@ -422,165 +79,115 @@
     </ng-template>
 </p-dialog>
 
+
 <div class="grid">
     <div class="col-12">
-    <div class="card">
-        <p-table
-            #dt2
-            [value]="usuarios"
-            dataKey="id"
-            [rows]="3"
-            [showCurrentPageReport]="true"
-            [rowsPerPageOptions]="[5, 10, 20]"
-            [loading]="loading"
-            [paginator]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
-            [tableStyle]="{ 'min-width': '75rem' }"
-            >
-            <ng-template pTemplate="caption">
-                <div class="flex">
-                    <!-- <span class="p-input-icon-left ml-auto">
-                        <i class="pi pi-search"></i>
-                        <input pInputText type="text" (input)="dt2.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
-                    </span> -->
-                </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-                <tr>
-                    <th style="width:22%">Nombre de usuario</th>
-                    <th style="width:22%">Nombre completo</th>
-                    <th style="width:22%">Rol de usuario</th>
-                    <th style="width:22%">Correo electrónico</th>
-                </tr>
-                <tr>
-                    <th>
-                        <p-columnFilter type="text" field="usuname"></p-columnFilter>
-                    </th>
-                    <th>
-                        <p-columnFilter type="text" field="pernomcompleto"></p-columnFilter>
-                    </th>
-                    <th>
-                        <p-columnFilter type="text" field="rolnombre"></p-columnFilter>
-                    </th>
-
-                    <!-- <th>
-                        <p-columnFilter field="representative" matchMode="in" [showMenu]="false">
-                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                <p-multiSelect [ngModel]="value" [options]="representatives" placeholder="Any" (onChange)="filter($event.value)" optionLabel="name">
-                                    <ng-template let-option pTemplate="item">
-                                        <div class="inline-block vertical-align-middle">
-                                            <img [alt]="option.label" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ option.image }}" width="24" class="vertical-align-middle" />
-                                            <span class="ml-1 mt-1">{{ option.name }}</span>
-                                        </div>
-                                    </ng-template>
-                                </p-multiSelect>
-                            </ng-template>
-                        </p-columnFilter>
-                    </th> -->
-                    <th>
-                        <!-- <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
-                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any" [showClear]="true">
-                                    <ng-template let-option pTemplate="item">
-                                        <p-tag [value]="option.value" [severity]="getSeverity(option.label)"></p-tag>
-                                    </ng-template>
-                                </p-dropdown>
-                            </ng-template>
-                        </p-columnFilter> -->
-                        <p-columnFilter type="text" field="usuemail"></p-columnFilter>
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-customer>
-                <tr>
-                    <td>
-                        {{ customer.usuname }}
-                    </td>
-                    <td>
-                        <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" style="width: 20px" /> -->
-                        <!-- <span class="ml-1 vertical-align-middle">{{ customer.pernomcompleto }}</span> -->
-                        {{ customer.pernomcompleto }}
-                    </td>
-                    <td>
-                        <!-- <img [alt]="customer.representative.name" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ customer.representative.image }}" width="32" style="vertical-align: middle" /> -->
-                        <!-- <span class="ml-1 vertical-align-middle">{{ customer.representative.name }}</span> -->
-                        {{ customer.rolnombre }}
-                    </td>
-                    <td>
-                        <!-- <p-tag [value]="customer.status" [severity]="getSeverity(customer.status)"></p-tag> -->
-                        {{ customer.usuemail }}
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="5">No customers found.</td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
-    </div>
-</div>
-
-
-
-<div class="card">
-    <p-dataView #dv [value]="usuarios" [layout]="layout">
-        <ng-template pTemplate="header">
-            <div class="flex justify-content-end">
-                <p-dataViewLayoutOptions [layout]="layout"></p-dataViewLayoutOptions>
+        <div class="card">
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Administrar</span>
+                <span class="text-blue-600"> Usuarios</span>
             </div>
-        </ng-template>
-        <ng-template let-product pTemplate="list" let-products>
-            <div class="grid grid-nogutter">
-                <div class="col-12" *ngFor="let product of usuarios; let first = first">
-                    <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                        <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.name" />
-                        <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                            <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                                <div class="text-2xl font-bold text-900">{{ product.usuname }}</div>
-                                <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
-                                <div class="flex align-items-center gap-3">
-                                    <span class="flex align-items-center gap-2">
-                                        <i class="pi pi-tag"></i>
-                                        <span class="font-semibold">{{ product.usuname }}</span>
-                                    </span>
-                                    <p-tag [value]="product.usuname" [severity]="getSeverity(product)"></p-tag>
+            <p-dataView #dv [value]="filteredUsuarios" [paginator]="true" [rows]="12" filterBy="pernomcompleto"
+                [sortField]="sortField" [sortOrder]="sortOrder" layout="grid"
+                [emptyMessage]="'No se encontraron registros de usuarios.'" [loadingIcon]="'pi pi-spin pi-spinner'">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                        <!-- <p-dropdown [options]="sortOptions" placeholder="Ordenar por Rol" (onChange)="onSortChange($event)"  [emptyMessage]="'No se encontraron resultados'"></p-dropdown> -->
+                        <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()" pTooltip="Registrar usuario nuevo"></button>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
+                                (input)="filterUsuarios()" />
+                        </span>
+                        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                    </div>
+                </ng-template>
+
+                <ng-template let-usuario pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+                            <img [src]="'http://127.0.0.1:5001/static/uploads/' + usuario.perfoto"
+                                [alt]="usuario.perfoto"
+                                class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover"
+                                style="border-radius: 5px;" />
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+                                <div class="font-bold text-xl">{{usuario.pernomcompleto}}</div>
+                                <div>
+                                    <p-tag [rounded]="true">Usuario: {{usuario.usuname}} </p-tag>
+                                </div>
+                                <div class="flex align-items-center mt-2">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-semibold">Usuario: {{usuario.rolnombre}}</span>
                                 </div>
                             </div>
-                            <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                <span class="text-2xl font-semibold">{{ '$' + product.usuname }}</span>
-                                <button pButton icon="pi pi-shopping-cart" class="md:align-self-end mb-2 p-button-rounded" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></button>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-help mr-2"
+                                    tooltipPosition="left" pTooltip="Editar datos de usuario"
+                                    (click)="editarUsuario(usuario)"></button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                    class="p-button-rounded p-button-sm p-button-danger" tooltipPosition="left"
+                                    pTooltip="Eliminar registro de usuario" (click)="eliminarUsuario(usuario)"></button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </ng-template>
-        <ng-template let-product pTemplate="grid" let-products>
-            <div class="grid grid-nogutter">
-                <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let product of products">
-                    <div class="p-4 border-1 surface-border surface-card border-round">
-                        <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                            <span class="flex align-items-center gap-2">
-                                <i class="pi pi-tag"></i>
-                                <span class="font-semibold">{{ product.category }}</span>
-                            </span>
-                            <!-- <p-tag [value]="product.usuname" [severity]="getSeverity(product)"></p-tag> -->
+                </ng-template>
+                <ng-template let-usuario pTemplate="gridItem">
+                    <div class="col-12 md:col-3">
+                        <div class="card m-3 border-2 surface-border">
+                            <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+                                <div class="flex align-items-center">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-semibold">{{usuario.rolnombre}}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-column align-items-center text-center mb-3">
+                                <img [src]="'http://127.0.0.1:5001/static/uploads/' + usuario.perfoto"
+                                    [alt]="usuario.perfoto"
+                                    class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover m-2"
+                                    style="border-radius: 5px;" />
+                                <div class="text-xl font-bold">{{usuario.pernomcompleto}}</div>
+                                <div>
+                                    <p-tag [rounded]="true">Usuario: {{usuario.usuname}} </p-tag>
+                                </div>
+
+                            </div>
+                            <div class="flex justify-content-center">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-help mr-2"
+                                    tooltipPosition="left" pTooltip="Editar datos de usuario"
+                                    (click)="editarUsuario(usuario)"></button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                    class="p-button-rounded p-button-sm p-button-danger" tooltipPosition="right"
+                                    pTooltip="Eliminar registro de usuario" (click)="eliminarUsuario(usuario)"></button>
+                            </div>
                         </div>
-                        <div class="flex flex-column align-items-center gap-3 py-5">
-                            <!-- <img class="w-9 shadow-2 border-round" [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.name" /> -->
-                            <div class="text-2xl font-bold">{{ product.usuname }}</div>
-                            <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
-                        </div>
-                        <div class="flex align-items-center justify-content-between">
-                            <span class="text-2xl font-semibold">{{ '$' + product.usuname }}</span>
-                            <button pButton icon="pi pi-shopping-cart" class="p-button-rounded" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></button>
-                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <div>
+    <div class="block-content">
+        <div class="ng-star-inserted">
+            <div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+                <div class="text-center" style="background: radial-gradient(50% 109137.91% at 50% 50%, rgba(233, 30, 99, 0.1) 0%, rgba(254, 244, 247, 0) 100%);"><span class="bg-white text-pink-500 font-bold text-2xl inline-block px-3">404</span></div>
+                <div class="flex flex-column lg:flex-row justify-content-center align-items-center gap-7">
+                    
+                    <div class="text-center lg:text-right">
+                        <div class="mt-6 mb-3 font-bold text-6xl text-900">¿Estás perdido?</div>
+                        <p class="text-700 text-3xl mt-0 mb-6">Lo sentimos, no pudimos encontrar la página.
+                        </p><button pbutton=""
+                            type="button" label="Go back to home page"
+                            class="p-element p-button-outlined p-button p-component"><span class="p-button-label">Volver a la página principal</span></button>
+                    </div>
+                    <div><img src="https://blocks.primeng.org/assets/images/blocks/feedback/404-rocket.png" alt="Image" class="w-full md:w-28rem">
                     </div>
                 </div>
             </div>
-        </ng-template>
-    </p-dataView>
-</div>
+        </div>
+    </div>
+</div> -->
