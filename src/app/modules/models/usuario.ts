@@ -19,7 +19,7 @@ export class Usuario {
 	usufecreg: any;
 	usuusumod: string = '';
 	usufecmod: any;
-
+    perfoto: string = '';
     //
     pernomcompleto: string | null = null;
     pernrodoc: number | null = null;

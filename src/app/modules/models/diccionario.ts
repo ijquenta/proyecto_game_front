@@ -242,9 +242,11 @@ export class TipoPersona2 {
     perid: number = 0;
     pernomcompleto: string = '';
     pernrodoc: number = 0;
-    constructor(perid: number, pernomcompleto: string, pernrodoc: number) {
+    perfoto: string = '';
+    constructor(perid: number, pernomcompleto: string, pernrodoc: number, perfoto: string) {
         this.perid = perid;
         this.pernomcompleto = pernomcompleto;
         this.pernrodoc = pernrodoc;
+        this.perfoto = perfoto
     }
 }
