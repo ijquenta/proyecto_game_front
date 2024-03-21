@@ -22,6 +22,8 @@ import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
+import { TooltipModule } from 'primeng/tooltip';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -43,7 +45,9 @@ import { CalendarModule } from 'primeng/calendar';
         DialogModule,
         TagModule,
         ChipModule,
-        CalendarModule
+        CalendarModule,
+        TooltipModule,
+        ReactiveFormsModule
     ],
     declarations: [MateriaCrudComponent],
     providers: [UsuarioService, ReporteService, MateriaService]
