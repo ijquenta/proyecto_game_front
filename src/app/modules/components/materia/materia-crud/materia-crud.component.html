@@ -46,7 +46,7 @@
                             {{materia.matdescripcion}}
                         </td>
                         <td>
-                            <p-tag [severity]="getSeverity(materia.matdesnivel)">
+                            <p-tag [rounded]="true" [severity]="getSeverity(materia.matdesnivel)">
                               {{ materia.matdesnivel }}
                             </p-tag>
                           </td>
@@ -121,7 +121,7 @@
                                     placeholder="Seleccionar Modulo" [ngClass]="{ 'valid-field': this.materiaForm.get('mf_tipoModulo').valid}">
                           <ng-template let-tipoModulo pTemplate="item">
                             <div class="flex align-items-center">
-                              <p-tag [severity]="getSeverity(tipoModulo.desTipoModulo)">
+                              <p-tag [rounded]="true" [severity]="getSeverity(tipoModulo.desTipoModulo)">
                                 {{ tipoModulo.desTipoModulo }}
                               </p-tag>
                             </div>

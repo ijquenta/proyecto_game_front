@@ -158,16 +158,15 @@ export class MateriaCrudComponent implements OnInit {
     }
     // Función para mandar datos de inserción y modificación
     guardarMateria(){
-
+        if(this.materiaForm.invalid){
+            this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+            return Object.values(this.materiaForm.controls).forEach(control=>{
+                control.markAllAsTouched();
+                control.markAsDirty();
+            })
+        }
+        this.obtenerBody();
         if (this.opcionMateria) {
-            if(this.materiaForm.invalid){
-                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.materiaForm.controls).forEach(control=>{
-                    control.markAllAsTouched();
-                    control.markAsDirty();
-                })
-            }
-            this.obtenerBody();
             this.materiaService.insertarMateria(this.materia).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Agregado', life: 3000 });
@@ -175,13 +174,10 @@ export class MateriaCrudComponent implements OnInit {
                     this.materiaDialog = false;
                     this.opcionMateria = false;
                 },
-                error => {
-                console.log("error",error);
-                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'});
-                }
+                error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'}); }
             );
-        }else
-        {   this.obtenerBody();
+        }
+        else {
             this.materia.matid = this.materiaForm.value.mf_id;
             this.materiaService.modificarMateria(this.materia).subscribe(
                 (result: any) => {
@@ -190,10 +186,7 @@ export class MateriaCrudComponent implements OnInit {
                     this.materiaDialog = false;
                     this.opcionMateria = false;
                 },
-                error => {
-                console.log("error",error);
-                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'});
-                }
+                error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'}); }
             );
         }
     }
