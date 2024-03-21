@@ -23,6 +23,7 @@ import { NivelService } from 'src/app/modules/service/data/nivel.service';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
     imports: [
         CommonModule,
@@ -43,8 +44,8 @@ import { CalendarModule } from 'primeng/calendar';
         DialogModule,
         CalendarModule,
         TagModule,
-        ChipModule
-
+        ChipModule,
+        ReactiveFormsModule
     ],
     declarations: [NivelCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService, NivelService]
