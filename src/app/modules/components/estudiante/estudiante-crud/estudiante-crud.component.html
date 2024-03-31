@@ -39,15 +39,15 @@
                         <tr>
                             <!-- <td style="width:2%;">{{persona.perid}}</td> -->
                             <!-- <td style="width:5%;">{{persona.foto}}</td> -->
-                            <td style="width:20%;">{{persona.perapepat}} {{persona.perapemat}} {{persona.pernombres}}
+                            <td>{{persona.perapepat}} {{persona.perapemat}} {{persona.pernombres}}
                             </td>
-                            <td style="width:6%;"> {{persona.tipodocnombre}} {{persona.pernrodoc}}</td>
+                            <td> {{persona.tipodocnombre}} {{persona.pernrodoc}}</td>
                             <!-- <td style="width:6%;">
                                 <ng-container *ngIf="persona.perfecnac; else noRegistro">
                                     {{persona.perfecnac | date:'dd/MM/yyyy'}}
                                 </ng-container>
                             </td> -->
-                            <td style="width:6%;">
+                            <td>
                                 <ng-container *ngIf="persona.percelular; else noRegistro">
                                     {{persona.percelular}}
                                 </ng-container>
@@ -59,13 +59,13 @@
                                 </ng-container>
                             </td> -->
 
-                            <td style="width:8%;">
+                            <td>
                                 <ng-container *ngIf="persona.peremail; else noRegistro">
                                     {{persona.peremail}}
                                 </ng-container>
                             </td>
 
-                            <td style="width:15%;">
+                            <td>
                                 <ng-container *ngIf="persona.usuname; else noRegistro">
                                     <p-chip>
                                         <div class="p-2">
