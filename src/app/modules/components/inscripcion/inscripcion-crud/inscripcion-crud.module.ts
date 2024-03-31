@@ -27,7 +27,8 @@ import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
-
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
+import { AvatarModule } from 'primeng/avatar';
 @NgModule({
     imports: [
         CommonModule,
@@ -52,7 +53,9 @@ import { InscripcionService } from 'src/app/modules/service/data/inscripcion.ser
         CardModule,
         DividerModule,
         PanelModule,
-        TooltipModule
+        TooltipModule,
+        ReactiveFormsModule,
+        AvatarModule
     ],
     declarations: [InscripcionCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService, InscripcionService]

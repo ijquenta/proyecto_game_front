@@ -6,12 +6,15 @@ export class InscripcionRegistro {
     pagid?: number | null = null;
     insusureg?: string | null = null;
     insusumod?: string | null = null;
+    perfoto?: string | null = null;
     curmatid?: number | null = null;
     insestado?: number | null = null;
     insestadodescripcion?: string | null = null;
 }
 export class Inscripcion {
     insid?: number;
+    perfoto?: string | null;
+    pernombrecompleto?: string | null;
     matricula: {
       matrid?: number | null;
       matrgestion?: number | null;
