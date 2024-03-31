@@ -31,7 +31,9 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "src/styles.scss"
+                            "src/styles.scss",
+                            "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+                            "node_modules/ngx-spinner/animations/ball-scale-ripple-multiple.css"
                         ],
                         "scripts": [
                             "node_modules/prismjs/prism.js",
@@ -109,7 +111,10 @@
                         "karmaConfig": "karma.conf.js",
                         "inlineStyleLanguage": "scss",
                         "styles": [
-                            "src/styles.scss"
+                            "src/styles.scss",
+                            "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+                            "node_modules/ngx-spinner/animations/ball-scale-ripple-multiple.css"
+
                         ],
                         "scripts": [],
                         "assets": [
