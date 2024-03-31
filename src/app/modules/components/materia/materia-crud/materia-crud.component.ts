@@ -203,12 +203,6 @@ export class MateriaCrudComponent implements OnInit {
             return 'success';
         }
     }
-    // Método de busqueda en la tabla
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal(
-            (event.target as HTMLInputElement).value,
-            'contains'
-        );
-    }
+
 
 }
