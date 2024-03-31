@@ -1,17 +1,15 @@
 export class Pago {
     tipo: any;
-
     pagid: any;
     pagdescripcion: any;
-    pagestadodescripcion: any;
     pagmonto: any;
     pagdoc: any;
-    pagrusureg: any;
-    pagrfecreg: any;
-    pagrusumod: any;
-    pagrfecmod: any;
-    pagestado: any;
-
+    pagusureg: any;
+    pagfecreg: any;
+    pagusumod: any;
+    pagfecmod: any;
+    pagfecha: any;
+    pagtipo: any;
     insid: any ;
     matrid: any ;
     matrgestion: any ;
@@ -19,5 +17,17 @@ export class Pago {
     curnombre: any ;
     matnombre: any ;
     peridestudiante: any ;
+    pernomcompleto: any;
+    pagarchivo: any;
+    archivobol: any;
 }
 
+
+export class TipoPago {
+    tpagid: number = 0;
+    tpagnombre: string = '';
+    constructor(tpagid: number, tpagnombre: string){
+        this.tpagid = tpagid;
+        this.tpagnombre = tpagnombre;
+    }
+}

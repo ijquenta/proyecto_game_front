@@ -18,7 +18,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";
@@ -30,8 +29,11 @@ import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
-
-
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
+import { AvatarModule } from 'primeng/avatar';
+import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
+import { CardModule } from 'primeng/card';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
     imports: [
@@ -60,9 +62,13 @@ import { TooltipModule } from 'primeng/tooltip';
         TagModule,
         ChipModule,
         CalendarModule,
-        TooltipModule
+        TooltipModule,
+        ReactiveFormsModule,
+        AvatarModule,
+        CardModule,
+        NgxSpinnerModule
     ],
     declarations: [PagoCrudComponent],
-    providers: [UsuarioService, ReporteService, NotaService, PersonaService]
+    providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService]
 })
 export class PagoCrudModule { }

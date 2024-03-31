@@ -1,33 +1,39 @@
 <!-- <ng-container *hasPermision="admPlanilla" > -->
     <div class="grid">
+        <p-toast></p-toast>
         <div class="col-12">
             <div class="card">
                 <ng-container>
-                    <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
+                    <p-table  #dt [value]="listarMateriasInscritas" selectionMode="single"
                         data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                        styleClass="p-datatable-gridlines">
+                        [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                        styleClass="p-datatable-striped p-card" [globalFilterFields]="['curnombre', 'matnombre']"
+                        >
                         <ng-template pTemplate="caption">
+                            <div class="font-bold text-xl text-center">
+                                <span class="text-900">Lista de cursos y materias </span>
+                                <span class="text-blue-600"> | Pagos </span>
+                            </div>
                             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                <h5 class="m-0">Lista de materias</h5>
                                 <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                    <!-- <i class="pi pi-search"></i> -->
-                                    <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
-                                    <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button>
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
                                 </span>
+                                <!-- <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="pagoService.getFilePago()" class="p-button-rounded p-button-info mr-2"></button> -->
                             </div>
                         </ng-template>
                         <ng-template pTemplate="header">
                             <tr>
-                                <th> Nro </th>
-                                <th> Curso </th>
-                                <th> Materia</th>
+                                <th pSortableColumn="curmatid"> Nro <p-sortIcon field="curmatid"></p-sortIcon></th>
+                                <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon></th>
+                                <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-notaMateria>
-                            <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
-                                <td> {{notaMateria.curmatid}} </td>
-                                <td> {{notaMateria.curnombre}} </td>
-                                <td> {{notaMateria.matnombre}} </td>
+                        <ng-template pTemplate="body" let-pagoMateria>
+                            <tr [pSelectableRow]="pagoMateria" (click)="listarPagoMateria(pagoMateria)">
+                                <td> {{pagoMateria.curmatid}} </td>
+                                <td> {{pagoMateria.curnombre}} </td>
+                                <td> {{pagoMateria.matnombre}} </td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -36,112 +42,159 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <div  *ngIf="verNotasClicked">
-                        <p-table [value]="listarNotaEstudianteMateria" responsiveLayout="scroll" class="m-2"
-                            [loading]="loading2" styleClass="p-datatable-gridlines">
-                            <ng-template pTemplate="caption">
-                                <div class="flex flex-column">
-                                    <h5 class="m-0">Lista de pagos</h5>
-                                </div>
+                    <div *ngIf="verNotasClicked">
+                        <p-table #dt1 [value]="listarPagoEstudianteMateria" responsiveLayout="scroll" class="m-2"
+                            [loading]="loading2" [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                            styleClass="p-datatable-striped p-card"
+                            [globalFilterFields]="['pernomcompleto']">
 
+                            <ng-template pTemplate="caption">
+                                <div class="font-bold text-xl text-center">
+                                    <span class="text-900">Lista de </span>
+                                    <span class="text-blue-600"> Pagos </span>
+                                  </div>
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                                </span>
                             </ng-template>
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <!-- <th> Nro </th> -->
-                                    <th> Curso </th>
-                                    <th> Materia </th>
-                                    <th> Estudiante </th>
-                                    <th> Nro pago </th>
+                                    <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon></th>
+                                    <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
+                                    <th pSortableColumn="pernomcompleto"> Estudiante <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
+                                    <th> Número </th>
                                     <th> Descripción </th>
+                                    <th> Fecha </th>
                                     <th> Monto </th>
-                                    <th> Estado </th>
+                                    <th> Tipo de pago </th>
                                     <th> Opciones </th>
                                 </tr>
                             </ng-template>
-                            <ng-template pTemplate="body" let-nota>
+                            <ng-template pTemplate="body" let-pago>
                                 <tr>
-                                    <!-- <td> {{nota.notid}} </td> -->
-                                    <td> {{nota.curnombre}} </td>
-                                    <td> {{nota.matnombre}} </td>
-                                    <td> {{nota.pernomcompleto}} </td>
+                                    <td> <p-chip *ngIf="pago.curnombre"> <div class="p-1"> {{pago.curnombre}} </div> </p-chip> </td>
+                                    <td> <p-chip *ngIf="pago.matnombre"> <div class="p-1"> {{pago.matnombre}} </div> </p-chip> </td>
+                                    <td> <p-chip *ngIf="pago.pernomcompleto"> <div class="p-1"> {{pago.pernomcompleto}} </div> </p-chip> </td>
+                                    <td> <p-chip *ngIf="pago.pagid"> <div class="p-1">{{pago.pagid}}</div> </p-chip> </td>
+                                    <td> <p-chip *ngIf="pago.pagdescripcion"> <div class="p-1">{{pago.pagdescripcion}}</div> </p-chip> </td>
+                                    <td> <p-chip *ngIf="pago.pagfecha"> <div class="p-1">{{pago.pagfecha}} </div> </p-chip> </td>
+                                    <td> <p-chip *ngIf="pago.pagmonto"> <div class="p-1">{{pago.pagmonto}} Bs.</div> </p-chip> </td>
                                     <td>
-                                        <p-chip *ngIf="nota.pagid">
-                                            <div class="p-1"># {{nota.pagid}}</div>
-                                        </p-chip>
-                                    </td>
-                                    <td>
-                                        <p-chip *ngIf="nota.pagdescripcion">
-                                            <div class="p-1">{{nota.pagdescripcion}}</div>
-                                        </p-chip>
-                                    </td>
-                                    <td>
-                                        <p-chip *ngIf="nota.pagmonto">
-                                            <div class="p-1">{{nota.pagmonto}} Bs</div>
-                                        </p-chip>
-                                    </td>
-                                    <!-- <td> <p-chip> <div class="p-1">{{nota.pagestado}} </div> </p-chip> </td> -->
-                                    <td>
-                                        <p-tag [severity]="getSeverityColor(nota.pagestado)">
-                                            {{getText(nota.pagestado)}}
+                                        <p-tag  [rounded]="true" [severity]="getSeverityColor(pago.pagtipo)" *ngIf="pago.pagtipo">
+                                           {{ getText(pago.pagtipo)}}
                                         </p-tag>
                                     </td>
                                     <td>
-                                        <button *ngIf="!nota.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                                        <button *ngIf="!pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
                                             icon="pi pi-plus" class="p-button-rounded p-button-success m-1"
-                                            pTooltip="Registrar pago" tooltipPosition="top" (click)="addNota(nota)">
+                                            pTooltip="Registrar pago" tooltipPosition="top" (click)="nuevoPago(pago)">
                                         </button>
-                                        <button *ngIf="nota.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                                        <button *ngIf="pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
                                             icon="pi pi-pencil" class="p-button-rounded p-button-info m-1"
-                                            pTooltip="Editar pago" tooltipPosition="top" (click)="updateNota(nota)">
+                                            pTooltip="Editar pago" tooltipPosition="top" (click)="actualizarPago(pago)">
+                                        </button>
+                                        <button *ngIf="pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                                                icon="pi pi-file-pdf" class="p-button-rounded p-button-danger m-1" pTooltip="Ver archivo de pago"
+                                                tooltipPosition="top" (click)="verArchivoPago(pago.pagarchivo)">
                                         </button>
                                     </td>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="emptymessage">
                                 <tr>
-                                    <td colspan="9">No se encontraron estudiantes inscritos.</td>
+                                    <td colspan="9">No se encontraron estudiantes inscritos en esta materia.</td>
                                 </tr>
                             </ng-template>
                         </p-table>
                     </div>
                 </ng-container>
-                <p-dialog [(visible)]="pagoRegistroDialog"  header="Pago" [modal]="true" class="p-fluid">
-                <ng-template pTemplate="content">
-                    <div class="grid p-fluid mt-3">
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <input type="text" id="pagdescripcion" pInputText [(ngModel)]="pago.pagdescripcion">
-                                <label for="pagdescripcion"> Descripción </label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <p-calendar id="pagfecha"  appendTo="body" [(ngModel)]="pagofecha"></p-calendar>
-                                <label for="pagfecha"> Fecha </label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <p-inputNumber inputId="inputnumber" appendTo="body" [(ngModel)]="pago.pagmonto"></p-inputNumber>
-                                <label for="inputnumber"> Monto </label>
-                            </span>
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <span class="p-float-label">
-                                <p-dropdown id="tipoPago" [autoDisplayFirst]="false"  appendTo="body" [options]="TipoPago" [(ngModel)]="tipoPagoSeleleccionado" optionLabel="pagestado"></p-dropdown>
-                                <label for="tipoPago"> Tipo Pago </label>
-                            </span>
-                        </div>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="footer">
-                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                        (click)="hideDialog()"></button>
-                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                        (click)="registrarNota()"></button>
-                </ng-template>
 
-            </p-dialog>
             </div>
         </div>
     </div>
+
+    <p-dialog [(visible)]="pagoRegistroDialog" header="Pago" [modal]="true" class="p-fluid">
+        <p-card>
+            <ng-template pTemplate="title">
+                Información del Pago
+            </ng-template>
+            <ng-template pTemplate="content">
+                    <p><strong>Curso:</strong> {{this.pago.curnombre}}</p>
+                    <p><strong>Materia:</strong> {{this.pago.matnombre}}</p>
+                    <p><strong>Estudiante:</strong> {{this.pago.pernomcompleto}}</p>
+            </ng-template>
+        </p-card>
+        <form [formGroup]="pagoForm">
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-9">
+                    <span class="p-float-label">
+                        <input type="text" id="pagdescripcion" pInputText formControlName="pagdescripcion"
+                        [ngClass]="{ 'ng-dirty': this.pagoForm.get('pagdescripcion').touched,
+                                     'valid-field': this.pagoForm.get('pagdescripcion').valid} "
+                        >
+                        <label for="pagdescripcion"> Descripción del pago </label>
+                    </span>
+                    <small class="p-error block" *ngIf="pagoForm.get('pagdescripcion').invalid && pagoForm.get('pagdescripcion').dirty">
+                        <span *ngIf="pagoForm.get('pagdescripcion').errors?.required">La descripción del pago es requerido.</span>
+                        (*)
+                    </small>
+                    <small class="p-success block" *ngIf="pagoForm.get('pagdescripcion')?.valid"> La descripción de pago es valido. </small>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <p-calendar id="pagfecha" dateFormat="dd/mm/yy" appendTo="body" formControlName="pagofecha"
+                        [ngClass]="{ 'ng-dirty': pagoForm.get('pagofecha').touched, 'valid-field': pagoForm.get('pagofecha').valid }"></p-calendar>
+                        <label for="pagfecha"> Fecha del pago </label>
+                    </span>
+                    <small class="p-error block" *ngIf="pagoForm.get('pagofecha').invalid && pagoForm.get('pagofecha').dirty">
+                        <span *ngIf="pagoForm.get('pagofecha').errors?.required">La fecha del pago es requerida. (*)</span>
+                    </small>
+                    <small class="p-success block" *ngIf="pagoForm.get('pagofecha')?.valid"> La fecha del pago es válida. </small>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label class="font-bold block mb-2" for="monto">Monto del pago</label>
+                    <p-inputNumber inputId="inputnumber" appendTo="body" formControlName="pagmonto" mode="currency" currency="BOB" locale="es-BO"
+                                   [ngClass]="{ 'valid-field': this.pagoForm.get('pagmonto').valid}" ></p-inputNumber>
+                    <small class="p-error block" *ngIf="pagoForm.get('pagmonto').invalid && pagoForm.get('pagmonto').dirty">
+                        <span *ngIf="pagoForm.get('pagmonto').errors?.required">El monto del pago es requerido.</span>
+                        <span *ngIf="pagoForm.get('pagmonto').errors?.min"> El monto debe ser mayor o igual a cero.</span>
+                        (*)
+                    </small>
+                    <small class="p-success block" *ngIf="pagoForm.get('pagmonto')?.valid"> El monto del pago es valido. </small>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label class="font-bold block mb-2" for="monto">Tipo Pago</label>
+                        <p-dropdown id="tipoPago" [autoDisplayFirst]="false"  appendTo="body" [options]="tipoPago" formControlName="tipoPago" optionLabel="tpagnombre" placeholder="Seleccionar tipo de pago"
+                                   [emptyMessage]="'No se encontraron tipos de pagos.'"
+                        ></p-dropdown>
+                    <small class="p-success block" *ngIf="pagoForm.get('tipoPago').valid">
+                        El tipo de pago es valido.
+                    </small>
+                    <small class="p-error block" *ngIf="pagoForm.get('tipoPago').invalid && pagoForm.get('tipoPago').touched">
+                        <span *ngIf="pagoForm.get('tipoPago').errors?.required">El tipo de pago es requerido.</span>
+                        (*)
+                    </small>
+                </div>
+                <div class="field col-12">
+                    <p-fileUpload
+                        #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+                        accept="application/pdf" maxFileSize="5000000" (onSelect)="onUpload($event)" [showUploadButton]="false"
+                        [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                        [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                        [invalidFileTypeMessageDetail]="'Solo se permiten archivos de pdf. El tipo de archivo permitido es: PDF.'"
+                    >
+                    </p-fileUpload>
+                </div>
+            </div>
+        </form>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                (click)="ocultarDialog()"></button>
+            <button *ngIf="pago.pagid == null"pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                (click)="registrarPago()"></button>
+            <button *ngIf="pago.pagid != null" pButton pRipple label="Modificar" icon="pi pi-check" class="p-button-text"
+                (click)="modificarPago(pago)"></button>
+        </ng-template>
+
+    </p-dialog>
