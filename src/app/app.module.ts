@@ -13,8 +13,8 @@ import { PhotoService } from './modules/service/examples/photo.service';
 import { SafePipe } from './modules/pipes/safe.pipe';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 // import { AuthService } from './release/service/core/auth.service';
-
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -81,8 +81,8 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     ],
     imports: [
         AppRoutingModule, AppLayoutModule,
-        PdfViewerModule, NgxSpinnerModule,
-        CalendarModule, TableModule, DialogModule, DynamicDialogModule,
+        PdfViewerModule, BrowserAnimationsModule,
+        CalendarModule, TableModule, DialogModule,
         CommonModule, BrowserModule, HttpClientModule, FormsModule, AppRoutingModule,
         ButtonModule, RippleModule, TableModule, DropdownModule, ToastModule, ConfirmDialogModule,
         MessagesModule, SidebarModule, AutoCompleteModule, DialogModule,
@@ -92,7 +92,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
 
         LoginRoutingModule,PasswordModule,
 
-        ScrollPanelModule
+        ScrollPanelModule,
         // ReporteRoutingModule,
     ],
     providers: [
