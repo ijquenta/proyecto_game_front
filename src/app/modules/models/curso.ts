@@ -3,8 +3,10 @@ export class CursoMateria {
     curid?: number = 0;
     curnombre?: string | null = null;
 	matnombre?: string | null = null;
+	rolnombre?: string | null = null;
 	matid?: number = 0;
     matnivel?: number = 0;
+    curnivel?: number = 0;
 	pernombres?: string | null = null;
 	perapepat?: string | null = null;
 	perapemat?: string | null = null;

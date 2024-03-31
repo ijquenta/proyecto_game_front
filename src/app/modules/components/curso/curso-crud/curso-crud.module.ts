@@ -27,6 +27,8 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
+
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 @NgModule({
     imports: [
         CommonModule,
@@ -51,7 +53,8 @@ import { TooltipModule } from 'primeng/tooltip';
         CardModule,
         DividerModule,
         PanelModule,
-        TooltipModule
+        TooltipModule,
+        ReactiveFormsModule
     ],
     declarations: [CursoCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService]
