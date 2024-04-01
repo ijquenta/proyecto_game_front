@@ -18,7 +18,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
+import { CardModule } from 'primeng/card';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";
@@ -28,7 +28,10 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { CalendarModule } from 'primeng/calendar';
 import { MaterialService } from 'src/app/modules/service/data/material.service';
-
+import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -52,9 +55,13 @@ import { MaterialService } from 'src/app/modules/service/data/material.service';
         InputMaskModule,
         CascadeSelectModule,
         MultiSelectModule,
-        CalendarModule
+        CalendarModule,
+        CardModule,
+        NgxSpinnerModule,
+        ReactiveFormsModule,
+        TooltipModule
     ],
     declarations: [MaterialCrudComponent],
-    providers: [UsuarioService, ReporteService, MaterialService, NotaService, PersonaService]
+    providers: [UsuarioService, ReporteService, MaterialService, NotaService, PersonaService, UploadService]
 })
 export class MaterialCrudModule { }

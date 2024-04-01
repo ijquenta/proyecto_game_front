@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 
-
+import { FileUpload } from 'primeng/fileupload';
 // Service
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 // Modelos
@@ -15,17 +15,29 @@ import { PagoService } from 'src/app/modules/service/data/pago.service';
 import { Pago } from 'src/app/modules/models/pago';
 import { Material } from 'src/app/modules/models/material';
 import { MaterialService } from 'src/app/modules/service/data/material.service';
+import { Texto } from 'src/app/modules/models/texto';
+
+import { Usuario } from 'src/app/modules/models/usuario';
+// --------------- Importación de Autenticación
+import { AuthService } from 'src/app/services/auth.service';
+// --------------- Importación para validaciones
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { NgxSpinnerService } from 'ngx-spinner';
+import { UploadService } from 'src/app/modules/service/data/upload.service';
 
 interface UploadEvent {
     originalEvent: Event;
     files: File[];
 }
+
 @Component({
     templateUrl: './material-crud.component.html',
     providers: [MessageService],
+    styleUrls: ['../../../../app.component.css']
 })
 export class MaterialCrudComponent implements OnInit {
-
+    @ViewChild('fileUpload') fileUpload: FileUpload;
     uploadedFiles: any[] = [];
 
     Personas: Persona[] = [];
@@ -62,6 +74,18 @@ export class MaterialCrudComponent implements OnInit {
     rowsPerPageOptions = [5, 10, 20];
     camposVacios: boolean = false;
     value!: string;
+    loading: boolean = false;
+    nombreArchivo: any;
+
+    textos: Texto[] = [];
+    texto = new Texto();
+
+    //----------------Variables para validación----------------//
+    textoForm: FormGroup;
+    //----------------Variables para validación----------------//
+    usuario: Usuario;
+    // Variable para archivos
+    archivos: any = {};
 
     constructor(
         public usuarioService: UsuarioService,
@@ -69,28 +93,116 @@ export class MaterialCrudComponent implements OnInit {
         public personaService: PersonaService,
         public notaService: NotaService,
         public pagoService: PagoService,
-        public materialService: MaterialService
+        public materialService: MaterialService,
+        private formBuilder: FormBuilder, // formBuilder para utilzar las validaciones del react form valid
+        private uploadService: UploadService,
+        private spinner: NgxSpinnerService,
+        private authService: AuthService
     ) {
 
     }
 
     ngOnInit() {
-        this.ListarPersonas();
-        this.LlenarTipoCombo();
+        // this.ListarPersonas();
+        this.listarTextos();
+        // this.LlenarTipoCombo();
+        this.asignacionValidacionesTexto();
+        // Obtener usuario
+        this.getPerfilUsuario();
 
         this.statuses = [
             { label: 'Activo', value: 0 },
             { label: 'Inactivo', value: 1 },
         ];
     }
-    onUpload(event:UploadEvent) {
+    // Obtener datos del perfil del usuario logeado
+    getPerfilUsuario() {
+        this.authService.getPerfil().subscribe(usuario => {
+            this.usuario = usuario[0];
+        });
+    }
+    asignacionValidacionesTexto() {
+        this.textoForm = this.formBuilder.group({
+            texid:[''],
+            texnombre:['', [Validators.required]],
+            textipo:['', [Validators.required]],
+        });
+    }
+    vaciarFormulario(){
+        this.textoForm.reset();
+        this.fileUpload.clear();
+    }
+    insertarTexto(){
+        if(this.textoForm.invalid){
+            this.messageService.add({ severity: 'error', summary: '¡Oh no! error en el registro', detail: 'Por favor, asegúrate de completar todos los campos obligatorios y luego intenta nuevamente.', life: 5000 });
+            return Object.values(this.textoForm.controls).forEach(control=>{
+                control.markAllAsTouched();
+                control.markAsDirty();
+            })
+        }
+        if (this.archivos?.currentFiles && this.textoForm.valid) {
+            this.cargarArchivos(this.archivos.currentFiles);
+            this.texto = new Texto();
+            this.texto.texnombre = this.textoForm.value.texnombre;
+            this.texto.texdocumento = this.nombreArchivo;
+            this.texto.textipo = this.textoForm.value.textipo;
+            this.texto.texusureg = this.usuario.usuname;
+            console.log("this.texto: ", this.texto)
+            this.materialService.insertarTexto(this.texto).subscribe(
+                (result: any) => {
+                    console.log("result", result);
+                    this.messageService.add({ severity: 'success', summary: '!Exito¡', detail: result['valor'] });
+                    this.listarTextos();
+                    this.textoForm.reset();
+                    this.vaciarFormulario();
+                },
+                (error: any) => {
+                    this.errors = error;
+                    console.log("error", error);
+                    this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
+                }
+            );
+        }
+        else{
+            this.messageService.add({ severity: 'info', summary: '¡Ups! no selecciono ningún documento', detail: 'Por favor, asegúrate seleccionar un documento y luego intenta nuevamente.', life: 5000 });
+        }
+
+    }
+
+    onUpload(event: UploadEvent) {
+        this.archivos = event;
         for(let file of event.files) {
             this.uploadedFiles.push(file);
         }
-
-        console.log("Archivos: ", this.uploadedFiles)
-
-        this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+        this.messageService.add({severity: 'info', summary: 'Archivo', detail: 'Archivo seleccionado correctamente.'});
+    }
+    cargarArchivos(currentFiles: File[]): void {
+        if (currentFiles) {
+          const formData = new FormData();
+          for (let i = 0; i < currentFiles.length; i++) {
+            const file: File = currentFiles[i];
+            // const nombrePersonaSinEspacios = pago.pernomcompleto.replace(/\s+/g, '');
+            const complemento = "texto"
+            const nombreArchivoSinEspacios = file.name.replace(/\s+/g, '');
+            const cleanedFilename = nombreArchivoSinEspacios.replace(/[^\w.-]/g, '');
+            this.nombreArchivo = complemento + '_' + cleanedFilename;
+            formData.append('files[]', file, this.nombreArchivo);
+          }
+          this.uploadService.uploadFilesTexto(formData).subscribe(
+            (data: any) => {
+              this.fileUpload.clear();
+              this.messageService.add({ severity: 'info', summary: '!Exito¡', detail: 'El documento se registró existosamente en el sistema.', life: 5000 });
+            },
+            (error: any) => {
+              console.error('Error en la carga:', error);
+            }
+          );
+        } else {
+          console.warn('No se seleccionaron archivos.');
+        }
+    }
+    verDocumentoTexto(pagarchivo: any){
+        this.materialService.getFileTexto(pagarchivo);
     }
     getIconForFileType(fileType: string): string {
         if (fileType.startsWith('application/pdf')) {
@@ -126,7 +238,15 @@ export class MaterialCrudComponent implements OnInit {
             this.Materiales = data;
             console.log("Listar Materiales:", this.Materiales)
         });
+    }
 
+    listarTextos(){
+        this.loading = true;
+        this.materialService.listarTexto().subscribe((data: any) => {
+            this.textos = data;
+            this.loading = false;
+            console.log("Listar Textos:", this.textos)
+        })
     }
 
     onChangeTipoPais(data: any) {
