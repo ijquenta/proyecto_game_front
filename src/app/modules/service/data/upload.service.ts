@@ -14,4 +14,8 @@ export class UploadService {
     uploadFilesPago(criterio: any){
         return this.http.post(`${API_URL}/pago/upload`, criterio);
     }
+
+    uploadFilesTexto(criterio: any){
+        return this.http.post(`${API_URL}/texto/upload`, criterio);
+    }
 }
