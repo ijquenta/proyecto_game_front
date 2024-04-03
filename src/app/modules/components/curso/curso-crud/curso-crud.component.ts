@@ -5,7 +5,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { TipoMateria } from 'src/app/modules/models/diccionario';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-
+import { Table } from 'primeng/table';
 import { TipoCurso, TipoRol, TipoPersona, TipoEstado} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
 
@@ -347,6 +347,13 @@ export class CursoCrudComponent implements OnInit {
             const descripcionError = error.error.message;
                 this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
             }
+        );
+    }
+     // Método de busqueda en la tabla
+     onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
         );
     }
 
