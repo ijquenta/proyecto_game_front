@@ -47,6 +47,8 @@ export class Inscripcion {
       curnombre?: string;
       matid?: number | null;
       matnombre?: string;
+      curmatfecini?: string;
+      curmatfecfin?: string;
     }[] = [];
     docente: {
       periddocente?: number | null;

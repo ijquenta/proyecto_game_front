@@ -27,6 +27,7 @@ import { AuthService } from 'src/app/services/auth.service';
 // --------------- Importación para validaciones
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
     templateUrl: './inscripcion-crud.component.html',
     providers: [MessageService],
@@ -45,20 +46,9 @@ export class InscripcionCrudComponent implements OnInit {
     // product: Product = {};
     product: Usuarios = {};
 
-
-
     selectedProducts: Usuario[] = [];
 
-
-
-
-
-
     listaUsuarios: Usuario[] = [];
-
-
-
-
     // ------------------ Variables Inscripción -------------------------
     cols: any[] = [];
     statuses: any[] = [];
@@ -123,7 +113,9 @@ export class InscripcionCrudComponent implements OnInit {
         private usuarioService: UsuarioService,
         private inscripcionService: InscripcionService,
         private authService: AuthService, // auth para recuperar los datos del usuario logueado
-        private formBuilder: FormBuilder) // formBuilder para utilzar las validaciones del react form valid
+        private formBuilder: FormBuilder, // formBuilder para utilzar las validaciones del react form valid
+        private spinner: NgxSpinnerService, // spinner para mostrar el spinner de carga
+        )
         {
         this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
         this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
@@ -187,9 +179,11 @@ export class InscripcionCrudComponent implements OnInit {
 
     listarInscripciones(){
         this.loading = true;
+        this.spinner.show();
         this.inscripcionService.listarInscripcion().subscribe(
             (result: any) => {
               this.products = result;
+              this.spinner.hide();
               this.inscripciones = this.products.map(item => this.organizarInscripcion(item));
               console.log("Lista inscripciones", this.inscripciones);
               this.loading = false;
@@ -244,6 +238,8 @@ export class InscripcionCrudComponent implements OnInit {
           curnombre: data.curnombre,
           matid: data.matid,
           matnombre: data.matnombre,
+          curmatfecini: data.curmatfecini,
+          curmatfecfin: data.curmatfecfin,
         });
 
         inscripcion.docente.push({
@@ -277,7 +273,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.cursoService.listaCursoCombo().subscribe(
             (result: any) => {
                 this.tipoCurso = result;
-                // console.log("Combo TipoCurso", this.tipoCurso)
+                console.log("Combo TipoCurso", this.tipoCurso)
             }
         )
     }
@@ -377,7 +373,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcionForm.patchValue({
             insid:this.inscripcion.insid,
             tipoMatricula: new TipoMatricula(this.inscripcion.matricula[0]?.matrid, this.inscripcion.matricula[0].matrgestion),
-            tipoCursoMateria:new TipoCursoMateria(this.inscripcion.curso_materia[0].curmatid, this.inscripcion.curso_materia[0].curnombre + ' - ' + this.inscripcion.curso_materia[0].matnombre),
+            tipoCursoMateria:new TipoCursoMateria(this.inscripcion.curso_materia[0].curmatid, this.inscripcion.curso_materia[0].curnombre + ' - ' + this.inscripcion.curso_materia[0].matnombre + ' - ' +this.inscripcion.curso_materia[0].curmatfecini + ' a ' +this.inscripcion.curso_materia[0].curmatfecfin),
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante)
         })
