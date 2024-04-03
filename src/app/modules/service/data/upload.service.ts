@@ -7,8 +7,8 @@ export class UploadService {
 
     constructor(private http: HttpClient) { }
 
-    uploadFiles(criterio: any){
-        return this.http.post(`${API_URL}/upload`, criterio);
+    uploadFilesFotoPerfil(criterio: any){
+        return this.http.post(`${API_URL}/fotoPerfil/upload`, criterio);
     }
 
     uploadFilesPago(criterio: any){
