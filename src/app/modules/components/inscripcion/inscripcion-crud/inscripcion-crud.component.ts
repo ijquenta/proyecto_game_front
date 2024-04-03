@@ -426,7 +426,7 @@ export class InscripcionCrudComponent implements OnInit {
 
                     this.ocultarDialog();
                 },
-                error => {
+                (error: any) => {
                 console.log("error",error);
                     this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal. No puede registrar al mismo estudiante.'})
                 }
