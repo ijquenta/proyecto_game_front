@@ -19,7 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CalendarModule } from 'primeng/calendar';
-
+import { KnobModule } from 'primeng/knob';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";
@@ -50,7 +50,8 @@ import { NotaService } from 'src/app/modules/service/data/nota.service';
         InputMaskModule,
         CascadeSelectModule,
         MultiSelectModule,
-        CalendarModule
+        CalendarModule,
+        KnobModule
     ],
     declarations: [NotaCrudComponent],
     providers: [UsuarioService, ReporteService, PersonaService, NotaService]

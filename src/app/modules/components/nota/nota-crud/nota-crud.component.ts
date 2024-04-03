@@ -1,241 +1,190 @@
-import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { AutoComplete } from 'primeng/autocomplete';
 import { Table } from 'primeng/table';
+import { Observable, forkJoin } from 'rxjs';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
-
-// Service
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-// Modelos
-import { Persona } from 'src/app/modules/models/persona';
-import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from 'src/app/modules/models/diccionario';
-import { PersonaService } from 'src/app/modules/service/data/persona.service';
-import { Nota } from 'src/app/modules/models/nota';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Nota } from 'src/app/modules/models/nota';
+import { Inscripcion } from 'src/app/modules/models/inscripcion';
+import { Usuario } from 'src/app/modules/models/usuario';
 
+import { CursoMateria } from 'src/app/modules/models/curso';
+
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
     templateUrl: './nota-crud.component.html',
-    providers: [MessageService],
+    styleUrls: ['../../../../app.component.css']
 })
+
 export class NotaCrudComponent implements OnInit {
-    Personas: Persona[] = [];
-    Notas: Nota[] = [];
-    persona: Persona;
-    personaRegistro: Persona;
 
-    TipoPais: TipoPais[] = [];
-    TipoPaisSeleccionado: TipoPais;
-    TipoPaisSeleccionado2: TipoPais;
-    TipoCiudad: TipoCiudad[] = [];
-    TipoCiudadRespaldo: TipoCiudad[] = [];
-    TipoCiudadSeleccionado: TipoCiudad;
-    TipoEstadoCivil: TipoEstadoCivil[] = [];
-    TipoEstadoCivilSeleccionado: TipoEstadoCivil;
-    TipoGenero: TipoGenero[] = [];
-    TipoGeneroSeleccionado: TipoGenero;
-    TipoDocumento: TipoDocumento[] = [];
-    TipoDocumentoSeleccionado: TipoDocumento;
+    @ViewChild('dtexc') dtexc: Table | undefined;
+    @ViewChild('autocomplete') autocomplete: AutoComplete | undefined;
 
-    eliminarPersonaDialog: boolean = false;
+    // ------------- Datos Nota -------------
+
+    criterio: any = '';
+    loading: boolean = false;
+    loading2: boolean = false;
+    listarMateriasInscritas: CursoMateria[] = [];
+    listarNotaEstudianteMateria: Nota[] = [];
+    listarNotaEstudianteCurso: Nota[] = [];
+    notaEstudiante = new Inscripcion();
+    nota = new Nota();
+    notaEstudianteMateria = new Nota();
+    verNotasClicked: boolean = false;
     errors: any;
-    personaDialog: boolean = false;
-    optionDialog: boolean = false;
-    id: any;
-    deleteProductDialog: boolean = false;
-    deleteProductsDialog: boolean = false;
-    submitted: boolean = false;
-    submittedMod: boolean = false;
-    cols: any[] = [];
-    statuses: any[] = [];
-    rowsPerPageOptions = [5, 10, 20];
-    camposVacios: boolean = false;
-    value!: string;
-
+    usuario: Usuario;
+    verMateriaClicked: boolean = false;
+    notaRegistroDialog: boolean = false;
+    optionNota: boolean = false;
+    nota1: any;
+    nota2: any;
+    nota3: any;
+    notafinal: any;
+    curmatid: any;
     constructor(
-        public usuarioService: UsuarioService,
+        private confirmationService: ConfirmationService,
         private messageService: MessageService,
-        public personaService: PersonaService,
-        public notaService: NotaService
+        private dialogService: DialogService,
+        private reporteService: ReporteService,
+        private notaService: NotaService,
+        private authService: AuthService,
+        private spinner: NgxSpinnerService,
     ) {
-
     }
-
-    ngOnInit() {
-        this.ListarPersonas();
-        this.LlenarTipoCombo();
-
-        this.statuses = [
-            { label: 'Activo', value: 0 },
-            { label: 'Inactivo', value: 1 },
-        ];
+    ngOnInit(): void {
+        this.verMateriaClicked = true;
+        // this.authService.usuario$.subscribe((user => {
+        //     if (user && Array.isArray(user) && user.length > 0) {
+        //         this.usuario = user[0];
+        //         const criterio = {
+        //             perid: this.usuario.perid
+        //         };
+        //         this.notaService.listarNotaDocente(criterio).subscribe(
+        //             (result: any) => {
+        //                 this.listarMateriasInscritas = result as CursoMateria[];
+        //                 // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
+        //             },
+        //             error => {
+        //                 this.errors = error;
+        //                 console.log("error", error);
+        //                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
+        //             }
+        //         );
+        //     }
+        // }));
+        this.listarCursosMaterias();
     }
-
-    LlenarTipoCombo() {
-        this.personaService.getTipoCiudad().subscribe((data: any) => {
-            this.TipoCiudad = data;
-            this.TipoCiudadRespaldo = data;
-        });
-        this.personaService.getTipoPais().subscribe((data: any) => {
-            this.TipoPais = data;
-        });
-        this.personaService.getTipoDocumento().subscribe((data: any) => {
-            this.TipoDocumento = data;
-        });
-        this.personaService.getTipoGenero().subscribe((data: any) => {
-            this.TipoGenero = data;
-        });
-        this.personaService.getTipoEstadoCivil().subscribe((data: any) => {
-            this.TipoEstadoCivil = data;
-        });
-    }
-    ListarPersonas() {
-        this.notaService.listarNota().subscribe((data: any) => {
-            this.Notas = data;
-            console.log("Listar Personas:", this.Notas)
-        });
-
-    }
-
-    onChangeTipoPais(data: any) {
-        this.TipoCiudad = this.TipoCiudadRespaldo;
-        this.id = data.value.paisid;
-        this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === this.id);
-    }
-
-    modificarPersona(data: Persona) {
-        this.persona = { ...data };
-        console.log("modificar Persona: ", this.persona);
-        this.personaDialog = true;
-        this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(this.persona.perestcivil, this.persona.estadocivilnombre);
-        this.TipoGeneroSeleccionado = new TipoGenero(this.persona.pergenero, this.persona.generonombre);
-        this.TipoDocumentoSeleccionado = new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre);
-        this.TipoPaisSeleccionado = new TipoPais(this.persona.perpais, this.persona.paisnombre);
-        this.TipoCiudadSeleccionado = new TipoCiudad(this.persona.perciudad, this.persona.ciudadnombre, this.persona.perpais);
-        // console.log("tciudad: ", this.TipoCiudadSeleccionado)
-        this.persona.perfecnac = new Date(this.persona.perfecnac);
-        this.optionDialog = false;
-    }
-
-    enviarFormulario() {
-        if (this.optionDialog) {
-            this.personaRegistro = { ...this.persona };
-            this.personaRegistro.tipo = 1;
-            this.personaRegistro.perid = null;
-            this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'ijquenta';
-            this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
-            this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
-            this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
-            this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
-            this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.gestionarPersona(this.personaRegistro).subscribe(
-                (data: any) => {
-                    console.log("Gestionar Persona: ", data);
-                    this.personaDialog = false;
-                    this.optionDialog = false;
-                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
-                    this.ListarPersonas();
-                },
-                (error: any) => {
-                    console.error("Error: ", error['message']);
-                    this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
-                }
-            );
-        }
-        else {
-            this.personaRegistro = { ...this.persona };
-            this.personaRegistro.tipo = 2;
-            this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'ijquenta';
-            this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
-            this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
-            this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
-            this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
-            this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.gestionarPersona(this.personaRegistro).subscribe(
-                (data: any) => {
-                    console.log("Gestionar Persona: ", data);
-                    this.personaDialog = false;
-                    this.optionDialog = false;
-                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
-                    this.ListarPersonas();
-                },
-                (error: any) => {
-                    console.log("Error: ", error);
-                    this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
-                }
-            );
-        }
-    }
-
-    obtenerSeverity(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'danger';
-            case 2:
-                return 'success';
-            case 3:
-                return 'warning';
-            default:
-                return 'info';
-        }
-    }
-    obtenerDescripcion(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'Activo';
-            case 0:
-                return 'Desactivo';
-            default:
-                return 'Ninguno';
-        }
-    }
-
-    NuevoPersona() {
-        this.persona = new Persona();
-        this.TipoPaisSeleccionado = new TipoPais(1, "Ninguno");
-        this.TipoCiudadSeleccionado = new TipoCiudad(1, "Ninguno", 1);
-        this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(1, "Ninguno");
-        this.TipoGeneroSeleccionado = new TipoGenero(1, "Femenino");
-        this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
-        this.personaDialog = true;
-        this.optionDialog = true;
-    }
-    eliminarPersona() {
-        console.log("eliminarPersona: ", this.persona);
-        this.personaRegistro = { ...this.persona };
-        this.personaRegistro.tipo = 3;
-        this.personaService.gestionarPersona(this.personaRegistro).subscribe(
-            (data: any) => {
-                console.log("Gestionar Persona: ", data);
-                this.eliminarPersonaDialog = false;
-                this.optionDialog = false;
-                this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
-                this.ListarPersonas();
-            }),
+// Método para listar los los cursos
+    listarCursosMaterias() {
+        this.spinner.show();
+        this.loading = true;
+        this.notaService.listarNotaCurso().subscribe(
+            (result: any) => {
+                this.listarMateriasInscritas = result as CursoMateria[];
+                this.loading = false;
+                this.spinner.hide();
+            },
             (error: any) => {
-                console.log("Error: ", error);
-                this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en la eliminación de , porfavor comunicarse con soporte.', life: 3000 });
+                this.errors = error;
+                console.log("error", error);
+                this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
             }
-    }
+        );
 
-    confirmarEliminar(data: any) {
-        this.persona = { ...data };
-        this.eliminarPersonaDialog = true;
+    }
+    listarNotaMateria(data: CursoMateria) {
+        this.loading2 = true;
+        this.verNotasClicked = true;
+        this.curmatid = data.curmatid;
+        const criterio = {
+            curmatid: data.curmatid,
+        }
+        this.listarNotas(criterio);
+    }
+    listarNotas(criterio: any) {
+        this.notaService.listarNotaEstudianteCurso(criterio).subscribe((result: any) => {
+            this.listarNotaEstudianteCurso = result as Nota[];
+            this.loading2 = false;
+        },
+        error => {
+            this.errors = error;
+            console.log("error", error);
+            this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
+        });
+    }
+    addNota(data: any) {
+        this.nota = { ...data }
+        this.optionNota = true;
+        this.notaRegistroDialog = true;
+        this.notaRegistroDialog = true;
+        this.notafinal = this.nota1 + this.nota2 + this.nota3;
+    }
+    updateNota(data: Nota) {
+        this.optionNota = false;
+        this.nota = { ...data }
+        this.notaRegistroDialog = true;
     }
     hideDialog() {
-        this.personaDialog = false;
-        this.submitted = false;
-        this.deleteProductDialog = false;
+        this.notaRegistroDialog = false;
+        this.nota1 = 0;
+        this.nota2 = 0;
+        this.nota3 = 0;
+        this.notafinal = 0;
     }
-
-    ocultarDialog() {
-        this.personaDialog = false;
-
-
+    registrarNota() {
+        if (this.optionNota) {
+            this.nota.tipo = 1;
+            this.nota.notid = null
+            this.nota.notfinal = (this.nota.not1 + this.nota.not3 + this.nota.not3) / 3;
+            this.nota.notusureg = 'ijquenta';
+            this.nota.notusumod = 'ijquenta';
+            this.nota.notestado = 1;
+            this.notaService.gestionarNota(this.nota).subscribe((result: any) => {
+                this.notaRegistroDialog = false;
+                this.nota = new Nota();
+                const criterio = {
+                    curmatid: this.curmatid
+                }
+                this.loading2 = true
+                this.listarNotas(criterio);
+                this.messageService.add({ severity: 'info', summary: 'Correcto', detail: 'Nota registrada.' });
+            },
+                error => {
+                    this.errors = error;
+                    console.log("error", error);
+                    this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
+                });
+        }
+        else {
+            this.nota.tipo = 2;
+            this.nota.notfinal = (this.nota.not1 + this.nota.not3 + this.nota.not3) / 3;
+            this.nota.notusureg = 'ijquenta';
+            this.nota.notusumod = 'ijquenta';
+            this.nota.notestado = 1;
+            this.notaService.gestionarNota(this.nota).subscribe((result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Nota modificada.' });
+                this.notaRegistroDialog = false;
+                this.nota = new Nota();
+                const criterio = {
+                    curmatid: this.curmatid
+                }
+                this.loading2 = true
+                this.listarNotas(criterio);
+            },
+                error => {
+                    this.errors = error;
+                    console.log("error", error);
+                    this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
+                });
+        }
     }
-
+     // Método de busqueda en la tabla
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
             (event.target as HTMLInputElement).value,
@@ -243,3 +192,4 @@ export class NotaCrudComponent implements OnInit {
         );
     }
 }
+
