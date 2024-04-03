@@ -20,6 +20,11 @@ export class PersonaService {
         return this.http.post(`${API_URL}/gestionarPersona`, criterio);
     }
 
+    actualizarDatosPersonales(criterio: any){
+        // console.log("Datos a GestionarPersona: ", criterio);
+        return this.http.post(`${API_URL}/actualizarDatosPersonales`, criterio);
+    }
+
 
     eliminarPersona(criterio: any){
         return this.http.post(`${API_URL}/eliminarPersona`, criterio);

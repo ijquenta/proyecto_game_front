@@ -27,6 +27,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
     imports: [
         CommonModule,
@@ -52,7 +55,10 @@ import { TooltipModule } from 'primeng/tooltip';
         CalendarModule,
         TagModule,
         ChipModule,
-        TooltipModule
+        TooltipModule,
+        CardModule,
+        AvatarModule,
+        ReactiveFormsModule
     ],
     declarations: [EstudianteCrudComponent],
     providers: [UsuarioService, ReporteService, EstudianteService]

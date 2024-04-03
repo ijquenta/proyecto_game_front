@@ -32,6 +32,14 @@ export class Persona {
     usuname: string;
     usuemail: string;
 
+    pernrohijos: number;
+    perprofesion: string;
+    perfeclugconversion: string;
+    perbautismoaguas: number;
+    perbautismoespiritu: number;
+    pernomdiriglesia: string;
+    pernompastor: string;
+
     // constructor(
     //     tipo: number,
     //     perid: number,

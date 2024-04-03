@@ -9,7 +9,8 @@ import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { EstudianteService } from 'src/app/modules/service/data/estudiante.service';
 import { Usuario } from 'src/app/modules/models/usuario';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
     templateUrl: './estudiante-crud.component.html',
     providers: [MessageService],
@@ -22,6 +23,7 @@ export class EstudianteCrudComponent implements OnInit {
     usuarioRegistro: Usuario;
     personaRegistro: Persona;
     estudianteModificarDialog: boolean = false;
+    estudianteModificarDatosPersonalesDialog: boolean = false;
     nuevopassword: any;
     nuevousuname: any;
 
@@ -62,11 +64,14 @@ export class EstudianteCrudComponent implements OnInit {
     usupassword: string = '';
     usupasswordhash: string = '';
 
+    estudianteForm: FormGroup;
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
         public personaService: PersonaService,
-        public estudianteService: EstudianteService
+        public estudianteService: EstudianteService,
+        private spinner: NgxSpinnerService,
+        private formBuilder: FormBuilder,
     ) {
 
     }
@@ -80,6 +85,26 @@ export class EstudianteCrudComponent implements OnInit {
             { label: 'Activo', value: 0 },
             { label: 'Inactivo', value: 1 },
         ];
+        // "perid": 122,
+        // "pernrohijos": 2,
+        // "perprofesion": "Ingeniero",
+        // "perfeclugconversion": "2023-03-15",
+        // "perbautismoaguas": 1,
+        // "perbautismoespiritu": 1,
+        // "pernomdiriglesia": "Iglesia de San Juan",
+        // "pernompastor": "Pastor Juan Pérez",
+        // "perusumod": "insomnia"
+
+        this.estudianteForm = this.formBuilder.group({
+            perid: [''],
+            pernrohijos: ['', [Validators.required]],
+            perprofesion: ['', [Validators.required]],
+            perfeclugconversion: ['', [Validators.required]],
+            perbautismoaguas: ['',[Validators.required]],
+            perbautismoespiritu: ['', [Validators.required]],
+            pernomdiriglesia: ['', [Validators.required]],
+            pernompastor: ['', [Validators.required]],
+        });
     }
 
     LlenarTipoCombo() {
@@ -106,10 +131,19 @@ export class EstudianteCrudComponent implements OnInit {
         });
     }
     ListarEstudiantes() {
+        this.spinner.show();
         this.estudianteService.listarEstudiante().subscribe((data: any) => {
             this.Estudiantes = data;
             console.log("Estudiantes", this.Estudiantes)
-        });
+            this.spinner.hide();
+        },
+        (error: any) => {
+            this.spinner.hide();
+            this.errors = error;
+            console.log("error", error);
+            this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
+        }
+        );
     }
 
     onChangeTipoPais(data: any) {
@@ -249,6 +283,7 @@ export class EstudianteCrudComponent implements OnInit {
         this.regUsuDialog = false;
         this.estudianteDialog = false;
         this.estudianteModificarDialog = false;
+        this.estudianteModificarDatosPersonalesDialog = false;
         this.nuevousuname = null;
         this.nuevopassword = null;
 
@@ -324,6 +359,25 @@ export class EstudianteCrudComponent implements OnInit {
         console.log("Modificar Estudiante", this.persona)
     }
 
+    modificarEstudianteDatosPersonales(data: Persona) {
+        this.persona = { ...data }
+        this.estudianteModificarDatosPersonalesDialog = true;
+        this.nuevousuname = this.persona.usuname;
+        console.log("Modificar Estudiante", this.persona)
+
+        this.estudianteForm.reset();
+        this.estudianteForm.patchValue({
+            perid: this.persona.perid,
+            pernrohijos: this.persona.pernrohijos,
+            perprofesion: this.persona.perprofesion,
+            perfeclugconversion: this.persona.perfeclugconversion,
+            perbautismoaguas: this.persona.perbautismoaguas,
+            perbautismoespiritu: this.persona.perbautismoespiritu,
+            pernomdiriglesia: this.persona.pernomdiriglesia,
+            pernompastor: this.persona.pernompastor
+        });
+    }
+
     mostrarDatosUsuario() {
       this.regPerDialog = false;
       this.regUsuDialog = true;
@@ -333,6 +387,41 @@ export class EstudianteCrudComponent implements OnInit {
         this.enviarFormularioUsuario();
 
 
+    }
+    modificarEstudianteDatos(){
+        if(this.estudianteForm.invalid){
+            // console.log("personaForm.value: ", this.personaForm.value);
+            this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+            return Object.values(this.estudianteForm.controls).forEach(control=>{
+                control.markAllAsTouched();
+                control.markAsDirty();
+            })
+        }
+
+       if(this.estudianteForm.valid){
+        this.persona = new Persona();
+        this.persona.perid = this.estudianteForm.value.perid,
+        this.persona.pernrohijos = this.estudianteForm.value.pernrohijos,
+        this.persona.perprofesion = this.estudianteForm.value.perprofesion,
+        this.persona.perfeclugconversion = this.estudianteForm.value.perfeclugconversion,
+        this.persona.perbautismoaguas = this.estudianteForm.value.perbautismoaguas,
+        this.persona.perbautismoespiritu = this.estudianteForm.value.perbautismoespiritu,
+        this.persona.pernomdiriglesia = this.estudianteForm.value.pernomdiriglesia,
+        this.persona.pernompastor = this.estudianteForm.value.pernompastor
+        console.log("persona modificar datos personales: ", this.persona);
+        this.personaService.actualizarDatosPersonales(this.persona).subscribe(
+            (data: any) => {
+                this.estudianteModificarDatosPersonalesDialog = false;
+                this.optionDialog = false;
+                this.messageService.add({ severity: 'success', summary: '!Correcto¡', detail: 'Los datos de la persona se modificaron correctamente en el sistema.', life: 3000 });
+                this.ListarEstudiantes();
+            },
+            (error: any) => {
+                console.error("Error: ", error['message']);
+                this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
+            }
+        );
+       }
     }
     modificarUsuario(){
         this.usuarioRegistro = new Usuario();
