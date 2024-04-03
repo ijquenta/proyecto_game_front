@@ -28,7 +28,8 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
 import { DocenteService } from 'src/app/modules/service/data/docente.service';
-
+import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
 @NgModule({
     imports: [
         CommonModule,
@@ -54,7 +55,9 @@ import { DocenteService } from 'src/app/modules/service/data/docente.service';
         ProgressSpinnerModule,
         TagModule,
         ChipModule,
-        TooltipModule
+        TooltipModule,
+        CardModule,
+        AvatarModule
     ],
     declarations: [DocenteCrudComponent],
     providers: [UsuarioService, ReporteService, EstudianteService,DocenteService]

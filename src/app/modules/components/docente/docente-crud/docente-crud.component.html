@@ -3,13 +3,17 @@
     <div class="col-12">
         <div class="card">
             <div class="card">
-                <p-table [value]="Estudiantes" [rows]="10" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
-                    [rowsPerPageOptions]="[10,20,30]">
+                <p-table #dt [value]="Estudiantes" [rows]="10" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
+                    [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['pernomcompleto', 'pernrodoc']">
                     <ng-template pTemplate="caption">
+                        <div class="font-bold text-xl text-center">
+                            <span class="text-900">Cambiar </span>
+                            <span class="text-blue-600"> Contraseña a Docente </span>
+                        </div>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <button pButton pRipple label="Nuevo docente" icon="pi pi-plus"
-                                class="p-button-success mr-2" (click)="NuevoEstudiante()"></button>
-                            <h5 class="m-0">Administrar Docentes</h5>
+                            <!-- <button pButton pRipple label="Nuevo docente" icon="pi pi-plus"
+                                class="p-button-success mr-2" (click)="NuevoEstudiante()"></button> -->
+                            <!-- <h5 class="m-0">Administrar Docentes</h5> -->
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search"></i>
                                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
@@ -20,8 +24,9 @@
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <!-- <th>Código</th> -->
-                            <th>Nombre completo</th>
-                            <th>Número Documento</th>
+                            <th style="width: 5rem;"></th>
+                            <th pSortableColumn="pernomcompleto">Nombre Completo <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
+                            <th pSortableColumn="pernrodoc">Número de Documento <p-sortIcon field="pernrodoc"></p-sortIcon></th>
                             <!-- <th>Fecha de Nacimiento</th> -->
                             <th>Celular</th>
                             <!-- <th>Telefono</th> -->
@@ -39,10 +44,24 @@
                         <tr>
                             <!-- <td style="width:2%;">{{persona.perid}}</td> -->
                             <!-- <td style="width:5%;">{{persona.foto}}</td> -->
-                            <td>{{persona.perapepat}} {{persona.perapemat}} {{persona.pernombres}}
+                            <td>
+                                <p-avatar *ngIf="persona.perfoto"
+                                        image="http://127.0.0.1:5001/static/files_fotoperfil/{{ persona.perfoto }}"
+                                        styleClass="mr-2"
+                                        size="large"
+                                        shape="circle"
+                                    ></p-avatar>
                             </td>
-                            <td> {{persona.tipodocnombre}} {{persona.pernrodoc}}</td>
-                            <!-- <td style="width:6%;">
+                            <td>
+                                <p-chip>
+                                    <div class="p-2">
+                                        {{persona.pernomcompleto}}
+                                    </div>
+                                </p-chip>
+                            </td>
+
+                            <td> {{persona.tipodocnombre}} - {{persona.pernrodoc}}</td>
+                                <!-- <td style="width:6%;">
                                 <ng-container *ngIf="persona.perfecnac; else noRegistro">
                                     {{persona.perfecnac | date:'dd/MM/yyyy'}}
                                 </ng-container>
@@ -80,9 +99,9 @@
                             </ng-template>
                             <td>
                                 <div class="flex justify-content-center">
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-info mr-2"
-                                        (click)="modificarEstudiante(persona)"pTooltip="Editar"></button>
+                                    <button pButton pRipple icon="pi pi-shield"
+                                        class="p-button-rounded p-button-danger mr-2"
+                                        (click)="modificarEstudiante(persona)" pTooltip="Cambiar contraseña"></button>
                                 </div>
                             </td>
                         </tr>
@@ -104,17 +123,26 @@
                 </ng-template>
             </p-dialog>
 
-            <p-dialog [(visible)]="estudianteModificarDialog" [style]="{width: '70%'}" header="Docente" [modal]="true" class="p-fluid">
+            <p-dialog [(visible)]="estudianteModificarDialog" header="Docente" [modal]="true" class="p-fluid">
+                <p-card>
+                    <ng-template pTemplate="title">
+                        Información del Estudiante
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <p><strong>Estudiante:</strong> {{ persona?.pernomcompleto }}</p>
+                        <p><strong>Número de Documento:</strong> {{ persona?.pernrodoc }}</p>
+                    </ng-template>
+                </p-card>
                 <ng-template pTemplate="content">
                             <div class="grid p-fluid mt-3">
-                                <div class="field col-12 md:col-4">
+                                <div class="field col-12">
                                 <span class="p-float-label">
                                     <input type="text" id="usuname" pInputText [(ngModel)]="nuevousuname" appendTo="body">
                                     <label for="usuname">Usuario</label>
                                 </span>
                             </div>
 
-                            <div class="field col-12 md:col-4">
+                            <div class="field col-12">
                                 <span class="p-float-label">
                                     <p-password id="password" [(ngModel)]="nuevopassword" placeholder="Ingrese una contraseña" appendTo="body"
                                         [toggleMask]="true">
@@ -135,7 +163,7 @@
                                     <label for="password">Contraseña</label>
                                 </span>
                             </div>
-                            <div class="field col-12 md:col-4">
+                            <div class="field col-12">
                                 <span class="p-float-label">
                                     <p-password id="passwordhash" [(ngModel)]="nuevopassword"
                                         placeholder="Vuelve a ingresar la contraseña" [toggleMask]="true" appendTo="body"></p-password>
