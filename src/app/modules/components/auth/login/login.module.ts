@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
-
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 @NgModule({
     imports: [
         CommonModule,
@@ -18,7 +18,8 @@ import { MessagesModule } from 'primeng/messages';
         InputTextModule,
         FormsModule,
         PasswordModule,
-        MessagesModule
+        MessagesModule,
+        ReactiveFormsModule
     ],
     declarations: [
         // LoginComponent
