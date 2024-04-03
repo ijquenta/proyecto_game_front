@@ -18,6 +18,7 @@ import { AuthService } from 'src/app/services/auth.service';
 // --------------- Importación para validaciones
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
     templateUrl: './curso-crud.component.html',
     providers: [MessageService],
@@ -70,6 +71,7 @@ export class CursoCrudComponent implements OnInit {
                 private usuarioServicie: UsuarioService,
                 private authService: AuthService, // auth para recuperar los datos del usuario logueado
                 private formBuilder: FormBuilder, // formBuilder para utilzar las validaciones del react form valid
+                private spinner: NgxSpinnerService
                 )
                 {
                 this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
@@ -138,17 +140,19 @@ export class CursoCrudComponent implements OnInit {
         this.cursoService.listaCursoCombo().subscribe(
             (result: any) => {
                 this.tipoCurso = result;
-                // console.log("Combo TipoCurso", this.tipoCurso)
+                console.log("Combo TipoCurso", this.tipoCurso)
             }
         )
     }
 
     listarCursoMateria(){
+        this.spinner.show();
         this.loading = true;
         this.cursoService.listarCursoMateria().subscribe(
             (result: any) => {
                 this.listaCursosMaterias = result;
                 this.loading = false;
+                this.spinner.hide();
                 // console.log("Lista Cursos Materia", this.listaCursosMaterias)
             }
         )
@@ -177,7 +181,8 @@ export class CursoCrudComponent implements OnInit {
     obtenerRoles(){
         this.usuarioServicie.getRoles().subscribe(
             (result: any) => {
-                this.tipoRol = result;
+                // this.tipoRol = result;
+                this.tipoRol = result.filter((rol: any) => rol.rolnombre !== 'Secretaria' && rol.rolnombre !== 'Administrador');
                 // console.log("Combo roles: ", this.tipoRol);
             }
         )
@@ -250,7 +255,7 @@ export class CursoCrudComponent implements OnInit {
             curmatid: this.cursoMateria.curmatid,
             tipoCurso: new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel),
             tipoMateria: new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel),
-            tipoRol: new TipoRol(this.cursoMateria.curmatidrol, this.cursoMateria.curmatidroldes),
+            tipoRol: new TipoRol(this.cursoMateria.rolid, this.cursoMateria.rolnombre),
             tipoPersona: new TipoPersona(this.cursoMateria.periddocente, this.cursoMateria.pernomcompleto),
             curmatfecini: this.cursoMateria.curmatfecini,
             curmatfecfin: this.cursoMateria.curmatfecfin,

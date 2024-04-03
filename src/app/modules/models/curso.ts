@@ -1,6 +1,7 @@
 export class CursoMateria {
 	curmatid?: number = 0;
     curid?: number = 0;
+    rolid?: number = 0;
     curnombre?: string | null = null;
 	matnombre?: string | null = null;
 	rolnombre?: string | null = null;
