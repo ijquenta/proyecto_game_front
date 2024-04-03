@@ -11,6 +11,9 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Nota } from 'src/app/modules/models/nota';
 import { Inscripcion } from 'src/app/modules/models/inscripcion';
 import { Usuario } from 'src/app/modules/models/usuario';
+
+import { NgxSpinnerService } from 'ngx-spinner';
+
 @Component({
   templateUrl: './nota-estudiante.component.html',
   styleUrls: ['./nota-estudiante.component.scss']
@@ -38,7 +41,8 @@ export class NotaEstudianteComponent implements OnInit {
     private dialogService: DialogService,
     private reporteService: ReporteService,
     private notaService: NotaService,
-    private authService: AuthService
+    private authService: AuthService,
+    private spinner: NgxSpinnerService,
     ) {
     }
     ngOnInit(): void {
@@ -49,12 +53,16 @@ export class NotaEstudianteComponent implements OnInit {
                 const criterio = {
                     perid: this.usuario.perid
                 };
+                this.spinner.show();
                 this.notaService.listarNotaEstudiante(criterio).subscribe(
                     (result: any) => {
+                        this.spinner.hide();
                         this.listarMateriasInscritas = result as Inscripcion[];
+                        console.log("lista_materias_inscritas", this.listarMateriasInscritas)
                         this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
                     },
                     error => {
+                        this.spinner.hide();
                         this.errors = error;
                         console.log("error", error);
                         this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
@@ -83,4 +91,11 @@ export class NotaEstudianteComponent implements OnInit {
       this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal!'});
     });
   }
+    // Método de busqueda en la tabla
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
+    }
 }

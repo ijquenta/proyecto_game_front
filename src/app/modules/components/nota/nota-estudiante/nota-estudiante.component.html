@@ -5,14 +5,23 @@
             <ng-container>
                 <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
                     data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                    styleClass="p-datatable-gridlines">
+                    [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                    styleClass="p-datatable-striped p-card"
+                    [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']">
                     <ng-template pTemplate="caption">
+                            <div class="font-bold text-xl text-center">
+                                <span class="text-900">Mis </span>
+                                <span class="text-blue-600"> Notas </span>
+                              </div>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <h5 class="m-0">Lista de notas</h5>
+                            <!-- <h5 class="m-0">Lista de notas</h5> -->
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <!-- <i class="pi pi-search"></i> -->
-                                <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
-                                <button pButton pRipple label="Reporte nota" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-danger mr-2"></button>
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+
+                            </span>
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                <button pButton pRipple label="Reporte de notas" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-danger mr-2"></button>
                             </span>
                         </div>
                     </ng-template>
@@ -20,14 +29,18 @@
                         <tr>
                             <th> Nro </th>
                             <th> Curso </th>
+                            <th> Fechas </th>
                             <th> Materia</th>
+                            <th> Docente</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-notaMateria>
                         <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
                             <td> {{notaMateria.insid}} </td>
                             <td> {{notaMateria.curnombre}} </td>
+                            <td> {{notaMateria.curmatfecini + ' a ' + notaMateria.curmatfecfin}} </td>
                             <td> {{notaMateria.matnombre}} </td>
+                            <td> {{notaMateria.pernomcompleto}} </td>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
