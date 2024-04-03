@@ -8,6 +8,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { DatePipe } from '@angular/common';
 import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
 
+import { NgxSpinnerService } from 'ngx-spinner';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from 'src/app/modules/models/usuario';
@@ -80,7 +81,8 @@ export class MateriaEstudianteComponent implements OnInit{
         private materiaService: MateriaService,
         public reporte: ReporteService,
         public estudianteService: EstudianteService,
-        public authService: AuthService
+        public authService: AuthService,
+        private spinner: NgxSpinnerService,
         )
         {
             // this.tipoModuloSeleccionado = new TipoModulo(0,"");
@@ -99,13 +101,15 @@ export class MateriaEstudianteComponent implements OnInit{
             if (user) {
                 if (Array.isArray(user) && user.length > 0) {
                     this.usuario = user[0];
-
+                    this.spinner.show();
                     this.estudianteService.obtenerMateriasInscritas(this.usuario).subscribe(data => {
                         this.inscripciones = data;
-                        // console.log("mis materias", data);
+                        console.log("mis materias", data);
+                        this.spinner.hide();
                     },
                     (error => {
                         console.log("error", error)
+                        this.spinner.hide();
                     })
                     );
                 }
@@ -149,5 +153,12 @@ export class MateriaEstudianteComponent implements OnInit{
         //   console.log("Error: No se ingreso nombre ni c.i. del docente");
         // }
       }
+      // Método de busqueda en la tabla
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
+    }
 
 }
