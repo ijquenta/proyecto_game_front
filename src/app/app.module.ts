@@ -57,6 +57,7 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import { LoginRoutingModule } from './modules/components/auth/login/login-routing.module';
 import { LoginComponent } from './modules/components/auth/login/login.component';
 import { RegisterComponent } from './modules/components/auth/register/register.component';
+import { ForgotPasswordComponent } from './modules/components/auth/forgotPassword/forgot-password.component';
 import { PasswordModule } from 'primeng/password';
 // import { ReporteComponent } from './modules/components/usuario/usuario-reporte/usuario-reporte.component';
 // import { ReporteRoutingModule } from './modules/components/usuario/usuario-reporte/usuario-reporte-routing.module';
@@ -65,7 +66,7 @@ import { ReportesComponent } from './modules/components/reportes/reportes.compon
 // import { AsistenciaCrudComponent } from './modules/components/asistencia/asistencia-crud/asistencia-crud.component';
 // import { AsistenciaReporteComponent } from './modules/components/asistencia/asistencia-reporte/asistencia-reporte.component';
 // import { ReporteRou}
-
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 import { TokenInterceptor } from './interceptors/token.interceptor';
 
 @NgModule({
@@ -76,11 +77,12 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
         SafePipe,
         LoginComponent,
         RegisterComponent,
+        ForgotPasswordComponent
         // AsistenciaCrudComponent,
         // AsistenciaReporteComponent,
     ],
     imports: [
-        AppRoutingModule, AppLayoutModule,
+        AppRoutingModule, AppLayoutModule, ReactiveFormsModule,
         PdfViewerModule, BrowserAnimationsModule,
         CalendarModule, TableModule, DialogModule,
         CommonModule, BrowserModule, HttpClientModule, FormsModule, AppRoutingModule,
