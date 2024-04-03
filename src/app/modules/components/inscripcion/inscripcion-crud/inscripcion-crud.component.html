@@ -59,7 +59,7 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5rem;"></th>
+            <th style="width: 5reFm;"></th>
             <th>N°</th>
             <th></th>
             <th>Estudiante</th>
@@ -87,7 +87,7 @@
             <td>
               <!-- <img [src]="'http://127.0.0.1:5001/static/uploads/' + inscripcion.perfoto" [alt]="inscripcion.perfoto" width="100" class="shadow-4" /> -->
               <p-avatar
-                image="http://127.0.0.1:5001/static/uploads/{{ inscripcion.perfoto }}"
+                image="http://127.0.0.1:5001/static/files_fotoperfil/{{ inscripcion.perfoto }}"
                 styleClass="mr-2"
                 size="large"
                 shape="circle"
@@ -176,7 +176,7 @@
                                     <tr>
                                         <td>{{ estudiante.peridestudiante }}</td>
                                         <td>
-                                            <p-avatar image="http://127.0.0.1:5001/static/uploads/{{ inscripcion.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                                            <p-avatar image="http://127.0.0.1:5001/static/files_fotoperfil/{{ inscripcion.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
                                         </td>
                                         <td>{{ estudiante.pernombrecompletoestudiante }}</td>
                                     </tr>
@@ -343,7 +343,7 @@
                 </div> -->
           <!-- <div class="flex"> -->
           <div class="field col-12 md:col-6">
-            <label for="status">Elegir Curso Materia</label>
+            <label for="status">Elegir Curso y Materia</label>
             <p-dropdown
               inputId="ddTipoMateria"
               appendTo="body"
