@@ -4,7 +4,7 @@ import { Product } from '../../api/product';
 import { ProductService } from '../../service/examples/product.service';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service';
-
+import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from '../../models/usuario';
 @Component({
@@ -26,7 +26,10 @@ export class PrincipalComponent implements OnInit, OnDestroy {
     usuario: Usuario;
     // usuario$ = this.authService.usuario$;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService, private authService: AuthService) {
+    constructor(private productService: ProductService,
+                        public layoutService: LayoutService,
+                        private spinner: NgxSpinnerService,
+                        private authService: AuthService) {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
             this.initChart();
         });
@@ -46,26 +49,37 @@ export class PrincipalComponent implements OnInit, OnDestroy {
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
             { label: 'Remove', icon: 'pi pi-fw pi-minus' }
         ];
-        this.loading = true;
-        setTimeout(() => {
-            this.loading = false;
-        }, 100);
+        // this.loading = true;
+        // setTimeout(() => {
+        //     this.loading = false;
+        // }, 100);
 
+        this.spinner.show(); // Mostrar el spinner antes de la llamada al servicio
 
-        this.authService.usuario$.subscribe((user => {
+        this.authService.usuario$.subscribe(
+          (user: any) => {
             if (user) {
-                if (Array.isArray(user) && user.length > 0) {
-                    this.usuario = user[0];
-                    // console.log("PRUEBA USUARIO$: ", this.usuario);
-                } else {
-                    // Manejar el caso en que user no es un array o es un array vacío
-                    // console.error("El objeto 'user' no es un array o es un array vacío.");
-                }
-            } else {
-                // Manejar el caso en que user es null
-                // console.error("El objeto 'user' es nulo.");
+              if (Array.isArray(user) && user.length > 0) {
+                this.usuario = user[0];
+                this.spinner.hide();
+                // Realizar acciones adicionales si es necesario con this.usuario
+            //   } else {
+                // Manejar el caso en que user no es un array o es un array vacío
+                // console.error("El objeto 'user' no es un array o es un array vacío.");
+              }
+            // } else {
+              // Manejar el caso en que user es null
+            //   console.error("El objeto 'user' es nulo.");
             }
-        }));
+
+          },
+          (error: any) => {
+            // Manejar errores de la suscripción al observable
+            console.error("Error al obtener el usuario:", error);
+            this.spinner.hide();
+          },
+        );
+
 
 
     }

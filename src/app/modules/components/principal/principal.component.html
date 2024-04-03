@@ -1,10 +1,10 @@
 <!-- <ng-container *ngIf="usuario$ | async as usuario"> -->
-    <h3>Hola, {{usuario?.pernomcompleto}}</h3>
+
     <div class="grid">
         <div *ngIf="loading">
             <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
         </div>
-        <div class="col-12 lg:col-6 xl:col-3">
+        <!-- <div class="col-12 lg:col-6 xl:col-3">
 
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
@@ -64,9 +64,9 @@
                 <span class="text-green-500 font-medium">15 </span>
                 <span class="text-500">agregados</span>
             </div>
-        </div>
+        </div> -->
 
-        <div class="col-12 xl:col-6">
+        <!-- <div class="col-12 xl:col-6"> -->
             <!-- <div class="card">
                 <h5>Recent Sales</h5>
                 <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLayout="scroll">
@@ -175,9 +175,9 @@
                     </li>
                 </ul>
             </div>-->
-        </div>
+        <!-- </div> -->
 
-        <div class="col-12 xl:col-6">
+        <!-- <div class="col-12 xl:col-6"> -->
             <!-- <div class="card">
                 <h5>Sales Overview</h5>
                 <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
@@ -240,8 +240,29 @@
                </a>
            </div>
         </div> -->
-    </div>
-</div>
+    <!-- </div> -->
+<!-- </div> -->
 
 
 <!-- </ng-container> -->
+
+
+
+<div class="grid grid-nogutter surface-section text-800">
+    <div class="col-12 md:col-7 p-6 text-center md:text-left flex align-items-center ">
+        <section>
+            <span class="block text-6xl font-bold mb-1">¡Bienvenido a nuestro sistema de seguimiento y gestión académico!</span>
+            <!-- <div class="text-6xl text-primary font-bold mb-3">Esperamos que tengas una experiencia educativa excepcional.</div> -->
+            <div class="text-6xl text-primary font-bold mb-3">Instituto Bíblico de Capacitación Internacional.</div>
+            <p class="mt-0 mb-4 text-700 line-height-3">Aquí encontrarás todas las herramientas que necesitas para optimizar tu rendimiento académico y gestionar tu progreso de manera eficaz.</p>
+
+            <h3 class="mt-8">¡Hola, {{ usuario?.pernomcompleto }}!</h3>
+
+            <button pButton pRipple label="Manual de usuario" type="button" class="mr-3 p-button-raised"></button>
+            <button pButton pRipple label="Ver demostración en video" type="button" class="p-button-outlined"></button>
+        </section>
+    </div>
+    <div class="col-12 md:col-5 overflow-hidden">
+        <img src="assets/demo/images/blocks/hero/fondo-ibci-2.jpg" alt="fondo-ibci" class="md:ml-auto block md:h-full" style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)">
+    </div>
+</div>
