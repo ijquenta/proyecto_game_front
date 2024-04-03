@@ -3,16 +3,27 @@
         <div class="col-12">
             <div class="card">
                 <ng-container>
-                    <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
+                    <p-table #dt1 [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
                         data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                        styleClass="p-datatable-gridlines">
+                        [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                        styleClass="p-datatable-striped p-card"
+                        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']">
                         <ng-template pTemplate="caption">
+                            <div class="font-bold text-xl text-center">
+                                <span class="text-900">Mis </span>
+                                <span class="text-blue-600"> Pagos </span>
+                              </div>
                             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                <h5 class="m-0">Lista de materias</h5>
+                                <!-- <h5 class="m-0">Lista de materias</h5> -->
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                                    <!-- <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button> -->
+                                </span>
                                 <span class="block mt-2 md:mt-0 p-input-icon-left">
                                     <!-- <i class="pi pi-search"></i> -->
                                     <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
-                                    <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button>
+                                    <!-- <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button> -->
                                 </span>
                             </div>
                         </ng-template>
@@ -20,14 +31,18 @@
                             <tr>
                                 <th> Nro </th>
                                 <th> Curso </th>
+                                <th> Fechas </th>
                                 <th> Materia</th>
+                                <th> Docente</th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-notaMateria>
-                            <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
-                                <td> {{notaMateria.insid}} </td>
-                                <td> {{notaMateria.curnombre}} </td>
-                                <td> {{notaMateria.matnombre}} </td>
+                        <ng-template pTemplate="body" let-pagoMateria>
+                            <tr [pSelectableRow]="pagoMateria" (click)="listarPagoMateria(pagoMateria)">
+                                <td> {{pagoMateria.insid}} </td>
+                                <td> {{pagoMateria.curnombre}} </td>
+                                <td> {{pagoMateria.curmatfecini + ' a ' + pagoMateria.curmatfecfin}} </td>
+                                <td> {{pagoMateria.matnombre}} </td>
+                                <td> {{pagoMateria.pernomcompleto}} </td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -53,40 +68,47 @@
                                     <th> Nro pago </th>
                                     <th> Descripción </th>
                                     <th> Monto </th>
+                                    <th> Archivo </th>
                                     <th> Estado </th>
                                 </tr>
                             </ng-template>
-                            <ng-template pTemplate="body" let-nota>
+                            <ng-template pTemplate="body" let-pago>
                                 <tr>
                                     <!-- <td> {{nota.notid}} </td> -->
-                                    <td> {{nota.curnombre}} </td>
-                                    <td> {{nota.matnombre}} </td>
+                                    <td> {{pago.curnombre}} </td>
+                                    <td> {{pago.matnombre}} </td>
                                     <td>
-                                        <p-chip *ngIf="nota.pagid">
-                                            <div class="p-1"># {{nota.pagid}}</div>
+                                        <p-chip *ngIf="pago.pagid">
+                                            <div class="p-1"># {{pago.pagid}}</div>
                                         </p-chip>
                                     </td>
                                     <td>
-                                        <p-chip *ngIf="nota.pagdescripcion">
-                                            <div class="p-1">{{nota.pagdescripcion}}</div>
+                                        <p-chip *ngIf="pago.pagdescripcion">
+                                            <div class="p-1">{{pago.pagdescripcion}}</div>
                                         </p-chip>
                                     </td>
                                     <td>
-                                        <p-chip *ngIf="nota.pagmonto">
-                                            <div class="p-1">{{nota.pagmonto}} Bs</div>
+                                        <p-chip *ngIf="pago.pagmonto">
+                                            <div class="p-1">{{pago.pagmonto}} Bs</div>
                                         </p-chip>
+                                    </td>
+                                    <td>
+                                        <button *ngIf="pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                                        icon="pi pi-file-pdf" class="p-button-rounded p-button-danger m-1" pTooltip="Ver archivo de pago"
+                                        tooltipPosition="top" (click)="verArchivoPago(pago.pagarchivo)">
+                                        </button>
                                     </td>
                                     <!-- <td> <p-chip> <div class="p-1">{{nota.pagestado}} </div> </p-chip> </td> -->
                                     <td>
-                                        <p-tag [severity]="getSeverityColor(nota.pagestado)">
-                                            {{getText(nota.pagestado)}}
+                                        <p-tag [severity]="getSeverityColor(pago.pagestado)">
+                                            {{getText(pago.pagestado)}}
                                         </p-tag>
                                     </td>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="emptymessage">
                                 <tr>
-                                    <td colspan="9">No se encontraron notas registradas.</td>
+                                    <td colspan="9">No se encontraron pagos registrados.</td>
                                 </tr>
                             </ng-template>
                         </p-table>

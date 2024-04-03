@@ -23,7 +23,7 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { PagoEstudianteComponent } from './pago-estudiante.component';
-
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -45,7 +45,8 @@ import { PagoEstudianteComponent } from './pago-estudiante.component';
         DialogModule,
         TagModule,
         ChipModule,
-        CalendarModule
+        CalendarModule,
+        TooltipModule
     ],
     declarations: [PagoEstudianteComponent],
     providers: [UsuarioService, ReporteService, MateriaService]

@@ -67,7 +67,7 @@ export class PagoEstudianteComponent implements OnInit {
         }));
     }
 
-  listarNotaMateria(data: Nota){
+  listarPagoMateria(data: Nota){
     this.loading2 = true;
     this.verNotasClicked = true;
     const criterio = {
@@ -110,5 +110,15 @@ export class PagoEstudianteComponent implements OnInit {
       default:
         return 'Sin pagar';    // Puedes ajustar este valor por defecto según tus necesidades
     }
+  }
+  // Método de busqueda en la tabla
+  onGlobalFilter(table: Table, event: Event) {
+    table.filterGlobal(
+        (event.target as HTMLInputElement).value,
+        'contains'
+    );
+  }
+  verArchivoPago(pagarchivo: any){
+    this.pagoService.getFilePago(pagarchivo);
   }
 }
