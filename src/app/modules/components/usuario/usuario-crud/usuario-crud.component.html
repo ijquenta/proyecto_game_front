@@ -30,7 +30,7 @@
 
                             <ng-template let-persona pTemplate="item">
                                 <div class="flex align-items-center">
-                                    <div> <p-avatar image="http://127.0.0.1:5001/static/uploads/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar></div>
+                                    <div> <p-avatar image="http://127.0.0.1:5001/static/files_fotoperfil/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar></div>
                                     <div> {{ persona.pernomcompleto }} - Nro: {{persona.pernrodoc}} </div>
                                 </div>
                             </ng-template>
@@ -130,7 +130,7 @@
                 <ng-template let-usuario pTemplate="listItem">
                     <div class="col-12">
                         <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
-                            <img [src]="'http://127.0.0.1:5001/static/uploads/' + usuario.perfoto"
+                            <img [src]="'http://127.0.0.1:5001/static/files_fotoperfil/' + usuario.perfoto"
                                 [alt]="usuario.perfoto"
                                 class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover"
                                 style="border-radius: 5px;" />
@@ -165,7 +165,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-column align-items-center text-center mb-3">
-                                <img [src]="'http://127.0.0.1:5001/static/uploads/' + usuario.perfoto"
+                                <img [src]="'http://127.0.0.1:5001/static/files_fotoperfil/' + usuario.perfoto"
                                     [alt]="usuario.perfoto"
                                     class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover m-2"
                                     style="border-radius: 5px;" />
