@@ -99,6 +99,7 @@ export class PagoCrudComponent implements OnInit {
             (result: any) => {
                 this.listarMateriasInscritas = result as CursoMateria[];
                 this.loading = false;
+                this.spinner.hide();
             },
             (error: any) => {
                 this.errors = error;
@@ -106,7 +107,13 @@ export class PagoCrudComponent implements OnInit {
                 this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
             }
         );
-        this.spinner.hide();
+
+    }
+    convertirAFecha(fechaStr: string): Date {
+        // const partesFecha = fechaStr.split('/');
+        // const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
+        const fecha = new Date(fechaStr);
+        return fecha;
     }
     // Método para asignar las variables de React Form Valid
     asignacionValidacionesPago() {
