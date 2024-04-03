@@ -12,9 +12,11 @@ import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { Persona } from 'src/app/modules/models/persona';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento, TipoRol } from 'src/app/modules/models/diccionario';
-
+import { Message } from 'primeng/api';
 import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/api';
 
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'; // importamos para la validación
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -63,9 +65,12 @@ export class RegisterComponent implements OnInit {
     errors: any;
     personaDialog: boolean = false;
     optionDialog: boolean = false;
+
+    personaBool: boolean = false;
+    usuarioBool: boolean = false;
   // ------------------------------------------------
   // formUser = this.formBuilder.nonNullable.group();
-
+  messages: Message[] | undefined;
   valCheck: string[] = ['remember'];
 
   email: string;
@@ -74,6 +79,9 @@ export class RegisterComponent implements OnInit {
   idpersona: any;
   loading: boolean = false;
   cod_persona: number = 0;
+  //----------------Variables para validación----------------//
+  personaForm: FormGroup;
+  usuarioForm: FormGroup;
 
   status: RequestStatus = 'init';
 
@@ -85,14 +93,35 @@ export class RegisterComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private formBuilder: FormBuilder,
+    private spinner: NgxSpinnerService
   ) { }
   ngOnInit() {
     // console.log('ngOnInit-->');
+
     this.usuario = new Usuario();
     this.llenarTipoCombo();
     this.nuevaPersona();
+    this.personaBool = true;
 
+
+    this.personaForm = this.formBuilder.group({
+        perapepat:['', [Validators.required]],
+        perapemat: ['', [Validators.required]],
+        pernombres: ['', [Validators.required]],
+        tipoDocumento: ['', [Validators.required]],
+        pernrodoc: ['', [Validators.required]],
+        peremail: ['', [Validators.required]],
+    });
+
+    this.usuarioForm = this.formBuilder.group({
+        usuname:['', [Validators.required]],
+        usuemail: ['', [Validators.required]],
+        tipoRol: ['', [Validators.required]],
+        usupassword: ['', [Validators.required]],
+        usupasswordhash: ['', [Validators.required]]
+    });
 }
 
 
@@ -101,52 +130,124 @@ export class RegisterComponent implements OnInit {
         this.TipoDocumentoSeleccionado = new TipoDocumento(1,"Ninguno");
         this.personaDialog = true;
         this.loading = true;
-
     }
     llenarTipoCombo(){
-
+        this.spinner.show();
         this.personaService.getTipoDocumento().subscribe((data: any) => {
             this.TipoDocumento = data;
-            // console.log('Documento: ', this.TipoDocumento);
-        });
+            console.log('Documento: ', this.TipoDocumento);
+            this.spinner.hide();
+        },
+        (error: any)=>{
+            console.log("Error: ", error);
+            this.spinner.hide();
+            this.messageService.add({ severity: 'error', summary: '', detail: 'No se pudo obtener datos de tipo de documentos ', life: 3000 });
+        }
+        );
+        this.spinner.show();
         this.personaService.getRoles().subscribe((data: any) => {
             // Filtrar los roles que no son "Secretaria" ni "Administrador"
             this.TipoRol = data.filter((rol: any) => rol.rolnombre !== 'Secretaria' && rol.rolnombre !== 'Administrador');
             // console.log('Rol: ', this.TipoRol);
-        });
+            this.spinner.hide();
+        },
+        (error: any)=>{
+            console.log("Error: ", error);
+            this.spinner.hide();
+            this.messageService.add({ severity: 'error', summary: '', detail: 'No se pudo obtener datos de tipo de rol ', life: 3000 });
+        }
+        );
 
 
     }
+    volverDatosPersona(){
+        this.personaBool = true;
+        this.usuarioBool = false;
+    }
     enviarFormulario() {
-
-            this.personaRegistro = { ...this.persona};
-            this.personaRegistro.perid = null;
-            this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'ijquenta';
-            this.personaRegistro.perestcivil = null;;
-            this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
-            this.personaRegistro.pergenero = null;
-            this.personaRegistro.perpais = null;
-            this.personaRegistro.perciudad = null;
-            console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.registrarPersona(this.personaRegistro).subscribe(
-                (data : any) =>{
-                    // console.log("Registrar Persona: ", data);
-                    this.personaDialog = false;
-                    this.usuario = new Usuario();
-                    this.usuario.perid = data['valor'];
-                    // console.log("idpersona: ", this.usuario);
-                    this.optionDialog = false;
-                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registro correctamente en el sistema.', life: 3000 });
-                    // this.ListarPersonas();
-                },
-                (error: any)=>{
-                    console.log("Error: ", error);
-                    this.messageService.add({ severity: 'Error', summary: 'El usuario ya existe!', detail: 'Ocurrio un error en el registro de usuario nuevo, intente con otro usuario.', life: 3000 });
-                });
+         if(this.personaForm.invalid){
+            this.messageService.add({ severity: 'info', summary: 'Campos incompletos', detail: 'Por favor, debe llenar todos los campos requeridos.', life: 3000 });
+             return Object.values(this.personaForm.controls).forEach(control=>{
+                 control.markAllAsTouched();
+                 control.markAsDirty();
+             })
+         }
+        if(this.personaForm.valid){
+            this.personaBool = false;
+            this.usuarioBool = true;
+        }
         }
 
         doRegister() {
+
+            if(this.usuarioForm.invalid){
+                this.messageService.add({ severity: 'info', summary: 'Campos incompletos', detail: 'Por favor, debe llenar todos los campos requeridos.', life: 3000 });
+                return Object.values(this.usuarioForm.controls).forEach(control=>{
+                    control.markAllAsTouched();
+                    control.markAsDirty();
+                })
+            }
+            if(this.usuarioForm.valid){
+                this.personaBool = false;
+                this.usuarioBool = false;
+            }
+
+            if(this.usuarioForm.valid && this.personaForm.valid){
+                this.personaRegistro = { ...this.persona};
+                this.personaRegistro.perapepat = this.personaForm.value.perapepat;
+                this.personaRegistro.perapemat = this.personaForm.value.perapemat;
+                this.personaRegistro.pernombres = this.personaForm.value.pernombres;
+                this.personaRegistro.pernrodoc = this.personaForm.value.pernrodoc;
+                this.personaRegistro.peremail = this.personaForm.value.peremail;
+                this.personaRegistro.pertipodoc = this.personaForm.value.tipoDocumento.tipodocid;
+                this.personaRegistro.perid = null;
+                this.personaRegistro.perfoto = null;
+                this.personaRegistro.perusureg = 'Sistema';
+                this.personaRegistro.perestcivil = null;
+                this.personaRegistro.pergenero = null;
+                this.personaRegistro.perpais = null;
+                this.personaRegistro.perciudad = null;
+                console.log("personaRegistro: ", this.personaRegistro);
+                this.spinner.show();
+                this.personaService.registrarPersona(this.personaRegistro).subscribe(
+                (data : any) =>{
+                    this.usuario = new Usuario();
+                    // this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registro correctamente en el sistema.', life: 5000 });
+                    this.usuario.perid = data['valor'];
+                    this.usuario.usuname = this.usuarioForm.value.usuname;
+                    this.usuario.usuemail = this.usuarioForm.value.usuemail;
+                    this.usuario.rolid = this.usuarioForm.value.tipoRol.rolid;
+                    this.usuario.usupassword = this.usuarioForm.value.usupassword;
+                    this.usuario.usupasswordhash = this.usuarioForm.value.usupasswordhash;
+                    this.usuario.tipo = 1;
+                    this.usuario.usuusureg = 'Sistema';
+                    this.usuario.usudescripcion = 'Registro mediante login';
+                    this.usuario.usuestado = 1;
+                    console.log("usuarioRegistro: ", this.usuario);
+                    this.usuarioService.gestionarUsuario(this.usuario).subscribe(
+                        (data : any) =>{
+                            this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El Usuario se registro correctamente en el sistema.', life: 5000 });
+                            this.spinner.hide();
+                            this.status = 'success';
+                            // this.messages = [{ severity: 'success', summary: '!Éxito¡', detail: 'Las credenciales son válidas, su cuenta fue creada con éxito.', life: 3000 }];
+                        }),
+                        (error: any)=>{
+                            console.log("Error: ", error);
+                            this.spinner.hide();
+                            this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en el registro de usuario nuevo, porfavor comunicarse con soporte.', life: 3000 });
+                    }
+                },
+                (error: any)=>{
+                    console.log("Error: ", error);
+                    this.spinner.hide();
+                    this.messageService.add({ severity: 'Error', summary: 'El usuario ya existe!', detail: 'Ocurrio un error en el registro de usuario nuevo, intente con otro usuario.', life: 3000 });
+                });
+
+            }
+
+            console.log("personaForm: ", this.personaForm.value)
+            console.log("usuarioForm: ", this.usuarioForm.value)
+
             /*
             console.log("Name, Email y Password: ",this.name, this.email, this.password)
 
@@ -174,24 +275,13 @@ export class RegisterComponent implements OnInit {
 
                     // this.usuarioRegistro = { ...this.usuario};
                     // this.usuarioRegistro.rolid = this.cod_persona;
-                    this.usuario.rolid = this.TipoRolSeleccionado.rolid;
-                    this.usuario.tipo = 1;
-                    this.usuario.usuusureg = 'ijquenta';
-                    this.usuario.usudescripcion = 'Registro login';
-                    this.usuario.usuestado = 1;
-                    // console.log("usuarioRegistro: ", this.usuario);
-                    this.usuarioService.gestionarUsuario(this.usuario).subscribe(
-                        (data : any) =>{
-                            // console.log("Registrar Usuario: ", data);
-                            this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El Usuario se registro correctamente en el sistema.', life: 3000 });
-                            this.status = 'success';
-                            // this.loading = false;
-                            this.router.navigate(['/login']);
-                        }),
-                        (error: any)=>{
-                            console.log("Error: ", error);
-                            this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en el registro de usuario nuevo, porfavor comunicarse con soporte.', life: 3000 });
-                    }
+
+
+                    /* aqui
+
+
+
+                    */
 
             // // Realizar la solicitud POST a la API para autenticar al usuario
             // this.http.post('/api/login', loginData).subscribe(

@@ -20,6 +20,7 @@ import { Toast, ToastModule } from 'primeng/toast';
 // Services
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
         InputNumberModule,
         ConfirmDialogModule,
         ProgressSpinnerModule,
-        ToastModule
+        ToastModule,
+        ReactiveFormsModule
     ],
     declarations: [
     ],
