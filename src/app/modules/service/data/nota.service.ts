@@ -63,6 +63,9 @@ export class NotaService {
                 }
             );
     }
+    listarNotaCurso(){
+        return this.http.get(`${API_URL}/listarNotaCurso`)
+    }
 
 
 }
