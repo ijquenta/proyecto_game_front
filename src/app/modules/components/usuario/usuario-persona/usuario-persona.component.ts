@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
 // Service
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -14,12 +13,11 @@ import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from
 import { Usuario } from 'src/app/modules/models/usuario';
 // For validations
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AbstractControl, AsyncValidatorFn, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { FileUpload } from 'primeng/fileupload';
-// @ViewChild('fileUpload') fileUpload: any;
 
+import { NgxSpinnerService } from 'ngx-spinner'; // Spinner
 @Component({
     templateUrl: './usuario-persona.component.html',
     providers: [MessageService],
@@ -29,7 +27,7 @@ export class UsuarioPersonaComponent implements OnInit {
     // Variable from Validations
     @ViewChild('fileUpload') fileUpload: FileUpload;
     personaForm: FormGroup;
-    // Variables 
+    // Variables
     persona: PersonaExpanded;
     personas: PersonaExpanded[] = [];
     personasDuplicated: PersonaExpanded[] = [];
@@ -77,8 +75,7 @@ export class UsuarioPersonaComponent implements OnInit {
     loading: boolean = false;
     originalEvent: Event;
     archivos: any = {};
-    
-
+    nombreArchivo: any;
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
@@ -86,7 +83,8 @@ export class UsuarioPersonaComponent implements OnInit {
         private uploadService: UploadService,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
-        private formBuilder: FormBuilder // 
+        private formBuilder: FormBuilder,
+        private spinner: NgxSpinnerService
     ) {}
 
     ngOnInit() {
@@ -119,52 +117,38 @@ export class UsuarioPersonaComponent implements OnInit {
 
         this.loading = true;
     }
-  
+
     validarEdadMinima(): AsyncValidatorFn {
         return (control: AbstractControl): Promise<ValidationErrors | null> => {
           return new Promise((resolve) => {
             const fechaNacimientoStr: string = control.value; // Obtiene la fecha de nacimiento como una cadena de texto
             const fechaNacimiento: Date = new Date(fechaNacimientoStr); // Parsea la fecha de nacimiento a un objeto de fecha
-      
             if (!fechaNacimiento || isNaN(fechaNacimiento.getTime())) {
               resolve({ formatoFechaInvalido: true }); // Devuelve un objeto de error indicando que el formato de fecha es inválido
             }
-      
-            // Comprueba si el año de nacimiento es menor a 2009
-            if (fechaNacimiento.getFullYear() > 2009) {
+            if (fechaNacimiento.getFullYear() > 2009) { // Comprueba si el año de nacimiento es menor a 2009
               resolve({ edadMinima: true }); // Devuelve un objeto de error indicando que la edad es menor que 15 años
             }
-      
             resolve(null); // Si la fecha cumple con los requisitos, devuelve null (sin errores)
           });
         };
     }
-    
-    // Método para crear un validador asíncrono para verificar si un número de documento ya existe
-    validarDocumentoExistente(): AsyncValidatorFn {
-        // Se llama al método para obtener la lista de personas
-        this.fListarPersonas();
-        
-        // Se retorna una función que actúa como validador asíncrono
-        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
-            // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
-            const numeroDocumento = control.value;
-            // console.log('Número de documento:', numeroDocumento);
 
-            // Si el número de documento está vacío, no se realiza ninguna validación
-            if (!numeroDocumento) {
+    validarDocumentoExistente(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un número de documento ya existe
+        this.fListarPersonas();// Se llama al método para obtener la lista de personas
+        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
+            const numeroDocumento = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
+            if (!numeroDocumento) {// Si el número de documento está vacío, no se realiza ninguna validación
                 return of(null); // Se devuelve un observable que emite null
             }
-            
-            // Se verifica si algún elemento en la lista de personas tiene el mismo número de documento
-            const existe = this.personasDuplicated.some(persona => persona.pernrodoc === numeroDocumento);
-            
-            // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
-            return of(existe ? { documentoExistente: true } : null);
+            const existe = this.personasDuplicated.some(persona => persona.pernrodoc === numeroDocumento);// Se verifica si algún elemento en la lista de personas tiene el mismo número de documento
+            return of(existe ? { documentoExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
     };
 }
 
     fListarPersonas() {
+        this.spinner.show();
+        this.loading = true;
         this.personaService.ListarPersona().subscribe(
             (result: any) => {
                 this.elements = result;
@@ -172,10 +156,15 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.personasDuplicated = this.personas;
                 // console.log("All persons: ",this.personasDuplicated)
                 this.loading = false;
+                this.spinner.hide();
+            },
+            (error: any) => {
+                this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el recuperar información del sistema.', life: 3000 });
+                this.spinner.hide();
             }
         );
     }
-    
+
     fOrganizarDatosPersona(data: any): PersonaExpanded {
         const persona = new PersonaExpanded();
         persona.tipo = data.tipo;
@@ -187,7 +176,12 @@ export class UsuarioPersonaComponent implements OnInit {
         persona.pertipodoc = data.pertipodoc;
         persona.tipodocnombre = data.tipodocnombre;
         persona.pernrodoc = data.pernrodoc;
-        persona.perfecnac = this.convertirAFecha(data.perfecnac);
+        if(data.perfecnac == null) {
+            persona.perfecnac = data.perfecnac;
+        }
+        if(data.perfecnac != null ){
+            persona.perfecnac = this.convertirAFecha(data.perfecnac);
+        }
         persona.pergenero = data.pergenero;
         persona.generonombre = data.generonombre;
         persona.perfoto = data.perfoto;
@@ -221,7 +215,7 @@ export class UsuarioPersonaComponent implements OnInit {
         const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
         return fecha;
     }
-    
+
 
     fLlenarTipoCombo() {
         this.personaService.getTipoCiudad().subscribe((data: any) => {
@@ -260,7 +254,6 @@ export class UsuarioPersonaComponent implements OnInit {
         this.optionDialog = false;
         this.personaNuevoDialog = true;
         this.personaForm.get('pf_nroDoc')?.disable();
-        // console.log("mod data: ", this.persona)
         this.personaForm.reset();
         this.personaForm.patchValue({
             pf_id: this.persona.perid,
@@ -279,7 +272,6 @@ export class UsuarioPersonaComponent implements OnInit {
             pf_tipPais: new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre),
             pf_tipCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais)
         });
-        // console.log("personForm mod: ", this.personaForm)
     }
 
     cargarArchivos(currentFiles: File[]): void {
@@ -287,26 +279,30 @@ export class UsuarioPersonaComponent implements OnInit {
             const formData = new FormData();
             for (let i = 0; i < currentFiles.length; i++) {
                 const file: File = currentFiles[i];
-                formData.append('files[]', file, file.name);
+                // const nroDocSinEspacios = nrodoc.replace(/\s+/g, '');
+                const nombreArchivoSinEspacios = file.name.replace(/\s+/g, '');
+                const cleanedFilename = nombreArchivoSinEspacios.replace(/[^\w.-]/g, '');
+                // this.nombreArchivo = nroDocSinEspacios + '_' + cleanedFilename;
+                this.nombreArchivo = 'fperfil' + '_' + cleanedFilename;
+                formData.append('files[]', file, this.nombreArchivo);
             }
-            this.uploadService.uploadFiles(formData).subscribe(
+            this.uploadService.uploadFilesFotoPerfil(formData).subscribe(
                 (data: any) => {
-                    // Limpiar el componente FileUpload después de cargar los archivos
                     this.fileUpload.clear();
-    
-                    this.messageService.add({ severity: 'success', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 2000 });
+                    this.messageService.add({ severity: 'success', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 3000 });
                 },
                 (error: any) => {
                     console.error('Error en la carga:', error);
+                    this.messageService.add({ severity: 'error', summary: '¡Error!', detail: 'La imagen no se registró en el sistema.', life: 3000 });
                 }
             );
         } else {
             console.warn('No se seleccionaron archivos.');
         }
     }
-  
+
     enviarFormulario() {
-        
+
         if (this.optionDialog) {
             // console.log("True: ", this.optionDialog)
             // this.messageService.add({ severity: 'info', summary: 'Verdad', detail: 'True', life: 2000 });
@@ -316,7 +312,7 @@ export class UsuarioPersonaComponent implements OnInit {
                 return Object.values(this.personaForm.controls).forEach(control=>{
                     control.markAllAsTouched();
                     control.markAsDirty();
-                })   
+                })
             }
             if (this.archivos?.currentFiles && this.personaForm.valid) {
                 this.cargarArchivos(this.archivos.currentFiles);
@@ -334,7 +330,8 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.personaRegistroNuevo.pertelefono = this.personaForm.value.pf_telefono;
                 this.personaRegistroNuevo.peremail = this.personaForm.value.pf_email;
                 this.personaRegistroNuevo.perdirec = this.personaForm.value.pf_direc;
-                this.personaRegistroNuevo.perfoto = this.archivos.currentFiles[0]?.name;
+                // this.personaRegistroNuevo.perfoto = this.archivos.currentFiles[0]?.name;
+                this.personaRegistroNuevo.perfoto = this.nombreArchivo;
                 this.personaRegistroNuevo.perestcivil = this.personaForm.value.pf_tipoEstCivil.estadocivilid;
                 this.personaRegistroNuevo.estadocivilnombre = this.personaForm.value.pf_tipoEstCivil.estadocivilnombre;
                 this.personaRegistroNuevo.pertipodoc = this.personaForm.value.pf_tipDoc.tipodocid;
@@ -362,19 +359,18 @@ export class UsuarioPersonaComponent implements OnInit {
                         this.loading = false;
                     }
                 );
-            } 
+            }
             else{
                 this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Por favor, debe seleccionar una imagen de perfil.', life: 3000 });
             }
         }
         else {
             if(this.personaForm.invalid){
-                // console.log("personaForm.value: ", this.personaForm.value);
                 this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
                 return Object.values(this.personaForm.controls).forEach(control=>{
                     control.markAllAsTouched();
                     control.markAsDirty();
-                })   
+                })
             }
             console.log("Archivos: ", this.archivos);
             if (!this.archivos?.currentFiles && this.personaForm.valid) {
@@ -386,7 +382,8 @@ export class UsuarioPersonaComponent implements OnInit {
                 // this.messageService.add({ severity: 'info', summary: 'Si selecciono una imagen', detail: 'Registro con imagen.', life: 3000 });
                 this.cargarArchivos(this.archivos.currentFiles);
                 this.tipoUpdate = 2;
-                this.imagenName = this.archivos.currentFiles[0]?.name;
+                // this.imagenName = this.archivos.currentFiles[0]?.name;
+                this.imagenName = this.nombreArchivo;
             }
 
             this.personaRegistroModificar = new Persona();
@@ -396,7 +393,7 @@ export class UsuarioPersonaComponent implements OnInit {
             this.personaRegistroModificar.perapepat = this.personaForm.value.pf_apePat;
             this.personaRegistroModificar.perapemat = this.personaForm.value.pf_apeMat;
             this.personaRegistroModificar.pernombres = this.personaForm.value.pf_nombres;
-            this.personaRegistroModificar.pernrodoc = this.personaForm.value.pf_nroDoc;
+            // this.personaRegistroModificar.pernrodoc = this.personaForm.value.pf_nroDoc;
             this.personaRegistroModificar.perfecnac = this.personaForm.value.pf_fecNac;
             this.personaRegistroModificar.percelular = this.personaForm.value.pf_celular;
             this.personaRegistroModificar.pertelefono = this.personaForm.value.pf_telefono;
@@ -468,6 +465,7 @@ export class UsuarioPersonaComponent implements OnInit {
         // this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
         this.personaForm.reset();
         this.personaForm.get('pf_nroDoc')?.enable();
+        this.fileUpload.clear();
         this.personaNuevoDialog = true;
         this.optionDialog = true;
     }
