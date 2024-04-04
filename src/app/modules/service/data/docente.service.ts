@@ -71,5 +71,9 @@ export class DocenteService {
         return this.http.get(`${API_URL}/listarDocente`)
     }
 
+    listarMateriaEstudianteCurso(data) {
+        return this.http.post(`${API_URL}/listarMateriaEstudianteCurso`, data);
+    }
+
 
 }
