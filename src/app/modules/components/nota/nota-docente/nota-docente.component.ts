@@ -163,5 +163,12 @@ export class NotaDocenteComponent implements OnInit {
                 });
         }
     }
+    // Método de busqueda en la tabla
+    onGlobalFilter(table: Table, event: Event) {
+      table.filterGlobal(
+          (event.target as HTMLInputElement).value,
+          'contains'
+      );
+    }
 }
 

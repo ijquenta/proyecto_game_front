@@ -4,27 +4,31 @@
     <div class="col-12">
         <div class="card">
             <ng-container>
-                <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
+                <p-table #dt1 [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
                     data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                    styleClass="p-datatable-gridlines">
+                    [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                    styleClass="p-datatable-striped p-card"
+                    [globalFilterFields]="['curnombre', 'matnombre']">
                     <ng-template pTemplate="caption">
+                        <div class="font-bold text-xl text-center">
+                            <span class="text-900">Materias Asignadas por Curso | </span>
+                            <span class="text-blue-600"> Asignar Notas  </span>
+                        </div>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <!-- <button pButton pRipple label="Nueva inscripción" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button> -->
-                            <h5 class="m-0">Lista de materias</h5>
+                            <!-- <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button> -->
+                            <!-- <h5 class="m-0">Materias</h5> -->
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <!-- <i class="pi pi-search"></i> -->
-                                <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
-                                <button pButton pRipple label="Reporte nota" icon="pi pi-file-pdf"
-                                    (click)="notaService.rptNotaEstudianteMateria()"
-                                    class="p-button-rounded p-button-danger mr-2"></button>
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
                             </span>
                         </div>
                     </ng-template>
                     <ng-template pTemplate="header">
                         <tr>
                             <th> Nro </th>
-                            <th> Curso </th>
-                            <th> Materia</th>
+                            <th> Nombre del Curso </th>
+                            <th> Fechas del Curso </th>
+                            <th> Nombre de la Materia asignada</th>
                             <!-- <th> Opciones </th> -->
                         </tr>
                     </ng-template>
@@ -32,6 +36,7 @@
                         <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
                             <td> {{notaMateria.curmatid}} </td>
                             <td> {{notaMateria.curnombre}} </td>
+                            <td> {{notaMateria.curmatfecini + ' a ' + notaMateria.curmatfecfin }} </td>
                             <td> {{notaMateria.matnombre}} </td>
                             <!-- <td>
                                     <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-plus-circle"
@@ -57,15 +62,16 @@
                         [loading]="loading2" styleClass="p-datatable-gridlines"
                         [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']">
                         <ng-template pTemplate="caption">
-                            <!-- <div class="flex flex-column">
-                                    <h5 class="m-0">Lista de estudiantes por materia</h5>
-                                </div> -->
-                            <div class="flex">
-                                <span class="p-input-icon-left ml-auto">
+                            <div class="font-bold text-xl text-center">
+                                <span class="text-900">Lista de Estudiantes | </span>
+                                <span class="text-blue-600"> Asignar Notas  </span>
+                            </div>
+                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                <!-- <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirNuevo()"></button> -->
+                                <!-- <h5 class="m-0">Materias</h5> -->
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
                                     <i class="pi pi-search"></i>
-                                    <input pInputText type="text"
-                                        (input)="dt2.filterGlobal($event.target.value, 'contains')"
-                                        placeholder="Buscar" />
+                                    <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
                                 </span>
                             </div>
                         </ng-template>
