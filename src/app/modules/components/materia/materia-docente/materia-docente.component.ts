@@ -8,7 +8,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { DatePipe } from '@angular/common';
 import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
 import { DocenteService } from 'src/app/modules/service/data/docente.service';
-
+import { CursoMateria } from 'src/app/modules/models/curso';
 import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { InscripcionRegistro } from 'src/app/modules/models/inscripcion';
@@ -43,6 +43,7 @@ export class MateriaDocenteComponent implements OnInit{
     codDoc: string = '';
     codDoc2: string = '';
     loading: boolean = false;
+    loading2: boolean = false;
     typeForm: number = 0;
     sub: any;
     sub2: any;
@@ -53,6 +54,8 @@ export class MateriaDocenteComponent implements OnInit{
     verBeneficiosFacultadClicked: boolean = false
     verBeneficiosDesignacionClicked: boolean = false
 
+    verMateriaAsignadaClicked:boolean = false;
+    curmatid: any;
     // Buscar docente
     nroCi2: string = '';
     nomCompleto2: string = '';
@@ -73,7 +76,7 @@ export class MateriaDocenteComponent implements OnInit{
     errors: any;
 
     inscripciones: InscripcionRegistro;
-
+    listarMateriaEstudianteCurso: any[] = [];
     usuario: Usuario;
     constructor(
         private messageService: MessageService,
@@ -149,6 +152,34 @@ export class MateriaDocenteComponent implements OnInit{
         //   this.messageService.add({severity:'warn', summary:'Advertencia', detail:`No se ingreso nombre ni c.i. del docente`});
         //   console.log("Error: No se ingreso nombre ni c.i. del docente");
         // }
-      }
+    }
+    listarEstudianteMateria(data: any) {
+        this.loading2 = true;
+        this.verMateriaAsignadaClicked = true;
+        this.curmatid = data.curmatid;
+        const criterio = {
+            curmatid: data.curmatid,
+        }
+        this.listarEstudiantes(criterio);
+    }
+    listarEstudiantes(criterio: any) {
+        this.docenteService.listarMateriaEstudianteCurso(criterio).subscribe((result: any) => {
+            this.listarMateriaEstudianteCurso = result as any[];
+            this.loading2 = false;
+        },
+        error => {
+            this.loading2 = false;
+            this.errors = error;
+            console.log("error", error);
+            this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
+        });
+    }
+     // Método de busqueda en la tabla
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
+    }
 
 }
