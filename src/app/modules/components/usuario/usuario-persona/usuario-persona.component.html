@@ -35,6 +35,7 @@
                             <!-- <th>Género</th> -->
                             <th>Registrado por:</th>
                             <th>Modificado por:</th>
+                            <th>Estado</th>
                             <th>Opciones</th>
                         </tr>
                     </ng-template>
@@ -60,6 +61,10 @@
                             <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}} </ng-container> </td>
                             <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container *ngIf="persona.perusureg"> <p-chip> <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div> </p-chip> </ng-container> </ng-container> </td>
                             <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container *ngIf="persona.perusumod"> <p-chip> <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div> </p-chip> </ng-container> </ng-container> </td>
+                            <td> <ng-container *ngIf="persona.perestado; else noRegistro">
+                                <p-tag [value]="obtenerDescripcionEstado(persona.perestado)" [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag>
+                            </ng-container> </td>
+
                             <ng-template #noRegistro> <p-chip> <div class="p-2"> Sin Registrar </div> </p-chip> </ng-template>
                             <td>
                                 <div class="flex justify-content-center">

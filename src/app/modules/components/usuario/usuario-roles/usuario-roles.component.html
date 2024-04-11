@@ -15,7 +15,7 @@
                         <th>Descripción</th>
                         <th>Registro por</th>
                         <th>Modificado por</th>
-                        <!-- <th>Estado</th> -->
+                        <th>Estado</th>
                         <th>Operaciones</th>
                     </tr>
                 </ng-template>
@@ -26,7 +26,7 @@
                         <td>{{rol.roldescripcion}}</td>
                         <td> <p-chip> <div class="p-2"> {{ rol.rolusureg }} <br> {{ rol.rolfecreg }} </div> </p-chip> </td>
                         <td> <p-chip> <div class="p-2"> {{ rol.rolusumod }} <br> {{ rol.rolfecmod }} </div> </p-chip> </td>
-                        <!-- <td> <p-tag [value]="obtenerDescripcion(rol.rolestado)" [severity]="obtenerSeverity(rol.rolestado)" [rounded]="true"></p-tag> </td> -->
+                        <td> <p-tag [value]="obtenerDescripcionEstado(rol.rolestado)" [severity]="obtenerSeverityEstado(rol.rolestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex justify-content-center">
                                 <button pButton pRipple icon="pi pi-pencil" label="Editar" class="p-button-rounded p-button-info mr-2" (click)="modificarRol(rol)"></button>

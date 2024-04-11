@@ -28,7 +28,7 @@
                         <th pSortableColumn="matnivel">Módulo<p-sortIcon field="matnivel"></p-sortIcon></th>
                         <th>Registrado</th>
                         <th>Modifcado</th>
-                        <!-- <th>Estado</th> -->
+                        <th>Estado</th>
                         <th> Opciones </th>
                         <th></th>
                     </tr>
@@ -69,10 +69,7 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <!-- <td style="width:15%; min-width:10rem;">
-
-                            <p-tag severity="Primary" [rounded]="true"> {{materia.matestado}}:{{materia.matestadodescripcion}} </p-tag>
-                        </td> -->
+                        <td> <p-tag [value]="obtenerDescripcionEstado(materia.matestado)" [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" pTooltip="Modificar materia" tooltipPosition="left" (click)="editarMateria(materia)"></button>

@@ -69,7 +69,7 @@
             <th>Modificado por</th>
             <!-- <th>Modificado por</th> -->
             <!-- <th>Fecha de Modificación</th> -->
-            <!-- <th>Estado</th> -->
+            <th>Estado</th>
             <th>Opciones</th>
           </tr>
         </ng-template>
@@ -124,9 +124,7 @@
                 </div>
               </p-chip>
             </td>
-            <!-- <td>
-                            <p-tag severity="Primary" [rounded]="true"> {{ inscripcion.insestadodescripcion}} </p-tag>
-                        </td> -->
+            <td> <p-tag [value]="obtenerDescripcionEstado(inscripcion.insestado)" [severity]="obtenerSeverityEstado(inscripcion.insestado)" [rounded]="true"></p-tag> </td>
             <td>
               <div class="flex">
                 <button

@@ -21,7 +21,7 @@ import { FechaService } from 'src/app/modules/service/data/fecha.service';
 export class UsuarioRolesComponent implements OnInit {
 
     rolForm: FormGroup;
-    
+
     roles: Rol[] = [];
     rol: Rol;
     rolRegistro: Rol;
@@ -43,13 +43,13 @@ export class UsuarioRolesComponent implements OnInit {
         public fechaService: FechaService,
         private formBuilder: FormBuilder
     ) {
-        
+
     }
 
     ngOnInit() {
-        this.ListarRoles(); 
+        this.ListarRoles();
         this.authService.getPerfil().subscribe(user => {
-            this.usuario = user[0]; 
+            this.usuario = user[0];
         })
         this.loading = true;
 
@@ -69,15 +69,15 @@ export class UsuarioRolesComponent implements OnInit {
 
       }
 
-    registroRol(){ 
-        
+    registroRol(){
+
         if(this.rolForm.invalid){
             this.messageService.add({ key: 'tc',  severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente. Si el problema persiste, contacta al soporte técnico.', life: 5000 });
             return Object.values(this.rolForm.controls).forEach(control=>{
                 control.markAllAsTouched();
                 control.markAsDirty();
             })
-            
+
         }
         else{
             if (this.rolForm.valid){
@@ -140,9 +140,9 @@ export class UsuarioRolesComponent implements OnInit {
                 this.messageService.add({key: 'tc', severity: 'warn', summary: 'Advertencia', detail: 'Error en la validación', life: 5000});
             }
         }
-      
 
-    }  
+
+    }
 
     NuevoRol() {
         this.rol = new Rol();
@@ -159,11 +159,11 @@ export class UsuarioRolesComponent implements OnInit {
             nombreRol: this.rol.rolnombre,
             descripcionRol: this.rol.roldescripcion
         });
-    
+
         this.roldialog = true;
         this.optionRol = false;
     }
-    
+
 
     eliminarRol(data: Rol){
         this.rolRegistro = { ...data };
@@ -218,5 +218,28 @@ export class UsuarioRolesComponent implements OnInit {
             default:
                 return 'Ninguno';
         }
+    }
+
+    obtenerSeverityEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+
+    obtenerDescripcionEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
+        }
+
     }
 }

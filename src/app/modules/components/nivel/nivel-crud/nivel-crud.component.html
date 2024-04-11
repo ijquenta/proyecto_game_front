@@ -23,6 +23,7 @@
                         <!-- <th pSortableColumn="curestado">Estado <p-sortIcon field="curestado"></p-sortIcon></th> -->
                         <th>Fecha de creación</th>
                         <th>Fecha de modificación</th>
+                        <th>Estudo</th>
                         <th> Opciones</th>
                     </tr>
                 </ng-template>
@@ -68,6 +69,7 @@
                                   </div>
                             </p-chip>
                         </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(nivel.curestado)" [severity]="obtenerSeverityEstado(nivel.curestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarNivel(nivel)"></button>

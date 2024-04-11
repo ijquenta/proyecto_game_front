@@ -455,6 +455,28 @@ export class UsuarioPersonaComponent implements OnInit {
         }
     }
 
+    obtenerSeverityEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+
+    obtenerDescripcionEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
+        }
+    }
+
     NuevoPersona() {
         // this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === 1);
         this.person = new Persona();

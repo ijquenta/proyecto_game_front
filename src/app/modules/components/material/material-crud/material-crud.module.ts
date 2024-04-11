@@ -32,6 +32,7 @@ import { UploadService } from 'src/app/modules/service/data/upload.service'; // 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 import { TooltipModule } from 'primeng/tooltip';
+import { TagModule } from 'primeng/tag';
 @NgModule({
     imports: [
         CommonModule,
@@ -59,7 +60,8 @@ import { TooltipModule } from 'primeng/tooltip';
         CardModule,
         NgxSpinnerModule,
         ReactiveFormsModule,
-        TooltipModule
+        TooltipModule,
+        TagModule
     ],
     declarations: [MaterialCrudComponent],
     providers: [UsuarioService, ReporteService, MaterialService, NotaService, PersonaService, UploadService]
