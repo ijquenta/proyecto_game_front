@@ -36,6 +36,7 @@
                             "node_modules/ngx-spinner/animations/ball-scale-ripple-multiple.css"
                         ],
                         "scripts": [
+                            "node_modules/chart.js/dist/chart.js",
                             "node_modules/prismjs/prism.js",
                             "node_modules/prismjs/components/prism-typescript.js"
                         ],
