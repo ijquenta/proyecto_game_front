@@ -1,6 +1,6 @@
 <!-- <ng-container *ngIf="usuario$ | async as usuario"> -->
 
-    <div class="grid">
+    <div class="grid col-12">
         <div *ngIf="loading">
             <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
         </div>
@@ -252,7 +252,6 @@
     <div class="col-12 md:col-7 p-6 text-center md:text-left flex align-items-center ">
         <section>
             <span class="block text-6xl font-bold mb-1">¡Bienvenido a nuestro sistema de seguimiento y gestión académico!</span>
-            <!-- <div class="text-6xl text-primary font-bold mb-3">Esperamos que tengas una experiencia educativa excepcional.</div> -->
             <div class="text-6xl text-primary font-bold mb-3">Instituto Bíblico de Capacitación Internacional.</div>
             <p class="mt-0 mb-4 text-700 line-height-3">Aquí encontrarás todas las herramientas que necesitas para optimizar tu rendimiento académico y gestionar tu progreso de manera eficaz.</p>
 
@@ -264,5 +263,56 @@
     </div>
     <div class="col-12 md:col-5 overflow-hidden">
         <img src="assets/demo/images/blocks/hero/fondo-ibci-2.jpg" alt="fondo-ibci" class="md:ml-auto block md:h-full" style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)">
+    </div>
+</div>
+
+
+<!-- <div class="col-6 card flex justify-content-center">
+    <p-chart type="bar" [data]="data2" [options]="options2"></p-chart>
+</div>
+
+<div class="col-6 card flex justify-content-center">
+    <p-chart type="bar" [data]="data3" [options]="options3"></p-chart>
+</div>
+
+
+<div class="col-6 card">
+    <p-chart type="bar" [data]="data4" [options]="options4"></p-chart>
+</div> -->
+
+<!-- <div class="col-6 card">
+    <p-chart type="line" [data]="data5" [options]="options5"></p-chart>
+</div>
+
+<div class="col-6 card">
+    <p-chart type="line" [data]="data6" [options]="options6"></p-chart>
+</div> -->
+
+
+<!-- <div class="col-12 card">
+    <p-chart type="line" [data]="data7" [options]="options7"></p-chart>
+</div> -->
+
+
+<!-- <div class="col-6 card flex justify-content-center">
+    <p-chart type="radar" [data]="data9" [options]="options9"></p-chart>
+</div> -->
+<!-- <div class="col-12 card">
+    <p-chart type="line" [data]="data10" [options]="options10"></p-chart>
+</div> -->
+</div>
+
+
+<div *ngIf="usuario?.rolid == 1" class="grid col-12">
+
+    <div class="col-6 card ">
+        <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+    </div>
+
+    <div class="col-6 card flex justify-content-center">
+        <p-chart type="pie" [data]="data" [options]="options"></p-chart>
+    </div>
+    <div class="col-12 card flex justify-content-center">
+        <p-chart type="polarArea" [data]="data8" [options]="options8"></p-chart>
     </div>
 </div>
