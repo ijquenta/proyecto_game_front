@@ -1,4 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 
+::ng-deep {
+  --font-family: 'Poppins', sans-serif;
+}
 :root {
     --surface-a: #282936;
     --surface-b: #1d1e27;
@@ -10,7 +14,8 @@
     --text-color-secondary: #b3b3b3;
     --primary-color: #b19df7;
     --primary-color-text: #212529;
-    --font-family: Lato, Helvetica, sans-serif;
+    /* --font-family: Lato, Helvetica, sans-serif; */
+    --font-family: 'Poppins', sans-serif;
     --surface-0: #1d1e27;
     --surface-50: #34343d;
     --surface-100: #4a4b52;
@@ -48,7 +53,7 @@
     color-scheme: dark
 }
 
-@font-face {
+/* @font-face {
     font-family: "Lato";
     font-style: normal;
     font-weight: 300;
@@ -67,17 +72,62 @@
     font-style: normal;
     font-weight: 700;
     src: local("Lato Bold"), local("Lato-Bold"), url("./assets/fonts/lato-v17-latin-ext_latin-700.woff2") format("woff2"), url("./assets/fonts/lato-v17-latin-ext_latin-700.woff") format("woff")
+} */
+
+/* body {
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+} */
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Poppins Light'), local('Poppins-Light'), url('https://fonts.gstatic.com/s/poppins/v15/pxiEyp8kv8JHgFVrJJnedw.woff2') format('woff2'),
+        url('https://fonts.gstatic.com/s/poppins/v15/pxiEyp8kv8JHgFVrJJnedw.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Poppins Regular'), local('Poppins-Regular'), url('https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2') format('woff2'),
+        url('https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Poppins Bold'), local('Poppins-Bold'), url('https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2') format('woff2'),
+        url('https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff') format('woff');
 }
 
 * {
     box-sizing: border-box
 }
 
-.p-component {
+/* .p-component {
     font-family: Lato, Helvetica, sans-serif;
     font-size: 1rem;
     font-weight: normal
+} */
+
+.p-component {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: normal;
 }
+
 
 .p-component-overlay {
     background-color: rgba(0, 0, 0, .4);
@@ -108,7 +158,8 @@
 
 .p-link {
     font-size: 1rem;
-    font-family: Lato, Helvetica, sans-serif;
+    /* font-family: Lato, Helvetica, sans-serif; */
+    font-family: 'Poppins', sans-serif;
     border-radius: 6px
 }
 
@@ -298,7 +349,8 @@
 }
 
 .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-input-token input {
-    font-family: Lato, Helvetica, sans-serif;
+    /* font-family: Lato, Helvetica, sans-serif; */
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     color: #e6e6e6;
     padding: 0;
@@ -888,7 +940,8 @@ p-checkbox.ng-dirty.ng-invalid>.p-checkbox>.p-checkbox-box {
 }
 
 .p-chips .p-chips-multiple-container .p-chips-input-token input {
-    font-family: Lato, Helvetica, sans-serif;
+    /* font-family: Lato, Helvetica, sans-serif; */
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     color: #e6e6e6;
     padding: 0;
@@ -1351,7 +1404,8 @@ p-inputswitch.ng-dirty.ng-invalid>.p-inputswitch {
 }
 
 .p-inputtext {
-    font-family: Lato, Helvetica, sans-serif;
+    /* font-family: Lato, Helvetica, sans-serif; */
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     color: #e6e6e6;
     background: #1d1e27;
@@ -7685,7 +7739,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 
 .p-terminal .p-terminal-input {
     font-size: 1rem;
-    font-family: Lato, Helvetica, sans-serif
+    /* font-family: Lato, Helvetica, sans-serif */
+    font-family: 'Poppins', sans-serif;
 }
 
 .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
