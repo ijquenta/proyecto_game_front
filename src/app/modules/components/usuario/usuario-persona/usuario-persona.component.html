@@ -1,15 +1,19 @@
-
-<!-- <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"> </p-progressSpinner> </div> -->
 <div class="grid">
     <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
             <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-blue-600"> Personas </span> </div>
             <hr>
-                <p-table [loading]="loading" responsiveLayout="scroll" #dt dataKey="perid" [value]="personas" [rows]="5" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rowsPerPageOptions]="[5,10,20]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']">
+                <p-table [loading]="loading" #dt dataKey="perid" [value]="personas" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,20]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']">
                     <ng-template pTemplate="caption">
+
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <button pButton pRipple label="Nuevo Persona" icon="pi pi-plus" class="p-button-success mr-2" (click)="NuevoPersona()" pTooltip="Registrar persona nueva"></button>
+                            <div>
+                            <button pButton pRipple label="Nuevo Persona" icon="pi pi-plus" class="p-button-primary mr-2" (click)="NuevoPersona()" pTooltip="Registrar persona nueva" tooltipPosition="bottom"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                            </div>
+
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search"></i>
                                 <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por apellidos o nombre" tooltipPosition="left"/>
@@ -21,18 +25,11 @@
                             <th style="width: 5rem"></th>
                             <th></th>
                             <th pSortableColumn="perapepat">Apellido Paterno<p-sortIcon field="perapepat"></p-sortIcon></th>
-                            <!-- <th>Apellido paterno</th> -->
-                            <!-- <th>Apellido materno</th> -->
                             <th pSortableColumn="perapemat">Apellido Materno<p-sortIcon field="perapemat"></p-sortIcon></th>
                             <th pSortableColumn="pernombres">Nombres<p-sortIcon field="pernombres"></p-sortIcon></th>
-                            <!-- <th>Nombres</th> -->
-                            <!-- <th>Nro. Documento</th> -->
                             <th pSortableColumn="pernrodoc">Nro. Documento<p-sortIcon field="pernrodoc"></p-sortIcon></th>
                             <th pSortableColumn="perfecnac">Fecha de Nacimiento<p-sortIcon field="pernrodoc"></p-sortIcon></th>
                             <th pSortableColumn="pergenero">Género<p-sortIcon field="pergenero"></p-sortIcon></th>
-
-                            <!-- <th>Fecha de Nacimiento</th> -->
-                            <!-- <th>Género</th> -->
                             <th>Registrado por:</th>
                             <th>Modificado por:</th>
                             <th>Estado</th>
@@ -43,15 +40,12 @@
                         <tr>
                             <td> <button type="button" pButton pRipple [pRowToggler]="persona" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Mostrar más información de la persona" tooltipPosition="right"></button> </td>
                             <td>
-                                <!-- <img [src]="'http://127.0.0.1:5001/static/uploads/' + persona.perfoto" [alt]="persona.perfoto" width="100" class="shadow-4" /> -->
                                 <div *ngIf="persona.perfoto == null">
-                                    <p-chip> <div class="p-2"> Sin foto </div> </p-chip>
+                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="large" shape="circle"></p-avatar>
                                 </div>
-
                                 <div *ngIf="persona.perfoto != null">
-                                    <p-avatar image="http://127.0.0.1:5001/static/files_fotoperfil/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
-                                </div>
-
+                                    <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                                  </div>
                             </td>
                             <td> <ng-container *ngIf="persona.perapepat; else noRegistro"> {{persona.perapepat}} </ng-container> </td>
                             <td> <ng-container *ngIf="persona.perapemat; else noRegistro"> {{persona.perapemat}} </ng-container> </td>
@@ -61,15 +55,14 @@
                             <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}} </ng-container> </td>
                             <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container *ngIf="persona.perusureg"> <p-chip> <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div> </p-chip> </ng-container> </ng-container> </td>
                             <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container *ngIf="persona.perusumod"> <p-chip> <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div> </p-chip> </ng-container> </ng-container> </td>
-                            <td> <ng-container *ngIf="persona.perestado; else noRegistro">
-                                <p-tag [value]="obtenerDescripcionEstado(persona.perestado)" [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag>
-                            </ng-container> </td>
+                            <td> <p-tag [value]="obtenerDescripcionEstado(persona.perestado)" [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag></td>
 
-                            <ng-template #noRegistro> <p-chip> <div class="p-2"> Sin Registrar </div> </p-chip> </ng-template>
+                            <ng-template #noRegistro> <p-chip> <div class="p-2"> S/R </div> </p-chip> </ng-template>
                             <td>
                                 <div class="flex justify-content-center">
-                                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar persona" tooltipPosition="left" ></button>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Eliminar persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Inactivar persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 0" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)" pTooltip="Activar persona" tooltipPosition="left" ></button>
                                 </div>
                             </td>
                         </tr>
@@ -84,8 +77,8 @@
                                   <tr>
                                     <th>Domicilio</th>
                                     <th>Correo Electrónico</th>
-                                    <th>Celular</th>
-                                    <th>Teléfono</th>
+                                    <th>Número de Celular</th>
+                                    <th>Número de Teléfono</th>
                                     <th>Estado Civil</th>
                                     <th>País</th>
                                     <th>Ciudad</th>
@@ -102,16 +95,14 @@
                                     <td> <ng-container *ngIf="datos.ciudadnombre; else noRegistro"> {{ datos.ciudadnombre }} </ng-container> </td>
                                   </tr>
                                 </ng-template>
-                                <ng-template #noRegistro> <p-tag severity="info">  sin registrar </p-tag> </ng-template>
+                                <ng-template #noRegistro> <p-chip> <div class="p-2"> S/R </div> </p-chip> </ng-template>
                               </p-table>
                           </td>
                         </tr>
                       </ng-template>
                 </p-table>
-                <p-dialog [(visible)]="personaNuevoDialog" [style]="{width: '90%'}" header="Persona" [modal]="true" class="p-fluid">
-                    <!-- <p-toast></p-toast> -->
-                    <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"> </p-progressSpinner> </div>
-                    <!-- <ng-template pTemplate="content"> -->
+
+                <p-dialog [(visible)]="personaNuevoDialog" header="Persona" [modal]="true" class="p-fluid">
                     <form [formGroup]="personaForm" novalidate>
                         <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p>
                         <hr>
@@ -161,7 +152,6 @@
                                 </small>
                             </div>
 
-                            <!-- Mostrar el input con validaciones cuando optionDialog es true -->
                             <div class="field col-12 md:col-4">
                                 <span class="p-float-label">
                                     <input type="text" id="numeroDocumento" pInputText formControlName="pf_nroDoc" [ngClass]="{ 'ng-dirty': personaForm.get('pf_nroDoc').touched, 'valid-field': personaForm.get('pf_nroDoc').valid}">
@@ -299,8 +289,6 @@
                                 [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"
                                 ></p-fileUpload>
                         </div>
-
-                    <!-- </ng-template> -->
                     </form>
                     <ng-template pTemplate="footer">
                         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
@@ -308,13 +296,26 @@
                     </ng-template>
                 </p-dialog>
 
-            <p-dialog [(visible)]="eliminarPersonaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
-                <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner> </div>
-                <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> <span *ngIf="persona">Esta seguro de eliminar este registro <b>{{persona.pernomcompleto}}</b>?</span> </div>
+            <p-dialog [(visible)]="eliminarPersonaDialog" header="Confirmar" [modal]="true">
+                <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> <span *ngIf="persona">Esta seguro de eliminar a la persona: <b> {{persona.pernomcompleto}}</b>?</span> </div>
                 <ng-template pTemplate="footer">
                     <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="eliminarPersonaDialog = false"></button>
                     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="eliminarPersona()"></button>
                 </ng-template>
             </p-dialog>
+
+
+            <p-dialog [(visible)]="activarPersonaDialog" header="Confirmar" [modal]="true">
+                <div class="flex align-items-center justify-content-center">
+                    <i class="pi pi-check" style="font-size: 2rem"></i>
+                    <span *ngIf="persona">Esta seguro de activar a la persona: <b> {{persona.pernomcompleto}}</b>?</span>
+                </div>
+                <ng-template pTemplate="footer">
+                    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="activarPersonaDialog = false"></button>
+                    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="activarPersona()"></button>
+                </ng-template>
+            </p-dialog>
+
+
         </div>
     </div>

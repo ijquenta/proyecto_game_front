@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 // Service
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -16,8 +15,21 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { FileUpload } from 'primeng/fileupload';
+import { NgxSpinnerService } from 'ngx-spinner';
+import * as FileSaver from 'file-saver';
+import { API_URL_FOTO_PERFIL } from 'src/environments/environment';
 
-import { NgxSpinnerService } from 'ngx-spinner'; // Spinner
+
+interface Column {
+    field: string;
+    header: string;
+    customExportHeader?: string;
+}
+
+interface ExportColumn {
+    title: string;
+    dataKey: string;
+}
 @Component({
     templateUrl: './usuario-persona.component.html',
     providers: [MessageService],
@@ -38,7 +50,6 @@ export class UsuarioPersonaComponent implements OnInit {
     personaRegistroNuevo: Persona;
     personaRegistroModificar: Persona;
     person: Persona;
-
     // Variables tipo
     TipoPais: TipoPais[] = [];
     TipoPaisSeleccionado: TipoPais;
@@ -52,10 +63,10 @@ export class UsuarioPersonaComponent implements OnInit {
     TipoGeneroSeleccionado: TipoGenero;
     TipoDocumento: TipoDocumento[] = [];
     TipoDocumentoSeleccionado: TipoDocumento;
-
     // Otras variables
     imagenName: any;
     eliminarPersonaDialog: boolean = false;
+    activarPersonaDialog: boolean = false;
     errors: any;
     personaDialog: boolean = false;
     personaNuevoDialog: boolean = false;
@@ -76,18 +87,44 @@ export class UsuarioPersonaComponent implements OnInit {
     originalEvent: Event;
     archivos: any = {};
     nombreArchivo: any;
+
+    colsTable!: Column[];
+    exportColumns!: ExportColumn[];
+    totalRecords!: number;
+    selectAll: boolean = false;
+    selectedCustomers!: any[];
+
+    apiUrl = API_URL_FOTO_PERFIL;
+
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
         public personaService: PersonaService,
         private uploadService: UploadService,
-        private sanitizer: DomSanitizer,
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService
     ) {}
-
     ngOnInit() {
+
+        this.colsTable = [
+            { field: 'pernomcompleto', header: 'Nombre Completo' },
+            { field: 'pernombres', header: 'Nombres' },
+            { field: 'perapepat', header: 'Apellido Paterno' },
+            { field: 'perapemat', header: 'Apellido Materno' },
+            { field: 'perid', header: 'ID' },
+            { field: 'tipodocnombre', header: 'Tipo de Documento' },
+            { field: 'pernrodoc', header: 'Número de Documento' },
+            { field: 'generonombre', header: 'Género' },
+            { field: 'perestado', header: 'Estado' },
+            { field: 'perusureg', header: 'Usuario Registro' },
+            { field: 'perfecreg', header: 'Fecha Registro' },
+            { field: 'perusumod', header: 'Usuario Modificación' },
+            { field: 'perfecmod', header: 'Fecha Modificación' }
+        ];
+
+        this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
+
         this.fListarPersonas();
         this.fLlenarTipoCombo();
         this.statuses = [
@@ -154,7 +191,6 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.elements = result;
                 this.personas = this.elements.map(item => this.fOrganizarDatosPersona(item));
                 this.personasDuplicated = this.personas;
-                // console.log("All persons: ",this.personasDuplicated)
                 this.loading = false;
                 this.spinner.hide();
             },
@@ -209,13 +245,6 @@ export class UsuarioPersonaComponent implements OnInit {
         });
         return persona;
     }
-
-    convertirAFecha(fechaStr: string): Date {
-        const partesFecha = fechaStr.split('/');
-        const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
-        return fecha;
-    }
-
 
     fLlenarTipoCombo() {
         this.personaService.getTipoCiudad().subscribe((data: any) => {
@@ -279,10 +308,8 @@ export class UsuarioPersonaComponent implements OnInit {
             const formData = new FormData();
             for (let i = 0; i < currentFiles.length; i++) {
                 const file: File = currentFiles[i];
-                // const nroDocSinEspacios = nrodoc.replace(/\s+/g, '');
                 const nombreArchivoSinEspacios = file.name.replace(/\s+/g, '');
                 const cleanedFilename = nombreArchivoSinEspacios.replace(/[^\w.-]/g, '');
-                // this.nombreArchivo = nroDocSinEspacios + '_' + cleanedFilename;
                 this.nombreArchivo = 'fperfil' + '_' + cleanedFilename;
                 formData.append('files[]', file, this.nombreArchivo);
             }
@@ -304,10 +331,7 @@ export class UsuarioPersonaComponent implements OnInit {
     enviarFormulario() {
 
         if (this.optionDialog) {
-            // console.log("True: ", this.optionDialog)
-            // this.messageService.add({ severity: 'info', summary: 'Verdad', detail: 'True', life: 2000 });
             if(this.personaForm.invalid){
-                // console.log("personaForm.value: ", this.personaForm.value);
                 this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
                 return Object.values(this.personaForm.controls).forEach(control=>{
                     control.markAllAsTouched();
@@ -316,7 +340,6 @@ export class UsuarioPersonaComponent implements OnInit {
             }
             if (this.archivos?.currentFiles && this.personaForm.valid) {
                 this.cargarArchivos(this.archivos.currentFiles);
-                // console.log("personaForm.value: ", this.personaForm.value, this.archivos.currentFiles.file);
                 this.personaRegistroNuevo = new Persona();
                 this.personaRegistroNuevo.tipo = 1;
                 this.personaRegistroNuevo.perid = null;
@@ -330,7 +353,6 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.personaRegistroNuevo.pertelefono = this.personaForm.value.pf_telefono;
                 this.personaRegistroNuevo.peremail = this.personaForm.value.pf_email;
                 this.personaRegistroNuevo.perdirec = this.personaForm.value.pf_direc;
-                // this.personaRegistroNuevo.perfoto = this.archivos.currentFiles[0]?.name;
                 this.personaRegistroNuevo.perfoto = this.nombreArchivo;
                 this.personaRegistroNuevo.perestcivil = this.personaForm.value.pf_tipoEstCivil.estadocivilid;
                 this.personaRegistroNuevo.estadocivilnombre = this.personaForm.value.pf_tipoEstCivil.estadocivilnombre;
@@ -342,7 +364,6 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.personaRegistroNuevo.paisnombre = this.personaForm.value.pf_tipPais.paisnombre;
                 this.personaRegistroNuevo.perciudad = this.personaForm.value.pf_tipCiudad.ciudadid;
                 this.personaRegistroNuevo.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
-                // console.log("Add Person: ", this. personaRegistroNuevo)
                 this.loading = true;
                 this.personaService.gestionarPersona(this.personaRegistroNuevo).subscribe(
                     (data: any) => {
@@ -478,13 +499,7 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     NuevoPersona() {
-        // this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === 1);
         this.person = new Persona();
-        // this.TipoPaisSeleccionado = new TipoPais(1, "Ninguno");
-        // this.TipoCiudadSeleccionado = new TipoCiudad(1, "Ninguno", 1);
-        // this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(1, "Ninguno");
-        // this.TipoGeneroSeleccionado = new TipoGenero(0, "Ninguno");
-        // this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
         this.personaForm.reset();
         this.personaForm.get('pf_nroDoc')?.enable();
         this.fileUpload.clear();
@@ -494,15 +509,15 @@ export class UsuarioPersonaComponent implements OnInit {
 
     eliminarPersona() {
         this.person = new Persona();
-        this.person.tipo = 1;
+        this.person.tipo = 2;
         this.person.perid = this.persona.perid;
+        this.person.perusumod = this.usuario.usuname;
         this.loading = true;
         this.personaService.eliminarPersona(this.person).subscribe(
             (data: any) => {
                 this.eliminarPersonaDialog = false;
                 this.optionDialog = false;
                 this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
-                // this.ListarPersonas();
                 this.fListarPersonas();
                 this.loading = false;
             },
@@ -514,9 +529,36 @@ export class UsuarioPersonaComponent implements OnInit {
             )
     }
 
+    activarPersona() {
+        this.person = new Persona();
+        this.person.tipo = 3;
+        this.person.perid = this.persona.perid;
+        this.person.perusumod = this.usuario.usuname;
+        this.loading = true;
+        this.personaService.eliminarPersona(this.person).subscribe(
+            (data: any) => {
+                this.activarPersonaDialog = false;
+                this.optionDialog = false;
+                this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se activo correctamente en el sistema.', life: 5000 });
+                this.fListarPersonas();
+                this.loading = false;
+            },
+            (error: any) => {
+                console.log("Error: ", error);
+                this.messageService.add({ key: 'bc', severity: 'error', summary: 'Ups!, algo salio mal!', detail: 'Ocurrio un error en la activación, porfavor comunicarse con soporte.', life: 5000 });
+                this.loading = false;
+            }
+            )
+    }
+
     confirmarEliminar(data: any) {
         this.persona = { ...data };
         this.eliminarPersonaDialog = true;
+    }
+
+    confirmarActivar(data: any) {
+        this.persona = { ...data };
+        this.activarPersonaDialog = true;
     }
 
     hideDialog() {
@@ -542,9 +584,69 @@ export class UsuarioPersonaComponent implements OnInit {
         this.archivos = event;
     }
 
-    getImageUrl(persona: any): SafeUrl {
-        const encodedUrl = 'http://127.0.0.1:5001/static/uploads/' + encodeURIComponent(persona.perfoto);
-        const decodedUrl = decodeURIComponent(encodedUrl);
-        return this.sanitizer.bypassSecurityTrustUrl(decodedUrl);
+    convertirAFecha(fechaStr: string): Date {
+        const partesFecha = fechaStr.split('/');
+        const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
+        return fecha;
     }
+
+    // Métodos para exportar PDF y EXCEL
+
+    exportPdf() {
+        import('jspdf').then(jsPDF => {
+            import('jspdf-autotable').then(() => {
+                // Cambia 'p' por 'l' para la orientación horizontal
+                // Considera ajustar las unidades a 'pt' para mejor manejo del tamaño
+                const doc = new jsPDF.default('l', 'pt', 'a4');
+                // Agregar un título
+                doc.setFontSize(16); // Tamaño de la fuente
+                doc.text('Lista de Personas', 14, 30); // Agrega texto en la posición x = 14, y = 30
+                // Configura las columnas y el cuerpo del PDF
+                (doc as any).autoTable({
+                    columns: this.exportColumns,
+                    body: this.personas,
+                    theme: 'striped',  // Puedes elegir otros temas como 'plain', 'striped' o 'grid'
+                    styles: { fontSize: 8, cellPadding: 3 },  // Ajusta el tamaño de fuente y el padding para acomodar más datos
+                });
+                // Guarda el archivo PDF
+                doc.save('ListaPersonas.pdf');
+            });
+        });
+    }
+
+    exportExcel() {
+        import('xlsx').then((xlsx) => {
+            // Define los campos que deseas incluir en la exportación
+            const fieldsToExport = [
+                'perid', 'pernomcompleto', 'pernombres', 'perapepat', 'perapemat',
+                'tipodocnombre', 'pernrodoc', 'perfecnac','generonombre', 'perestado', 'perusureg',
+                'perfecreg', 'perusumod', 'perfecmod'
+            ];
+            // Filtra y transforma 'this.personas' para incluir solo los campos deseados
+            const dataToExport = this.personas.map(persona => {
+                const filteredData = {};
+                fieldsToExport.forEach(field => {
+                    filteredData[field] = persona[field] || ''; // Asegura que todos los campos existan, incluso si están vacíos
+                });
+                return filteredData;
+            });
+            const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+            const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
+            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, 'persons');
+        });
+    }
+
+    saveAsExcelFile(buffer: any, fileName: string): void {
+        let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        let EXCEL_EXTENSION = '.xlsx';
+        const data: Blob = new Blob([buffer], {
+            type: EXCEL_TYPE
+        });
+        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    }
+
+
+
+
 }

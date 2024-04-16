@@ -7,7 +7,7 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
-import { FileUploadModule } from 'primeng/fileupload';                                                                                              
+import { FileUploadModule } from 'primeng/fileupload';
 import { RippleModule } from 'primeng/ripple';
 import { RatingModule } from 'primeng/rating';
 import { InputTextModule } from 'primeng/inputtext';
@@ -28,12 +28,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ChipModule } from 'primeng/chip';
 import { ReactiveFormsModule } from '@angular/forms';
-
 import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
-
 import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
 import { UsuarioPersonaComponent } from './usuario-persona.component';
 
