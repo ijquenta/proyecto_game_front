@@ -2,19 +2,17 @@
 FROM node:20.8.0-alpine as angular
 
 # Crear el directorio de la aplicación
-RUN mkdir -p /app
-
-# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar el archivo package.json al directorio de trabajo
-COPY package.json /app
+# Copiar 'package.json' y 'package-lock.json' (si está disponible)
+COPY package*.json ./
 
-# Instalar dependencias, ignorando conflictos de dependencias de pares
-RUN npm install --legacy-peer-deps
+# Instalar dependencias, incluyendo Angular CLI globalmente
+RUN npm ci
+RUN npm install -g @angular/cli
 
 # Copiar todos los archivos del proyecto al contenedor
-COPY . /app
+COPY . .
 
 # Construir la aplicación Angular para producción
 RUN npm run build --prod
@@ -23,7 +21,7 @@ RUN npm run build --prod
 FROM nginx:1.21.6-alpine
 
 # Copiar el build de Angular desde la etapa anterior al directorio de Nginx
-COPY --from=angular /app/dist/sakai-ng /usr/share/nginx/html
+COPY --from=angular /app/dist/sakai-ng/browser /usr/share/nginx/html
 
 # Exponer el puerto 80
 EXPOSE 80
