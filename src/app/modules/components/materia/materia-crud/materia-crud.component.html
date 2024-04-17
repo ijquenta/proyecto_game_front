@@ -1,29 +1,32 @@
-
 <div class="grid">
     <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-blue-600"> Materias </span> </div>
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span
+                    class="text-primary-600"> Materias </span> </div>
             <hr>
-            <p-table [loading]="loading" #dt [value]="listaMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['matnombre']">
+            <p-table [loading]="loading" #dt [value]="listaMaterias" responsiveLayout="scroll" [rows]="10"
+                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['matnombre', 'matnivel']">
 
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="abrirNuevo()"  pTooltip="Registrar materia nueva"></button>
+                        <div>
+                            <button pButton pRipple label="Nueva materia" icon="pi pi-plus" class="p-button-primary mr-2" (click)="abrirNuevo()" pTooltip="Registrar materia nueva"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+
+                        </div>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" />
                         </span>
                     </div>
                 </ng-template>
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="matid">Código<p-sortIcon field="matid"></p-sortIcon></th>
-                        <th pSortableColumn="matnombre">Nombre<p-sortIcon field="matnombre"></p-sortIcon>
-                        </th>
+                        <th pSortableColumn="matnombre">Nombre<p-sortIcon field="matnombre"></p-sortIcon></th>
                         <th>Descripción</th>
                         <th pSortableColumn="matnivel">Módulo<p-sortIcon field="matnivel"></p-sortIcon></th>
                         <th>Registrado</th>
@@ -35,10 +38,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-materia>
                     <tr>
-
-                        <td>
-                            {{materia.matid}}
-                        </td>
                         <td>
                             {{materia.matnombre}}
                         </td>
@@ -47,13 +46,13 @@
                         </td>
                         <td>
                             <p-tag [rounded]="true" [severity]="getSeverity(materia.matdesnivel)">
-                              {{ materia.matdesnivel }}
+                                {{ materia.matdesnivel }}
                             </p-tag>
-                          </td>
+                        </td>
                         <td>
                             <p-chip>
                                 <div class="p-2">
-                                   {{materia.matusureg}} <br> {{materia.matfecreg}}
+                                    {{materia.matusureg}} <br> {{materia.matfecreg}}
                                 </div>
                             </p-chip>
                         </td>
@@ -69,101 +68,223 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(materia.matestado)" [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(materia.matestado)"
+                                [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" pTooltip="Modificar materia" tooltipPosition="left" (click)="editarMateria(materia)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" pTooltip="Eliminar materia" tooltipPosition="left" (click)="eliminarMateria(materia)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Modificar materia"
+                                    tooltipPosition="left" (click)="editarMateria(materia)"></button>
+                                <button pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger"
+                                    pTooltip="Desactivar materia" tooltipPosition="left"
+                                    (click)="desactivarMateria(materia)"></button>
                             </div>
                         </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró las información solicitada.</td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="materiaDialog" header="Materia" [modal]="true"
-            class="p-fluid">
+        <div *ngIf="usuario?.rolid == 1" class="card">
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar Materias</span> <span
+                    class="text-primary-600"> Desactivadas </span> </div>
+            <hr>
+            <p-table [loading]="loading" #dt2 [value]="listaMateriasDesactivos" responsiveLayout="scroll" [rows]="10"
+                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['matnombre', 'matnivel']">
 
-            <!-- <ng-template pTemplate="content"> -->
-            <form [formGroup]="materiaForm" novalidate>
-                <!-- <div class="card p-fluid"> -->
-                    <div class="field">
-                        <label for="curnombre">Nombre de la materia</label>
-                        <!-- <h5> Nombre del Curso</h5> -->
-                        <input type="text" pInputText id="matnombre" formControlName="mf_matnombre" required [ngClass]="{ 'ng-dirty': this.materiaForm.get('mf_matnombre').touched, 'valid-field': this.materiaForm.get('mf_matnombre').valid}"/>
-                        <small class="p-error block" *ngIf="materiaForm.get('mf_matnombre').invalid && materiaForm.get('mf_matnombre').dirty">
-                            <span *ngIf="materiaForm.get('mf_matnombre').errors?.required">El nombre de la materia es requerido.</span>
-                            (*)
-                        </small>
-                        <small class="p-success block" *ngIf="materiaForm.get('mf_matnombre')?.valid"> El nombre de la materia es valido. </small>
-
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" />
+                        </span>
                     </div>
+                </ng-template>
 
-                    <div class="field">
-                        <label for="descripcion">Descripción de la Materia</label>
-                        <textarea id="descripcion" pInputTextarea formControlName="mf_matdescripcion" required rows="1"
-                            cols="20" [ngClass]="{ 'ng-dirty': this.materiaForm.get('mf_matdescripcion').touched, 'valid-field': this.materiaForm.get('mf_matdescripcion').valid}"></textarea>
-
-                        <small class="p-error block" *ngIf="materiaForm.get('mf_matdescripcion').invalid && materiaForm.get('mf_matdescripcion').dirty">
-                            <span *ngIf="materiaForm.get('mf_matdescripcion').errors?.required">La descripción es requerido.</span>
-                            (*)
-                        </small>
-                        <small class="p-success block" *ngIf="materiaForm.get('mf_matdescripcion')?.valid"> La descripción es valido. </small>
-
-                    </div>
-                    <div class="field">
-                        <label for="status">Elegir Modulo</label>
-                        <p-dropdown inputId="ddTipoModulo" appendTo="body" [options]="tipoModulo"
-                                    formControlName="mf_tipoModulo" optionLabel="desTipoModulo"
-                                    placeholder="Seleccionar Modulo" [ngClass]="{ 'valid-field': this.materiaForm.get('mf_tipoModulo').valid}">
-                          <ng-template let-tipoModulo pTemplate="item">
-                            <div class="flex align-items-center">
-                              <p-tag [rounded]="true" [severity]="getSeverity(tipoModulo.desTipoModulo)">
-                                {{ tipoModulo.desTipoModulo }}
-                              </p-tag>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="matnombre">Nombre<p-sortIcon field="matnombre"></p-sortIcon></th>
+                        <th>Descripción</th>
+                        <th pSortableColumn="matnivel">Módulo<p-sortIcon field="matnivel"></p-sortIcon></th>
+                        <th>Registrado</th>
+                        <th>Modifcado</th>
+                        <th>Estado</th>
+                        <th> Opciones </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-materia>
+                    <tr>
+                        <td>
+                            {{materia.matnombre}}
+                        </td>
+                        <td>
+                            {{materia.matdescripcion}}
+                        </td>
+                        <td>
+                            <p-tag [rounded]="true" [severity]="getSeverity(materia.matdesnivel)">
+                                {{ materia.matdesnivel }}
+                            </p-tag>
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    {{materia.matusureg}} <br> {{materia.matfecreg}}
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="materia.matusumod; else noModificado">
+                                        {{materia.matusumod}} <br> {{materia.matfecmod}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(materia.matestado)"
+                                [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-warning mr-2" pTooltip="Activar materia" tooltipPosition="left" (click)="activarMateria(materia)"></button>
                             </div>
-                          </ng-template>
-                        </p-dropdown>
-                        <small class="p-success block" *ngIf="materiaForm.get('mf_tipoModulo').valid">
-                          El tipo de módulo es válido.
-                        </small>
-                        <small class="p-error block" *ngIf="materiaForm.get('mf_tipoModulo').invalid && materiaForm.get('mf_tipoModulo').touched">
-                          <span *ngIf="materiaForm.get('mf_tipoModulo').errors?.required">El tipo de módulo es requerido.</span>
-                          (*)
-                        </small>
-                      </div>
-
-                    <!-- <div class="field">
-                        <label for="status">Elegir Estado:</label>
-                        <p-dropdown inputId="ddTipoEstado" appendTo="body" [options]="tipoEstado"
-                            [(ngModel)]="tipoEstadoSeleccionado" optionLabel="desTipoEstado"
-                            placeholder="Seleccionar Estado"></p-dropdown>
-                    </div> -->
-                <!-- </div> -->
-            </form>
-            <!-- </ng-template> -->
-            <ng-template pTemplate="footer">
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                    (click)="ocultarDialog()"></button>
-                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                    (click)="guardarMateria()"></button>
-            </ng-template>
-        </p-dialog>
-
-
-        <p-dialog [(visible)]="eliminarMateriaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="materia">Estas seguro que quieres eliminar esta Materia
-                    <b>{{materia.matnombre}}</b>?</span>
-            </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                    (click)="eliminarMateriaDialog = false"></button>
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-                    (click)="confirmarEliminar()"></button>
-            </ng-template>
-        </p-dialog>
-
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró las información solicitada.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
     </div>
 </div>
+
+
+
+<p-dialog [(visible)]="materiaDialog" header="Materia" [modal]="true" class="p-fluid">
+
+    <form [formGroup]="materiaForm" novalidate>
+
+        <div class="grid">
+            <div class="field col-12">
+                <label for="curnombre">Nombre de la materia</label>
+                <input type="text" pInputText id="matnombre" formControlName="mf_matnombre" required
+                    [ngClass]="{ 'ng-dirty': this.materiaForm.get('mf_matnombre').touched, 'valid-field': this.materiaForm.get('mf_matnombre').valid}" />
+                <!-- <small class="p-error block"
+                    *ngIf="materiaForm.get('mf_matnombre').invalid && materiaForm.get('mf_matnombre').dirty">
+                    <span *ngIf="materiaForm.get('mf_matnombre').errors?.required">El nombre de la materia es
+                        requerido.</span>
+                    (*)
+                </small> -->
+
+                <small class="p-error block"
+                *ngIf="materiaForm.get('mf_matnombre').invalid && materiaForm.get('mf_matnombre').dirty">
+                <!-- Mensaje si el nombre de usuario ya existe (validador asincrónico por ejemplo) -->
+                <span *ngIf="materiaForm.get('mf_matnombre').errors?.nombreMateriaExiste">
+                    Este nombre de la materia ya existe.
+                </span>
+                <!-- Mensaje si el campo es obligatorio -->
+                <span *ngIf="materiaForm.get('mf_matnombre').errors?.required">
+                    El nombre de la materia es requerido. (*)
+                </span>
+                <!-- Mensaje si la longitud mínima no se cumple -->
+                <span *ngIf="materiaForm.get('mf_matnombre').errors?.minlength">
+                    El nombre de la materia debe tener al menos 5 caracteres.
+                </span>
+            </small>
+            <!-- Mensaje de éxito -->
+            <!-- <small class="p-success block"
+                *ngIf="materiaForm.get('mf_matnombre').valid && (materiaForm.get('mf_matnombre').dirty || materiaForm.get('mf_matnombre').touched)">
+                El nombre de usuario es válido.
+            </small> -->
+
+                <small class="p-success block" *ngIf="materiaForm.get('mf_matnombre')?.valid"> El nombre de la materia es
+                    valido. </small>
+            </div>
+
+            <div class="field col-12">
+                <label for="descripcion">Descripción de la Materia</label>
+                <textarea id="descripcion" pInputTextarea formControlName="mf_matdescripcion" required rows="1" cols="20"
+                    [ngClass]="{ 'ng-dirty': this.materiaForm.get('mf_matdescripcion').touched, 'valid-field': this.materiaForm.get('mf_matdescripcion').valid}"></textarea>
+
+                <small class="p-error block"
+                    *ngIf="materiaForm.get('mf_matdescripcion').invalid && materiaForm.get('mf_matdescripcion').dirty">
+                    <span *ngIf="materiaForm.get('mf_matdescripcion').errors?.required">La descripción es requerido.</span>
+                    (*)
+                </small>
+                <small class="p-success block" *ngIf="materiaForm.get('mf_matdescripcion')?.valid"> La descripción es
+                    valido. </small>
+
+            </div>
+            <div class="field col-12">
+                <label for="status">Elegir Modulo</label>
+                <p-dropdown inputId="ddTipoModulo" appendTo="body" [options]="tipoModulo" formControlName="mf_tipoModulo"
+                    optionLabel="desTipoModulo" placeholder="Seleccionar Modulo"
+                    [ngClass]="{ 'valid-field': this.materiaForm.get('mf_tipoModulo').valid}">
+                    <ng-template let-tipoModulo pTemplate="item">
+                        <div class="flex align-items-center">
+                            <p-tag [rounded]="true" [severity]="getSeverity(tipoModulo.desTipoModulo)">
+                                {{ tipoModulo.desTipoModulo }}
+                            </p-tag>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <small class="p-success block" *ngIf="materiaForm.get('mf_tipoModulo').valid">
+                    El tipo de módulo es válido.
+                </small>
+                <small class="p-error block"
+                    *ngIf="materiaForm.get('mf_tipoModulo').invalid && materiaForm.get('mf_tipoModulo').touched">
+                    <span *ngIf="materiaForm.get('mf_tipoModulo').errors?.required">El tipo de módulo es requerido.</span>
+                    (*)
+                </small>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+            (click)="guardarMateria()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="desactivarMateriaDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="materia">Estas seguro que quieres desactivar esta Materia:
+            <b>{{materia.matnombre}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="desactivarMateriaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarActivarDesactivar()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="activarMateriaDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="materia">Estas seguro que quieres activar esta Materia:
+            <b>{{materia.matnombre}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="activarMateriaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarActivarDesactivar()"></button>
+    </ng-template>
+</p-dialog>

@@ -1,4 +1,5 @@
 export class Materia {
+    tipo?: any;
     matid?: number = 0;
     matnombre?: string = '';
     matdescripcion?: string = '';

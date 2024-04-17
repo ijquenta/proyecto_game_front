@@ -36,4 +36,7 @@ export class MateriaService {
     modificarMateria(criterio: any){
         return this.http.post(`${API_URL}/modificarMateria`, criterio);
     }
+    gestionarMateriaEstado(criterio: any){
+        return this.http.post(`${API_URL}/gestionarMateriaEstado`, criterio)
+    }
 }
