@@ -2,7 +2,7 @@
     <p-toast></p-toast>
     <div class="col-12">
         <div class="card px-6 py-6">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-blue-600"> Cursos </span> </div>
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Cursos </span> </div>
             <hr>
             <div class="flex col-12">
                 <div class="flex col-6">
@@ -159,7 +159,7 @@
                             <label for="status">Elegir Curso</label>
                         <p-dropdown inputId="ddTipoCurso" (onChange)="onSelectCurso($event)" appendTo="body"
                             [options]="tipoCurso" formControlName="tipoCurso" optionLabel="curnombre" [filter]="true" filterBy="curnombre"
-                            [emptyMessage]="'No se encontraron cursos.'"
+                            [emptyFilterMessage]="'No se encontraron cursos.'"
                             placeholder="Seleccionar Curso" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoCurso').valid}">
                         </p-dropdown>
                         <small class="p-success block" *ngIf="cursoForm.get('tipoCurso').valid">
@@ -174,7 +174,7 @@
                             <label for="status">Elegir Materia</label>
                             <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoMateria"
 
-                            [emptyMessage]="'No se encontraron materias para este curso.'"
+                            [emptyFilterMessage]="'No se encontraron materias para este curso.'"
                             [ngClass]="{ 'valid-field': this.cursoForm.get('tipoMateria').valid}"
                             formControlName="tipoMateria" [filter]="true" filterBy="matnombre" optionLabel="matnombre" placeholder="Seleccionar Materia">
                             </p-dropdown>
@@ -191,7 +191,7 @@
                         <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true"
                             filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol"
                             [ngClass]="{ 'valid-field': this.cursoForm.get('tipoRol').valid}"
-                            [emptyMessage]="'No se encontraron roles.'"
+                            [emptyFilterMessage]="'No se encontraron roles.'"
                             optionLabel="rolnombre" placeholder="Seleccionar Rol">
                         </p-dropdown>
                         <small class="p-success block" *ngIf="cursoForm.get('tipoRol').valid">
@@ -207,7 +207,7 @@
                         <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
                         formControlName="tipoPersona" optionLabel="pernomcompleto"
                         [ngClass]="{ 'valid-field': this.cursoForm.get('tipoPersona').valid}"
-                        [emptyMessage]="'No se encontraron personas.'"
+                        [emptyFilterMessage]="'No se encontraron personas.'"
                             placeholder="Seleccionar Docente">
                         </p-dropdown>
                         <small class="p-success block" *ngIf="cursoForm.get('tipoPersona').valid">

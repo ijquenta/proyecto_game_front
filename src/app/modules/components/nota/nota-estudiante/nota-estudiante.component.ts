@@ -59,7 +59,7 @@ export class NotaEstudianteComponent implements OnInit {
                         this.spinner.hide();
                         this.listarMateriasInscritas = result as Inscripcion[];
                         console.log("lista_materias_inscritas", this.listarMateriasInscritas)
-                        this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
+                        // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
                     },
                     error => {
                         this.spinner.hide();
@@ -83,7 +83,7 @@ export class NotaEstudianteComponent implements OnInit {
     this.notaService.listarNotaEstudianteMateria(criterio).subscribe((result: any) => {
         this.listarNotaEstudianteMateria = result as Nota[];
         this.loading2 = false;
-      this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
+    //   this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
     },
     error => {
       this.errors = error;

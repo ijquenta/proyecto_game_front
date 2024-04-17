@@ -99,7 +99,7 @@ export class MateriaCrudComponent implements OnInit {
     ocultarDialog() {
         this.materiaDialog = false;
         this.opcionMateria = false;
-        this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Proceso Cancelado', life: 3000 });
+        // this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Proceso Cancelado', life: 3000 });
     }
     // Método de obtención de datos y setearlos para modificar materia
     editarMateria(data: any) {

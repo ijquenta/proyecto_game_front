@@ -4,7 +4,7 @@
     <div class="card px-6 py-6">
       <div class="font-bold text-3xl text-center">
         <span class="text-900">Administrar</span>
-        <span class="text-blue-600"> Inscripciones </span>
+        <span class="text-primary-600"> Inscripciones </span>
       </div>
       <hr />
       <!-- <div class="col-6">
@@ -300,7 +300,7 @@
               [options]="tipoMatricula"
               formControlName="tipoMatricula"
               optionLabel="matrgestion"
-              [emptyMessage]="'No se encontraron matriculas registradas.'"
+              [emptyFilterMessage]="'No se encontraron matriculas registradas.'"
               placeholder="Seleccionar Gestion"
             ></p-dropdown>
 
@@ -353,7 +353,7 @@
               [options]="tipoCursoMateria"
               formControlName="tipoCursoMateria"
               optionLabel="curmatdescripcion"
-              [emptyMessage]="'No se encontraron curso-materia registradas.'"
+              [emptyFilterMessage]="'No se encontraron curso-materia registradas.'"
               placeholder="Seleccionar Curso Materia"
             >
             </p-dropdown>
@@ -386,7 +386,7 @@
               filterBy="rolnombre"
               [options]="tipoRol"
               formControlName="tipoRol"
-              [emptyMessage]="'No se encontraron roles.'"
+              [emptyFilterMessage]="'No se encontraron roles.'"
               optionLabel="rolnombre"
               placeholder="Seleccionar rol"
             >
@@ -416,7 +416,7 @@
               [options]="tipoPersona"
               formControlName="tipoPersona"
               optionLabel="pernomcompleto"
-              [emptyMessage]="'No se encontraron estudiantes.'"
+              [emptyFilterMessage]="'No se encontraron estudiantes.'"
               placeholder="Seleccionar estudiante"
             >
             </p-dropdown>

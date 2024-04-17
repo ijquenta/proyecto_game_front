@@ -55,7 +55,7 @@ export class PagoEstudianteComponent implements OnInit {
                 this.pagoService.listarPagoEstudiante(criterio).subscribe(
                     (result: any) => {
                         this.listarMateriasInscritas = result as Inscripcion[];
-                        this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
+                        // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
                     },
                     error => {
                         this.errors = error;
@@ -79,7 +79,7 @@ export class PagoEstudianteComponent implements OnInit {
         this.listarNotaEstudianteMateria = result as Pago[];
         console.log(this.listarNotaEstudianteMateria)
         this.loading2 = false;
-      this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
+    //   this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
     },
     error => {
       this.errors = error;
