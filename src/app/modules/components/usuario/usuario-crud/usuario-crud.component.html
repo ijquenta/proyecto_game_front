@@ -1,128 +1,30 @@
-<div *ngIf="loading">
+<!-- <div *ngIf="loading">
     <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
         animationDuration=".5s"></p-progressSpinner>
-</div>
+</div> -->
 <p-toast></p-toast>
-
-<p-dialog [(visible)]="usuarioDialog" header="Usuario" [modal]="true" class="p-fluid">
-
-    <!-- <ng-template pTemplate="content"> -->
-    <form [formGroup]="usuarioForm" novalidate>
-            <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p>
-            <hr>
-            <div class="grid p-fluid mt-3">
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="nombres" pInputText formControlName="uf_usuname" [ngClass]="{ 'ng-dirty': this.usuarioForm.get('uf_usuname').touched, 'valid-field': this.usuarioForm.get('uf_usuname').valid}">
-                        <label for="nombres">Nombre de Usuario</label>
-                    </span>
-                    <small class="p-error block" *ngIf="usuarioForm.get('uf_usuname').invalid && usuarioForm.get('uf_usuname').dirty">
-                        <span *ngIf="usuarioForm.get('uf_usuname').errors?.required">El nombre de usuario es requerido.</span>
-                        (*)
-                    </small>
-                    <small class="p-success block" *ngIf="usuarioForm.get('uf_usuname')?.valid"> El nombre de usuario es valido. </small>
-                </div>
-                <div class="fild col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown [options]="tipoPersona" formControlName="uf_tipPerSel" appendTo="body"
-                            optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
-                            placeholder="Seleccionar Persona">
-
-                            <ng-template let-persona pTemplate="item">
-                                <div class="flex align-items-center">
-                                    <div> <p-avatar image="http://127.0.0.1:5001/static/files_fotoperfil/{{ persona.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar></div>
-                                    <div> {{ persona.pernomcompleto }} - Nro: {{persona.pernrodoc}} </div>
-                                </div>
-                            </ng-template>
-                        </p-dropdown>
-                        <label for="tipoPersona">Elegir Persona</label>
-                    </span>
-                    <small class="p-success block" *ngIf="usuarioForm.get('uf_tipPerSel').valid">
-                        La persona seleccionada es valida.
-                    </small>
-                    <small class="p-error block" *ngIf="usuarioForm.get('uf_tipPerSel').invalid && usuarioForm.get('uf_tipPerSel').touched">
-                        <span *ngIf="usuarioForm.get('uf_tipPerSel').errors?.required">La persona es requerida.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown id="tipoRol" formControlName="uf_tipRolSel" [autoDisplayFirst]="false" appendTo="body" [options]="tipoRol"
-                             optionLabel="rolnombre"></p-dropdown>
-                        <label for="tipoRol">Eligir Rol</label>
-                    </span>
-                    <small class="p-success block" *ngIf="usuarioForm.get('uf_tipRolSel').valid">
-                        El rol es valido.
-                    </small>
-                    <small class="p-error block" *ngIf="usuarioForm.get('uf_tipRolSel').invalid && usuarioForm.get('uf_tipRolSel').touched">
-                        <span *ngIf="usuarioForm.get('uf_tipRolSel').errors?.required">El rol es requerido.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="email" id="email" pInputText formControlName="uf_email" [ngClass]="{ 'ng-dirty': this.usuarioForm.get('uf_email').touched, 'valid-field': this.usuarioForm.get('uf_email').valid}">
-                        <label for="email">Correo Electrónico</label>
-                    </span>
-                    <small class="p-error block" *ngIf="usuarioForm.get('uf_email').invalid && usuarioForm.get('uf_email').dirty">
-                        <span *ngIf="usuarioForm.get('uf_email').errors?.required">El correo electrónico es requerido. (*)</span>
-                        <span *ngIf="usuarioForm.get('uf_email').errors?.pattern">El formato del correo electrónico es inválido. </span>
-                    </small>
-                    <small class="p-success block" *ngIf="usuarioForm.get('uf_email')?.valid"> El correo electrónico es válido.</small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <textarea inputId="descripcion" rows="1" cols="30" formControlName="uf_descripcion"
-                            appendTo="body" pInputTextarea></textarea>
-                        <label for="descripcion">Observación</label>
-                    </span>
-                </div>
-            </div>
-        </form>
-    <!-- </ng-template> -->
-
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-            (click)="ocultarDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-            (click)="enviarFormulario()"></button>
-    </ng-template>
-</p-dialog>
-
-<p-dialog [(visible)]="eliminarUsuarioDialog" header="Confirmar" [modal]="true">
-    <div class="flex align-items-center justify-content-center">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="usuario">Esta seguro de eliminar este registro <b>{{usuario.pernomcompleto}}</b>?</span>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-            (click)="eliminarUsuarioDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-            (click)="confirmarEliminar()"></button>
-    </ng-template>
-</p-dialog>
-
-
-<div class="grid">
+<!-- <div class="grid">
     <div class="col-12">
         <div class="card">
             <div class="font-bold text-3xl text-center">
                 <span class="text-900">Administrar</span>
-                <span class="text-blue-600"> Usuarios</span>
+                <span class="text-primary-600"> Usuarios</span>
             </div>
-            <p-dataView #dv [value]="filteredUsuarios" [paginator]="true" [rows]="12" filterBy="pernomcompleto"
+            <p-dataView #dv [value]="filteredUsuarios" [paginator]="true" [rows]="8" filterBy="pernomcompleto"
                 [sortField]="sortField" [sortOrder]="sortOrder" layout="grid"
                 [emptyMessage]="'No se encontraron registros de usuarios.'" [loadingIcon]="'pi pi-spin pi-spinner'">
                 <ng-template pTemplate="header">
                     <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
-                        <!-- <p-dropdown [options]="sortOptions" placeholder="Ordenar por Rol" (onChange)="onSortChange($event)"  [emptyMessage]="'No se encontraron resultados'"></p-dropdown> -->
                         <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
                             (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"></button>
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
-                                (input)="filterUsuarios()" />
-                        </span>
+
+                        <div class="flex">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
+                                    (input)="filterUsuarios()" />
+                            </span>
+                        </div>
                         <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
                     </div>
                 </ng-template>
@@ -189,7 +91,7 @@
             </p-dataView>
         </div>
     </div>
-</div>
+</div> -->
 
 
 
@@ -214,3 +116,543 @@
         </div>
     </div>
 </div> -->
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Administrar</span>
+                <span class="text-primary-600"> Usuarios</span>
+            </div>
+            <hr>
+            <p-table #dt2 [value]="usuarios" [loading]="loading" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['pernomcompleto', 'usuname', 'rolnombre']" [paginator]="true"
+                [rowsPerPageOptions]="[5,10,20]" selectionMode="multiple" [rowHover]="true" dataKey="id"
+                rowGroupMode="rowspan" groupRowsBy="pernomcompleto" sortField="pernomcompleto" sortMode="single">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <div>
+                            <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-primary mr-2"
+                            (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"
+                            tooltipPosition="right"></button>
+
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+
+                        </div>
+
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto"
+                                pTooltip="Buscar por nombre completo, nombre de usuario y nombre de rol"
+                                tooltipPosition="left" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Persona</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Correo electrónico</th>
+                        <th>Observación</th>
+                        <th> Registrado por </th>
+                        <th> Modificado por </th>
+                        <th> Estado </th>
+                        <th> Opciones</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-usuario let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+                    <tr>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
+                            <div *ngIf="usuario.perfoto == null" class="user-display">
+                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ usuario.pernomcompleto }}</span>
+                            </div>
+                            <div *ngIf="usuario.perfoto != null" class="user-display">
+                                <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge"
+                                    shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ usuario.pernomcompleto }}</span>
+                            </div>
+                        </td>
+                        <td style="width:13%; min-width:10rem;">
+                            <p-chip>
+                                <div class="p-2"> {{usuario.usuname}} </div>
+                            </p-chip>
+                        </td>
+
+                        <td>
+                            {{usuario.rolnombre}}
+                        </td>
+                        <td>
+                            {{usuario.usuemail}}
+                        </td>
+                        <td>
+                            {{usuario.usudescripcion}}
+                        </td>
+                        <td> <p-chip>
+                                <div class="p-2"> {{usuario.usuusureg}} <br> {{usuario.usufecreg}} </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-chip>
+                                <div class="p-2"> {{usuario.usuusumod}} <br> {{usuario.usufecmod}} </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(usuario.usuestado)" [severity]="obtenerSeverityEstado(usuario.usuestado)" [rounded]="true"></p-tag></td>
+                        <td>
+                            <div class="flex">
+                                <div *ngIf="datosUsuario?.rolid == 1" class="flex">
+                                    <button
+                                        *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1"
+                                        pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario"
+                                        tooltipPosition="left" (click)="editarUsuario(usuario)"></button>
+
+                                    <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1"  pButton pRipple icon="pi pi-shield"
+                                    class="p-button-rounded p-button-warning mr-2"
+                                    (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="left"></button>
+
+                                    <button
+                                    *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1"
+                                    pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2"
+                                    (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario"
+                                    tooltipPosition="left"></button>
+                                    <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0"
+                                    pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)"
+                                    pTooltip="Activar Usuario" tooltipPosition="left"></button>
+                                </div>
+                                <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple
+                                        icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
+                                        pTooltip="Editar usuario" tooltipPosition="left"
+                                        (click)="editarUsuario(usuario)"></button>
+
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-shield"
+                                    class="p-button-rounded p-button-warning mr-2"
+                                    (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="left"></button>
+
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple
+                                        icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2"
+                                        (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario"
+                                        tooltipPosition="left"></button>
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="pi pi-power-off"
+                                        class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)"
+                                        pTooltip="Activar Usuario" tooltipPosition="left"></button>
+                                </div>
+
+                                <!-- <div class="flex justify-content-center">
+                                    <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar Persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Desactivar Persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 0" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)" pTooltip="Activar Persona" tooltipPosition="left" ></button>
+                                </div> -->
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="datosUsuario?.rolid == 1" class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Administrar Usuarios</span>
+                <span class="text-primary-600"> Desactivados</span>
+            </div>
+            <hr>
+            <p-table #dt3 [value]="usuariosInactivos" [loading]="loading" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['pernomcompleto', 'usuname', 'rolnombre']" [paginator]="true"
+                [rowsPerPageOptions]="[5,10,20]" selectionMode="multiple" [rowHover]="true" dataKey="id"
+                rowGroupMode="rowspan" groupRowsBy="pernomcompleto" sortField="pernomcompleto" sortMode="single">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <!-- <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"
+                            tooltipPosition="right"></button> -->
+
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt3, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto"
+                                pTooltip="Buscar por nombre completo, nombre de usuario y nombre de rol"
+                                tooltipPosition="left" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Persona</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Correo electrónico</th>
+                        <th>Observación</th>
+                        <th> Registrado por </th>
+                        <th> Modificado por </th>
+                        <th> Estado </th>
+                        <th> Opciones</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-usuario let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+                    <tr>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
+                            <div *ngIf="usuario.perfoto == null" class="user-display">
+                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ usuario.pernomcompleto }}</span>
+                            </div>
+                            <div *ngIf="usuario.perfoto != null" class="user-display">
+                                <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge"
+                                    shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ usuario.pernomcompleto }}</span>
+                            </div>
+                        </td>
+                        <td style="width:13%; min-width:10rem;">
+                            <p-chip>
+                                <div class="p-2"> {{usuario.usuname}} </div>
+                            </p-chip>
+                        </td>
+
+                        <td>
+                            {{usuario.rolnombre}}
+                        </td>
+                        <td>
+                            {{usuario.usuemail}}
+                        </td>
+                        <td>
+                            {{usuario.usudescripcion}}
+                        </td>
+                        <td> <p-chip>
+                                <div class="p-2"> {{usuario.usuusureg}} <br> {{usuario.usufecreg}} </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-chip>
+                                <div class="p-2"> {{usuario.usuusumod}} <br> {{usuario.usufecmod}} </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(usuario.usuestado)" [severity]="obtenerSeverityEstado(usuario.usuestado)" [rounded]="true"></p-tag></td>
+                        <td>
+                            <div class="flex">
+                                <div *ngIf="datosUsuario?.rolid == 1" class="flex">
+                                    <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0"
+                                        pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success" (click)="confirmarActivar(usuario)"
+                                        pTooltip="Activar Usuario" tooltipPosition="left"></button>
+                                </div>
+                                <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="pi pi-power-off"
+                                        class="p-button-rounded p-button-success" (click)="confirmarActivar(usuario)"
+                                        pTooltip="Activar Usuario" tooltipPosition="left"></button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="usuarioDialog" header="Usuario" [modal]="true" class="p-fluid">
+
+    <div *ngIf="!optionDialog">
+        <p-card>
+            <ng-template pTemplate="title">
+                Información del usuario
+            </ng-template>
+            <ng-template pTemplate="content">
+                <div class="user-info-container">
+                    <div class="user-info-avatar">
+                        <div *ngIf="usuario?.perfoto">
+                            <p-avatar [image]="apiUrl + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar>
+                        </div>
+                        <div *ngIf="!usuario?.perfoto">
+                            <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
+                                shape="circle"></p-avatar>
+                        </div>
+                    </div>
+                    <div class="user-info-details">
+                        <p><strong>Nombre de la persona:</strong> {{ usuario?.pernomcompleto }}</p>
+                        <p><strong>Número de documento:</strong> {{ usuario?.pernrodoc }}</p>
+                        <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p>
+                        <p><strong>Estado:</strong>
+                            <p-tag [value]="obtenerDescripcionEstado(usuario?.usuestado)"
+                                [severity]="obtenerSeverityEstado(usuario?.usuestado)" [rounded]="true"></p-tag>
+                        </p>
+                    </div>
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+
+
+    <form [formGroup]="usuarioForm" novalidate>
+        <div *ngIf="optionDialog">
+
+            <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el
+                sistema.
+            </p>
+        </div>
+        <hr>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input type="text" id="nombres" pInputText formControlName="uf_usuname"
+                        [ngClass]="{ 'ng-dirty': this.usuarioForm.get('uf_usuname').dirty, 'valid-field': this.usuarioForm.get('uf_usuname').valid}">
+                    <label for="nombres">Nombre de Usuario</label>
+                </span>
+                <!-- Mensajes de error para el nombre de usuario -->
+                <small class="p-error block"
+                    *ngIf="usuarioForm.get('uf_usuname').invalid && usuarioForm.get('uf_usuname').dirty">
+                    <!-- Mensaje si el nombre de usuario ya existe (validador asincrónico por ejemplo) -->
+                    <span *ngIf="usuarioForm.get('uf_usuname').errors?.nombreUsuarioExiste">
+                        Este nombre de usuario ya existe.
+                    </span>
+                    <!-- Mensaje si el campo es obligatorio -->
+                    <span *ngIf="usuarioForm.get('uf_usuname').errors?.required">
+                        El nombre de usuario es requerido. (*)
+                    </span>
+                    <!-- Mensaje si la longitud mínima no se cumple -->
+                    <span *ngIf="usuarioForm.get('uf_usuname').errors?.minlength">
+                        El nombre de usuario debe tener al menos 5 caracteres.
+                    </span>
+                    <!-- Mensaje si la longitud máxima se excede -->
+                    <span *ngIf="usuarioForm.get('uf_usuname').errors?.maxlength">
+                        El nombre de usuario no puede exceder los 20 caracteres.
+                    </span>
+                    <span *ngIf="usuarioForm.get('uf_usuname').errors?.espaciosNoPermitidos">
+                        El nombre de usuario no debe contener espacios.
+                    </span>
+                    <span *ngIf="usuarioForm.get('uf_usuname').errors?.inicioInvalido">
+                        El nombre de usuario debe comenzar con una letra.
+                    </span>
+                </small>
+                <!-- Mensaje de éxito -->
+                <small class="p-success block"
+                    *ngIf="usuarioForm.get('uf_usuname').valid && (usuarioForm.get('uf_usuname').dirty || usuarioForm.get('uf_usuname').touched)">
+                    El nombre de usuario es válido.
+                </small>
+
+            </div>
+            <div *ngIf="optionDialog" class="fild col-12 md:col-6">
+                <span class="p-float-label">
+                    <p-dropdown [options]="tipoPersona" formControlName="uf_tipPerSel" appendTo="body"
+                        optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
+                        placeholder="Seleccionar Persona" [emptyFilterMessage]="'No se encontraron registros.'">
+
+                        <ng-template let-persona pTemplate="item">
+                            <div class="flex align-items-center">
+                                <div *ngIf="persona.perfoto == null" class="user-display">
+                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                        styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ persona.pernomcompleto }}</span>
+                                </div>
+                                <div *ngIf="persona.perfoto != null" class="user-display">
+                                    <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge"
+                                        shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc
+                                        }}</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                    <label for="tipoPersona">Elegir Persona</label>
+                </span>
+                <small class="p-success block" *ngIf="usuarioForm.get('uf_tipPerSel').valid">
+                    La persona seleccionada es valida.
+                </small>
+                <small class="p-error block"
+                    *ngIf="usuarioForm.get('uf_tipPerSel').invalid && usuarioForm.get('uf_tipPerSel').touched">
+                    <span *ngIf="usuarioForm.get('uf_tipPerSel').errors?.required">La persona es requerida.</span>
+                    (*)
+                </small>
+            </div>
+            <div *ngIf="optionDialog" class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoRol" formControlName="uf_tipRolSel" [autoDisplayFirst]="false" appendTo="body"
+                        [options]="tipoRol" optionLabel="rolnombre"></p-dropdown>
+                    <label for="tipoRol">Eligir Rol</label>
+                </span>
+                <small class="p-success block" *ngIf="usuarioForm.get('uf_tipRolSel').valid">
+                    El rol es valido.
+                </small>
+                <small class="p-error block"
+                    *ngIf="usuarioForm.get('uf_tipRolSel').invalid && usuarioForm.get('uf_tipRolSel').touched">
+                    <span *ngIf="usuarioForm.get('uf_tipRolSel').errors?.required">El rol es requerido.</span>
+                    (*)
+                </small>
+            </div>
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input type="email" id="email" pInputText formControlName="uf_email"
+                        [ngClass]="{ 'ng-dirty': this.usuarioForm.get('uf_email').touched, 'valid-field': this.usuarioForm.get('uf_email').valid}">
+                    <label for="email">Correo Electrónico</label>
+                </span>
+                <small class="p-error block"
+                    *ngIf="usuarioForm.get('uf_email').invalid && usuarioForm.get('uf_email').dirty">
+                    <span *ngIf="usuarioForm.get('uf_email').errors?.required">El correo electrónico es requerido.
+                        (*)</span>
+                    <span *ngIf="usuarioForm.get('uf_email').errors?.pattern">El formato del correo electrónico es
+                        inválido. </span>
+                </small>
+                <small class="p-success block" *ngIf="usuarioForm.get('uf_email')?.valid"> El correo electrónico es
+                    válido.</small>
+            </div>
+            <div class="field col-12 md:col-12">
+                <span class="p-float-label">
+                    <textarea inputId="descripcion" rows="1" cols="30" formControlName="uf_descripcion" appendTo="body"
+                        pInputTextarea></textarea>
+                    <label for="descripcion">Observación</label>
+                </span>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+            (click)="enviarFormulario()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="usuarioCambiarPasswordDialog" header="Usuario" [modal]="true" class="p-fluid">
+    <p-card>
+        <ng-template pTemplate="title">
+            Información del usuario
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="user-info-container">
+                <div class="user-info-avatar">
+                    <div *ngIf="usuario?.perfoto">
+                        <p-avatar [image]="apiUrl + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar>
+                    </div>
+                    <div *ngIf="!usuario?.perfoto">
+                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
+                            shape="circle"></p-avatar>
+                    </div>
+                </div>
+                <div class="user-info-details">
+                    <p><strong>Nombre de la persona:</strong> {{ usuario?.pernomcompleto }}</p>
+                    <p><strong>Número de documento:</strong> {{ usuario?.pernrodoc }}</p>
+                    <p><strong>Nombre de usuario:</strong>
+                        <p-chip>
+                            <div class="p-2">
+                        {{ usuario?.usuname }}
+                            </div>
+                        </p-chip>
+                    </p>
+                    <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p>
+                    <p><strong>Estado:</strong>
+                        <p-tag [value]="obtenerDescripcionEstado(usuario?.usuestado)"
+                            [severity]="obtenerSeverityEstado(usuario?.usuestado)" [rounded]="true"></p-tag>
+                    </p>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
+    <!-- <ng-template pTemplate="content"> -->
+        <form [formGroup]="usuarioPwdForm">
+            <div class="grid p-fluid mt-3">
+                <!-- Campo de Contraseña -->
+                <div class="field col-12 md:col-12">
+                    <span class="p-float-label">
+                        <p-password id="password" formControlName="usupassword" [toggleMask]="true" [feedback]="false" appendTo="body"></p-password>
+                        <label for="password">Contraseña</label>
+                    </span>
+                    <!-- Mensajes de error para la contraseña -->
+                    <small class="p-error block"
+                        *ngIf="usuarioPwdForm.get('usupassword').invalid && (usuarioPwdForm.get('usupassword').dirty || usuarioPwdForm.get('usupassword').touched)">
+                        <span *ngIf="usuarioPwdForm.get('usupassword').errors?.required">
+                            La contraseña es obligatoria. <br>
+                        </span>
+                        <span *ngIf="usuarioPwdForm.get('usupassword').errors?.minlength">
+                            La contraseña debe tener al menos 8 caracteres. <br>
+                        </span>
+                        <span *ngIf="usuarioPwdForm.get('usupassword').errors?.passwordStrength">
+                            La contraseña debe incluir mayúsculas, minúsculas y números. <br>
+                        </span>
+                    </small>
+                    <!-- Mensaje de éxito -->
+                    <small class="p-success block"
+                        *ngIf="usuarioPwdForm.get('usupassword').valid && (usuarioPwdForm.get('usupassword').dirty || usuarioPwdForm.get('usupassword').touched)">
+                        La contraseña es válida.
+                    </small>
+                </div>
+
+                <!-- Campo de Confirmar Contraseña -->
+                <div class="field col-12 md:col-12">
+                    <span class="p-float-label">
+                        <p-password id="passwordhash" formControlName="usupassword2" [toggleMask]="true" [feedback]="false" appendTo="body"></p-password>
+                        <label for="passwordhash">Confirmar Contraseña</label>
+                    </span>
+                    <!-- Mensajes de error para la confirmación de contraseña -->
+                    <small class="p-error block"
+                        *ngIf="usuarioPwdForm.get('usupassword2').dirty">
+                        <span *ngIf="usuarioPwdForm.get('usupassword2').errors?.required">
+                            Confirmar la contraseña es obligatorio.
+                        </span>
+                        <span *ngIf="usuarioPwdForm.errors?.['mismatch']">
+                            Las contraseñas no coinciden.
+                        </span>
+                    </small>
+                    <!-- Mensaje de éxito -->
+                    <small class="p-success block"
+                        *ngIf="usuarioPwdForm.get('usupassword2').valid && !usuarioPwdForm.errors?.['mismatch']">
+                        La confirmación de la contraseña es válida.
+                    </small>
+                </div>
+            </div>
+        </form>
+
+
+    <!-- </ng-template> -->
+    <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="cambiarPasswordUsuario()"></button>
+      </ng-template>
+
+</p-dialog>
+
+<p-dialog [(visible)]="desactivarUsuarioDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="usuario">Esta seguro de desactivar este registro <b>{{usuario.usuname}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="desactivarUsuarioDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="desactivarUsuario()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="activarUsuarioDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-check" style="font-size: 2rem"></i>
+        <span *ngIf="usuario">Esta seguro de activar a este usuario: <b> {{usuario.usuname}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="activarUsuarioDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="activarUsuario()"></button>
+    </ng-template>
+</p-dialog>

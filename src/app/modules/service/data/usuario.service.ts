@@ -42,4 +42,12 @@ export class UsuarioService {
     getTipoPersona(){
         return this.http.get(`${API_URL}/tipoPersona`)
     }
+
+    gestionarUsuarioEstado(criterio: any) {
+        return this.http.post(`${API_URL}/gestionarUsuarioEstado`, criterio);
+    }
+
+    gestionarUsuarioPassword(criterio: any) {
+        return this.http.post(`${API_URL}/gestionarUsuarioPassword`, criterio);
+    }
 }

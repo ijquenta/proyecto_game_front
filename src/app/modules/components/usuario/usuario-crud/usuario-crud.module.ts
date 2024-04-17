@@ -18,7 +18,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";
@@ -26,7 +25,6 @@ import { CascadeSelectModule } from "primeng/cascadeselect";
 import { MultiSelectModule } from "primeng/multiselect";
 import { PasswordModule } from 'primeng/password';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-// import { FileUploadModule } from 'primeng/fileupload';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { DataViewModule } from 'primeng/dataview';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -34,6 +32,9 @@ import { TagModule } from 'primeng/tag';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { ChipModule } from 'primeng/chip';
+import { CardModule } from 'primeng/card';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         DataViewModule,
@@ -64,7 +65,10 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
         TagModule,
         ReactiveFormsModule,
         AvatarModule,
-        AvatarGroupModule
+        AvatarGroupModule,
+        ChipModule,
+        CardModule,
+        TooltipModule
     ],
     declarations: [UsuarioCrudComponent],
     providers: [UsuarioService, ReporteService]
