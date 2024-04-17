@@ -196,6 +196,7 @@ export class UsuarioPersonaComponent implements OnInit {
             },
             (error: any) => {
                 this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el recuperar información del sistema.', life: 3000 });
+                this.loading = false;
                 this.spinner.hide();
             }
         );
