@@ -17,7 +17,7 @@ import { Observable, of } from 'rxjs';
 import { FileUpload } from 'primeng/fileupload';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as FileSaver from 'file-saver';
-import { API_URL_FOTO_PERFIL } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 
 
 interface Column {
@@ -94,7 +94,7 @@ export class UsuarioPersonaComponent implements OnInit {
     selectAll: boolean = false;
     selectedCustomers!: any[];
 
-    apiUrl = API_URL_FOTO_PERFIL;
+    apiUrl = environment.API_URL_FOTO_PERFIL;
 
     constructor(
         public usuarioService: UsuarioService,

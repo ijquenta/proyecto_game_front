@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { API_URL_FOTO_PERFIL } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as FileSaver from 'file-saver';
 interface Column {
@@ -63,7 +63,7 @@ export class UsuarioCrudComponent implements OnInit {
     // --------- Variables para validaciones ---------
     usuarioForm: FormGroup;
     usuarioPwdForm: FormGroup;
-    apiUrl = API_URL_FOTO_PERFIL;
+    apiUrl = environment.API_URL_FOTO_PERFIL;
     originalUsername: any;
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
