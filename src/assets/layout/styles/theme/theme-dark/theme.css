@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap'); */
 
-::ng-deep {
+/* ::ng-deep {
   --font-family: 'Poppins', sans-serif;
-}
+} */
 :root {
     --surface-a: #282936;
     --surface-b: #1d1e27;
@@ -88,7 +88,7 @@ p {
     font-weight: 300;
 } */
 
-@font-face {
+/* @font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 300;
@@ -110,6 +110,30 @@ p {
     font-weight: 300;
     src: local('Poppins Bold'), local('Poppins-Bold'), url('https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2') format('woff2'),
         url('https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff') format('woff');
+} */
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Poppins Light'), local('Poppins-Light'), url('../assets/poppins-light-webfont.woff2') format('woff2'),
+        url('../assets/poppins-light-webfont.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400; /* Aquí deberías cambiar a 400 para Regular */
+    src: local('Poppins Regular'), local('Poppins-Regular'), url('../assets/poppins-medium-webfont.woff2') format('woff2'),
+        url('../assets/poppins-medium-webfont.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700; /* Aquí deberías cambiar a 700 para Bold */
+    src: local('Poppins Bold'), local('Poppins-Bold'), url('../assets/poppins-bold-webfont.woff2') format('woff2'),
+        url('../assets/poppins-bold-webfont.woff') format('woff');
 }
 
 * {
