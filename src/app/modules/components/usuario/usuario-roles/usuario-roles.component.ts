@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { MessageService } from 'primeng/api';
 import { FechaService } from 'src/app/modules/service/data/fecha.service';
-
+import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
     templateUrl: './usuario-roles.component.html',
     providers: [MessageService],
@@ -27,7 +27,8 @@ export class UsuarioRolesComponent implements OnInit {
     rolRegistro: Rol;
     optionRol: boolean = false;
     roldialog: boolean = false;
-    eliminarRolDialog: boolean = false;
+    desactivarRolDialog: boolean = false;
+    activarRolDialog: boolean = false;
     errors: any;
     rolNuevoDialog: boolean = false;
     rolModificarDialog: boolean = false;
@@ -41,7 +42,8 @@ export class UsuarioRolesComponent implements OnInit {
         public rolService: RolService,
         private authService: AuthService,
         public fechaService: FechaService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private spinner: NgxSpinnerService
     ) {
 
     }
@@ -61,11 +63,18 @@ export class UsuarioRolesComponent implements OnInit {
     }
 
     ListarRoles() {
+        this.spinner.show();
         this.rolService.getListarRoles().subscribe((data: any) => {
           this.roles = data;
           console.log("Roles: ", this.roles)
           this.loading = false;
-        });
+          this.spinner.hide()
+        },
+        (error) => {
+            console.error(error)
+            this.spinner.hide()
+        }
+        );
 
       }
 
@@ -165,26 +174,33 @@ export class UsuarioRolesComponent implements OnInit {
     }
 
 
-    eliminarRol(data: Rol){
+    desactivarRol(data: Rol){
         this.rolRegistro = { ...data };
-        this.rolRegistro.tipo = 3; // tipo 3, eliminar rol
-        this.eliminarRolDialog = true;
+        this.rolRegistro.tipo = 2;
+        this.desactivarRolDialog = true;
     }
 
-    confirmarEliminar() {
+    activarRol(data: Rol){
+        this.rolRegistro = { ...data };
+        this.rolRegistro.tipo = 3;
+        this.activarRolDialog = true;
+    }
+
+    confirmarActivarDesactivar() {
       this.loading = true;
-      this.rolService.gestionarRol(this.rolRegistro).subscribe(
+      console.log("desactivar: ", this.rolRegistro);
+      this.rolService.gestionarRolEstado(this.rolRegistro).subscribe(
           (result: any) => {
-              // Mensaje de éxito al eliminar un rol
-              this.messageService.add({ key: 'tc',  severity: 'success', summary: 'Eliminación Exitosa', detail: 'El rol se ha eliminado correctamente del sistema. Cualquier acción relacionada con este rol ha sido completada con éxito.', life: 3000});
-              this.eliminarRolDialog = false;
+              this.messageService.add({ key: 'tc',  severity: 'success', summary: 'Desactivación Exitosa', detail: 'El rol se ha desactivado correctamente del sistema.', life: 3000});
+              this.desactivarRolDialog = false;
+              this.activarRolDialog = false;
               this.ListarRoles();
               this.loading = false;
           },
           (error) => {
               this.errors = error;
               console.log('error', error);
-              this.messageService.add({ key: 'tc',  severity: 'error', summary: 'Error al Eliminar Rol', detail: 'Se ha producido un error al intentar eliminar el rol. Por favor, revisa si existen dependencias o inténtalo de nuevo más tarde.', life: 5000 });
+              this.messageService.add({ key: 'tc',  severity: 'error', summary: 'Error al Desactivar el Rol', detail: 'Se ha producido un error al intentar desactivar el rol.', life: 5000 });
           }
       );
     }
@@ -193,7 +209,8 @@ export class UsuarioRolesComponent implements OnInit {
         this.rolNuevoDialog = false;
         this.roldialog = false;
         this.rolModificarDialog = false;
-        this.eliminarRolDialog = false;
+        this.desactivarRolDialog = false;
+        this.activarRolDialog = false;
         this.rol = new Rol();
         this.rolForm.reset();
     }

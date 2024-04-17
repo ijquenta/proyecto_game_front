@@ -19,7 +19,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChipModule } from 'primeng/chip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
-
+import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioRolesComponent } from './usuario-roles.component';
 
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
@@ -48,7 +48,8 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
         ProgressSpinnerModule,
         ChipModule,
         ReactiveFormsModule,
-        CardModule
+        CardModule,
+        TooltipModule
     ],
     declarations: [UsuarioRolesComponent],
     providers: [UsuarioService, RolService]

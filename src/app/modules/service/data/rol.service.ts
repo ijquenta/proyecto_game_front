@@ -10,6 +10,9 @@ export class RolService {
     gestionarRol(criterio: any){
         return this.http.post(`${API_URL}/gestionarRol`, criterio);
     }
+    gestionarRolEstado(criterio: any){
+        return this.http.post(`${API_URL}/gestionarRolEstado`, criterio)
+    }
     getTipoRol(){
         return this.http.get(`${API_URL}/tipoRol`);
     }

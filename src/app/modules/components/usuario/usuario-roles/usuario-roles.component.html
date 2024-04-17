@@ -4,13 +4,16 @@
     <p-toast position="top-center" key="tc"></p-toast>
     <div class="col-12">
         <div class="card">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-blue-600"> Roles</span> </div>
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Roles</span> </div>
             <hr>
-            <p-table [value]="roles" [rows]="5" [tableStyle]="{'min-width': '20rem'}" [paginator]="true" [rowsPerPageOptions]="[5,10,20]"  [loading]="loading">
-                <ng-template pTemplate="caption"> <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"> <button pButton pRipple label="Adicionar rol" icon="pi pi-plus" class="p-button-success mr-2" (click)="NuevoRol()"> </button> </div> </ng-template>
+            <p-table [value]="roles" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,20]"  [loading]="loading">
+                <ng-template pTemplate="caption">
+                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <button pButton pRipple label="Nuevo Rol" icon="pi pi-plus" class="p-button-primary mr-2" (click)="NuevoRol()"  pTooltip="Registar nuevo rol"> </button>
+                     </div>
+                </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th>Código</th>
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Registro por</th>
@@ -21,7 +24,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rol>
                     <tr>
-                        <td>{{rol.rolid}}</td>
                         <td>{{rol.rolnombre}}</td>
                         <td>{{rol.roldescripcion}}</td>
                         <td> <p-chip> <div class="p-2"> {{ rol.rolusureg }} <br> {{ rol.rolfecreg }} </div> </p-chip> </td>
@@ -29,8 +31,9 @@
                         <td> <p-tag [value]="obtenerDescripcionEstado(rol.rolestado)" [severity]="obtenerSeverityEstado(rol.rolestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex justify-content-center">
-                                <button pButton pRipple icon="pi pi-pencil" label="Editar" class="p-button-rounded p-button-info mr-2" (click)="modificarRol(rol)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" label="Eliminar" (click)="eliminarRol(rol)"></button>
+                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarRol(rol)" pTooltip="Editar Rol" tooltipPosition="left"></button>
+                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2" (click)="desactivarRol(rol)" pTooltip="Desactivar Rol" tooltipPosition="left"></button>
+                                <button *ngIf="rol.rolestado == 0" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-warning mr-2" (click)="activarRol(rol)" pTooltip="Activar Rol" tooltipPosition="left"></button>
                             </div>
                         </td>
                     </tr>
@@ -72,11 +75,22 @@
         </ng-template>
     </p-dialog>
 
-    <p-dialog [(visible)]="eliminarRolDialog" header="Aviso: Confirmar" [modal]="true" [style]="{width:'400px'}">
+    <p-dialog [(visible)]="desactivarRolDialog" header="Aviso: Confirmar" [modal]="true">
         <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner> </div>
-        <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> <span *ngIf="rolRegistro">Estas seguro de eliminar el registro <b>{{rolRegistro.rolnombre}}</b>?</span></div>
+        <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+            <span *ngIf="rolRegistro">Estas seguro de desactivar el registro <b>{{rolRegistro.rolnombre}}</b>?</span></div>
         <ng-template pTemplate="footer">
-            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
-            <button pButton pRipple label="Eliminar" icon="pi pi-check" class="p-button-text" (click)="confirmarEliminar()"></button>
+            <button pButton pRipple label="No" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+            <button pButton pRipple label="Si" icon="pi pi-check" class="p-button-text" (click)="confirmarActivarDesactivar()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="activarRolDialog" header="Aviso: Confirmar" [modal]="true">
+        <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner> </div>
+        <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+            <span *ngIf="rolRegistro">Estas seguro de activar el registro <b>{{rolRegistro.rolnombre}}</b>?</span></div>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="No" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+            <button pButton pRipple label="Si" icon="pi pi-check" class="p-button-text" (click)="confirmarActivarDesactivar()"></button>
         </ng-template>
     </p-dialog>
