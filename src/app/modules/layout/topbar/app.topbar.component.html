@@ -1,94 +1,55 @@
+<p-toast></p-toast>
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/layout/images/logo_ibci.png" alt="logo">
-        <h5>S.S.G.A | Sistema Seguimiento y Gestión Academico</h5>
-        <!-- <span>IBCI</span> -->
+        <img src="assets/layout/images/logo_ibci.png" alt="logo" class="topbar-logo">
+        <span class="topbar-title">
+            <strong>SGSA</strong> Bolivia
+            <img src="assets/layout/images/flag-bolivia.png" alt="flag-bolivia" class="topbar-flag">
+        </span>
     </a>
 
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
-        <i class="pi pi-bars"></i>
+        <!-- <i class="pi pi-bars"></i> -->
+        <i class="fa-solid fa-book-bible"></i>
     </button>
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
     </button>
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-
-
-        <!-- <button class="p-link layout-topbar-button">
-            <i class="pi pi-calendar"></i>
-            <span>Calendar</span>
-        </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
-        </button> -->
     </div>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
 
-
-
-
         <div class=" flex justify-content-center">
-            <!-- <div class="avatar-container" [style]="{'display': 'flex','align-items': 'center'}">
-                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png" styleClass="mr-2" size="large" shape="circle"></p-avatar>
-                <h5>Usuario</h5>
-            </div> -->
 
             <div class="flex align-items-center gap-2 flex-wrap">
-
-                <!-- <div class="flex justify-content-center">
-                    <i class="pi pi-bell text-3xl" pBadge value="2"></i>
-                </div> -->
-                <!-- <div class="flex justify-content-center">
-                    <i class="pi pi-envelope mr-3 p-text-secondary" pBadge style="font-size: 2rem; cursor: pointer;" [value]="cantE" severity="success" (click)="onEnvelopeClick()"></i>
-
-                    <i class="pi pi-calendar mr-3 p-text-secondary" pBadge style="font-size: 2rem; cursor: pointer;" [value]="cantC" severity="danger" (click)="onCalendarClick()"></i>
-
-                    <i class="pi pi-bell mr-3 p-text-secondary" pBadge style="font-size: 2rem; cursor: pointer;" [value]="cantN" severity="info" (click)="onBellClick()"></i>
-                </div> -->
-
-
-
-                <!-- <div class="flex justify-content-center">
-                    <p-button label="Emails" badge="8" styleClass="mr-2"></p-button>
-                    <p-button label="Messages" icon="pi pi-users" styleClass="p-button-warning" badge="8" badgeClass="p-badge-danger"></p-button>
-                </div> -->
-
-                <!-- <p-chip image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png"> -->
-
-
                     <div class="text-left" style="display: flex; flex-direction: column; align-items: center;">
+                        <div *ngIf="usuario.perfoto == null" class="user-display">
+                                <div class="flex align-items-center gap-2">
+                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                                    <h5>Hola, <strong>{{usuario.usuname}}</strong> </h5>
+                                </div>
+                        </div>
+                        <div *ngIf="usuario.perfoto != null" class="user-display">
+                                <div class="flex align-items-center gap-2">
+                                    <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
 
-                        <p-avatar label="{{ usuario.rolnombre?.charAt(0) }}" styleClass="mr-2" size="large" [style]="{ 'background-color': '#2196F3', color: '#ffffff' }" shape="circle"></p-avatar>
-                        <!-- <p-avatar icon="pi pi-user" pBadge value="4" severity="success" styleClass="mr-2" size="normal"></p-avatar> -->
-                    </div>
-                    <div class="text-left" style="display: flex; flex-direction: column; align-items: center;">
-                        <div style="margin-top: 2px;">
-                            <p-chip>
-                                Usuario: {{ usuario.usuname }} <br>
-                                Rol: {{ usuario.rolnombre }}
-                            </p-chip>
+                                    <h5>Hola, <strong>{{usuario.usuname}}</strong> </h5>
+                                </div>
                         </div>
                     </div>
+                    <!-- <button  class="p-link layout-menu-button layout-topbar-button" (click)="this.logout()" pTooltip="Salir" tooltipPosition="bottom">
+                        <i class="pi pi-sign-out"> </i>
+                    </button> -->
 
+                    <!-- <p-confirmDialog></p-confirmDialog> -->
 
-                        <!-- <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" pBadge value="4" severity="danger"></p-avatar> -->
+                    <!-- <p-button (click)="confirm2()" icon="pi pi-times" label="Delete" class="p-button-danger"></p-button> -->
+                <!-- <button class="p-link layout-topbar-button"  (click)="menu.toggle($event)"> <i class="pi pi-user"></i> </button>
+                <p-tieredMenu #menu [model]="modelOption" [popup]="true" appendTo="body" class="ui-tieredmenu" ></p-tieredMenu> -->
+            </div>
 
-                <!-- <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
-                    <i class="pi pi-cog"></i>
-                    <span>Opciones</span>
-                </button> -->
-                <!-- <button #btn type="button" pButton icon="pi pi-bars" label="Opciones" (click)="menu.toggle($event)"></button> -->
-                <button class="p-link layout-topbar-button"  (click)="menu.toggle($event)"> <i class="pi pi-user"></i> </button>
-
-                <!-- <p-tieredMenu #menu [model]="modelOption" [popup]="true"></p-tieredMenu> -->
-                <p-tieredMenu #menu [model]="modelOption" [popup]="true" appendTo="body" class="ui-tieredmenu" ></p-tieredMenu>
-
-
-                <button class="p-link layout-topbar-button" (click)="onConfigButtonClick()"> <i class="pi pi-cog"></i> </button>
-
-        </div>
-    </div>
 </div>
+
+

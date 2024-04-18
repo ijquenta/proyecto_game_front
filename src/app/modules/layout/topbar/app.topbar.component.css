@@ -1,3 +1,29 @@
 .ui-tieredmenu {
     position: fixed !important;
 }
+
+.topbar-logo {
+    height: 50px; /* Ajusta según la necesidad */
+}
+
+.topbar-title {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    font-size: 20px; /* Ajusta el tamaño de la fuente según la necesidad */
+}
+
+.topbar-flag {
+    width: 30px; /* Ajusta según la necesidad */
+    margin-left: 5px;
+}
+
+.layout-menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.p-link {
+    outline: none;
+}

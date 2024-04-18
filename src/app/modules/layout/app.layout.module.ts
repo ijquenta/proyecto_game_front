@@ -24,11 +24,13 @@ import { MenubarModule } from 'primeng/menubar';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { PanelMenuModule } from 'primeng/panelmenu';
-
-//
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { AppConfigComponent } from './config/app.config.component';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -39,6 +41,9 @@ import { AppConfigComponent } from './config/app.config.component';
         AppLayoutComponent,
     ],
     imports: [
+        TagModule,
+        ToastModule,
+        ConfirmDialogModule,
         BrowserModule,
         FormsModule,
         HttpClientModule,
@@ -58,7 +63,8 @@ import { AppConfigComponent } from './config/app.config.component';
         TieredMenuModule,
         ChipModule,
         ButtonModule,
-        CommonModule
+        CommonModule,
+        ConfirmPopupModule
 
     ],
     exports: [AppLayoutComponent, AppConfigComponent],

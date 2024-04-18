@@ -11,7 +11,8 @@ import { TokenService } from 'src/app/services/token.service';
 
 //Models
 import { Usuario } from '../../models/usuario';
-
+import { environment } from 'src/environments/environment';
+import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/api';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -21,7 +22,7 @@ export class AppTopBarComponent {
 
     // Inicializa usuario con un objeto vacío
     usuario: any = {};
-
+    apiUrl = environment.API_URL_FOTO_PERFIL;
 
     items!: MenuItem[];
 
@@ -52,123 +53,7 @@ export class AppTopBarComponent {
             {
                 label: 'Perfil',
                 icon: 'pi pi-fw pi-user',
-
-                //             icon: 'pi pi-fw pi-pencil',
-                //             routerLink: ['/usuario/crud']
-                /*items: [
-                    {
-                        label: 'New',
-                        icon: 'pi pi-fw pi-plus',
-                        items: [
-                            {
-                                label: 'Bookmark',
-                                icon: 'pi pi-fw pi-bookmark'
-                            },
-                            {
-                                label: 'Video',
-                                icon: 'pi pi-fw pi-video'
-                            }
-                        ]
-                    },
-                    {
-                        label: 'Delete',
-                        icon: 'pi pi-fw pi-trash'
-                    },
-                    {
-                        separator: true
-                    },
-                    {
-                        label: 'Export',
-                        icon: 'pi pi-fw pi-external-link'
-                    }
-                ]*/
             },
-            /*{
-                label: 'Edit',
-                icon: 'pi pi-fw pi-pencil',
-                items: [
-                    {
-                        label: 'Left',
-                        icon: 'pi pi-fw pi-align-left'
-                    },
-                    {
-                        label: 'Right',
-                        icon: 'pi pi-fw pi-align-right'
-                    },
-                    {
-                        label: 'Center',
-                        icon: 'pi pi-fw pi-align-center'
-                    },
-                    {
-                        label: 'Justify',
-                        icon: 'pi pi-fw pi-align-justify'
-                    }
-                ]
-            },
-            {
-                label: 'Users',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'New',
-                        icon: 'pi pi-fw pi-user-plus'
-                    },
-                    {
-                        label: 'Delete',
-                        icon: 'pi pi-fw pi-user-minus'
-                    },
-                    {
-                        label: 'Search',
-                        icon: 'pi pi-fw pi-users',
-                        items: [
-                            {
-                                label: 'Filter',
-                                icon: 'pi pi-fw pi-filter',
-                                items: [
-                                    {
-                                        label: 'Print',
-                                        icon: 'pi pi-fw pi-print'
-                                    }
-                                ]
-                            },
-                            {
-                                icon: 'pi pi-fw pi-bars',
-                                label: 'List'
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                label: 'Events',
-                icon: 'pi pi-fw pi-calendar',
-                items: [
-                    {
-                        label: 'Edit',
-                        icon: 'pi pi-fw pi-pencil',
-                        items: [
-                            {
-                                label: 'Save',
-                                icon: 'pi pi-fw pi-calendar-plus'
-                            },
-                            {
-                                label: 'Delete',
-                                icon: 'pi pi-fw pi-calendar-minus'
-                            }
-                        ]
-                    },
-                    {
-                        label: 'Archieve',
-                        icon: 'pi pi-fw pi-calendar-times',
-                        items: [
-                            {
-                                label: 'Remove',
-                                icon: 'pi pi-fw pi-calendar-minus'
-                            }
-                        ]
-                    }
-                ]
-            },*/
             {
                 separator: true
             },
@@ -177,25 +62,20 @@ export class AppTopBarComponent {
                 icon: 'pi pi-fw pi-power-off',
                 command: () => this.logout()
             },
-            // {
-            //     label: 'IsValidToken',
-            //     icon: 'pi pi-fw pi-users',
-            //     command: () => this.isValidToken()
-            // }
         ];
     }
 
-
-
-
     constructor(public layoutService: LayoutService, public menuService: MenuService,
-                private authService: AuthService, private router: Router, private tokenService: TokenService) { }
+                private authService: AuthService, private router: Router, private tokenService: TokenService,
+                private confirmationService: ConfirmationService, private messageService: MessageService
+                ) { }
 
 
     logout(){
+
         this.authService.logout();
         this.router.navigate(['/login']);
-        console.log("logout");
+        // console.log("logout");
     }
 
     isValidToken(){
@@ -308,5 +188,28 @@ export class AppTopBarComponent {
         this.cantN = this.cantN - 1;
     }
 
+    confirm1() {
+        this.confirmationService.confirm({
+            message: '¿Estás seguro de cerrar sesión?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Cerrando sessión' });
+                this.logout();
+            },
+            reject: (type: ConfirmEventType) => {
+                switch (type) {
+                    case ConfirmEventType.REJECT:
+                        this.messageService.add({ severity: 'warn', summary: 'Cancelo', detail: 'Cancelaste la operación' });
+                        break;
+                    case ConfirmEventType.CANCEL:
+                        this.messageService.add({ severity: 'warn', summary: 'Cancelo', detail: 'Cancelaste la operación' });
+                        break;
+                }
+            }
+        });
+    }
 }
+
+
 
