@@ -6,7 +6,7 @@ import { TipoMateria } from 'src/app/modules/models/diccionario';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { Table } from 'primeng/table';
-import { TipoCurso, TipoRol, TipoPersona, TipoEstado} from 'src/app/modules/models/diccionario';
+import { TipoCurso, TipoRol, TipoPersona, TipoEstado, TipoPersona2} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
 
 // --------------- Modelo Usuario
@@ -19,6 +19,20 @@ import { AuthService } from 'src/app/services/auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
+import { environment } from 'src/environments/environment';
+import * as FileSaver from 'file-saver';
+
+interface Column {
+    field: string;
+    header: string;
+    customExportHeader?: string;
+}
+
+interface ExportColumn {
+    title: string;
+    dataKey: string;
+}
+
 @Component({
     templateUrl: './curso-crud.component.html',
     providers: [MessageService],
@@ -32,11 +46,15 @@ export class CursoCrudComponent implements OnInit {
 
     // -------------------------- Variables Cursos_Materias -------------------------- //
     listaCursosMaterias: CursoMateria[] = [];
+    listaCursosMateriasDuplicated: CursoMateria[] = [];
+    listaCursosMateriasNoActivo: CursoMateria[] = [];
     cursoMateria: CursoMateria;
     submitted: boolean = false;
     cursoMateriaDialog: boolean = false;
     optionCursoMateria: boolean = false;
     eliminarCursoMateriaDialog: boolean = false;
+    desactivarCursoMateriaDialog: boolean = false;
+    activarCursoMateriaDialog: boolean = false;
 
     registroCursoMateria: CursoMateria = {};
 
@@ -49,13 +67,14 @@ export class CursoCrudComponent implements OnInit {
     tipoRol: TipoRol[] = [];
     tipoRolSeleccionado: TipoRol;
 
-    tipoPersona: TipoPersona[] = [];
-    tipoPersonaSeleccionado: TipoPersona;
+    tipoPersona: TipoPersona2[] = [];
+    tipoPersonaSeleccionado: TipoPersona2;
 
     tipoEstado: TipoEstado[] = [];
     tipoEstadoSeleccionado: TipoEstado;
 
     loading: boolean = false;
+    apiUrl = environment.API_URL_FOTO_PERFIL;
     // -------------------------- Variables Cursos_Materias -------------------------- //
 
     //----------------Variables para validación----------------//
@@ -63,6 +82,8 @@ export class CursoCrudComponent implements OnInit {
     //----------------Variables para validación----------------//
     usuario: Usuario;
 
+    colsTable!: Column[];
+    exportColumns!: ExportColumn[];
     constructor(
                 private messageService: MessageService,
                 private cursoService: CursoService,
@@ -74,11 +95,6 @@ export class CursoCrudComponent implements OnInit {
                 private spinner: NgxSpinnerService
                 )
                 {
-                this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
-                this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
-                this.tipoPersonaSeleccionado = new TipoPersona(0,"");
-                this.tipoRolSeleccionado = new TipoRol(0,"");
-                this.tipoEstadoSeleccionado = new TipoEstado(0, "");
                 }
 
     ngOnInit() {
@@ -97,6 +113,22 @@ export class CursoCrudComponent implements OnInit {
 
         // Método de getPerfil() de usuario logeado
         this.getPerfilUsuario();
+
+        this.colsTable = [
+            { field: 'curmatid', header: 'ID curso-materia' },
+            { field: 'curnombre', header: 'Nombre de nivel' },
+            { field: 'matnombre', header: 'Nombre de la materia' },
+            { field: 'curmatfecini', header: 'Fecha inicio' },
+            { field: 'curmatfecfin', header: 'Fecha fin' },
+            { field: 'pernomcompleto', header: 'Docente' },
+            { field: 'rolnombre', header: 'Rol' },
+            { field: 'curmatusureg', header: 'Usuario Registro' },
+            { field: 'curmatfecreg', header: 'Fecha Registro' },
+            { field: 'curmatusumod', header: 'Usuario Modificación' },
+            { field: 'curmatfecmod', header: 'Fecha Modificación' }
+        ];
+
+        this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
     }
     // Método para asignar las variables de React Form Valid
     asignacionValidacionesCurso() {
@@ -151,9 +183,16 @@ export class CursoCrudComponent implements OnInit {
         this.cursoService.listarCursoMateria().subscribe(
             (result: any) => {
                 this.listaCursosMaterias = result;
+                this.listaCursosMateriasDuplicated = result;
+                this.listaCursosMateriasNoActivo = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 0);
+                this.listaCursosMaterias = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 1);
                 this.loading = false;
                 this.spinner.hide();
-                // console.log("Lista Cursos Materia", this.listaCursosMaterias)
+                console.log("Lista Cursos Materia", this.listaCursosMaterias)
+            },
+            (error: any) => {
+                console.error("Error: ", error);
+                this.spinner.hide();
             }
         )
     }
@@ -213,7 +252,7 @@ export class CursoCrudComponent implements OnInit {
 
             (result: any) => {
                 this.tipoPersona = result;
-                // console.log("Tipo Persona: ", this.tipoPersona)
+                console.log("Tipo Persona: ", this.tipoPersona)
 
             }
         )
@@ -256,7 +295,7 @@ export class CursoCrudComponent implements OnInit {
             tipoCurso: new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel),
             tipoMateria: new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel),
             tipoRol: new TipoRol(this.cursoMateria.rolid, this.cursoMateria.rolnombre),
-            tipoPersona: new TipoPersona(this.cursoMateria.periddocente, this.cursoMateria.pernomcompleto),
+            tipoPersona: new TipoPersona2(this.cursoMateria.periddocente, this.cursoMateria.pernomcompleto, this.cursoMateria.pernrodoc, this.cursoMateria.perfoto),
             curmatfecini: this.cursoMateria.curmatfecini,
             curmatfecfin: this.cursoMateria.curmatfecfin,
         })
@@ -282,7 +321,7 @@ export class CursoCrudComponent implements OnInit {
         return body;
     }
     guardarCursoMateria(){
-        this.obtenerBody();
+
         if(this.cursoForm.invalid){
             console.log("cursoForm.value: ", this.cursoForm.value);
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
@@ -291,6 +330,8 @@ export class CursoCrudComponent implements OnInit {
                 control.markAsDirty();
             })
         }
+
+        this.obtenerBody();
 
         if(this.optionCursoMateria){
             console.log("casi new: ", this.cursoMateria)
@@ -302,9 +343,18 @@ export class CursoCrudComponent implements OnInit {
                     this.ocultarDialog();
                 },
                 error => {
-                console.log("error",error);
-                const descripcionError = error.error.message;
-                    this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                // console.log("error",error);
+                // const descripcionError = error.error.message;
+                //     this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                    console.log("error: ", error);
+                    let errorMessage = 'Se produjo un error al intentar registrar el curso-materia.';
+
+                    // Verifica si el error contiene el mensaje específico de violación de clave única
+                    if (error.error.message.includes('UniqueViolation')) {
+                        errorMessage = 'No se puede crear la curso-materia porque ya existe un registro igual.';
+                    }
+
+                    this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
                 }
             );
         }
@@ -329,6 +379,20 @@ export class CursoCrudComponent implements OnInit {
         this.cursoMateria = { ...data };
         console.log("CursoMateria:", this.cursoMateria);
     }
+
+    desactivarCursoMateria(data: CursoMateria) {
+        this.desactivarCursoMateriaDialog = true;
+        this.cursoMateria = { ...data };
+        this.cursoMateria.tipo = 2;
+        console.log("CursoMateria:", this.cursoMateria);
+    }
+
+    activarCursoMateria(data: CursoMateria) {
+        this.activarCursoMateriaDialog = true;
+        this.cursoMateria = { ...data };
+        this.cursoMateria.tipo = 3;
+        console.log("CursoMateria:", this.cursoMateria);
+    }
     confirmarEliminar() {
         console.log("confirmarEliminar: ", this.cursoMateria)
         const criterio = {
@@ -349,6 +413,32 @@ export class CursoCrudComponent implements OnInit {
             }
         );
     }
+
+    confirmarActivarDesactivar() {
+        console.log("confirmarActivarDesactivar: ", this.cursoMateria)
+        // const criterio = {
+        //     curmatid: this.cursoMateria.curmatid
+        // }
+        // console.log("criterio: ", criterio)
+        this.cursoMateria.curmatusumod = this.usuario.usuname;
+        this.cursoService.gestonarCursoMateriaEstado(this.cursoMateria).subscribe(
+            (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia modificado correctamente', life: 3000 });
+                this.listarCursoMateria();
+                this.eliminarCursoMateriaDialog = false;
+                this.activarCursoMateriaDialog = false;
+                this.desactivarCursoMateriaDialog = false;
+                this.cursoMateria = {};
+            },
+            error => {
+            console.log("error",error);
+            // const descripcionError = error.error.message;
+                // this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal', life: 5000});
+            }
+        );
+    }
+
      // Método de busqueda en la tabla
      onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
@@ -379,4 +469,59 @@ export class CursoCrudComponent implements OnInit {
     }
 
     // ------------------------------ Funciones Curso Materia -----------------------------
+
+    exportPdf() {
+        import('jspdf').then(jsPDF => {
+            import('jspdf-autotable').then(() => {
+                const doc = new jsPDF.default('l', 'pt', 'a4');
+                doc.setFontSize(16); // Tamaño de la fuente
+                doc.text('Lista de Curso Materia', 14, 30); // Agrega texto en la posición x = 14, y = 30
+                (doc as any).autoTable({
+                    columns: this.exportColumns,
+                    body: this.listaCursosMateriasDuplicated,
+                    theme: 'striped',  // Puedes elegir otros temas como 'plain', 'striped' o 'grid'
+                    styles: { fontSize: 8, cellPadding: 3 },  // Ajusta el tamaño de fuente y el padding para acomodar más datos
+                });
+                doc.save('lista_curso_materia.pdf');
+            });
+        });
+    }
+
+    exportExcel() {
+        import('xlsx').then((xlsx) => {
+            const fieldsToExport = [
+                'curmatid',
+                'curnombre',
+                'matnombre',
+                'curmatfecini',
+                'curmatfecfin',
+                'pernomcompleto',
+                'rolnombre',
+                'curmatusureg',
+                'curmatfecreg',
+                'curmatusumod',
+                'curmatfecmod'
+            ];
+            const dataToExport = this.listaCursosMateriasDuplicated.map(curso_materia => {
+                const filteredData = {};
+                fieldsToExport.forEach(field => {
+                    filteredData[field] = curso_materia[field] || ''; // Asegura que todos los campos existan, incluso si están vacíos
+                });
+                return filteredData;
+            });
+            const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+            const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
+            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, 'lista_curso_materia');
+        });
+    }
+
+    saveAsExcelFile(buffer: any, fileName: string): void {
+        let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        let EXCEL_EXTENSION = '.xlsx';
+        const data: Blob = new Blob([buffer], {
+            type: EXCEL_TYPE
+        });
+        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    }
 }

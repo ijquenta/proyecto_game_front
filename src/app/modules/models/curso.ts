@@ -23,6 +23,9 @@ export class CursoMateria {
 	curmatfecmod?: string | null = null;
     curmatidrol?: number = 0;
     curmatidroldes?: string | null = null;
+    perfoto?: any;
+    pernrodoc?: any;
+    tipo?: any;
 }
 
 

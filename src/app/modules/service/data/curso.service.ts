@@ -32,4 +32,8 @@ export class CursoService {
         // console.log("Lista Curso Combo");
         return this.http.get(`${API_URL}/listaCursoCombo`);
     }
+
+    gestonarCursoMateriaEstado(criterio: any) {
+        return this.http.post(`${API_URL}/gestionarCursoMateriaEstado`, criterio);
+    }
 }

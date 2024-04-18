@@ -19,7 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
-
+import { AvatarModule } from 'primeng/avatar';
 import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
@@ -54,7 +54,8 @@ import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module pa
         DividerModule,
         PanelModule,
         TooltipModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        AvatarModule
     ],
     declarations: [CursoCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService]
