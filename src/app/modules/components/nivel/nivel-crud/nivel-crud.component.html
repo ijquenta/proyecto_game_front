@@ -84,7 +84,7 @@
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="editarNivel(nivel)" pTooltip="Editar nivel" tooltipPosition="left"></button>
-                                <button pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2" (click)="desactivarNivel(nivel)" pTooltip="Desactivar nivel" tooltipPosition="left"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="desactivarNivel(nivel)" pTooltip="Desactivar nivel" tooltipPosition="left"></button>
                             </div>
                         </td>
                     </tr>
@@ -174,7 +174,7 @@
                                 [severity]="obtenerSeverityEstado(nivel.curestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-warning mr-2" (click)="activarNivel(nivel)" pTooltip="Activar nivel" tooltipPosition="left"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" (click)="activarNivel(nivel)" pTooltip="Activar nivel" tooltipPosition="left"></button>
                             </div>
                         </td>
                     </tr>

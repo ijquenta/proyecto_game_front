@@ -326,6 +326,7 @@ export class PagoCrudComponent implements OnInit {
               this.messageService.add({ severity: 'success', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 5000 });
             },
             (error: any) => {
+              this.fileUpload.clear()             ;
               console.error('Error en la carga:', error);
             }
           );

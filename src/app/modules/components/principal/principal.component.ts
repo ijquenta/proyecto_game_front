@@ -78,12 +78,6 @@ export class PrincipalComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // this.authService.getPerfil().subscribe(user => {
-        //     this.usuario = user[0];
-        //     console.log("Usuari Principal: ", this.usuario);
-        // })
-
-
         this.initChart();
         this.initChart2();
         this.initChart3();
@@ -101,40 +95,21 @@ export class PrincipalComponent implements OnInit, OnDestroy {
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
             { label: 'Remove', icon: 'pi pi-fw pi-minus' }
         ];
-        // this.loading = true;
-        // setTimeout(() => {
-        //     this.loading = false;
-        // }, 100);
-
-        this.spinner.show(); // Mostrar el spinner antes de la llamada al servicio
-
+        this.spinner.show();
         this.authService.usuario$.subscribe(
           (user: any) => {
             if (user) {
               if (Array.isArray(user) && user.length > 0) {
                 this.usuario = user[0];
-                console.log("Usuari Principal: ", this.usuario);
                 this.spinner.hide();
-                // Realizar acciones adicionales si es necesario con this.usuario
-            //   } else {
-                // Manejar el caso en que user no es un array o es un array vacío
-                // console.error("El objeto 'user' no es un array o es un array vacío.");
               }
-            // } else {
-              // Manejar el caso en que user es null
-            //   console.error("El objeto 'user' es nulo.");
             }
-
           },
           (error: any) => {
-            // Manejar errores de la suscripción al observable
             console.error("Error al obtener el usuario:", error);
             this.spinner.hide();
           },
         );
-
-
-
     }
 
     initChart() {

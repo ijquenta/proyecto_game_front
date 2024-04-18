@@ -422,7 +422,7 @@ export class NivelCrudComponent implements OnInit {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default('l', 'pt', 'a4');
                 doc.setFontSize(16); // Tamaño de la fuente
-                doc.text('Lista de Usuarios', 14, 30); // Agrega texto en la posición x = 14, y = 30
+                doc.text('Lista de Niveles', 14, 30); // Agrega texto en la posición x = 14, y = 30
                 (doc as any).autoTable({
                     columns: this.exportColumns,
                     body: this.listaNivelesDuplicated,

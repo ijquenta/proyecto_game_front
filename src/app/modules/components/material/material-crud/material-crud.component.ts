@@ -194,6 +194,7 @@ export class MaterialCrudComponent implements OnInit {
               this.messageService.add({ severity: 'info', summary: '!Exito¡', detail: 'El documento se registró existosamente en el sistema.', life: 5000 });
             },
             (error: any) => {
+              this.fileUpload.clear();
               console.error('Error en la carga:', error);
             }
           );

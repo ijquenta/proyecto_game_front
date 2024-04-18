@@ -75,7 +75,7 @@
                                 <button pButton pRipple icon="pi pi-pencil"
                                     class="p-button-rounded p-button-primary mr-2" pTooltip="Modificar materia"
                                     tooltipPosition="left" (click)="editarMateria(materia)"></button>
-                                <button pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger"
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger"
                                     pTooltip="Desactivar materia" tooltipPosition="left"
                                     (click)="desactivarMateria(materia)"></button>
                             </div>
@@ -155,7 +155,7 @@
                                 [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-warning mr-2" pTooltip="Activar materia" tooltipPosition="left" (click)="activarMateria(materia)"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" pTooltip="Activar materia" tooltipPosition="left" (click)="activarMateria(materia)"></button>
                             </div>
                         </td>
                     </tr>

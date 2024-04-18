@@ -34,3 +34,20 @@
   color: #29c76f;
 }
 
+.user-display {
+    display: flex;
+    align-items: center; /* Alinea los ítems verticalmente en el centro */
+}
+.user-info-container {
+    display: flex;
+    align-items: center; /* Alinea verticalmente los elementos del flex container */
+    margin-bottom: 20px; /* Espacio adicional al final del contenedor */
+}
+
+.user-info-avatar {
+    margin-right: 20px; /* Espacio entre el avatar y los detalles del usuario */
+}
+
+.user-info-details {
+    flex-grow: 1; /* Permite que este div ocupe el espacio restante */
+}
