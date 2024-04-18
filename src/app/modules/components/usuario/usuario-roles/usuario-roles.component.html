@@ -32,8 +32,8 @@
                         <td>
                             <div class="flex justify-content-center">
                                 <button *ngIf="rol.rolestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarRol(rol)" pTooltip="Editar Rol" tooltipPosition="left"></button>
-                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2" (click)="desactivarRol(rol)" pTooltip="Desactivar Rol" tooltipPosition="left"></button>
-                                <button *ngIf="rol.rolestado == 0" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-warning mr-2" (click)="activarRol(rol)" pTooltip="Activar Rol" tooltipPosition="left"></button>
+                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="desactivarRol(rol)" pTooltip="Desactivar Rol" tooltipPosition="left"></button>
+                                <button *ngIf="rol.rolestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" (click)="activarRol(rol)" pTooltip="Activar Rol" tooltipPosition="left"></button>
                             </div>
                         </td>
                     </tr>

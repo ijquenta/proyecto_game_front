@@ -212,17 +212,17 @@
                                         class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario"
                                         tooltipPosition="left" (click)="editarUsuario(usuario)"></button>
 
-                                    <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1"  pButton pRipple icon="pi pi-shield"
+                                    <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1"  pButton pRipple icon="pi pi-lock"
                                     class="p-button-rounded p-button-warning mr-2"
                                     (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="left"></button>
 
                                     <button
                                     *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1"
-                                    pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2"
+                                    pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2"
                                     (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario"
                                     tooltipPosition="left"></button>
                                     <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0"
-                                    pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)"
+                                    pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)"
                                     pTooltip="Activar Usuario" tooltipPosition="left"></button>
                                 </div>
                                 <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
@@ -231,23 +231,23 @@
                                         pTooltip="Editar usuario" tooltipPosition="left"
                                         (click)="editarUsuario(usuario)"></button>
 
-                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-shield"
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock"
                                     class="p-button-rounded p-button-warning mr-2"
                                     (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="left"></button>
 
                                     <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple
-                                        icon="pi pi-power-off" class="p-button-rounded p-button-danger mr-2"
+                                        icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2"
                                         (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario"
                                         tooltipPosition="left"></button>
-                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="pi pi-power-off"
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye"
                                         class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)"
                                         pTooltip="Activar Usuario" tooltipPosition="left"></button>
                                 </div>
 
                                 <!-- <div class="flex justify-content-center">
                                     <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar Persona" tooltipPosition="left" ></button>
-                                    <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Desactivar Persona" tooltipPosition="left" ></button>
-                                    <button *ngIf="persona.perestado == 0" pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)" pTooltip="Activar Persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Desactivar Persona" tooltipPosition="left" ></button>
+                                    <button *ngIf="persona.perestado == 0" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)" pTooltip="Activar Persona" tooltipPosition="left" ></button>
                                 </div> -->
                             </div>
                         </td>
@@ -348,11 +348,11 @@
                             <div class="flex">
                                 <div *ngIf="datosUsuario?.rolid == 1" class="flex">
                                     <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0"
-                                        pButton pRipple icon="pi pi-power-off" class="p-button-rounded p-button-success" (click)="confirmarActivar(usuario)"
+                                        pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success" (click)="confirmarActivar(usuario)"
                                         pTooltip="Activar Usuario" tooltipPosition="left"></button>
                                 </div>
                                 <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
-                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="pi pi-power-off"
+                                    <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye"
                                         class="p-button-rounded p-button-success" (click)="confirmarActivar(usuario)"
                                         pTooltip="Activar Usuario" tooltipPosition="left"></button>
                                 </div>

@@ -314,14 +314,18 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.nombreArchivo = 'fperfil' + '_' + cleanedFilename;
                 formData.append('files[]', file, this.nombreArchivo);
             }
+            this.spinner.show();
             this.uploadService.uploadFilesFotoPerfil(formData).subscribe(
                 (data: any) => {
                     this.fileUpload.clear();
                     this.messageService.add({ severity: 'success', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 3000 });
+                    this.spinner.hide();
                 },
                 (error: any) => {
                     console.error('Error en la carga:', error);
+                    this.fileUpload.clear();
                     this.messageService.add({ severity: 'error', summary: '¡Error!', detail: 'La imagen no se registró en el sistema.', life: 3000 });
+                    this.spinner.hide();
                 }
             );
         } else {
