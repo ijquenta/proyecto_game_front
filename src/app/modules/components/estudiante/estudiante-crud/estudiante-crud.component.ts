@@ -11,6 +11,7 @@ import { EstudianteService } from 'src/app/modules/service/data/estudiante.servi
 import { Usuario } from 'src/app/modules/models/usuario';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { environment } from 'src/environments/environment';
 @Component({
     templateUrl: './estudiante-crud.component.html',
     providers: [MessageService],
@@ -65,6 +66,9 @@ export class EstudianteCrudComponent implements OnInit {
     usupasswordhash: string = '';
 
     estudianteForm: FormGroup;
+
+    apiUrl = environment.API_URL_FOTO_PERFIL;
+
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
