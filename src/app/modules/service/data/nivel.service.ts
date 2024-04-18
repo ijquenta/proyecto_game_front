@@ -20,4 +20,7 @@ export class NivelService {
     modificarNivel(criterio: any){
         return this.http.post(`${API_URL}/modificarNivel`, criterio);
     }
+    gestionarNivelEstado(criterio: any){
+        return this.http.post(`${API_URL}/gestionarNivelEstado`, criterio)
+    }
 }

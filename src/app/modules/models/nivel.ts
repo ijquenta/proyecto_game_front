@@ -1,4 +1,5 @@
 export class Nivel {
+    tipo?: any;
     curid?: number = 0;
     curnombre?: string = '';
     curdescripcion?: string = '';

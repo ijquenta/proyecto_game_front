@@ -24,6 +24,7 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -45,7 +46,8 @@ import { ReactiveFormsModule } from '@angular/forms';
         CalendarModule,
         TagModule,
         ChipModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TooltipModule
     ],
     declarations: [NivelCrudComponent],
     providers: [UsuarioService, ReporteService, CursoService, NivelService]
