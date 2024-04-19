@@ -15,6 +15,7 @@ import { Usuario } from 'src/app/modules/models/usuario';
 import { CursoMateria } from 'src/app/modules/models/curso';
 
 import { NgxSpinnerService } from 'ngx-spinner';
+import { environment } from 'src/environments/environment';
 @Component({
     templateUrl: './nota-crud.component.html',
     styleUrls: ['../../../../app.component.css']
@@ -47,6 +48,7 @@ export class NotaCrudComponent implements OnInit {
     nota3: any;
     notafinal: any;
     curmatid: any;
+    apiUrl = environment.API_URL_FOTO_PERFIL;
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
@@ -59,25 +61,25 @@ export class NotaCrudComponent implements OnInit {
     }
     ngOnInit(): void {
         this.verMateriaClicked = true;
-        // this.authService.usuario$.subscribe((user => {
-        //     if (user && Array.isArray(user) && user.length > 0) {
-        //         this.usuario = user[0];
-        //         const criterio = {
-        //             perid: this.usuario.perid
-        //         };
-        //         this.notaService.listarNotaDocente(criterio).subscribe(
-        //             (result: any) => {
-        //                 this.listarMateriasInscritas = result as CursoMateria[];
-        //                 // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
-        //             },
-        //             error => {
-        //                 this.errors = error;
-        //                 console.log("error", error);
-        //                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
-        //             }
-        //         );
-        //     }
-        // }));
+        this.authService.usuario$.subscribe((user => {
+            if (user && Array.isArray(user) && user.length > 0) {
+                this.usuario = user[0];
+                // const criterio = {
+                //     perid: this.usuario.perid
+                // };
+                // this.notaService.listarNotaDocente(criterio).subscribe(
+                //     (result: any) => {
+                //         this.listarMateriasInscritas = result as CursoMateria[];
+                //         // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
+                //     },
+                //     error => {
+                //         this.errors = error;
+                //         console.log("error", error);
+                //         this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
+                //     }
+                // );
+            }
+        }));
         this.listarCursosMaterias();
     }
 // Método para listar los los cursos
@@ -119,16 +121,24 @@ export class NotaCrudComponent implements OnInit {
         });
     }
     addNota(data: any) {
-        this.nota = { ...data }
+        this.nota = { ...data };
         this.optionNota = true;
         this.notaRegistroDialog = true;
-        this.notaRegistroDialog = true;
-        this.notafinal = this.nota1 + this.nota2 + this.nota3;
+        this.calcularNotaFinal();
     }
+
     updateNota(data: Nota) {
         this.optionNota = false;
-        this.nota = { ...data }
+        this.nota = { ...data };
         this.notaRegistroDialog = true;
+        this.calcularNotaFinal();
+    }
+    calcularNotaFinal() {
+        console.log('Notas antes de filtrar:', this.nota.not1, this.nota.not2, this.nota.not3);
+        const notas = [this.nota.not1, this.nota.not2, this.nota.not3].filter(nota => nota !== null && nota !== undefined && nota !== 0);
+        console.log('Notas después de filtrar:', notas);
+        this.nota.notfinal = notas.length > 0 ? notas.reduce((a, b) => a + b, 0) / notas.length : 0;
+        console.log('Nota final calculada:', this.nota.notfinal);
     }
     hideDialog() {
         this.notaRegistroDialog = false;
@@ -138,51 +148,28 @@ export class NotaCrudComponent implements OnInit {
         this.notafinal = 0;
     }
     registrarNota() {
-        if (this.optionNota) {
-            this.nota.tipo = 1;
-            this.nota.notid = null
-            this.nota.notfinal = (this.nota.not1 + this.nota.not3 + this.nota.not3) / 3;
-            this.nota.notusureg = 'ijquenta';
-            this.nota.notusumod = 'ijquenta';
-            this.nota.notestado = 1;
-            this.notaService.gestionarNota(this.nota).subscribe((result: any) => {
+
+        this.nota.notusureg = this.usuario.usuname;
+        this.nota.notusumod = this.usuario.usuname;
+        this.nota.notestado = 1;
+        this.nota.tipo = this.optionNota ? 1 : 2;
+        this.calcularNotaFinal();
+        this.notaService.gestionarNota(this.nota).subscribe(
+            (result: any) => {
                 this.notaRegistroDialog = false;
                 this.nota = new Nota();
-                const criterio = {
-                    curmatid: this.curmatid
-                }
-                this.loading2 = true
+                const notas = 0;
+                const criterio = { curmatid: this.curmatid };
+                this.loading2 = true;
                 this.listarNotas(criterio);
-                this.messageService.add({ severity: 'info', summary: 'Correcto', detail: 'Nota registrada.' });
+                this.messageService.add({ severity: this.optionNota ? 'info' : 'success', summary: 'Correcto', detail: this.optionNota ? 'Nota registrada.' : 'Nota modificada.' });
             },
-                error => {
-                    this.errors = error;
-                    console.log("error", error);
-                    this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
-                });
-        }
-        else {
-            this.nota.tipo = 2;
-            this.nota.notfinal = (this.nota.not1 + this.nota.not3 + this.nota.not3) / 3;
-            this.nota.notusureg = 'ijquenta';
-            this.nota.notusumod = 'ijquenta';
-            this.nota.notestado = 1;
-            this.notaService.gestionarNota(this.nota).subscribe((result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Nota modificada.' });
-                this.notaRegistroDialog = false;
-                this.nota = new Nota();
-                const criterio = {
-                    curmatid: this.curmatid
-                }
-                this.loading2 = true
-                this.listarNotas(criterio);
-            },
-                error => {
-                    this.errors = error;
-                    console.log("error", error);
-                    this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
-                });
-        }
+            error => {
+                this.errors = error;
+                console.log("error", error);
+                this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
+            }
+        );
     }
      // Método de busqueda en la tabla
     onGlobalFilter(table: Table, event: Event) {

@@ -7,11 +7,12 @@
                 <p-table #dt [value]="listarMateriasInscritas" selectionMode="single"
                         data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
                         [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
-                        styleClass="p-datatable-striped p-card" [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
+                        styleClass="p-datatable-striped" [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
+                        rowGroupMode="rowspan" groupRowsBy="curnombre" sortField="curnombre"
                         >
                     <ng-template pTemplate="caption">
                         <div class="font-bold text-3xl text-center">
-                            <span class="text-900">Cursos y Materias</span>
+                            <!-- <span class="text-900">Curso - Materia</span> -->
                             <span class="text-primary-600"> Administrar Notas </span>
                           </div>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -32,20 +33,39 @@
                     </ng-template>
                     <ng-template pTemplate="header">
                         <tr>
-                            <th pSortableColumn="curmatid"> Nro <p-sortIcon field="curmatid"></p-sortIcon></th>
-                            <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon></th>
+                            <!-- <th pSortableColumn="curmatid"> Nro <p-sortIcon field="curmatid"></p-sortIcon></th> -->
+                            <th> Nombre del Curso </th>
                             <th> Fecha del Curso</th>
                             <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
                             <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
+                            <th>Opciones</th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-notaMateria>
+                    <ng-template pTemplate="body" let-notaMateria let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
                         <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)">
-                            <td> {{notaMateria.curmatid}} </td>
-                            <td> {{notaMateria.curnombre}} </td>
+                            <!-- <td> {{notaMateria.curmatid}} </td> -->
+                            <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> {{notaMateria.curnombre}} </td>
                             <td> {{ notaMateria.curmatfecini + ' a '+ notaMateria.curmatfecfin}}  </td>
                             <td> {{notaMateria.matnombre}} </td>
-                            <td> {{notaMateria.pernomcompleto}} </td>
+                            <td>
+                                <div *ngIf="notaMateria.perfoto == null" class="user-display">
+                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                        styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ notaMateria.pernomcompleto }}</span>
+                                </div>
+                                <div *ngIf="notaMateria.perfoto != null" class="user-display">
+                                    <p-avatar image="{{ apiUrl }}/{{ notaMateria.perfoto }}" styleClass="mr-2"
+                                        size="xlarge" shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ notaMateria.pernomcompleto }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button pButton="pButton" pRipple="pRipple" type="button"
+                                icon="pi pi-file-pdf" class="p-button-rounded p-button-danger mr-2"
+                                pTooltip="Reporte de nota por materia" tooltipPosition="top" (click)="notaService.rptNotaCursoMateria(notaMateria)">
+                            </button>
+                            </td>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
@@ -58,7 +78,9 @@
 
                     <p-table #dt2 [value]="listarNotaEstudianteCurso" responsiveLayout="scroll" class="m-2"
                         [loading]="loading2" styleClass="p-datatable-gridlines"
-                        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']">
+                        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
+                        rowGroupMode="rowspan" groupRowsBy="curnombre" sortField="curnombre"
+                        >
                         <ng-template pTemplate="caption">
                             <!-- <div class="flex flex-column">
                                     <h5 class="m-0">Lista de estudiantes por materia</h5>
@@ -75,33 +97,47 @@
                         <ng-template pTemplate="header">
                             <tr>
                                 <!-- <th> Nro </th> -->
-                                <th> Curso </th>
-                                <th> Materia </th>
-                                <th> Estudiante </th>
-                                <th> Nota 1 </th>
-                                <th> Nota 2 </th>
-                                <th> Nota 3 </th>
+                                <th > Nombre del Curso y Materia</th>
+                                <!-- <th> Nombre de la Materia </th> -->
+                                <th> Nombre del Estudiante </th>
+                                <th> 1° Nota </th>
+                                <th> 2° Nota </th>
+                                <th> 3° Nota </th>
                                 <th> Nota final </th>
                                 <th> Opciones </th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-nota>
+                        <ng-template pTemplate="body" let-nota
+                        let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan"
+                        >
                             <tr>
                                 <!-- <td> {{nota.notid}} </td> -->
-                                <td> {{nota.curnombre}} </td>
-                                <td> {{nota.matnombre}} </td>
-                                <td> {{nota.pernomcompleto}} </td>
+                                <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> {{nota.curnombre}} <br> <strong>{{nota.matnombre}}</strong></td>
+                                <!-- <td>  </td> -->
+                                <!-- <td> {{nota.pernomcompleto}} </td> -->
+                                <td>
+                                    <div *ngIf="nota.perfoto == null" class="user-display">
+                                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                            styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        <span class="font-bold ml-2">{{ nota.pernomcompleto }}</span>
+                                    </div>
+                                    <div *ngIf="nota.perfoto != null" class="user-display">
+                                        <p-avatar image="{{ apiUrl }}/{{ nota.perfoto }}" styleClass="mr-2"
+                                            size="xlarge" shape="circle"></p-avatar>
+                                        <span class="font-bold ml-2">{{ nota.pernomcompleto }}</span>
+                                    </div>
+                                </td>
                                 <td> <p-chip>
-                                        <div class="p-1">{{nota.not1}} pts </div>
+                                        <div class="p-1">{{nota.not1}} </div>
                                     </p-chip> </td>
                                 <td> <p-chip>
-                                        <div class="p-1">{{nota.not2}} pts </div>
+                                        <div class="p-1">{{nota.not2}} </div>
                                     </p-chip> </td>
                                 <td> <p-chip>
-                                        <div class="p-1">{{nota.not3}} pts </div>
+                                        <div class="p-1">{{nota.not3}} </div>
                                     </p-chip> </td>
                                 <td> <p-chip>
-                                        <div class="p-1">{{nota.notfinal}} pts </div>
+                                        <div class="p-1">{{nota.notfinal}} </div>
                                     </p-chip> </td>
                                 <td>
                                     <button *ngIf="!nota.notid" pButton="pButton" pRipple="pRipple" type="button"
@@ -109,7 +145,7 @@
                                         pTooltip="Registrar nota" tooltipPosition="top" (click)="addNota(nota)">
                                     </button>
                                     <button *ngIf="nota.notid" pButton="pButton" pRipple="pRipple" type="button"
-                                        icon="pi pi-pencil" class="p-button-rounded p-button-info m-1"
+                                        icon="pi pi-pencil" class="p-button-rounded p-button-primary m-1"
                                         pTooltip="Editar nota" tooltipPosition="top" (click)="updateNota(nota)">
                                     </button>
                                 </td>

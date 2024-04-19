@@ -17,8 +17,6 @@ const httpOptions = {
 export class NotaService {
     usuario: Usuario;
     constructor(private http: HttpClient, private tokenService: TokenService, private spinner: NgxSpinnerService, private archivos: ArchivosService, private authService: AuthService) { }
-
-
     listarNota() {
         return this.http.get(`${API_URL}/listarNota`);
     }
@@ -55,6 +53,33 @@ export class NotaService {
                 (data: any) => {
                     this.spinner.hide();
                     this.archivos.generateReportPDF(data, 'Reporte Nota');
+                },
+                (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            );
+    }
+    rptNotaCursoMateria(data: any) {
+        console.log(data);
+        this.usuario = this.authService.usuario$.getValue();
+        const curmatid = data.curmatid;
+        const criterio = {
+            curmatid: curmatid,
+            usuname: this.usuario?.[0]?.usuname
+        };
+
+        if (!criterio.usuname) {
+            console.error('No se pudo obtener la información del usuario.');
+            return;
+        }
+        this.spinner.show();
+        this.http.post(`${API_URL}/rptNotaCursoMateria`, criterio, httpOptions)
+            .subscribe(
+                (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, 'Reporte Curso Materia Nota');
                 },
                 (error) => {
                     this.spinner.hide();

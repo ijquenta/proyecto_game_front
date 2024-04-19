@@ -27,6 +27,8 @@ import { CascadeSelectModule } from "primeng/cascadeselect";
 import { MultiSelectModule } from "primeng/multiselect";
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -51,7 +53,9 @@ import { NotaService } from 'src/app/modules/service/data/nota.service';
         CascadeSelectModule,
         MultiSelectModule,
         CalendarModule,
-        KnobModule
+        KnobModule,
+        AvatarModule,
+        TooltipModule
     ],
     declarations: [NotaCrudComponent],
     providers: [UsuarioService, ReporteService, PersonaService, NotaService]
