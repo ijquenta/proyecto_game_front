@@ -28,6 +28,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
+import { environment } from 'src/environments/environment';
 @Component({
     templateUrl: './inscripcion-crud.component.html',
     providers: [MessageService],
@@ -82,11 +83,16 @@ export class InscripcionCrudComponent implements OnInit {
 
     // Variables ------------------------------------------
     listaInscripcion: Inscripcion[] = [];
+    listaInscripcionDuplicated: Inscripcion[] = [];
+    listaInscripcionDesactivados: Inscripcion[] = [];
     inscripciones: Inscripcion[] = [];
     products: Inscripcion[];
     inscripcionDialog: boolean = false;
     optionInscripcion: boolean = false;
     eliminarInscripcionDialog: boolean = false;
+    activarInscripcionDialog: boolean = false;
+    desactivarInscripcionDialog: boolean = false;
+
     inscripcion: Inscripcion;
     inscripcionRegistro: InscripcionRegistro = {};
 
@@ -101,9 +107,11 @@ export class InscripcionCrudComponent implements OnInit {
     curmatid: any;
 
      //----------------Variables para validación----------------//
-     inscripcionForm: FormGroup;
+    inscripcionForm: FormGroup;
      //----------------Variables para validación----------------//
-     usuario: Usuario;
+    usuario: Usuario;
+
+    apiUrl = environment.API_URL_FOTO_PERFIL;
 
     constructor(
         private messageService: MessageService,
@@ -185,6 +193,10 @@ export class InscripcionCrudComponent implements OnInit {
               this.products = result;
               this.spinner.hide();
               this.inscripciones = this.products.map(item => this.organizarInscripcion(item));
+              this.listaInscripcionDuplicated = this.inscripciones;
+              this.listaInscripcionDesactivados = this.inscripciones.filter(item => item.insestado == 0);
+              this.inscripciones = this.inscripciones.filter(item => item.insestado == 1);
+
               console.log("Lista inscripciones", this.inscripciones);
               this.loading = false;
             }
@@ -220,7 +232,8 @@ export class InscripcionCrudComponent implements OnInit {
           peridestudiante: data.peridestudiante,
           pernombrecompletoestudiante: data.pernombrecompletoestudiante,
           peridrol: data.peridrol,
-          rolnombre: data.rolnombre
+          rolnombre: data.rolnombre,
+          perfoto: data.perfoto
         });
 
         inscripcion.pago.push({
@@ -245,6 +258,7 @@ export class InscripcionCrudComponent implements OnInit {
         inscripcion.docente.push({
           periddocente: data.periddocente,
           pernombrecompletodocente: data.pernombrecompletodocente,
+          perfoto: data.perfotodocente
         });
 
         return inscripcion;
@@ -256,14 +270,6 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcionForm.reset();
         this.inscripcionDialog = true;
         this.optionInscripcion = true;
-        // this.gestionSeleccionado = new TipoMatricula(0,0);
-        // this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
-        // this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
-        // this.tipoPersonaSeleccionado = new TipoPersona(0,"");
-        // this.tipoRolSeleccionado = new TipoRol(0,"");
-        // this.tipoEstadoSeleccionado = new TipoEstado(0, "");
-
-        // this.tipoCursoMateriaSeleccionado = new TipoCursoMateria(0,"");
     }
     ocultarDialog(){
         this.inscripcionDialog = false;
@@ -273,7 +279,6 @@ export class InscripcionCrudComponent implements OnInit {
         this.cursoService.listaCursoCombo().subscribe(
             (result: any) => {
                 this.tipoCurso = result;
-                console.log("Combo TipoCurso", this.tipoCurso)
             }
         )
     }
@@ -288,7 +293,6 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     onSelectCurso(data: any){
-        // console.log("id nivel curso: ", data.value.curnivel);
         const nivel = parseInt(data.value.curnivel);
 
         const criterio = {
@@ -342,8 +346,6 @@ export class InscripcionCrudComponent implements OnInit {
 
             (result: any) => {
                 this.tipoPersona = result;
-                // console.log("Tipo Persona: ", this.tipoPersona)
-
             }
         )
     }
@@ -356,10 +358,6 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     setData(){
-        // this.tipoCursoSeleccionado = new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel);
-        console.log("setData:", this.inscripcionForm.value);
-        console.log("setData 2:", this.inscripcion);
-
         const rolnombre = {
             //  rolnombre: this.inscripcion.estudiante[0].rolnombre
              rolnombre: 'Estudiante'
@@ -377,19 +375,6 @@ export class InscripcionCrudComponent implements OnInit {
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante)
         })
-
-        // const curnivel = {
-        //     curnivel: this.tipoCursoSeleccionado.curnivel
-        // };
-        // this.diccionarioService.getTipoMateria(curnivel).subscribe(
-        //     (result: any) => {
-        //         this.tipoMateria = result;
-        //     }
-        // )
-        // this.tipoMateriaSeleccionado = new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel);
-        // this.tipoRolSeleccionado = new TipoRol(this.inscripcion.estudiante[0].peridrol, this.inscripcion.estudiante[0].rolnombre);
-
-
     }
     obtenerBody(){
         this.inscripcionRegistro = new InscripcionRegistro();
@@ -408,7 +393,6 @@ export class InscripcionCrudComponent implements OnInit {
     guardarInscripcion(){
 
         if(this.inscripcionForm.invalid){
-            console.log("inscripcionForm.value: ", this.inscripcionForm.value);
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
             return Object.values(this.inscripcionForm.controls).forEach(control=>{
                 control.markAllAsTouched();
@@ -453,7 +437,16 @@ export class InscripcionCrudComponent implements OnInit {
     eliminarInscripcion(data: Inscripcion) {
         this.eliminarInscripcionDialog = true;
         this.inscripcion = { ...data };
-        // console.log("eliminarInscripcion:", this.inscripcion);
+    }
+    desactivarInscripcion(data: Inscripcion) {
+        this.desactivarInscripcionDialog = true;
+        this.inscripcion = { ...data };
+        this.inscripcion.tipo = 2;
+    }
+    activarInscripcion(data: Inscripcion) {
+        this.activarInscripcionDialog = true;
+        this.inscripcion = { ...data };
+        this.inscripcion.tipo = 3;
     }
     confirmarEliminar() {
         // console.log("confirmarEliminar: ", this.inscripcion);
@@ -475,27 +468,27 @@ export class InscripcionCrudComponent implements OnInit {
             }
         );
     }
-    // getSeverity(status: string) {
-    //     switch (status) {
-    //         case 'INSTOCK':
-    //             return 'success';
-    //         case 'LOWSTOCK':
-    //             return 'warning';
-    //         case 'OUTOFSTOCK':
-    //             return 'danger';
-    //     }
-    // }
 
-    // getStatusSeverity(status: string){
-    //     switch (status) {
-    //         case 'PENDING':
-    //             return 'warning';
-    //         case 'DELIVERED':
-    //             return 'success';
-    //         case 'CANCELLED':
-    //             return 'danger'
-    //     }
-    // }
+    confirmarActivarDesactivar() {
+        this.inscripcion.insusumod = this.usuario.usuname;
+        console.log("criterio: ", this.inscripcion)
+        this.inscripcionService.gestionarInscripcionEstado(this.inscripcion).subscribe(
+            (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de Inscripción modificado correctamente', life: 3000 });
+                this.listarInscripciones();
+                this.eliminarInscripcionDialog = false;
+                this.activarInscripcionDialog = false;
+                this.desactivarInscripcionDialog = false;
+                // this.inscripcion = {};
+            },
+            error => {
+            console.log("error",error);
+            // const descripcionError = error.error.message;
+                // this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                this.messageService.add({severity:'warn', summary:'Error', detail: 'Ups! Algo salio mal', life: 5000});
+            }
+        );
+    }
 
     // Método de busqueda en la tabla
     onGlobalFilter(table: Table, event: Event) {

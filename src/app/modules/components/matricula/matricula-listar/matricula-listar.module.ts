@@ -22,8 +22,10 @@ import { MatriculaService } from 'src/app/modules/service/data/matricula.service
 import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
     imports: [
+        TooltipModule,
         CommonModule,
         MatriculaListarRoutingModule,
         TableModule,

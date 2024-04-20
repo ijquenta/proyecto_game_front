@@ -5,61 +5,8 @@
     <p-toast></p-toast>
 
     <div class="grid">
-        <div class="col-4">
-            <div class="card">
-                <div class="font-bold text-xl text-center">
-                    <span class="text-900">Registrar</span>
-                    <span class="text-primary-600"> Texto </span>
-                </div>
-                <form [formGroup]="textoForm">
-                    <div class="grid p-fluid mt-3">
-                        <div class="field col-12 md:col-12">
-                            <span class="p-float-label">
-                                <input type="text" id="texnombre" pInputText formControlName="texnombre"
-                                [ngClass]="{ 'ng-dirty': this.textoForm.get('texnombre').touched,
-                                             'valid-field': this.textoForm.get('texnombre').valid} "
-                                >
-                                <label for="texnombre"> Nombre del documento </label>
-                            </span>
-                            <small class="p-error block" *ngIf="textoForm.get('texnombre').invalid && textoForm.get('texnombre').dirty">
-                                <span *ngIf="textoForm.get('texnombre').errors?.required">El nombre del documento es requerido.</span>
-                                (*)
-                            </small>
-                            <small class="p-success block" *ngIf="textoForm.get('texnombre')?.valid"> El nombre del documento es valido. </small>
-                        </div>
-                        <div class="field col-12 md:col-12">
-                            <span class="p-float-label">
-                                <input type="text" id="textipo" pInputText formControlName="textipo"
-                                [ngClass]="{ 'ng-dirty': this.textoForm.get('textipo').touched,
-                                             'valid-field': this.textoForm.get('textipo').valid} "
-                                >
-                                <label for="textipo"> Tipo del documento </label>
-                            </span>
-                            <small class="p-error block" *ngIf="textoForm.get('textipo').invalid && textoForm.get('textipo').dirty">
-                                <span *ngIf="textoForm.get('textipo').errors?.required">El tipo del documento es requerido.</span>
-                                (*)
-                            </small>
-                            <small class="p-success block" *ngIf="textoForm.get('textipo')?.valid"> El tipo del documento es valido. </small>
-                        </div>
-                        <div class="field col-12">
-                            <p-fileUpload
-                                #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
-                                accept="application/pdf" maxFileSize="5000000" (onSelect)="onUpload($event)" [showUploadButton]="false"
-                                [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
-                                [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
-                                [invalidFileTypeMessageDetail]="'Solo se permiten archivos de pdf. El tipo de archivo permitido es: PDF.'"
-                            >
-                            </p-fileUpload>
-                        </div>
-                    </div>
-                </form>
-                <div class="text-center">
-                    <button pButton pRipple label="Vaciar" icon="pi pi-times" class="p-button-text" (click)="vaciarFormulario()"></button>
-                    <button pButton pRipple label="Guardar Documento" icon="pi pi-check" class="p-button-text" (click)="insertarTexto()"></button>
-                </div>
-            </div>
-        </div>
-        <div class="col-8">
+
+        <div class="col-12">
 
             <div class="card">
                 <p-table #dt [value]="textos" [rows]="10" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
@@ -113,4 +60,58 @@
             </div>
         </div>
 
+        <div class="col-12">
+            <div class="card">
+                <div class="font-bold text-xl text-center">
+                    <span class="text-900">Registrar</span>
+                    <span class="text-primary-600"> Texto </span>
+                </div>
+                <form [formGroup]="textoForm">
+                    <div class="grid p-fluid mt-3">
+                        <div class="field col-12 md:col-12">
+                            <span class="p-float-label">
+                                <input type="text" id="texnombre" pInputText formControlName="texnombre"
+                                [ngClass]="{ 'ng-dirty': this.textoForm.get('texnombre').touched,
+                                             'valid-field': this.textoForm.get('texnombre').valid} "
+                                >
+                                <label for="texnombre"> Nombre del documento </label>
+                            </span>
+                            <small class="p-error block" *ngIf="textoForm.get('texnombre').invalid && textoForm.get('texnombre').dirty">
+                                <span *ngIf="textoForm.get('texnombre').errors?.required">El nombre del documento es requerido.</span>
+                                (*)
+                            </small>
+                            <small class="p-success block" *ngIf="textoForm.get('texnombre')?.valid"> El nombre del documento es valido. </small>
+                        </div>
+                        <div class="field col-12 md:col-12">
+                            <span class="p-float-label">
+                                <input type="text" id="textipo" pInputText formControlName="textipo"
+                                [ngClass]="{ 'ng-dirty': this.textoForm.get('textipo').touched,
+                                             'valid-field': this.textoForm.get('textipo').valid} "
+                                >
+                                <label for="textipo"> Tipo del documento </label>
+                            </span>
+                            <small class="p-error block" *ngIf="textoForm.get('textipo').invalid && textoForm.get('textipo').dirty">
+                                <span *ngIf="textoForm.get('textipo').errors?.required">El tipo del documento es requerido.</span>
+                                (*)
+                            </small>
+                            <small class="p-success block" *ngIf="textoForm.get('textipo')?.valid"> El tipo del documento es valido. </small>
+                        </div>
+                        <div class="field col-12">
+                            <p-fileUpload
+                                #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+                                accept="application/pdf" maxFileSize="5000000" (onSelect)="onUpload($event)" [showUploadButton]="false"
+                                [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                                [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                                [invalidFileTypeMessageDetail]="'Solo se permiten archivos de pdf. El tipo de archivo permitido es: PDF.'"
+                            >
+                            </p-fileUpload>
+                        </div>
+                    </div>
+                </form>
+                <div class="text-center">
+                    <button pButton pRipple label="Vaciar" icon="pi pi-times" class="p-button-text" (click)="vaciarFormulario()"></button>
+                    <button pButton pRipple label="Guardar Documento" icon="pi pi-check" class="p-button-text" (click)="insertarTexto()"></button>
+                </div>
+            </div>
+        </div>
     </div>

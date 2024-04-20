@@ -15,6 +15,7 @@ export class Inscripcion {
     insid?: number;
     perfoto?: string | null;
     pernombrecompleto?: string | null;
+    tipo?:number;
     matricula: {
       matrid?: number | null;
       matrgestion?: number | null;
@@ -26,6 +27,7 @@ export class Inscripcion {
       pernombrecompletoestudiante?: string;
       peridrol?: number | null;
       rolnombre?: string | null;
+      perfoto?: string | null;
     }[] = [];
     pago: {
       pagid?: number | null;
@@ -53,5 +55,6 @@ export class Inscripcion {
     docente: {
       periddocente?: number | null;
       pernombrecompletodocente?: string;
+      perfoto?: string;
     }[] = [];
   }
