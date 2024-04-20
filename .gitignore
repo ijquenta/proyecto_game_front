@@ -59,5 +59,3 @@ tslint.json
 
 # Ignorar archivos de configuración específicos de Node.js
 package-lock.json
-
-src/environments/
