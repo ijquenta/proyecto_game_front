@@ -30,6 +30,14 @@ export class DiccionarioService {
     return this.http.post(`${API_URL}/obtenerDatosModificar`, criterio);
   }
 
+  listaMateriaCombo2(){
+    return this.http.get(`${API_URL}/listaMateriaCombo2`);
+  }
+
+  listarTextoCombo() {
+    return this.http.get(`${API_URL}/listarTextoCombo`);
+  }
+
   // getCargo(criterio:any) {
   //   return this.http.post(`${API_URL}/cargo`, criterio);
   // }

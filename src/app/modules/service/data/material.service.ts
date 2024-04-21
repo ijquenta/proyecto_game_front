@@ -51,5 +51,18 @@ export class MaterialService {
 
     }
 
+    listarMateriaTexto(){
+        return this.http.get(`${API_URL}/listarMateriaTexto`)
+    }
+
+    insertarMateriaTexto(data) {
+        return this.http.post(`${API_URL}/insertarMateriaTexto`, data);
+    }
+
+    modificarMateriaTexto(data) {
+        return this.http.post(`${API_URL}/modificarMateriaTexto`, data);
+    }
+
+
 
 }

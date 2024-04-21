@@ -1,0 +1,130 @@
+<!-- <ng-container *hasPermision="admPlanilla" > -->
+    <p-toast></p-toast>
+    <div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <ng-container>
+                <p-table #dt [value]="listaMateriaTexto" selectionMode="single"
+                        data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
+                        [rowsPerPageOptions]="[5, 10, 20]" [rows]="20" [paginator]="true"
+                        styleClass="p-datatable-striped" [globalFilterFields]="['matnombre', 'texnombre']"
+                        rowGroupMode="rowspan" groupRowsBy="matnombre" sortField="matnombre"
+                        >
+                    <ng-template pTemplate="caption">
+                        <div class="font-bold text-3xl text-center">
+                            <span class="text-primary-600"> Asignar Texto a Materia </span>
+                          </div>
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                            <div class="flex">
+                                <button pButton pRipple label="Asignar" icon="pi pi-plus" class="p-button-primary mr-2" (click)="asignar()" pTooltip="Asignar Material a Materia"></button>
+                                <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button> -->
+                                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="Lista de Textos asignadas a materias PDF" tooltipPosition="right"></button>
+                            </div>
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                                </span>
+                            </span>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <!-- <th>ID</th> -->
+                            <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
+                            <th>Nombre del Material</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Documento</th>
+                            <th>Registrado por</th>
+                            <th>Modificado por</th>
+                            <th>Estado</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-mattex let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+                        <tr>
+                            <!-- <td></td> -->
+                            <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> <strong>{{mattex.matnombre}}</strong> </td>
+                            <td> {{mattex.texnombre}}</td>
+                            <td> {{mattex.textipo}}</td>
+                            <td> {{mattex.mattexdescripcion}}</td>
+                            <td> {{mattex.texdocumento}}</td>
+                            <td> {{mattex.mattexusureg}} <br> {{mattex.mattexfecreg}} </td>
+                            <td> {{mattex.mattexusumod}} <br> {{mattex.mattexfecmod}} </td>
+                            <td> <p-tag [value]="obtenerDescripcionEstado(mattex.mattexestado)" [severity]="obtenerSeverityEstado(mattex.mattexestado)" [rounded]="true"></p-tag> </td>
+                            <td>
+                                <button *ngIf="mattex.texdocumento" pButton="pButton" pRipple="pRipple" type="button"
+                                icon="pi pi-file-pdf" class="p-button-rounded p-button-danger m-1" pTooltip="Ver documento PDF"
+                                tooltipPosition="top" (click)="verDocumentoTexto(mattex.texdocumento)">
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="9">No se encontró ningún registro.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog [(visible)]="asignarDialog" header="Asignar Texto" [style]="{width: '100%'}" [modal]="true" class="p-fluid">
+    <form [formGroup]="materiaTextoForm">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-12">
+                <label for="status">Elegir Materia</label>
+                <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoMateria"
+                    [emptyFilterMessage]="'No se encontraron materias.'"
+                    [ngClass]="{ 'valid-field': this.materiaTextoForm.get('tipoMateria').valid}"
+                    formControlName="tipoMateria" [filter]="true" filterBy="matnombre" optionLabel="matnombre"
+                    placeholder="Seleccionar Materia">
+                </p-dropdown>
+
+                <small class="p-success block" *ngIf="materiaTextoForm.get('tipoMateria').valid">
+                    El tipo de materia es valido.
+                </small>
+                <small class="p-error block"
+                    *ngIf="materiaTextoForm.get('tipoMateria').invalid && materiaTextoForm.get('tipoMateria').touched">
+                    <span *ngIf="materiaTextoForm.get('tipoMateria').errors?.required">El tipo de materia es
+                        requerido. (*)</span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-12">
+                <label for="status">Elegir Curso</label>
+                <!-- <p-dropdown inputId="ddTipoCurso" appendTo="body"
+                    [options]="tipoTexto" formControlName="tipoTexto" optionLabel="texnombre" [filter]="true"
+                    filterBy="texnombre" [emptyFilterMessage]="'No se encontraron textos.'"
+                    placeholder="Seleccionar Texto"
+                    [ngClass]="{ 'valid-field': this.materiaTextoForm.get('tipoTexto').valid}">
+                </p-dropdown> -->
+                <p-multiSelect [options]="tipoTexto" formControlName="tipoTexto" optionLabel="texnombre" placeholder="eleccionar Texto"
+                appendTo="body" [filter]="true" filterBy="texnombre" [emptyFilterMessage]="'No se encontraron textos.'"></p-multiSelect>
+                <small class="p-success block" *ngIf="materiaTextoForm.get('tipoTexto').valid">
+                    El tipo de texto es valido.
+                </small>
+                <small class="p-error block"
+                    *ngIf="materiaTextoForm.get('tipoTexto').invalid && materiaTextoForm.get('tipoTexto').touched">
+                    <span *ngIf="materiaTextoForm.get('tipoTexto').errors?.required">El tipo de texto es
+                        requerido. (*)</span>
+                </small>
+            </div>
+            <div class="field col-12 md:col-12">
+                <label for="description">Descripción</label>
+                <textarea id="description" pInputTextarea formControlName="mattexdescripcion" required rows="3" cols="20"></textarea>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+            (click)="guardarAsignar()"></button>
+    </ng-template>
+</p-dialog>
