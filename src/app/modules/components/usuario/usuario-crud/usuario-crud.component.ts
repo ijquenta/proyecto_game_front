@@ -89,8 +89,7 @@ export class UsuarioCrudComponent implements OnInit {
                 [Validators.required,
                  Validators.minLength(5),
                  Validators.maxLength(20),
-                 this.noEspacios,
-                 this.inicioCorrecto
+                 this.noEspacios
                 ],
                 [this.validarNombreUsuarioExistente()] // Asynchronous validators
             ],
