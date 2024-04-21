@@ -1,0 +1,116 @@
+.ui-tieredmenu {
+    position: fixed !important;
+}
+
+.topbar-logo {
+    height: 50px; /* Ajusta según la necesidad */
+}
+
+.topbar-title {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    font-size: 20px; /* Ajusta el tamaño de la fuente según la necesidad */
+}
+
+.topbar-flag {
+    width: 30px; /* Ajusta según la necesidad */
+    margin-left: 5px;
+}
+
+.layout-menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.p-link {
+    outline: none;
+}
+
+.progress-spinner {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+/* Transparent Overlay */
+.progress-spinner:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.33);
+}
+.progress-spinner .pi-spinner {
+    background-color: transparent;
+}
+
+
+/* Estilos CSS para controlar el tamaño y el recorte de la imagen */
+.w-9 {
+  width: 9rem; /* Tamaño de ancho para pantallas pequeñas */
+}
+
+.md\\:w-10rem {
+  width: 10rem; /* Tamaño de ancho para pantallas medianas */
+}
+
+.h-9 {
+  height: 9rem; /* Tamaño de altura para pantallas pequeñas */
+}
+
+.md\\:h-10rem {
+  height: 10rem; /* Tamaño de altura para pantallas medianas */
+}
+
+.object-cover {
+  object-fit: cover; /* Recortar la imagen para ajustarla al tamaño especificado */
+}
+
+.mr-5 {
+  margin-right: 0rem !important;
+}
+
+.valid-field {
+  border-color: #29c76f;
+}
+
+.p-success {
+  color: #29c76f;
+  list-style-type: none; /* Elimina los marcadores de lista */
+  padding-left: 0; /* Elimina el relleno izquierdo que podría haber dejado el marcador de lista */
+}
+
+.user-display {
+    display: flex;
+    align-items: center; /* Alinea los ítems verticalmente en el centro */
+}
+.user-info-container {
+    display: flex;
+    align-items: center; /* Alinea verticalmente los elementos del flex container */
+    margin-bottom: 20px; /* Espacio adicional al final del contenedor */
+}
+
+.user-info-avatar {
+    margin-right: 20px; /* Espacio entre el avatar y los detalles del usuario */
+}
+
+.user-info-details {
+    flex-grow: 1; /* Permite que este div ocupe el espacio restante */
+}
+/* Estilo para los mensajes de error */
+.p-error {
+    list-style-type: none; /* Elimina los marcadores de lista */
+    padding-left: 0; /* Elimina el relleno izquierdo que podría haber dejado el marcador de lista */
+}

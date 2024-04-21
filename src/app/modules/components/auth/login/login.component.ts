@@ -8,6 +8,8 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 // Service
 import { AuthService } from 'src/app/services/auth.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { StyleClass } from 'primeng/styleclass';
+import { AbstractControl } from '@angular/forms';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -18,7 +20,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
       margin-right: 1rem;
       color: var(--primary-color) !important;
     }
-  `]
+  `
+],
+    styleUrls:['./login.component.css']
 })
 export class LoginComponent implements OnInit {
 
@@ -39,18 +43,44 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService
     ) {
+
+    }
+
+
+    ngOnInit(): void {
         this.loginForm = this.formBuilder.group({
-            usuario:['', [Validators.required]],
+            usuario: [
+                '',
+                [Validators.required,
+                 Validators.minLength(5),
+                 Validators.maxLength(20),
+                 this.noEspacios
+                ]],
             password: ['', [Validators.required]],
         });
     }
-    ngOnInit(): void {
+
+    noEspacios(control: AbstractControl) {
+        const valor = control.value;
+        if (valor?.includes(' ')) {
+          return { espaciosNoPermitidos: true };
+        }
+        return null;
     }
+
+    inicioCorrecto(control: AbstractControl) {
+        const valor = control.value;
+        if (valor && !valor.match(/^[a-zA-Z]/)) {
+          return { inicioInvalido: true };
+        }
+        return null;
+    }
+
     doLogin() {
         console.log("Usuario y Password: ", this.loginForm.value)
         if(this.loginForm.invalid){
             return Object.values(this.loginForm.controls).forEach(control=>{
-                this.messages = [{ severity: 'error', summary: '', detail: 'Las credenciales son inválidas', life: 3000 }];
+                this.messages = [{ severity: 'error', summary: 'Ups!', detail: 'Las credenciales son incorrectas', life: 3000 }];
                 control.markAllAsTouched();
                 control.markAsDirty();
                 this.status = 'failed';
