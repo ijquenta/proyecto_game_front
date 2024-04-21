@@ -41,7 +41,6 @@ export class AppTopBarComponent {
     ngOnInit() {
         this.authService.getPerfil().subscribe(
             (result: any) => {
-
               this.usuario = result[0];
               console.log("result get perfil: ", this.usuario);
             },
