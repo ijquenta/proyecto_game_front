@@ -14,9 +14,9 @@ export const environment = {
     production: false,
     API_URL2: 'https://fake-trello-api.herokuapp.com',
     //   API_URL: 'http://172.24.23.150:5001/academico_api'
-    // API_URL: 'http://0.0.0.0:5001/academico_api',
-    API_URL: 'https://proyectoibcibackend-production.up.railway.app/academico_api',
-    API_URL_FOTO_PERFIL: 'https://proyectoibcibackend-production.up.railway.app/static/files_fotoperfil'
+    API_URL: 'http://0.0.0.0:5001/academico_api',
+    // API_URL: 'https://proyectoibcibackend-production.up.railway.app/academico_api',
+    API_URL_FOTO_PERFIL: 'http://0.0.0.0:5001/static/files_fotoperfil'
 
 };
 
