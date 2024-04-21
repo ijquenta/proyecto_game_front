@@ -23,6 +23,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
+import { environment } from 'src/environments/environment';
 
 interface UploadEvent {
     originalEvent: Event;
@@ -68,6 +69,7 @@ export class PagoCrudComponent implements OnInit {
   // Variable para archivos
   archivos: any = {};
   uploadedFiles: any[] = [];
+  apiUrl = environment.API_URL_FOTO_PERFIL;
   constructor(
     private messageService: MessageService,
     private reporteService: ReporteService,
@@ -140,6 +142,7 @@ export class PagoCrudComponent implements OnInit {
         this.loading2 = true;
         this.pagoService.listarPagoEstudiantesMateria(data).subscribe((result: any) => {
             this.listarPagoEstudianteMateria = result as Pago[];
+            console.log("listarPagoEstudianteMateria", this.listarPagoEstudianteMateria);
             this.loading2 = false;
         //    this.messageService.add({severity:'info', summary:'¡Éxisto!', detail:'Información obtenida con exito'});
         },

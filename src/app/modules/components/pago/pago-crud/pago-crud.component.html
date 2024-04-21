@@ -8,6 +8,7 @@
                         data="idcursomateria" responsiveLayout="scroll" class="m-2" [loading]="loading"
                         [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
                         styleClass="p-datatable-striped p-card" [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
+                        rowGroupMode="rowspan" groupRowsBy="curnombre" sortField="curnombre"
                         >
                         <ng-template pTemplate="caption">
                             <div class="font-bold text-xl text-center">
@@ -24,20 +25,32 @@
                         </ng-template>
                         <ng-template pTemplate="header">
                             <tr>
-                                <th pSortableColumn="curmatid"> Nro <p-sortIcon field="curmatid"></p-sortIcon></th>
+                                <!-- <th pSortableColumn="curmatid"> Nro <p-sortIcon field="curmatid"></p-sortIcon></th> -->
                                 <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon></th>
                                 <th> Fecha del Curso</th>
                                 <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
                                 <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-pagoMateria>
+                        <ng-template pTemplate="body" let-pagoMateria let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                        let-rowspan="rowspan">
                             <tr [pSelectableRow]="pagoMateria" (click)="listarPagoMateria(pagoMateria)">
-                                <td> {{pagoMateria.curmatid}} </td>
-                                <td> {{pagoMateria.curnombre}} </td>
+                                <!-- <td> {{pagoMateria.curmatid}} </td> -->
+                                <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> {{pagoMateria.curnombre}} </td>
                                 <td> {{ pagoMateria.curmatfecini + ' a '+ pagoMateria.curmatfecfin}}  </td>
                                 <td> {{pagoMateria.matnombre}} </td>
-                                <td> {{pagoMateria.pernomcompleto}} </td>
+                                <td>
+                                    <div *ngIf="pagoMateria.perfoto == null" class="user-display">
+                                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                            styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        <span class="font-bold ml-2">{{ pagoMateria.pernomcompleto }}</span>
+                                    </div>
+                                    <div *ngIf="pagoMateria.perfoto != null" class="user-display">
+                                        <p-avatar image="{{ apiUrl }}/{{ pagoMateria.perfoto }}" styleClass="mr-2"
+                                            size="xlarge" shape="circle"></p-avatar>
+                                        <span class="font-bold ml-2">{{ pagoMateria.pernomcompleto }}</span>
+                                    </div>
+                                </td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -79,7 +92,18 @@
                                 <tr>
                                     <td> <p-chip *ngIf="pago.curnombre"> <div class="p-1"> {{pago.curnombre}} </div> </p-chip> </td>
                                     <td> <p-chip *ngIf="pago.matnombre"> <div class="p-1"> {{pago.matnombre}} </div> </p-chip> </td>
-                                    <td> <p-chip *ngIf="pago.pernomcompleto"> <div class="p-1"> {{pago.pernomcompleto}} </div> </p-chip> </td>
+                                    <td>
+                                        <div *ngIf="pago.perfoto == null" class="user-display">
+                                            <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                                styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                            <span class="font-bold ml-2">{{ pago.pernomcompleto }}</span>
+                                        </div>
+                                        <div *ngIf="pago.perfoto != null" class="user-display">
+                                            <p-avatar image="{{ apiUrl }}/{{ pago.perfoto }}" styleClass="mr-2"
+                                                size="xlarge" shape="circle"></p-avatar>
+                                            <span class="font-bold ml-2">{{ pago.pernomcompleto }}</span>
+                                        </div>
+                                    </td>
                                     <td> <p-chip *ngIf="pago.pagid"> <div class="p-1">{{pago.pagid}}</div> </p-chip> </td>
                                     <td> <p-chip *ngIf="pago.pagdescripcion"> <div class="p-1">{{pago.pagdescripcion}}</div> </p-chip> </td>
                                     <td> <p-chip *ngIf="pago.pagfecha"> <div class="p-1">{{pago.pagfecha}} </div> </p-chip> </td>

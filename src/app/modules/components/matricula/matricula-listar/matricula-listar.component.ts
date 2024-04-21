@@ -3,7 +3,13 @@ import { MessageService } from 'primeng/api';
 import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
 import { Matricula } from 'src/app/modules/models/matricula';
 import { TipoEstadoMatricula } from 'src/app/modules/models/diccionario';
+import { Table } from 'primeng/table';
+import { NgxSpinnerService } from 'ngx-spinner';
+// --------------- Modelo Usuario
+import { Usuario } from 'src/app/modules/models/usuario';
 
+// --------------- Importación de Autenticación
+import { AuthService } from 'src/app/services/auth.service';
 @Component({
     templateUrl: './matricula-listar.component.html',
     providers: [MessageService]
@@ -13,12 +19,16 @@ export class MatriculaListarComponent implements OnInit {
 
       //-----------------Variables-------------------//
         listaMatriculas: Matricula[] = [];
+        listaMatriculasDesactivadas: Matricula[] = [];
+        listaMatriculasDuplicated: Matricula[] = [];
         matricula: Matricula = {};
         gestiones: number[] = [];
         gestionSeleccionado: number;
     //   submitted: boolean = false;
         matriculaDialog: boolean = false;
         eliminarMatriculaDialog: boolean = false;
+        activarMatriculaDialog: boolean = false;
+        desactivarMatriculaDialog: boolean = false;
     //   tipoModulo: TipoModulo[] = [];
     //   tipoModuloSeleccionado: TipoModulo;
         fechaInicio: Date;
@@ -29,12 +39,15 @@ export class MatriculaListarComponent implements OnInit {
     //   registroMateria: Materia = {};
     //   pip = new DatePipe('es-BO');
         opcionMatricula: boolean = false;
+        usuario: Usuario;
       //-----------------Variables-------------------//s
 
     constructor(
                 // private productService: ProductService,
                 private messageService: MessageService,
                 private matriculaService: MatriculaService,
+                private spinner: NgxSpinnerService,
+                private authService: AuthService,
                 // private usuarioService: UsuarioService,
                 // public reporte: ReporteService,
                 ) { }
@@ -49,13 +62,32 @@ export class MatriculaListarComponent implements OnInit {
             new TipoEstadoMatricula(0, 'CERRADO'),
             new TipoEstadoMatricula(1, 'ABIERTO')
         ]
+
+        // Método de getPerfil() de usuario logeado
+        this.getPerfilUsuario();
     }
 
+    getPerfilUsuario() {
+        this.authService.getPerfil().subscribe(usuario => {
+            this.usuario = usuario[0];
+        });
+    }
+
+
     listarMatriculas(){
+        this.spinner.show();
         this.matriculaService.listarMatricula().subscribe(
             (result: any) => {
                 this.listaMatriculas = result;
                 console.log("Matriculas", this.listaMatriculas)
+                this.listaMatriculasDuplicated = this.listaMatriculas;
+                this.listaMatriculasDesactivadas = this.listaMatriculas.filter(matricula => matricula.matrestado === 0);
+                this.listaMatriculas = this.listaMatriculas.filter(matricula => matricula.matrestado === 1);
+                this.spinner.hide();
+            },
+            (error: any) => {
+                console.error(error);
+                this.spinner.hide();
             }
         )
     }
@@ -156,16 +188,29 @@ export class MatriculaListarComponent implements OnInit {
         this.matricula = { ...data };
         console.log("Matricula Eliminar:", this.matricula);
     }
+
+    activarMatricula(data: Matricula) {
+        this.activarMatriculaDialog = true;
+        this.matricula = { ...data };
+        this.matricula.tipo = 3;
+        console.log("Matricula Activar:", this.matricula);
+    }
+
+    desactivarMatricula(data: Matricula) {
+        this.desactivarMatriculaDialog = true;
+        this.matricula = { ...data };
+        this.matricula.tipo = 2;
+        console.log("Matricula Desactivar:", this.matricula);
+    }
+
     confirmarEliminar() {
         console.log("confirmarEliminar: ", this.matricula)
-        const criterio = {
-            matrid: this.matricula.matrid
-        }
-        console.log("criterio: ", criterio)
-        this.matriculaService.eliminarMatricula(criterio).subscribe(
+        this.matricula.matrusumod = this.usuario.usuname;
+        this.matriculaService.eliminarMatricula(this.matricula).subscribe(
             (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Matricula Eliminado', life: 3000 });
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de la matricula modificada correctamente', life: 3000 });
                 this.listarMatriculas();
+                this.matricula = new Matricula();
                 this.eliminarMatriculaDialog = false;
                 this.matricula = {};
             },
@@ -176,6 +221,30 @@ export class MatriculaListarComponent implements OnInit {
             }
         );
     }
+
+    confirmarActivarDesactivar() {
+        console.log("confirmarActivarDesactivar: ", this.matricula)
+        console.log("confirmarEliminar: ", this.matricula)
+        this.matricula.matrusumod = this.usuario.usuname;
+        this.matriculaService.gestionarMatriculaEstado(this.matricula).subscribe(
+            (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de la matricula modificada correctamente', life: 3000 });
+                this.listarMatriculas();
+                this.eliminarMatriculaDialog = false;
+                this.activarMatriculaDialog = false;
+                this.desactivarMatriculaDialog = false;
+                this.matricula = new Matricula();
+            },
+            error => {
+            console.log("error",error);
+                // const descripcionError = error.error.message;
+                // this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal.', life: 5000});
+            }
+        );
+    }
+
+
     obtenerSeverityEstado(estado: number): string {
         switch (estado) {
             case 1:
@@ -196,5 +265,12 @@ export class MatriculaListarComponent implements OnInit {
             default:
                 return 'Ninguno';
         }
+    }
+    // Método de busqueda en la tabla
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 }

@@ -28,7 +28,7 @@ export class LayoutService {
         ripple: true,
         // ripple: true,
         inputStyle: 'filled',
-        menuMode: 'static',
+        menuMode: 'overlay',
         // menuMode: 'overlay',
         // menuMode: 'static',
         colorScheme: 'light',

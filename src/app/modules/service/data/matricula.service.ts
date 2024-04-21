@@ -25,4 +25,8 @@ export class MatriculaService {
     eliminarMatricula(criterio: any){
         return this.http.post(`${API_URL}/eliminarMatricula`, criterio);
     }
+
+    gestionarMatriculaEstado(criterio: any){
+        return this.http.post(`${API_URL}/gestionarMatriculaEstado`, criterio);
+    }
 }

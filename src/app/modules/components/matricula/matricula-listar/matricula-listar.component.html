@@ -2,27 +2,10 @@
 <div class="grid">
     <div class="col-12">
         <div class="card px-6 py-6">
-            <!-- <h2>Administración de Matriculas</h2> -->
-            <!-- <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="abrirNuevo()"></button>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="right">
-                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button>
-                </ng-template>
-            </p-toolbar> -->
-
             <p-table #dt [value]="listaMatriculas" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true">
-                <!-- <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Lista de Matriculas</h5>
-                    </div>
-                </ng-template> -->
-
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                [globalFilterFields]="['matrid','matrgestion']"
+                >
                 <ng-template pTemplate="caption">
                     <div class="font-bold text-3xl text-center">
                         <span class="text-900">Administrar</span>
@@ -32,11 +15,15 @@
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <button pButton pRipple label="Nuevo Matricula" icon="pi pi-plus" class="p-button-primary mr-2" pTooltip="Registrar una nueva matricula"
                         (click)="abrirNuevo()"></button>
-                        <!-- <h5 class="m-0">Administrar Matricula</h5> -->
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <!-- <i class="pi pi-search"></i> -->
-                            <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
                             <!-- <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-info"></p-button> -->
+                            <!-- boton de reporte -->
+                        </span>
+
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
                         </span>
                     </div>
                 </ng-template>
@@ -44,7 +31,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th pSortableColumn="matrid">Código<p-sortIcon field="matrid"></p-sortIcon></th>
-                        <th pSortableColumn="matrid">Nombre<p-sortIcon field="matrid"></p-sortIcon></th>
+                        <th pSortableColumn="matrgestion">Nombre<p-sortIcon field="matrgestion"></p-sortIcon></th>
                         <th pSortableColumn="matrfchini">Fecha Inicio<p-sortIcon field="matrfchini"></p-sortIcon></th>
                         <th pSortableColumn="matrfchfin">Fecha Final<p-sortIcon field="matrfchfin"></p-sortIcon></th>
                         <th pSortableColumn="matrcos">Costo<p-sortIcon field="matrcos"></p-sortIcon></th>
@@ -55,16 +42,6 @@
                         <th></th>
                     </tr>
                 </ng-template>
-                <!-- matrgestion?: number = 0;
-                matrestadodescripcion?: string = '';
-                matrfchini?: Date | null;
-                matrfchfin?: Date | null;
-                matrcos?: number = 0;
-                matrusureg?: string = '';
-                matrfecreg?: Date | null;
-                matrusumod?: string = '';
-                matrfecmod?: Date | null;
-                matrestado?: number = 0; -->
                 <ng-template pTemplate="body" let-matricula>
                     <tr>
                         <td>
@@ -106,10 +83,6 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <!-- <td style="width:15%; min-width:10rem;">
-                            <p-tag severity="Primary" [rounded]="true">
-                                {{matricula.matrestado}}:{{matricula.matrestadodescripcion}} </p-tag>
-                        </td> -->
                         <td> <p-tag [value]="obtenerDescripcionEstado(matricula.matrestado)" [severity]="obtenerSeverityEstado(matricula.matrestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
@@ -117,99 +90,202 @@
                                     class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
                                     (click)="editarMatricula(matricula)"></button>
                                 <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
-                                    (click)="eliminarMatricula(matricula)"></button>
+                                    (click)="desactivarMatricula(matricula)"></button>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
             </p-table>
         </div>
+    </div>
 
-        <p-dialog [(visible)]="matriculaDialog" header="Matricula" [modal]="true"
-            class="p-fluid">
 
-            <ng-template pTemplate="content">
-
-                <!-- <div class="card p-fluid">
-                    <div class="field">
-                        <label for="curnombre">Nombre de la matricula</label>
-
-                        <input type="text" pInputText id="matnombre" [(ngModel)]="matricula.matnombre" required />
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-table #dt2 [value]="listaMatriculasDesactivadas" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                [globalFilterFields]="['matrid','matrgestion']"
+                >
+                <ng-template pTemplate="caption">
+                    <div class="font-bold text-3xl text-center">
+                        <span class="text-900">Matriculas</span>
+                        <span class="text-primary-600"> Desactivadas </span>
                     </div>
-
-                    <div class="field">
-                        <label for="descripcion">Descripción de la matricula</label>
-                        <textarea id="descripcion" pInputTextarea [(ngModel)]="matricula.matdescripcion" required rows="3"
-                            cols="20"></textarea>
+                    <hr/>
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
+                        </span>
                     </div>
-                </div> -->
-                <div class="p-fluid">
+                </ng-template>
 
-                    <!-- <div class="field">
-                        <label for="status">Elegir Gestión</label>
-                        <p-dropdown inputId="ddgestion" appendTo="body" [options]="gestiones"
-                            [(ngModel)]="gestionSeleccionado" placeholder="Seleccionar Gestion"></p-dropdown>
-                    </div> -->
-                    <div class="field">
-                        <label for="curnombre">Matricula</label>
-
-                        <input type="text" pInputText id="matnombre" [(ngModel)]="matricula.matrgestion" required />
-                    </div>
-                    <div class="field">
-                        <label class="block font-bold mb-2" for="currency-us">Costo</label>
-                        <p-inputNumber [(ngModel)]="costo" placeholder="Ingrese un monto"
-                            inputId="currency-bob" mode="currency" currency="BOB" locale="es-BO"></p-inputNumber>
-                    </div>
-                    <div class="flex">
-                        <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                            <div class="col">
-                                <span class="p-float-label">
-                                    <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="fechaInicio"
-                                        [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
-                                    <label for="fecIni">Elegir Fecha Inicio</label>
-                                </span>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="matrid">Código<p-sortIcon field="matrid"></p-sortIcon></th>
+                        <th pSortableColumn="matrgestion">Nombre<p-sortIcon field="matrgestion"></p-sortIcon></th>
+                        <th pSortableColumn="matrfchini">Fecha Inicio<p-sortIcon field="matrfchini"></p-sortIcon></th>
+                        <th pSortableColumn="matrfchfin">Fecha Final<p-sortIcon field="matrfchfin"></p-sortIcon></th>
+                        <th pSortableColumn="matrcos">Costo<p-sortIcon field="matrcos"></p-sortIcon></th>
+                        <th>Registrado por</th>
+                        <th>Modificado por</th>
+                        <th pSortableColumn="matrestado">Estado<p-sortIcon field="matrestado"></p-sortIcon></th>
+                        <th> Opciones </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-matricula>
+                    <tr>
+                        <td>
+                            {{ 'MATR000' + matricula.matrid}}
+                        </td>
+                        <td>
+                            {{matricula.matrgestion}}
+                        </td>
+                        <td>
+                            {{matricula.matrfchini | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{matricula.matrfchfin | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            Bs. {{matricula.matrcos}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.matrusureg; else noModificado">
+                                        {{matricula.matrusureg}} <br> {{matricula.matrfecreg | date:'dd/MM/yyyy'}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.matrusumod; else noModificado">
+                                        {{matricula.matrusumod}} <br> {{matricula.matrfecmod | date:'dd/MM/yyyy'}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.matrestado)" [severity]="obtenerSeverityEstado(matricula.matrestado)" [rounded]="true"></p-tag> </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
+                                    (click)="activarMatricula(matricula)"></button>
                             </div>
-                        </div>
-                        <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                            <div class="col">
-                                <span class="p-float-label">
-                                    <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="fechaFinal"
-                                        [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
-                                    <label for="fecFin">Elegir Fecha Fin</label>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- <div class="field">
-                        <label for="status">Elegir Estado:</label>
-                        <p-dropdown inputId="ddTipoEstadoMatricula" appendTo="body" [options]="tipoEstadoMatricula"
-                            [(ngModel)]="tipoEstadoMatriculaSeleccionado" optionLabel="matrestadodescripcion"
-                            placeholder="Seleccionar Estado"></p-dropdown>
-                    </div> -->
-                </div>
-            </ng-template>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                    (click)="ocultarDialog()"></button>
-                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                    (click)="guardarMatricula()"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="eliminarMatriculaDialog" header="Confirmar" [modal]="true" >
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="matricula">Estas seguro que quieres desactivar esta matricula
-                    <b>{{matricula.matrgestion}}</b>?</span>
-            </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                    (click)="eliminarMatriculaDialog = false"></button>
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-                    (click)="confirmarEliminar()"></button>
-            </ng-template>
-        </p-dialog>
-
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
     </div>
 </div>
+
+<p-dialog [(visible)]="matriculaDialog" header="Matricula" [modal]="true"
+class="p-fluid">
+
+<ng-template pTemplate="content">
+
+    <div class="p-fluid">
+        <div class="field">
+            <label for="curnombre">Matricula</label>
+            <input type="text" pInputText id="matnombre" [(ngModel)]="matricula.matrgestion" required />
+        </div>
+        <div class="field">
+            <label class="block font-bold mb-2" for="currency-us">Costo</label>
+            <p-inputNumber [(ngModel)]="costo" placeholder="Ingrese un monto"
+                inputId="currency-bob" mode="currency" currency="BOB" locale="es-BO"></p-inputNumber>
+        </div>
+        <div class="flex">
+            <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
+                <div class="col">
+                    <span class="p-float-label">
+                        <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="fechaInicio"
+                            [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                        <label for="fecIni">Elegir Fecha Inicio</label>
+                    </span>
+                </div>
+            </div>
+            <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
+                <div class="col">
+                    <span class="p-float-label">
+                        <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="fechaFinal"
+                            [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                        <label for="fecFin">Elegir Fecha Fin</label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+        (click)="ocultarDialog()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+        (click)="guardarMatricula()"></button>
+</ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="eliminarMatriculaDialog" header="Confirmar" [modal]="true" >
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="matricula">Estas seguro que quieres desactivar esta matricula
+            <b>{{matricula.matrgestion}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="eliminarMatriculaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarEliminar()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="desactivarMatriculaDialog" header="Confirmar" [modal]="true" >
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="matricula">Estas seguro que quieres desactivar esta matricula
+            <b>{{matricula.matrgestion}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="desactivarMatriculaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarActivarDesactivar()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="activarMatriculaDialog" header="Confirmar" [modal]="true" >
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="matricula">Estas seguro que quieres activar esta matricula
+            <b>{{matricula.matrgestion}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="activarMatriculaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarActivarDesactivar()"></button>
+    </ng-template>
+</p-dialog>

@@ -10,4 +10,5 @@ export class Matricula {
 	matrusumod?: string = '';
 	matrfecmod?: Date | null;
 	matrestado?: number = 0;
+    tipo?: number = 0;
 }

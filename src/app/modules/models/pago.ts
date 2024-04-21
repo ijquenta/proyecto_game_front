@@ -20,6 +20,7 @@ export class Pago {
     pernomcompleto: any;
     pagarchivo: any;
     archivobol: any;
+    perfoto:any;
 }
 
 

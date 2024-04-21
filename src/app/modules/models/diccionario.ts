@@ -164,6 +164,25 @@ export class TipoMateria {
         this.matnivel = codMatNivel;
     }
 }
+
+export class TipoMateria2 {
+    matid: number = 0;
+    matnombre: string = '';
+    constructor(codTipoMateria: number, desTipoMateria: string){
+        this.matid = codTipoMateria;
+        this.matnombre = desTipoMateria;
+    }
+}
+
+
+export class TipoTexto {
+    texid: number = 0;
+    texnombre: string = '';
+    constructor(codTipoTexto: number, desTipoTexto: string){
+        this.texid = codTipoTexto;
+        this.texnombre = desTipoTexto;
+    }
+}
 //--------------------- CursoMatricuña ---------------------//
 export class TipoEstadoMatricula {
     matrestado: number = 0;

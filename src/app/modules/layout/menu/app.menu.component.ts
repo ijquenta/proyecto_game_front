@@ -339,13 +339,14 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Gestionar Material',
                                 icon: 'pi pi-fw pi-folder-open',
                                 routerLink: ['material/crud'],
-                                roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante', 'Invitado']
+                                roles: ['Administrador', 'Secretaria', 'Docente']
                             },
-                            // {
-                            //     label: 'Accesos Usuarios',
-                            //     icon: 'pi pi-fw pi-wrench',
-                            //     routerLink: ['/usuario/empty']
-                            // },
+                            {
+                                label: 'Asignar Material',
+                                icon: 'pi pi-fw pi-wrench',
+                                routerLink: ['material/asignar'],
+                                roles: ['Administrador', 'Secretaria', 'Docente']
+                            },
                             // {
                             //     label: 'Reporte Material',
                             //     icon: 'pi pi-fw pi-file-pdf',
@@ -353,10 +354,10 @@ export class AppMenuComponent implements OnInit {
                             //     roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante', 'Invitado']
                             // }
                         ],
-                        roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante', 'Invitado']
+                        roles: ['Administrador', 'Secretaria', 'Docente']
                     }
                 ],
-                roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante', 'Invitado']
+                roles: ['Administrador', 'Secretaria', 'Docente']
             },
 
             {
