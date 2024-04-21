@@ -21,7 +21,7 @@ import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/a
 export class AppTopBarComponent {
 
     // Inicializa usuario con un objeto vacío
-    usuario: any = {};
+    usuario = new Usuario();
     apiUrl = environment.API_URL_FOTO_PERFIL;
 
     items!: MenuItem[];
@@ -43,7 +43,7 @@ export class AppTopBarComponent {
             (result: any) => {
 
               this.usuario = result[0];
-            //   console.log("result get perfil: ", this.usuario);
+              console.log("result get perfil: ", this.usuario);
             },
             (error: any) => {
               console.error("Error al obtener el perfil: ", error);
