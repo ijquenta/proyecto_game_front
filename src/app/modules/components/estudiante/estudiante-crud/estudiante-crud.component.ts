@@ -167,7 +167,7 @@ export class EstudianteCrudComponent implements OnInit {
             this.personaRegistro.tipo = 1;
             this.personaRegistro.perid = null;
             this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'ijquenta';
+            this.personaRegistro.perusureg = 'admin';
             this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
             this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
@@ -192,7 +192,7 @@ export class EstudianteCrudComponent implements OnInit {
             this.personaRegistro = { ...this.persona };
             this.personaRegistro.tipo = 2;
             this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'ijquenta';
+            this.personaRegistro.perusureg = 'admin';
             this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
             this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
@@ -308,7 +308,7 @@ export class EstudianteCrudComponent implements OnInit {
         console.log("antes: ", this.persona)
         this.personaRegistro.perid = null;
         this.personaRegistro.perfoto = null;
-        this.personaRegistro.perusureg = 'ijquenta';
+        this.personaRegistro.perusureg = 'admin';
         this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
         this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
         this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
@@ -331,7 +331,7 @@ export class EstudianteCrudComponent implements OnInit {
                 this.usuario.usuname = this.personaRegistro.pernrodoc;
                 this.usuario.usuemail = this.personaRegistro.peremail;
                 this.usuario.tipo = 1;
-                this.usuario.usuusureg = 'ijquenta';
+                this.usuario.usuusureg = 'admin';
                 this.usuario.usudescripcion = 'Registro login';
                 this.usuario.usuestado = 1;
                 this.usuario.perid = idper.perid;

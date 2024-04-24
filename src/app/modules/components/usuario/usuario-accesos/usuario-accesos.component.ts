@@ -66,7 +66,7 @@ export class UsuarioAccesosComponent implements OnInit {
             this.rolRegistro.tipo = 1;
             this.rolRegistro.rolid = null;
             this.rolRegistro.rolestado = 1;
-            this.rolRegistro.rolusureg = 'ijquenta';
+            this.rolRegistro.rolusureg = 'admin';
             this.rolService.gestionarRol(this.rolRegistro).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Registro Exitoso', detail: 'El rol se registró correctamente en el sistema.', life: 3000 });
@@ -87,7 +87,7 @@ export class UsuarioAccesosComponent implements OnInit {
             this.rolRegistro.tipo = 2;
             // this.rolRegistro.rolid = null;
             this.rolRegistro.rolestado = 1;
-            this.rolRegistro.rolusureg = 'ijquenta';
+            this.rolRegistro.rolusureg = 'admin';
             this.rolService.gestionarRol(this.rolRegistro).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Registro Exitoso', detail: 'El rol se modificó correctamente en el sistema.', life: 3000 });

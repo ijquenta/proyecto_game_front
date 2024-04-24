@@ -125,7 +125,7 @@ export class MatriculaListarComponent implements OnInit {
         this.matricula.matrestadodescripcion = this.tipoEstadoMatriculaSeleccionado.matrestadodescripcion;
         this.matricula.matrfchini = this.fechaInicio;
         this.matricula.matrfchfin = this.fechaFinal;
-        this.matricula.matrusureg = 'Usuario Reg';
+        this.matricula.matrusureg = 'admin';
         this.matricula.matrcos = this.costo;
 
         console.log("Matricula LLena: ", this.matricula);
@@ -139,7 +139,7 @@ export class MatriculaListarComponent implements OnInit {
         this.fechaFinal = new Date(this.matricula.matrfchfin);
         this.costo = this.matricula.matrcos;
         this.gestionSeleccionado = this.matricula.matrgestion;
-        this.matricula.matrusumod = "ijquenta";
+        this.matricula.matrusumod = "admin";
         this.matricula.matrestadodescripcion = null;
         console.log("Nombre matricula", this.matricula)
     }

@@ -121,8 +121,8 @@ export class NotaDocenteComponent implements OnInit {
             this.nota.tipo = 1;
             this.nota.notid = null
             this.nota.notfinal = (this.nota.not1 + this.nota.not3 + this.nota.not3) / 3;
-            this.nota.notusureg = 'ijquenta';
-            this.nota.notusumod = 'ijquenta';
+            this.nota.notusureg = 'admin';
+            this.nota.notusumod = 'admin';
             this.nota.notestado = 1;
             this.notaService.gestionarNota(this.nota).subscribe((result: any) => {
                 this.notaRegistroDialog = false;
@@ -143,8 +143,8 @@ export class NotaDocenteComponent implements OnInit {
         else {
             this.nota.tipo = 2;
             this.nota.notfinal = (this.nota.not1 + this.nota.not3 + this.nota.not3) / 3;
-            this.nota.notusureg = 'ijquenta';
-            this.nota.notusumod = 'ijquenta';
+            this.nota.notusureg = 'admin';
+            this.nota.notusumod = 'admin';
             this.nota.notestado = 1;
             this.notaService.gestionarNota(this.nota).subscribe((result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Nota modificada.' });
