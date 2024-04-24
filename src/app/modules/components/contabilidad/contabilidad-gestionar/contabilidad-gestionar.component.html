@@ -1,0 +1,226 @@
+<!-- <ng-container *hasPermision="admPlanilla" > -->
+<div class="grid">
+    <p-toast></p-toast>
+    <div class="col-12">
+        <div class="card">
+            <div class="invoice-header">
+                <h2 class="text-center">Informe Financiero</h2>
+            </div>
+            <div class="card-container surface-container">
+                <div class="flex flex-column p-3 relative border-round p-4 font-bold">
+                    <div class="grid p-fluid">
+                        <div class="field col">
+                            <span class="p-float-label">
+                                <p-calendar inputId="fechaInicio" appendTo="body" dateFormat="dd-mm-yy"
+                                    [(ngModel)]="fechaInicioSelected" [showIcon]="true"></p-calendar>
+                                <label for="ddFechaInicio">Fecha Inicio</label>
+                            </span>
+                        </div>
+                        <div class="field col">
+                            <span class="p-float-label">
+                                <p-calendar inputId="fechaFin" appendTo="body" dateFormat="dd-mm-yy"
+                                    [(ngModel)]="fechaFinSelected" [showIcon]="true"></p-calendar>
+                                <label for="ddFechaFin">Fecha Fin</label>
+                            </span>
+                        </div>
+                        <div class="field col">
+                            <button (click)="obtenerInformacion()" pButton="pButton" pRipple="pRipple" type="button" label="Recuperar información"
+                            icon="pi pi-file-pdf" class="p-button-raised p-button-success"></button>
+                        </div>
+                    </div>
+                    <!-- <div class="p-fluid">
+                        <div class="flex justify-content-center">
+
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <p-table [value]="ingresos2" [tableStyle]="{'min-width': '50rem'}" rowGroupMode="rowspan"
+                groupRowsBy="curnombre" sortMode="single">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">Cantidad de estudiantes</th>
+                        <th colspan="2">Montos</th>
+                    </tr>
+                    <tr>
+                        <th style="width:3rem">#</th>
+                        <th>Curso</th>
+                        <th>Materia</th>
+                        <th>Fecha</th>
+                        <th>Docente</th>
+                        <th>Cantidad</th>
+                        <th>Couta</th>
+                        <th>Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ing let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+                    <tr>
+                        <td>{{rowIndex + 1}}</td>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">{{ing.curnombre}}</td>
+                        <td>{{ing.matnombre}}</td>
+                        <td>{{ing.curmatfecini + ' ' + ing.curmatfecfin}}</td>
+                        <td>{{ing.pernomcompleto}}</td>
+                        <td>{{ing.numeroEstudiantes}}</td>
+                        <td> Bs. {{ing.curmatcosto}} </td>
+                        <td>{{ ing.numeroEstudiantes * ing.curmatcosto }}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td colspan="5" class="text-right">Total de estudiantes: </td>
+                        <td>{{ numAlumnos }} </td>
+                        <td class="text-right">Total de ingresos: </td>
+                        <td>{{ ingresosTotal }} Bs.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <hr>
+        <div *ngIf="this.ingresosTotal>0" class="card">
+            <div class="invoice-header">
+                <h2 class="text-center">Descuentos</h2>
+            </div>
+            <p-table [value]="descuentos" [tableStyle]="{'min-width': '70rem'}">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                       <div>
+                        <button pButton pRipple label="Agregar descuento" icon="pi pi-plus" class="p-button-primary mr-2" (click)="nuevoDescuento()" pTooltip="Adicionar un descuento" tooltipPosition="bottom"></button>
+                       </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th>Descuento</th>
+                        <th>Descripción</th>
+                        <th>Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-descuento let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{rowIndex + 1}}</td>
+                        <td>{{descuento.desnombre}}</td>
+                        <td>{{descuento.desdescripcion}}</td>
+                        <td> Bs. {{descuento.desmonto}} </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td colspan="3" class="text-right">Total de egresos</td>
+                        <td>Bs. {{ descuentosTotal }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <hr>
+
+        <div *ngIf="this.ingresosTotal>0" class="card">
+            <div class="invoice-header">
+                <h2 class="text-center">Resumen Financiero</h2>
+            </div>
+            <p-toast></p-toast>
+            <p-table [value]="resumenFinanciero" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Montos <strong>Bs.</strong></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-editing="editing" let-ri="rowIndex">
+                    <tr [pEditableRow]="product">
+                        <td>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="product.resdescripcion" required>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{product.resdescripcion}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="product.resmonto">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+
+                                    <p-tag [rounded]="true" [value]="product.resmonto" [severity]="product.color" [style]="{ 'font-size': '16px', 'padding': '8px 12px' }"></p-tag>
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td>
+                            <div class="flex align-items-center justify-content-center gap-2">
+                                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
+                                    icon="pi pi-pencil" (click)="onRowEditInit(product)"
+                                    class="p-button-rounded p-button-text p-button-info" pTooltip="Editar" tooltipPosition="bottom"></button>
+                                <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                    icon="pi pi-check" (click)="onRowEditSave(product)"
+                                    class="p-button-rounded p-button-text p-button-success mr-2" pTooltip="Registrar" tooltipPosition="bottom"></button>
+                                <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                    icon="pi pi-times" (click)="onRowEditCancel(product, ri)"
+                                    class="p-button-rounded p-button-text p-button-danger" pTooltip="Cancelar" tooltipPosition="bottom"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+
+
+
+
+        <div *ngIf="this.ingresosTotal>0" class="card">
+            <div class="flex justify-content-center my-3">
+                <h3>Reporte Informe Financiero</h3>
+            </div>
+            <div class="card-container surface-container">
+                <!-- <div class="flex flex-column p-3 relative border-round p-4 font-bold"> -->
+                    <!-- <div class="p-fluid"> -->
+                        <div class="flex justify-content-center">
+                            <button (click)="contabilidadService.rptCursoMateriaContabilidad(fechaInicioSelected, fechaFinSelected, this.descuentos, this.resumenFinanciero)"
+                                pButton="pButton" pRipple="pRipple" type="button" label="Generar reporte"
+                                icon="pi pi-file-pdf" class="p-button-raised p-button-primary"></button>
+                        </div>
+                    <!-- </div> -->
+                <!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<p-dialog [(visible)]="descuentoDialog" header="Registro Descuento" [modal]="true" class="p-fluid">
+    <!-- <p-card styleClass="user-form"> -->
+        <!-- <form [formGroup]="rolForm" novalidate> -->
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12">
+                    <label for="name" class="block">Nombre</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="desnombre"/>
+                </div>
+                <div class="field col-12">
+                    <label for="description" class="block">Descripción</label>
+                    <textarea id="description" name="description" pInputTextarea rows="3" cols="20" [(ngModel)]="desdescripcion"></textarea>
+                </div>
+                <div class="field col-12">
+                    <label for="name" class="block">Monto</label>
+                    <input type="number" pInputText id="name" [(ngModel)]="desmonto"/>
+                </div>
+            </div>
+        <!-- </form> -->
+    <!-- </p-card> -->
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar"  icon="pi pi-check" class="p-button-text" (click)="adicionarDescuento(this.desnombre, this.desdescripcion, this.desmonto)" ></button>
+    </ng-template>
+</p-dialog>
