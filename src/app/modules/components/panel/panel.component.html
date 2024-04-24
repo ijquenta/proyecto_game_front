@@ -1,0 +1,20 @@
+<div class="grid col-12">
+    <div class="card grid grid-nogutter surface-section text-800">
+        <div class="col-12 md:col-7 p-6 text-center md:text-left flex align-items-center">
+            <section>
+                <span class="block text-6xl font-bold mb-1">¡Bienvenido a nuestro sistema de seguimiento y gestión académico!</span>
+                <div class="text-5xl text-primary font-bold mb-3">Instituto Bíblico de Capacitación Internacional.</div>
+                <p class="mt-0 mb-4 text-700 line-height-3">Aquí encontrarás todas las herramientas que necesitas para optimizar tu rendimiento académico y gestionar tu progreso de manera eficaz.</p>
+                <h3 class="mt-8">¡Hola, {{ usuario?.pernomcompleto }}!</h3>
+                <div class="flex justify-center md:justify-start mt-4">
+                    <button pButton pRipple label="Manual de usuario" type="button" class="mr-3 p-button-raised"></button>
+                    <!-- <button (click)="openVideo()" pButton pRipple label="Ver demostración en video" type="button" class="p-button-outlined"></button> -->
+                    <button (click)="openVideoModal()" pButton pRipple label="Ver demostración en video" type="button" class="p-button-outlined"></button>
+                </div>
+            </section>
+        </div>
+        <div class="col-12 md:col-5 overflow-hidden">
+            <img src="assets/demo/images/blocks/hero/fondo-ibci-2.jpg" alt="fondo-ibci" class="md:ml-auto block w-full h-auto md:h-full" style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)">
+        </div>
+    </div>
+</div>
