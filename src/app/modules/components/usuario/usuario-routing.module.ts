@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, CanActivate } from '@angular/router';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { HasRoleGuard, hasRole } from 'src/app/guards/has-role.guard';
+import { NotfoundComponent } from '../notfound/notfound.component';
 @NgModule({
     imports: [RouterModule.forChild([
         { path: 'crud',
@@ -34,7 +35,17 @@ import { HasRoleGuard, hasRole } from 'src/app/guards/has-role.guard';
           canActivate: [AuthGuard],
           loadChildren: () => import('./usuario-reporte/usuario-reporte.module').then(m => m.UsuarioReporteModule)
         },
-        { path: '**', redirectTo: '/notfound' }
+        // { path: '**', redirectTo: '/notfound'  }
+
+        {
+            path: 'notfound',
+            component: NotfoundComponent
+          },
+         {
+           path: '**',
+           redirectTo: 'notfound',
+         }
+
     ])],
     exports: [RouterModule]
 })
