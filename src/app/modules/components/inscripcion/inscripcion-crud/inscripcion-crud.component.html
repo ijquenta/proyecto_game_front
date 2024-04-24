@@ -410,7 +410,41 @@
 </div>
 
 
-<p-dialog [(visible)]="inscripcionDialog" header="Inscripción" [modal]="true" class="p-fluid">
+<p-dialog [(visible)]="inscripcionDialog" header="Inscripción" [style]="{width:'50%'}" [modal]="true" class="p-fluid">
+    <div *ngIf="!optionInscripcion">
+        <p-card>
+            <ng-template pTemplate="title">
+                Información de la inscripción
+            </ng-template>
+            <ng-template pTemplate="content">
+                <div class="user-info-container">
+                    <div class="user-info-avatar">
+                        <div *ngIf="this.inscripcion?.perfoto">
+                            <p-avatar [image]="apiUrl + '/' + this.inscripcion.perfoto" size="xlarge" shape="circle"></p-avatar>
+                        </div>
+                        <div *ngIf="!this.inscripcion?.perfoto">
+                            <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
+                                shape="circle"></p-avatar>
+                        </div>
+                    </div>
+                    <div class="user-info-details">
+                        <p><strong>Nombre de la persona:</strong> {{this.inscripcion?.estudiante[0].pernombrecompletoestudiante}}</p>
+                        <p><strong>Rol:</strong> Estudiante</p>
+                        <p><strong>Curso: </strong>{{this.inscripcion?.curso_materia[0].curnombre}}</p>
+                        <p><strong>Materia: </strong>{{this.inscripcion?.curso_materia[0].matnombre}}</p>
+                        <p><strong>Fechas: </strong>{{this.inscripcion?.curso_materia[0].curmatfecini + ' a ' + this.inscripcion?.curso_materia[0].curmatfecfin}}</p>
+                        <p><strong>Docente: </strong>{{this.inscripcion?.docente[0].pernombrecompletodocente}} </p>
+                        <!-- <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p> -->
+                        <p><strong>Estado de la inscripción:</strong>
+                            <p-tag [value]="obtenerDescripcionEstado(this.inscripcion?.insestado)"
+                                [severity]="obtenerSeverityEstado(this.inscripcion?.insestado)" [rounded]="true"></p-tag>
+                        </p>
+                    </div>
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+
     <form [formGroup]="inscripcionForm">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-12">
@@ -447,7 +481,7 @@
                     (*)
                 </small>
             </div>
-            <div class="field col-12 md:col-6">
+            <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
                 <label for="status">Elegir Rol</label>
                 <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true"
                     filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol"
@@ -463,11 +497,11 @@
                     (*)
                 </small>
             </div>
-            <div class="field col-12 md:col-6">
+            <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
                 <label for="status">Elegir Estudiante</label>
                 <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
                     formControlName="tipoPersona" optionLabel="pernomcompleto"
-                    [emptyFilterMessage]="'No se encontraron estudiantes.'" placeholder="Seleccionar estudiante">
+                    [emptyFilterMessage]="'No se encontraron estudiantes.'" [emptyMessage]="'No se encontraron estudiantes.'" placeholder="Seleccionar estudiante">
                 </p-dropdown>
                 <small class="p-success block" *ngIf="inscripcionForm.get('tipoPersona').valid">
                     El tipo de estudiante es valido.
@@ -479,6 +513,21 @@
                     (*)
                 </small>
             </div>
+            <!-- <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
+                <label for="status">Elegir Estudiante</label>
+                <p-multiSelect inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
+                formControlName="tipoPersona" optionLabel="pernomcompleto"
+                [emptyFilterMessage]="'No se encontraron estudiantes.'" placeholder="Seleccionar estudiante"></p-multiSelect>
+                <small class="p-success block" *ngIf="inscripcionForm.get('tipoPersona').valid">
+                    El tipo de estudiante es valido.
+                </small>
+                <small class="p-error block"
+                    *ngIf="inscripcionForm.get('tipoPersona').invalid && inscripcionForm.get('tipoPersona').touched">
+                    <span *ngIf="inscripcionForm.get('tipoPersona').errors?.required">El tipo de estudiante es
+                        requerido.</span>
+                    (*)
+                </small>
+            </div> -->
         </div>
     </form>
     <ng-template pTemplate="footer">

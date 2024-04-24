@@ -7,10 +7,10 @@ import { Table } from 'primeng/table';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
-
+import { forkJoin } from 'rxjs';
 
 // ----------------------- Importaciones ----------------------------
-import { TipoCurso, TipoRol, TipoPersona, TipoEstado, TipoMateria, TipoCursoMateria, TipoMatricula} from 'src/app/modules/models/diccionario';
+import { TipoCurso, TipoRol, TipoPersona, TipoPersona2, TipoEstado, TipoMateria, TipoCursoMateria, TipoMatricula} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
@@ -74,8 +74,8 @@ export class InscripcionCrudComponent implements OnInit {
     tipoRol: TipoRol[] = [];
     tipoRolSeleccionado: TipoRol;
 
-    tipoPersona: TipoPersona[] = [];
-    tipoPersonaSeleccionado: TipoPersona;
+    tipoPersona: TipoPersona2[] = [];
+    tipoPersonaSeleccionado: TipoPersona2;
 
     tipoEstado: TipoEstado[] = [];
     tipoEstadoSeleccionado: TipoEstado;
@@ -112,7 +112,7 @@ export class InscripcionCrudComponent implements OnInit {
     usuario: Usuario;
 
     apiUrl = environment.API_URL_FOTO_PERFIL;
-
+    obtenerInscritos: any;
     constructor(
         private messageService: MessageService,
         private cursoService: CursoService,
@@ -127,7 +127,7 @@ export class InscripcionCrudComponent implements OnInit {
         {
         this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
         this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
-        this.tipoPersonaSeleccionado = new TipoPersona(0,"");
+        this.tipoPersonaSeleccionado = new TipoPersona2(0,"",0,"");
         this.tipoRolSeleccionado = new TipoRol(0,"");
         this.tipoEstadoSeleccionado = new TipoEstado(0, "");
         }
@@ -231,9 +231,10 @@ export class InscripcionCrudComponent implements OnInit {
         inscripcion.estudiante.push({
           peridestudiante: data.peridestudiante,
           pernombrecompletoestudiante: data.pernombrecompletoestudiante,
-          peridrol: data.peridrol,
-          rolnombre: data.rolnombre,
-          perfoto: data.perfoto
+        //   peridrol: data.peridrol,
+        //   rolnombre: data.rolnombre,
+
+        //   perfoto: data.perfoto
         });
 
         inscripcion.pago.push({
@@ -341,14 +342,36 @@ export class InscripcionCrudComponent implements OnInit {
 
     }
 
-    obtenerTipoPersona(criterio: any){
-        this.diccionarioService.getListaPersonaDocenteCombo(criterio).subscribe(
 
-            (result: any) => {
-                this.tipoPersona = result;
-            }
-        )
+
+    obtenerTipoPersona(criterio: any) {
+        forkJoin([
+            this.diccionarioService.getListaPersonaDocenteCombo(criterio),
+            this.inscripcionService.obtenerEstudiantesIncritos({ curmatid: this.inscripcionForm.value.tipoCursoMateria.curmatid })
+        ]).subscribe(([personas, inscritos]) => {
+            console.log("Personas:", personas);
+            console.log("Estudiantes inscritos:", inscritos);
+
+            // Filtrar personas inscritas
+            const personasFiltradas = this.filtrarPersonasInscritas(personas, inscritos);
+            console.log("Personas filtradas:", personasFiltradas);
+
+            // Asignar personas filtradas a tipoPersona
+            this.tipoPersona = personasFiltradas;
+        }, error => {
+            console.error("Error:", error);
+        });
     }
+
+
+    filtrarPersonasInscritas(personas: any, inscritos: any): any[] {
+        // Usamos el método filter para filtrar las personas que están inscritas
+        return personas.filter(persona => {
+            // Comprobamos si el id de la persona está en la lista de inscritos
+            return !inscritos.some(inscrito => inscrito.perid === persona.perid);
+        });
+    }
+
 
     editarCursoMateria(data: any){
         this.cursoMateria = { ...data };
@@ -365,9 +388,10 @@ export class InscripcionCrudComponent implements OnInit {
         this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe(
             (result: any) => {
                 this.tipoPersona = result;
+                console.log("SetData getListaPersona", this.tipoPersona);
             }
         )
-
+            console.log("setdatos Estudiante", this.inscripcion)
         this.inscripcionForm.patchValue({
             insid:this.inscripcion.insid,
             tipoMatricula: new TipoMatricula(this.inscripcion.matricula[0]?.matrid, this.inscripcion.matricula[0].matrgestion),
@@ -375,6 +399,7 @@ export class InscripcionCrudComponent implements OnInit {
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante)
         })
+        console.log("Set TipoPersona: ", this.inscripcionForm.value.tipoPersona)
     }
     obtenerBody(){
         this.inscripcionRegistro = new InscripcionRegistro();

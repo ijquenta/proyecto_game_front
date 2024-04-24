@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NotfoundComponent } from '../notfound/notfound.component';
 
 @NgModule({
     imports: [RouterModule.forChild([
@@ -11,7 +12,14 @@ import { RouterModule } from '@angular/router';
         { path: 'estudiante', loadChildren: () => import('./inscripcion-estudiante/inscripcion-estudiante.module').then(m => m.InscripcionEstudianteModule) },
         // { path: 'reportes', loadChildren: () => import('./inscripcion-reporte/nota-reporte.module').then(m => m.NotaReporteModule) },
         // { path: 'timeline', loadChildren: () => import('./timeline/timelinedemo.module').then(m => m.TimelineDemoModule) },
-        { path: '**', redirectTo: '/notfound' }
+        {
+            path: 'notfound',
+            component: NotfoundComponent
+        },
+        {
+           path: '**',
+           redirectTo: 'notfound',
+        }
     ])],
     exports: [RouterModule]
 })

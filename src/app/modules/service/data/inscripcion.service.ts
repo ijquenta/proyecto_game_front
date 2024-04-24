@@ -32,4 +32,7 @@ export class InscripcionService {
     gestionarInscripcionEstado(criterio: any){
         return this.http.post(`${API_URL}/gestionarInscripcionEstado`, criterio);
     }
+    obtenerEstudiantesIncritos(criterio: any){
+        return this.http.post(`${API_URL}/obtenerEstudiantesIncritos`, criterio);
+    }
 }

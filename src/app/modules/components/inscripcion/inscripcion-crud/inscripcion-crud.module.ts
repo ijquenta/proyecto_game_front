@@ -29,8 +29,10 @@ import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
 import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 import { AvatarModule } from 'primeng/avatar';
+import { MultiSelectModule } from 'primeng/multiselect';
 @NgModule({
     imports: [
+        MultiSelectModule,
         CommonModule,
         InscripcionCrudRoutingModule,
         TableModule,
