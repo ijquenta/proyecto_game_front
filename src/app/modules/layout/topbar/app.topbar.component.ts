@@ -42,7 +42,7 @@ export class AppTopBarComponent {
         this.authService.getPerfil().subscribe(
             (result: any) => {
               this.usuario = result[0];
-              console.log("result get perfil: ", this.usuario);
+            //   console.log("result get perfil: ", this.usuario);
             },
             (error: any) => {
               console.error("Error al obtener el perfil: ", error);
