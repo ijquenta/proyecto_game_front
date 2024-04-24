@@ -23,9 +23,11 @@ export class AppMenuComponent implements OnInit {
                 label: 'Principal',
                 icon: 'pi pi-fw pi-home',
                 items: [
-                    { label: 'Principal', icon: 'pi pi-fw pi-home', routerLink: ['/principal'] }
+                    { label: 'Principal', icon: 'pi pi-fw pi-home', routerLink: ['principal/'], roles: ['Administrador', 'Secretaria', 'Estudiante', 'Docente', 'Invitado'] },
+                    { label: 'Panel', icon: 'pi pi-chart-pie', routerLink: ['panel/'], roles: ['Administrador', 'Secretaria'] }
                 ],
             },
+
             {
                 label: 'Usuario',
                 icon: 'pi pi-fw pi-briefcase',
@@ -409,8 +411,10 @@ export class AppMenuComponent implements OnInit {
                 ],
                 roles: ['Administrador', 'Secretaria', 'Estudiante']
             },
+
+
             // {
-            //     label: 'Mensajes',
+            //     label: 'Notificaciones',
             //     icon: 'pi pi-fw pi-briefcase',
             //     items: [
             //         {
@@ -422,13 +426,35 @@ export class AppMenuComponent implements OnInit {
             //                     icon: 'pi pi-fw pi-money-bill',
             //                     routerLink: ['mensaje/crud'],
             //                     roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
-            //                 }
+            //                 },
             //             ],
             //             roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
             //         },
             //     ],
             //     roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
             // },
+
+
+            {
+                label: 'Contabilidad',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Contabilidad',
+                        icon: 'pi pi-fw pi-credit-card',
+                        items: [
+                            {
+                                label: 'Gestionar contabilidad',
+                                icon: 'pi pi-fw pi-money-bill',
+                                routerLink: ['contabilidad/gestionar'],
+                                roles: ['Administrador', 'Secretaria']
+                            },
+                        ],
+                        roles: ['Administrador', 'Secretaria']
+                    },
+                ],
+                roles: ['Administrador', 'Secretaria']
+            },
         ];
     }
 
