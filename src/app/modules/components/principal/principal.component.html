@@ -1,98 +1,223 @@
 <!-- <ng-container *ngIf="usuario$ | async as usuario"> -->
 
     <div class="grid col-12">
-        <div *ngIf="loading">
+        <!-- <div *ngIf="loading">
             <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
-        </div>
-        <!-- <div class="col-12 lg:col-6 xl:col-3">
+        </div> -->
 
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Cursos</span>
+                        <div class="text-900 font-medium text-3xl">{{ curmatnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+                        [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <i class="fa-solid fa-school-flag text-blue-500 text-3xl"></i>
+                    </div>
+                </div>
+                <span class="text-500">{{curmatnum_inactivo}} inactivos</span>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6 xl:col-3">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Materias</span>
-                        <div class="text-900 font-medium text-xl">35</div>
+                        <div class="text-900 font-medium text-3xl">{{ matnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
                     </div>
-                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-                        <i class="pi pi-file text-blue-500 text-xl"></i>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <!-- <i class="pi pi-file text-blue-500 text-3xl"></i> -->
+                        <i class="fa-solid fa-chalkboard text-blue-500 text-3xl"></i>
                     </div>
                 </div>
-                <span class="text-green-500 font-medium">3 nuevas </span>
-                <span class="text-500">agregadas</span>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+                <span class="text-500">{{matnum_inactivo}} inactivos</span>
             </div>
         </div>
+
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Niveles</span>
+                        <div class="text-900 font-medium text-3xl">{{ nivnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <!-- <i class="pi pi-file text-blue-500 text-3xl"></i> -->
+                        <i class="fa-solid fa-layer-group text-blue-500 text-3xl"></i>
+                    </div>
+                </div>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+                <span class="text-500">{{nivnum_inactivo}} inactivos</span>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Usuarios</span>
+                        <div class="text-900 font-medium text-3xl">{{ usunum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <i class="pi pi-users text-blue-500 text-3xl"></i>
+                    </div>
+                </div>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+                <span class="text-500">{{usunum_inactivo}} inactivos</span>
+            </div>
+        </div>
+
         <div class="col-12 lg:col-6 xl:col-3">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Estudiantes</span>
-                        <div class="text-900 font-medium text-xl">120</div>
+                        <div class="text-900 font-medium text-3xl">{{ estnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
                     </div>
-                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-                        <i class="pi pi-users text-orange-500 text-xl"></i>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <!-- <i class="pi pi-file text-blue-500 text-3xl"></i> -->
+                        <i class="fa-solid fa-user-graduate text-blue-500 text-3xl"></i>
                     </div>
                 </div>
-                <span class="text-green-500 font-medium">15 nuevos </span>
-                <span class="text-500">agregados</span>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+                <span class="text-500">{{estnum_inactivo}} inactivos</span>
             </div>
         </div>
+
         <div class="col-12 lg:col-6 xl:col-3">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Docentes</span>
-                        <div class="text-900 font-medium text-xl">35</div>
+                        <div class="text-900 font-medium text-3xl">{{ docnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
                     </div>
-                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-                        <i class="pi pi-users text-cyan-500 text-xl"></i>
+                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <!-- <i class="pi pi-users text-orange-500 text-3xl"></i> -->
+                        <i class="fa-solid fa-person-chalkboard text-orange-500 text-3xl"></i>
                     </div>
                 </div>
-                <span class="text-green-500 font-medium">3 docentes  </span>
-                <span class="text-500">agregados</span>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+                <span class="text-500">{{docnum_inactivo}} inactivos</span>
             </div>
         </div>
+
         <div class="col-12 lg:col-6 xl:col-3">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Material de apoyo</span>
-                        <div class="text-900 font-medium text-xl">4 materiales</div>
+                        <span class="block text-500 font-medium mb-3">Secretaria</span>
+                        <div class="text-900 font-medium text-3xl">{{ secnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
                     </div>
-                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-                        <i class="pi pi-file text-purple-500 text-xl"></i>
+                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <!-- <i class="pi pi-users text-cyan-500 text-3xl"></i>  -->
+                        <i class="fa-solid fa-user-tie text-cyan-500 text-3xl"></i>
                     </div>
                 </div>
-                <span class="text-green-500 font-medium">15 </span>
-                <span class="text-500">agregados</span>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+                <span class="text-500">{{secnum_inactivo}} inactivos</span>
             </div>
-        </div> -->
+        </div>
 
-        <!-- <div class="col-12 xl:col-6"> -->
-            <!-- <div class="card">
-                <h5>Recent Sales</h5>
-                <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLayout="scroll">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>Image</th>
-                            <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-                            <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
-                            <th>View</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-product>
-                        <tr>
-                            <td style="width: 15%; min-width: 5rem;">
-                                <img src="assets/release/images/product/{{product.image}}" class="shadow-4" alt="{{product.name}}" width="50">
-                            </td>
-                            <td style="width: 35%; min-width: 7rem;">{{product.name}}</td>
-                            <td style="width: 35%; min-width: 8rem;">{{product.price | currency:'USD'}}</td>
-                            <td style="width: 15%;">
-                                <button pButton pRipple type="button" icon="pi pi-search" class="p-button p-component p-button-text p-button-icon-only"></button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </div> -->
-            <!--<div class="card">
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Material de apoyo (Textos)</span>
+                        <div class="text-900 font-medium text-3xl">{{ texnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round" [ngStyle]="{width: '5rem', height: '5rem'}">
+                        <!-- <i class="pi pi-file text-purple-500 text-3xl"></i> -->
+                        <i class="fa-solid fa-book text-purple-500 text-3xl"></i>
+                    </div>
+                </div>
+                <span class="text-500">{{texnum_inactivo}} inactivos</span>
+                <!-- <span class="text-green-500 font-medium">activados</span> -->
+                <!-- <span class="text-500">agregadas</span> -->
+            </div>
+        </div>
+
+        <div class="grid col-12">
+
+            <div class="col-12 lg:col-6 xl:col-6">
+                <div class="card mb-0">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Estudiantes por materia</span>
+                    </div>
+                    <div class="">
+                        <p-chart type="polarArea" [data]="dataEstudiantesMateria" [options]="optionsEstudiantesMateria"></p-chart>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 lg:col-6 xl:col-6">
+                <div class="card mb-0">
+                    <span class="block text-500 font-medium mb-3">Estudiantes por nivel</span>
+                    <div class="">
+                        <p-chart type="pie" [data]="dataEstudiantesNivel" [options]="optionsEstudiantesNivel"></p-chart>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12 lg:col-12 xl:col-12">
+                <div class="card mb-0">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Pagos</span>
+                        <!-- <div class="text-900 font-medium text-3xl">{{ secnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div> -->
+                    </div>
+                    <div class="">
+                        <p-chart type="line" [data]="data7" [options]="options7"></p-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 lg:col-6 xl:col-6">
+                <div class="card mb-0">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Usuarios</span>
+                        <!-- <div class="text-900 font-medium text-3xl">{{ secnum }}
+                            <span class="text-green-500 font-medium">activos</span>
+                        </div> -->
+                    </div>
+                    <div class="">
+                        <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+        <!-- <div class="col-12 xl:col-6">
+            <div class="card">
                  <div class="flex justify-content-between align-items-center mb-5">
                     <h5>Best Selling Products</h5>
                     <div>
@@ -174,89 +299,15 @@
                         </div>
                     </li>
                 </ul>
-            </div>-->
-        <!-- </div> -->
-
-        <!-- <div class="col-12 xl:col-6"> -->
-            <!-- <div class="card">
-                <h5>Sales Overview</h5>
-                <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
-            </div> -->
-
-            <!-- <div class="card">
-                <div class="flex align-items-center justify-content-between mb-4">
-                    <h5>Notifications</h5>
-                    <div>
-                        <button pButton type="button" icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-plain" (click)="menu.toggle($event)"></button>
-                        <p-menu #menu [popup]="true" [model]="items"></p-menu>
-                    </div>
-                </div>
-
-                <span class="block text-600 font-medium mb-3">TODAY</span>
-                <ul class="p-0 mx-0 mt-0 mb-4 list-none">
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-dollar text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3">Richard Jones
-                    <span class="text-700"> has purchased a blue t-shirt for <span class="text-blue-500">79$</span></span>
-                </span>
-                    </li>
-                    <li class="flex align-items-center py-2">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-download text-xl text-orange-500"></i>
-                        </div>
-                        <span class="text-700 line-height-3">Your request for withdrawal of <span class="text-blue-500 font-medium">2500$</span> has been initiated.</span>
-                    </li>
-                </ul>
-
-                <span class="block text-600 font-medium mb-3">YESTERDAY</span>
-                <ul class="p-0 m-0 list-none">
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-dollar text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3">Keyser Wick
-                    <span class="text-700"> has purchased a black jacket for <span class="text-blue-500">59$</span></span>
-                </span>
-                    </li>
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-pink-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-question text-xl text-pink-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3">Jane Davis<span class="text-700"> has posted a new questions about your product.</span></span>
-                    </li>
-                </ul>
-            </div> -->
-
-            <!-- <div class="px-4 py-5 shadow-2 flex flex-column md:flex-row md:align-items-center justify-content-between mb-3" [ngStyle]="{borderRadius: '1rem', background: 'linear-gradient(0deg, rgba(0, 123, 255, 0.5), rgba(0, 123, 255, 0.5)), linear-gradient(92.54deg, #1C80CF 47.88%, #FFFFFF 100.01%)'}">
-           <div>
-               <div class="text-blue-100 font-medium text-xl mt-2 mb-3">TAKE THE NEXT STEP</div>
-               <div class="text-white font-medium text-5xl">Try PrimeBlocks</div>
-           </div>
-           <div class="mt-4 mr-auto md:mt-0 md:mr-0">
-               <a target="_blank" href="https://www.primefaces.org/primeblocks-ng" class="p-button font-bold px-5 py-3 p-button-warning p-button-rounded p-button-raised">
-                   Get Started
-               </a>
-           </div>
+            </div>
         </div> -->
-    <!-- </div> -->
-<!-- </div> -->
-
-
-<!-- </ng-container> -->
-
-
-<!--
-<div class="grid grid-nogutter surface-section text-800">
+<!-- <div class="grid grid-nogutter surface-section text-800">
     <div class="col-12 md:col-7 p-6 text-center md:text-left flex align-items-center ">
         <section>
             <span class="block text-6xl font-bold mb-1">¡Bienvenido a nuestro sistema de seguimiento y gestión académico!</span>
             <div class="text-6xl text-primary font-bold mb-3">Instituto Bíblico de Capacitación Internacional.</div>
             <p class="mt-0 mb-4 text-700 line-height-3">Aquí encontrarás todas las herramientas que necesitas para optimizar tu rendimiento académico y gestionar tu progreso de manera eficaz.</p>
-
             <h3 class="mt-8">¡Hola, {{ usuario?.pernomcompleto }}!</h3>
-
             <button pButton pRipple label="Manual de usuario" type="button" class="mr-3 p-button-raised"></button>
             <button pButton pRipple label="Ver demostración en video" type="button" class="p-button-outlined"></button>
         </section>
@@ -269,9 +320,9 @@
 
 <!-- <div class="col-6 card flex justify-content-center">
     <p-chart type="bar" [data]="data2" [options]="options2"></p-chart>
-</div>
+</div> -->
 
-<div class="col-6 card flex justify-content-center">
+<!-- <div class="col-6 card flex justify-content-center">
     <p-chart type="bar" [data]="data3" [options]="options3"></p-chart>
 </div>
 
@@ -280,39 +331,33 @@
     <p-chart type="bar" [data]="data4" [options]="options4"></p-chart>
 </div> -->
 
-<!-- <div class="col-6 card">
-    <p-chart type="line" [data]="data5" [options]="options5"></p-chart>
-</div>
+    <!-- <div class="col-6 card">
+        <p-chart type="line" [data]="data5" [options]="options5"></p-chart>
+    </div>
 
-<div class="col-6 card">
-    <p-chart type="line" [data]="data6" [options]="options6"></p-chart>
-</div> -->
+    <div class="col-6 card">
+        <p-chart type="line" [data]="data6" [options]="options6"></p-chart>
+    </div> -->
 
 
-<!-- <div class="col-12 card">
-    <p-chart type="line" [data]="data7" [options]="options7"></p-chart>
-</div> -->
+
 
 
 <!-- <div class="col-6 card flex justify-content-center">
     <p-chart type="radar" [data]="data9" [options]="options9"></p-chart>
-</div> -->
-<!-- <div class="col-12 card">
+</div>
+<div class="col-12 card">
     <p-chart type="line" [data]="data10" [options]="options10"></p-chart>
 </div> -->
+<!-- </div> -->
+
+<div *ngIf="usuario?.rolid == 1">
+
+
+
 </div>
 
 
-<div *ngIf="usuario?.rolid == 1" class="grid col-12">
 
-    <div class="col-12 card ">
-        <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
-    </div>
 
-    <div class="col-12 card flex justify-content-center">
-        <p-chart type="pie" [data]="data" [options]="options"></p-chart>
-    </div>
-    <div class="col-12 card flex justify-content-center">
-        <p-chart type="polarArea" [data]="data8" [options]="options8"></p-chart>
-    </div>
-</div>
+

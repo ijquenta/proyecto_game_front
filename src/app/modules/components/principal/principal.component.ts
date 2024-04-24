@@ -7,6 +7,7 @@ import { LayoutService } from 'src/app/modules/layout/service/app.layout.service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from '../../models/usuario';
+import { PrincipalService } from '../../service/data/principal.service';
 @Component({
     templateUrl: './principal.component.html',
     styleUrls: ['./principal.component.css']
@@ -61,16 +62,43 @@ export class PrincipalComponent implements OnInit, OnDestroy {
     data8: any;
     options8: any;
 
+
+    dataEstudiantesMateria: any;
+    optionsEstudiantesMateria: any;
+
+    dataEstudiantesNivel: any;
+    optionsEstudiantesNivel: any;
+
     data9: any;
     options9: any;
 
     data10: any;
     options10: any;
 
+    listaCantidades: any;
+    curmatnum: number | null = null;
+    matnum: number | null = null;
+    nivnum: number | null = null;
+    usunum: number | null = null;
+    estnum: number | null = null;
+    docnum: number | null = null;
+    secnum: number | null = null;
+    texnum: number | null = null;
+    curmatnum_inactivo: number | null = null;
+    matnum_inactivo: number | null = null;
+    nivnum_inactivo: number | null = null;
+    usunum_inactivo: number | null = null;
+    estnum_inactivo: number | null = null;
+    docnum_inactivo: number | null = null;
+    secnum_inactivo: number | null = null;
+    texnum_inactivo: number | null = null;
 
+    listaEstudiantesMateria: any;
+    listaEstudiantesNivel: any;
     constructor(private productService: ProductService,
                         public layoutService: LayoutService,
                         private spinner: NgxSpinnerService,
+                        private principalService: PrincipalService,
                         private authService: AuthService) {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
             this.initChart();
@@ -89,6 +117,8 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         this.initChart9();
         this.initChart10();
         this.initChart11();
+
+
         // this.productService.getProductsSmall().then(data => this.products = data);
 
         this.items = [
@@ -110,6 +140,64 @@ export class PrincipalComponent implements OnInit, OnDestroy {
             this.spinner.hide();
           },
         );
+        // Llama al servicio y asigna los valores a las variables correspondientes
+        this.principalService.listarCantidades().subscribe(
+            (data: any[]) => {
+                this.listaCantidades = data;
+                console.log(this.listaCantidades)
+
+                // Asigna los valores de cada campo a las variables correspondientes
+                this.curmatnum = this.listaCantidades[0]['curmatnum'];
+                this.matnum = this.listaCantidades[0]['matnum'];
+                this.nivnum = this.listaCantidades[0]['nivnum'];
+                this.usunum = this.listaCantidades[0]['usunum'];
+                this.estnum = this.listaCantidades[0]['estnum'];
+                this.docnum = this.listaCantidades[0]['docnum'];
+                this.secnum = this.listaCantidades[0]['secnum'];
+                this.texnum = this.listaCantidades[0]['texnum'];
+
+                this.curmatnum_inactivo = this.listaCantidades[0]['curmatnumInactivos'];
+                this.matnum_inactivo = this.listaCantidades[0]['matnumInactivos'];
+                this.nivnum_inactivo = this.listaCantidades[0]['nivnumInactivos'];
+                this.usunum_inactivo = this.listaCantidades[0]['usunumInactivos'];
+                this.estnum_inactivo = this.listaCantidades[0]['estnumInactivos'];
+                this.docnum_inactivo = this.listaCantidades[0]['docnumInactivos'];
+                this.secnum_inactivo = this.listaCantidades[0]['secnumInactivos'];
+                this.texnum_inactivo = this.listaCantidades[0]['texnumInactivos'];
+                // this.spinner.hide();
+                this.initChart();
+            },
+            (error: any) => {
+                console.error("Error al obtener la cantidad:", error);
+                // this.spinner.hide();
+            }
+        );
+
+        this.principalService.listarEstudiantesMateria().subscribe(
+            (data: any) => {
+                this.listaEstudiantesMateria = data;
+                console.log(this.listaEstudiantesMateria)
+                this.spinner.hide();
+                this.initChartEstudiantesMateria();
+            },
+            (error: any) => {
+                console.error("Error al obtener la cantidad:", error);
+                this.spinner.hide();
+            }
+        );
+
+        this.principalService.listarEstudiantesNivel().subscribe(
+            (data: any) => {
+                this.listaEstudiantesNivel = data;
+                console.log(this.listaEstudiantesNivel)
+                this.spinner.hide();
+                this.initChartEstudiantesNivel();
+            },
+            (error: any) => {
+                console.error("Error al obtener la cantidad:", error);
+                this.spinner.hide();
+            }
+        )
     }
 
     initChart() {
@@ -122,8 +210,8 @@ export class PrincipalComponent implements OnInit, OnDestroy {
             labels: ['Estudiantes', 'Docentes', 'Invitados'],
             datasets: [
                 {
-                    label: ['Estudiantes'],
-                    data: [241,129,30],
+                    label: ['Usuarios'],
+                    data: [this.estnum,this.docnum,this.secnum],
                     backgroundColor: ['rgba(255, 259, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
                     borderColor: ['rgb(255, 259, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
                     borderWidth: 1
@@ -537,26 +625,26 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
         this.data7 = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
             datasets: [
+                // {
+                //     label: 'First Dataset',
+                //     data: [65, 59, 80, 81, 56, 55, 40],
+                //     fill: false,
+                //     tension: 0.4,
+                //     borderColor: documentStyle.getPropertyValue('--blue-500')
+                // },
+                // {
+                //     label: 'Second Dataset',
+                //     data: [28, 48, 40, 19, 86, 27, 90],
+                //     fill: false,
+                //     borderDash: [5, 5],
+                //     tension: 0.4,
+                //     borderColor: documentStyle.getPropertyValue('--teal-500')
+                // },
                 {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    tension: 0.4,
-                    borderColor: documentStyle.getPropertyValue('--blue-500')
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    borderDash: [5, 5],
-                    tension: 0.4,
-                    borderColor: documentStyle.getPropertyValue('--teal-500')
-                },
-                {
-                    label: 'Third Dataset',
-                    data: [12, 51, 62, 33, 21, 62, 45],
+                    label: 'Pago de materia',
+                    data: [12, 51, 62, 33, 21, 62, 45,43, 12, 53, 12,100],
                     fill: true,
                     borderColor: documentStyle.getPropertyValue('--orange-500'),
                     tension: 0.4,
@@ -758,4 +846,133 @@ export class PrincipalComponent implements OnInit, OnDestroy {
             this.subscription.unsubscribe();
         }
     }
+
+
+
+    initChartEstudiantesMateria() {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+        // Función para generar una paleta de colores dinámica
+        const dynamicColors = () => {
+            const colors = [
+                '--red-500',
+                '--green-500',
+                '--yellow-500',
+                '--bluegray-500',
+                '--blue-500',
+                // Agrega más colores si es necesario
+            ];
+            return colors.map(color => documentStyle.getPropertyValue(color));
+        };
+
+        // Arreglos para almacenar los datos, etiquetas y colores de fondo
+        let dataEstudiantes = [];
+        let labels = [];
+        let backgroundColors = [];
+
+        // Iterar sobre los datos de la listaEstudiantesMateria
+        for (let i = 0; i < this.listaEstudiantesMateria.length; i++) {
+            dataEstudiantes.push(this.listaEstudiantesMateria[i].cantidadEstudiantes);
+            labels.push(this.listaEstudiantesMateria[i].matnombre);
+            backgroundColors.push(dynamicColors()[i % dynamicColors().length]); // Usar módulo para repetir los colores
+        }
+
+        // Asignar datos, etiquetas y colores al gráfico
+        this.dataEstudiantesMateria = {
+            datasets: [
+                {
+                    data: dataEstudiantes,
+                    backgroundColor: backgroundColors,
+                    label: 'My dataset'
+                }
+            ],
+            labels: labels
+        };
+
+        // Configuración de opciones del gráfico
+        this.optionsEstudiantesMateria = {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    grid: {
+                        color: surfaceBorder
+                    }
+                }
+            }
+        };
+    }
+    initChartEstudiantesNivel() {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+
+        // Arreglo vacío para almacenar los datos y etiquetas
+        let dataEstudiantes = [];
+        let labels = [];
+
+        // Iterar sobre los datos obtenidos de la consulta
+        for (let i = 0; i < this.listaEstudiantesNivel.length; i++) {
+            // Determinar la etiqueta del nivel
+            let nivelLabel = '';
+            switch (this.listaEstudiantesNivel[i].curnivel) {
+                case 1:
+                    nivelLabel = 'Primer Nivel';
+                    break;
+                case 2:
+                    nivelLabel = 'Segundo Nivel';
+                    break;
+                case 3:
+                    nivelLabel = 'Tercer Nivel';
+                    break;
+                default:
+                    nivelLabel = 'Otro Nivel';
+            }
+            // Agregar la cantidad de estudiantes y el nivel a los arreglos
+            dataEstudiantes.push(this.listaEstudiantesNivel[i].cantidadEstudiantes);
+            labels.push(nivelLabel);
+        }
+
+        // Asignar los arreglos a this.data
+        this.dataEstudiantesNivel = {
+            labels: labels,
+            datasets: [
+                {
+                    data: dataEstudiantes,
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--blue-500'),
+                        documentStyle.getPropertyValue('--yellow-500'),
+                        documentStyle.getPropertyValue('--green-500'),
+                        documentStyle.getPropertyValue('--red-500')
+                    ],
+                    hoverBackgroundColor: [
+                        documentStyle.getPropertyValue('--blue-400'),
+                        documentStyle.getPropertyValue('--yellow-400'),
+                        documentStyle.getPropertyValue('--green-400'),
+                        documentStyle.getPropertyValue('--red-400')
+                    ]
+                }
+            ]
+        };
+
+        // Opciones del gráfico
+        this.optionsEstudiantesNivel = {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor
+                    }
+                }
+            }
+        };
+    }
+
+
 }
