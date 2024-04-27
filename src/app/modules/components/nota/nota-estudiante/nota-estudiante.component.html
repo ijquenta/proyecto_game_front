@@ -3,7 +3,7 @@
     <div class="col-12">
         <div class="card">
             <ng-container>
-                <p-table [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
+                <p-table #dt [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
                     data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
                     [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
                     styleClass="p-datatable-striped p-card"
