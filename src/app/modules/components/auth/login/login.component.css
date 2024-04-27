@@ -114,3 +114,9 @@
     list-style-type: none; /* Elimina los marcadores de lista */
     padding-left: 0; /* Elimina el relleno izquierdo que podría haber dejado el marcador de lista */
 }
+
+.surface-ground {
+  background-image: url('../../../../../assets/layout/images/fondo-ibci-2.jpg');
+  background-size: cover;
+  background-position: center;
+}

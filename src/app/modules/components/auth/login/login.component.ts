@@ -13,6 +13,7 @@ import { AbstractControl } from '@angular/forms';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
+    styleUrls:['./login.component.css'],
     styles: [`
     :host ::ng-deep .pi-eye,
     :host ::ng-deep .pi-eye-slash {
@@ -20,9 +21,9 @@ import { AbstractControl } from '@angular/forms';
       margin-right: 1rem;
       color: var(--primary-color) !important;
     }
-  `
-],
-    styleUrls:['./login.component.css']
+    `
+    ],
+    
 })
 export class LoginComponent implements OnInit {
 
