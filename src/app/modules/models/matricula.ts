@@ -12,3 +12,17 @@ export class Matricula {
 	matrestado?: number = 0;
     tipo?: number = 0;
 }
+export class TipoMatricula {
+	tipmatrid?: number = 0;
+	tipmatrgestion?: string = '';
+	tipmatrfecini?: Date | null;
+	tipmatrfecfin?: Date | null;
+	tipmatrcosto?: number = 0;
+	tipmatrusureg?: string = '';
+	tipmatrufecreg: Date | null;
+	tipmatrusumod?: string = '';
+	tipmatrfecmod: Date | null;
+	tipmatrestado?: number = 0;
+	tipmatrdescripcion?: string = '';
+	tipo?: number = 0;
+}

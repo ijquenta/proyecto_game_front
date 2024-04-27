@@ -14,6 +14,10 @@ export class MatriculaService {
         return this.http.get(`${API_URL}/listarMatricula`);
     }
 
+    listarTipoMatricula(){
+        return this.http.get(`${API_URL}/listarTipoMatricula`);
+    }
+
     insertarMatricula(criterio: any){
         return this.http.post(`${API_URL}/insertarMatricula`, criterio);
     }

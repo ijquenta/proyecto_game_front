@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
-import { Matricula } from 'src/app/modules/models/matricula';
+import { Matricula, TipoMatricula } from 'src/app/modules/models/matricula';
 import { TipoEstadoMatricula } from 'src/app/modules/models/diccionario';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 // --------------- Modelo Usuario
 import { Usuario } from 'src/app/modules/models/usuario';
-
 // --------------- Importación de Autenticación
 import { AuthService } from 'src/app/services/auth.service';
 @Component({
@@ -24,32 +23,24 @@ export class MatriculaListarComponent implements OnInit {
         matricula: Matricula = {};
         gestiones: number[] = [];
         gestionSeleccionado: number;
-    //   submitted: boolean = false;
         matriculaDialog: boolean = false;
         eliminarMatriculaDialog: boolean = false;
         activarMatriculaDialog: boolean = false;
         desactivarMatriculaDialog: boolean = false;
-    //   tipoModulo: TipoModulo[] = [];
-    //   tipoModuloSeleccionado: TipoModulo;
         fechaInicio: Date;
         fechaFinal: Date;
         costo: number;
         tipoEstadoMatricula: TipoEstadoMatricula[] = [];
         tipoEstadoMatriculaSeleccionado: TipoEstadoMatricula;
-    //   registroMateria: Materia = {};
-    //   pip = new DatePipe('es-BO');
         opcionMatricula: boolean = false;
         usuario: Usuario;
       //-----------------Variables-------------------//s
 
     constructor(
-                // private productService: ProductService,
                 private messageService: MessageService,
                 private matriculaService: MatriculaService,
                 private spinner: NgxSpinnerService,
                 private authService: AuthService,
-                // private usuarioService: UsuarioService,
-                // public reporte: ReporteService,
                 ) { }
 
     ngOnInit() {
@@ -108,27 +99,13 @@ export class MatriculaListarComponent implements OnInit {
         this.opcionMatricula = false;
         this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Proceso Cancelado', life: 3000 });
     }
-                // matrgestion?: number = 0;
-                // matrestadodescripcion?: string = '';
-                // matrfchini?: Date | null;
-                // matrfchfin?: Date | null;
-                // matrcos?: number = 0;
-                // matrusureg?: string = '';
-                // matrfecreg?: Date | null;
-                // matrusumod?: string = '';
-                // matrfecmod?: Date | null;
-                // matrestado?: number = 0;
     obtenerBody(){
-        // console.log("Obtener Body: ", this.matricula);
-        // this.matricula.matrgestion = thi;
         this.matricula.matrestado = 1;
         this.matricula.matrestadodescripcion = this.tipoEstadoMatriculaSeleccionado.matrestadodescripcion;
         this.matricula.matrfchini = this.fechaInicio;
         this.matricula.matrfchfin = this.fechaFinal;
         this.matricula.matrusureg = 'admin';
         this.matricula.matrcos = this.costo;
-
-        console.log("Matricula LLena: ", this.matricula);
         const body = {...this.matricula}
         return body;
     }
@@ -266,7 +243,6 @@ export class MatriculaListarComponent implements OnInit {
                 return 'Ninguno';
         }
     }
-    // Método de busqueda en la tabla
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
             (event.target as HTMLInputElement).value,
