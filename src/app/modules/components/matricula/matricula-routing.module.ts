@@ -4,7 +4,7 @@ import { NotfoundComponent } from '../notfound/notfound.component';
 
 @NgModule({
     imports: [RouterModule.forChild([
-        { path: 'nuevo', loadChildren: () => import('./matricula-nuevo/matricula-nuevo.module').then(m => m.MatriculaNuevoModule) },
+        { path: 'asignar', loadChildren: () => import('./matricula-nuevo/matricula-nuevo.module').then(m => m.MatriculaNuevoModule) },
         { path: 'listar', loadChildren: () => import('./matricula-listar/matricula-listar.module').then(m => m.MatriculaListarModule) },
         { path: 'reporte', loadChildren: () => import('./matricula-reporte/matricula-reporte.module').then(m => m.MatriculaRerporteModule) },
         { path: 'estudiante', loadChildren: () => import('./matricula-estudiante/matricula-estudiante.module').then(m => m.MatriculaEstudianteModule) },

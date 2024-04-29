@@ -2,9 +2,10 @@
 <div class="grid">
     <div class="col-12">
         <div class="card px-6 py-6">
-            <p-table #dt [value]="listaMatriculas" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
-                [globalFilterFields]="['matrid','matrgestion']"
+            <p-table #dt [value]="listaTipoMatricula" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['tipmatrgestion']"
+                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
                 >
                 <ng-template pTemplate="caption">
                     <div class="font-bold text-3xl text-center">
@@ -14,7 +15,7 @@
                     <hr/>
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <button pButton pRipple label="Nuevo Matricula" icon="pi pi-plus" class="p-button-primary mr-2" pTooltip="Registrar una nueva matricula"
-                        (click)="abrirNuevo()"></button>
+                        (click)="abrirNuevoTipoMatricula()"></button>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <!-- <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-info"></p-button> -->
                             <!-- boton de reporte -->
@@ -30,14 +31,15 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="matrid">Código<p-sortIcon field="matrid"></p-sortIcon></th>
-                        <th pSortableColumn="matrgestion">Nombre<p-sortIcon field="matrgestion"></p-sortIcon></th>
-                        <th pSortableColumn="matrfchini">Fecha Inicio<p-sortIcon field="matrfchini"></p-sortIcon></th>
-                        <th pSortableColumn="matrfchfin">Fecha Final<p-sortIcon field="matrfchfin"></p-sortIcon></th>
-                        <th pSortableColumn="matrcos">Costo<p-sortIcon field="matrcos"></p-sortIcon></th>
+                        <th style="width: 8%;" pSortableColumn="tipmatrid">Código<p-sortIcon field="tipmatrid"></p-sortIcon></th>
+                        <th style="width: 15%;" pSortableColumn="tipmatrgestion">Nombre<p-sortIcon field="tipmatrgestion"></p-sortIcon></th>
+                        <th style="width: 10%;" pSortableColumn="tipmatrfecini">Fecha Inicio<p-sortIcon field="tipmatrfecini"></p-sortIcon></th>
+                        <th style="width: 10%;" pSortableColumn="tipmatrfecfin">Fecha Final<p-sortIcon field="tipmatrfecfin"></p-sortIcon></th>
+                        <th style="width: 8%;" pSortableColumn="tipmatrcosto">Costo<p-sortIcon field="tipmatrcosto"></p-sortIcon></th>
                         <th>Registrado por</th>
                         <th>Modificado por</th>
-                        <th pSortableColumn="matrestado">Estado<p-sortIcon field="matrestado"></p-sortIcon></th>
+                        <th>Descripción</th>
+                        <th style="width: 8%;" pSortableColumn="tipmatrestado">Estado<p-sortIcon field="tipmatrestado"></p-sortIcon></th>
                         <th> Opciones </th>
                         <th></th>
                     </tr>
@@ -45,25 +47,29 @@
                 <ng-template pTemplate="body" let-matricula>
                     <tr>
                         <td>
-                            {{ 'MATR000' + matricula.matrid}}
+                            {{ 'MATR-' + matricula.tipmatrid}}
                         </td>
                         <td>
-                            {{matricula.matrgestion}}
-                        </td>
-                        <td>
-                            {{matricula.matrfchini | date:'dd/MM/yyyy'}}
-                        </td>
-                        <td>
-                            {{matricula.matrfchfin | date:'dd/MM/yyyy'}}
-                        </td>
-                        <td>
-                            Bs. {{matricula.matrcos}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
                             <p-chip>
                                 <div class="p-2">
-                                    <ng-container *ngIf="matricula.matrusureg; else noModificado">
-                                        {{matricula.matrusureg}} <br> {{matricula.matrfecreg | date:'dd/MM/yyyy'}}
+                                    {{ matricula.tipmatrgestion}}
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecini}}
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecfin}}
+                        </td>
+                        <td>
+                            Bs. {{matricula.tipmatrcosto}}
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
+                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg}}
                                     </ng-container>
                                     <ng-template #noModificado>
                                         No se ha modificado
@@ -71,11 +77,11 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td style="width:15%; min-width:10rem;">
+                        <td>
                             <p-chip>
                                 <div class="p-2">
-                                    <ng-container *ngIf="matricula.matrusumod; else noModificado">
-                                        {{matricula.matrusumod}} <br> {{matricula.matrfecmod | date:'dd/MM/yyyy'}}
+                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
+                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
                                     </ng-container>
                                     <ng-template #noModificado>
                                         No se ha modificado
@@ -83,12 +89,15 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.matrestado)" [severity]="obtenerSeverityEstado(matricula.matrestado)" [rounded]="true"></p-tag> </td>
+                        <td>
+                            {{matricula.tipmatrdescripcion}}
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil"
                                     class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
-                                    (click)="editarMatricula(matricula)"></button>
+                                    (click)="editarTipoMatricula(matricula)"></button>
                                 <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
                                     (click)="desactivarMatricula(matricula)"></button>
                             </div>
@@ -107,9 +116,9 @@
 
     <div class="col-12">
         <div class="card px-6 py-6">
-            <p-table #dt2 [value]="listaMatriculasDesactivadas" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
-                [globalFilterFields]="['matrid','matrgestion']"
+            <p-table #dt2 [value]="listaTipoMatriculaInactivo" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['tipmatrgestion']"
                 >
                 <ng-template pTemplate="caption">
                     <div class="font-bold text-3xl text-center">
@@ -128,14 +137,15 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="matrid">Código<p-sortIcon field="matrid"></p-sortIcon></th>
-                        <th pSortableColumn="matrgestion">Nombre<p-sortIcon field="matrgestion"></p-sortIcon></th>
-                        <th pSortableColumn="matrfchini">Fecha Inicio<p-sortIcon field="matrfchini"></p-sortIcon></th>
-                        <th pSortableColumn="matrfchfin">Fecha Final<p-sortIcon field="matrfchfin"></p-sortIcon></th>
-                        <th pSortableColumn="matrcos">Costo<p-sortIcon field="matrcos"></p-sortIcon></th>
-                        <th>Registrado por</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Final</th>
+                        <th>Costo</th>
+                        <!-- <th>Registrado por</th> -->
                         <th>Modificado por</th>
-                        <th pSortableColumn="matrestado">Estado<p-sortIcon field="matrestado"></p-sortIcon></th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
                         <th> Opciones </th>
                         <th></th>
                     </tr>
@@ -143,25 +153,37 @@
                 <ng-template pTemplate="body" let-matricula>
                     <tr>
                         <td>
-                            {{ 'MATR000' + matricula.matrid}}
+                            {{ 'MATR-' + matricula.tipmatrid}}
                         </td>
                         <td>
-                            {{matricula.matrgestion}}
+                            {{matricula.tipmatrgestion}}
                         </td>
                         <td>
-                            {{matricula.matrfchini | date:'dd/MM/yyyy'}}
+                            {{matricula.tipmatrfecini}}
                         </td>
                         <td>
-                            {{matricula.matrfchfin | date:'dd/MM/yyyy'}}
+                            {{matricula.tipmatrfecfin}}
                         </td>
                         <td>
-                            Bs. {{matricula.matrcos}}
+                            Bs. {{matricula.tipmatrcosto}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
+                        <!-- <td>
                             <p-chip>
                                 <div class="p-2">
-                                    <ng-container *ngIf="matricula.matrusureg; else noModificado">
-                                        {{matricula.matrusureg}} <br> {{matricula.matrfecreg | date:'dd/MM/yyyy'}}
+                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
+                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td> -->
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
+                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
                                     </ng-container>
                                     <ng-template #noModificado>
                                         No se ha modificado
@@ -169,19 +191,10 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.matrusumod; else noModificado">
-                                        {{matricula.matrusumod}} <br> {{matricula.matrfecmod | date:'dd/MM/yyyy'}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
+                        <td>
+                            {{matricula.tipmatrdescripcion}}
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.matrestado)" [severity]="obtenerSeverityEstado(matricula.matrestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
@@ -200,72 +213,121 @@
     </div>
 </div>
 
-<p-dialog [(visible)]="matriculaDialog" header="Matricula" [modal]="true"
+<p-dialog [(visible)]="tipoMatriculaDialog" header="Matricula" [modal]="true"
+[breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
 class="p-fluid">
 
-<ng-template pTemplate="content">
-
+<form [formGroup]="tipoMatriculaForm" novalidate>
     <div class="p-fluid">
         <div class="field">
-            <label for="curnombre">Matricula</label>
-            <input type="text" pInputText id="matnombre" [(ngModel)]="matricula.matrgestion" required />
+            <label class="block font-bold mb-2">Nombre</label>
+            <input type="text" pInputText id="matnombre" formControlName="tipmatrgestion" placeholder="Ingrese un nombre de la matricula"
+                   [ngClass]="{ 'ng-dirty': this.tipoMatriculaForm.get('tipmatrgestion').touched, 'valid-field': this.tipoMatriculaForm.get('tipmatrgestion').valid}"
+            />
+            <small class="p-error block"
+                *ngIf="tipoMatriculaForm.get('tipmatrgestion').invalid && tipoMatriculaForm.get('tipmatrgestion').dirty">
+                <!-- Mensaje si el nombre de usuario ya existe (validador asincrónico por ejemplo) -->
+                <span *ngIf="tipoMatriculaForm.get('tipmatrgestion').errors?.nombreTipoMatriculaExiste">
+                    La nombre de la matricula ya existe.
+                </span>
+                <!-- Mensaje si el campo es obligatorio -->
+                <span *ngIf="tipoMatriculaForm.get('tipmatrgestion').errors?.required">
+                    El nombre de la matricula es requerido. (*)
+                </span>
+                <!-- Mensaje si la longitud mínima no se cumple -->
+                <span *ngIf="tipoMatriculaForm.get('tipmatrgestion').errors?.minlength">
+                    El nombre de la matricula debe tener al menos 5 caracteres.
+                </span>
+            </small>
+            <small class="p-success block" *ngIf="tipoMatriculaForm.get('tipmatrgestion')?.valid">
+                El nombre de la materia es valido.
+            </small>
         </div>
         <div class="field">
             <label class="block font-bold mb-2" for="currency-us">Costo</label>
-            <p-inputNumber [(ngModel)]="costo" placeholder="Ingrese un monto"
-                inputId="currency-bob" mode="currency" currency="BOB" locale="es-BO"></p-inputNumber>
+            <p-inputNumber formControlName="tipmatrcosto" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+                            spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger"
+                            incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO"
+                            placeholder="Ingrese un monto"
+                            [ngClass]="{ 'ng-dirty': tipoMatriculaForm.get('tipmatrcosto').touched, 'valid-field': tipoMatriculaForm.get('tipmatrcosto').valid}"
+            ></p-inputNumber>
+            <small class="p-success block" *ngIf="tipoMatriculaForm.get('tipmatrcosto').valid">
+                El costo es válido.
+            </small>
+            <small class="p-error block"
+                   *ngIf="tipoMatriculaForm.get('tipmatrcosto').invalid && tipoMatriculaForm.get('tipmatrcosto').touched">
+                <span *ngIf="tipoMatriculaForm.get('tipmatrcosto').errors?.required">El tipo de módulo es requerido. (*)</span>
+                <span *ngIf="tipoMatriculaForm.get('tipmatrcosto').errors?.numeroNegativo">El costo no puede ser negativo.</span>
+
+            </small>
         </div>
-        <div class="flex">
-            <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                <div class="col">
-                    <span class="p-float-label">
-                        <p-calendar inputId="fecini" appendTo="body" [(ngModel)]="fechaInicio"
-                            [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
-                        <label for="fecIni">Elegir Fecha Inicio</label>
-                    </span>
-                </div>
-            </div>
-            <div class="flex-1 flex align-items-center justify-content-center font-bold m-2 border-round">
-                <div class="col">
-                    <span class="p-float-label">
-                        <p-calendar inputId="fecfin" appendTo="body" [(ngModel)]="fechaFinal"
-                            [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
-                        <label for="fecFin">Elegir Fecha Fin</label>
-                    </span>
-                </div>
-            </div>
+
+        <div class="field">
+            <label class="block font-bold mb-2" >Fecha de Inicio</label>
+            <p-calendar inputId="fecini" appendTo="body" formControlName="tipmatrfecini" placeholder="Ingrese un fecha de inicio"
+                            [showIcon]="true" dateFormat="dd/mm/yy"
+                            [ngClass]="{ 'ng-dirty': this.tipoMatriculaForm.get('tipmatrfecini').touched, 'valid-field': this.tipoMatriculaForm.get('tipmatrfecini').valid}"
+                            >
+            </p-calendar>
+            <small class="p-success block" *ngIf="tipoMatriculaForm.get('tipmatrfecini').valid">
+                La fecha de inicio es válido.
+            </small>
+            <small class="p-error block"
+                *ngIf="tipoMatriculaForm.get('tipmatrfecini').invalid && tipoMatriculaForm.get('tipmatrfecini').touched">
+                <span *ngIf="tipoMatriculaForm.get('tipmatrfecini').errors?.required">La fecha de inicio es requerido.</span>
+                (*)
+            </small>
+        </div>
+        <div class="field">
+            <label class="block font-bold mb-2" >Fecha de Fin</label>
+            <p-calendar inputId="fecfin" appendTo="body" formControlName="tipmatrfecfin" placeholder="Ingrese un fecha de fin"
+                [showIcon]="true" dateFormat="dd/mm/yy"
+                [ngClass]="{ 'ng-dirty': this.tipoMatriculaForm.get('tipmatrfecfin').touched, 'valid-field': this.tipoMatriculaForm.get('tipmatrfecfin').valid}"
+                >
+            </p-calendar>
+            <small class="p-success block" *ngIf="tipoMatriculaForm.get('tipmatrfecfin').valid">
+                Fecha de fin es válido.
+            </small>
+            <small class="p-error block"
+                *ngIf="tipoMatriculaForm.get('tipmatrfecfin').invalid && tipoMatriculaForm.get('tipmatrfecfin').touched">
+                <span *ngIf="tipoMatriculaForm.get('tipmatrfecfin').errors?.required">Fecha de fin es requerido.</span>
+                (*)
+            </small>
+        </div>
+        <div class="field">
+            <label class="block font-bold mb-2" >Descripción</label>
+            <textarea rows="5" cols="30" pInputTextarea formControlName="tipmatrdescripcion"
+            [ngClass]="{ 'ng-dirty': this.tipoMatriculaForm.get('tipmatrdescripcion').touched, 'valid-field': this.tipoMatriculaForm.get('tipmatrdescripcion').valid}"
+            >
+            </textarea>
+            <small class="p-error block"
+                *ngIf="tipoMatriculaForm.get('tipmatrdescripcion').invalid && tipoMatriculaForm.get('tipmatrdescripcion').dirty">
+                <span *ngIf="tipoMatriculaForm.get('tipmatrdescripcion').errors?.required">La descripción es requerido.</span>
+                (*)
+            </small>
+            <small class="p-success block" *ngIf="tipoMatriculaForm.get('tipmatrdescripcion')?.valid"> La descripción es
+                valido.
+            </small>
         </div>
     </div>
-</ng-template>
-
+</form>
 <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
         (click)="ocultarDialog()"></button>
-    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-        (click)="guardarMatricula()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [disabled]="tipoMatriculaForm.invalid"
+        (click)="guardarTipoMatricula()"></button>
 </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="eliminarMatriculaDialog" header="Confirmar" [modal]="true" >
-    <div class="flex align-items-center justify-content-center">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="matricula">Estas seguro que quieres desactivar esta matricula
-            <b>{{matricula.matrgestion}}</b>?</span>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-            (click)="eliminarMatriculaDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-            (click)="confirmarEliminar()"></button>
-    </ng-template>
-</p-dialog>
 
 
-<p-dialog [(visible)]="desactivarMatriculaDialog" header="Confirmar" [modal]="true" >
+
+<p-dialog [(visible)]="desactivarMatriculaDialog" header="Confirmar" [modal]="true" [draggable]="false" [resizable]="false">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="matricula">Estas seguro que quieres desactivar esta matricula
-            <b>{{matricula.matrgestion}}</b>?</span>
+        <span *ngIf="tipoMatricula">Estas seguro que quieres desactivar esta tipo matricula:
+            <b>{{tipoMatricula.tipmatrgestion}}</b>?</span>
     </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
@@ -279,8 +341,8 @@ class="p-fluid">
 <p-dialog [(visible)]="activarMatriculaDialog" header="Confirmar" [modal]="true" >
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="matricula">Estas seguro que quieres activar esta matricula
-            <b>{{matricula.matrgestion}}</b>?</span>
+        <span *ngIf="tipoMatricula">Estas seguro que quieres activar esta tipo matricula:
+            <b>{{tipoMatricula.matrgestion}}</b>?</span>
     </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"

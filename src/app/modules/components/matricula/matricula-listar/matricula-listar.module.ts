@@ -23,8 +23,10 @@ import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
     imports: [
+        ReactiveFormsModule,
         TooltipModule,
         CommonModule,
         MatriculaListarRoutingModule,

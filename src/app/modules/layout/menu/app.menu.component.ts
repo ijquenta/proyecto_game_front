@@ -291,6 +291,7 @@ export class AppMenuComponent implements OnInit {
                             //         { label: 'Reportes general', icon: 'pi pi-fw pi-file', routerLink: ['inscripcion/reportes']}
                             //     ]
                             // },
+
                         ],
                         roles: ['Administrador', 'Secretaria']
                     },
@@ -298,13 +299,21 @@ export class AppMenuComponent implements OnInit {
                         label: 'Matriculación', icon: 'pi pi-fw pi-check-square',
                         items: [
                             {
-                                label: 'Administración Matriculas', icon: 'pi pi-fw pi-list', routerLink: ['matricula/listar'],
+                                label: 'Administrar matricula', icon: 'pi pi-fw pi-list', routerLink: ['matricula/listar'],
                                 // items: [
                                     // { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-plus', routerLink: ['matricula/nuevo'], roles: ['Administrador', 'Secretaria'] },
                                     // { label: 'Listar matriculas', icon: 'pi pi-fw pi-users', routerLink: ['matricula/listar'],  roles: ['Administrador', 'Secretaria']},
 
                                 // ],
                                 roles: ['Administrador', 'Secretaria']
+                            },
+                            {
+                                label: 'Asignar matricula', icon: 'fa-regular fa-address-card',
+                                routerLink: ['matricula/asignar']
+                                // items: [
+                                //     { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-file-pdf', routerLink: ['inscripcion/reporteEstudiante']  },
+                                //     { label: 'Reportes general', icon: 'pi pi-fw pi-file', routerLink: ['inscripcion/reportes']}
+                                // ]
                             },
                             // {
                             //     label: 'Ver mis matriculas', icon: 'pi pi-fw pi-list',

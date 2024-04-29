@@ -60,6 +60,10 @@ export class PagoService {
         return this.http.post(`${API_URL}/asignarPagoInscripcion`, data);
     }
 
+    asignarPagoMatricula(data) {
+        return this.http.post(`${API_URL}/asignarPagoMatricula`, data);
+    }
+
     obtenerUltimoPago(){
         return this.http.get(`${API_URL}/obtenerUltimoPago`);
     }
@@ -70,7 +74,8 @@ export class PagoService {
 
     getFilePago(pagarchivo: any) {
         const nombreArchivo = pagarchivo;
-        const nombreArchivov2 = pagarchivo.replace('.pdf', '');
+        // const nombreArchivov2 = pagarchivo.replace('.pdf', '');
+        const nombreArchivov2 = 'ArchivoPago';
         this.spinner.show();
         console.log(this.spinner);
         this.http.get(`${API_URL}/pago/download/${nombreArchivo}`, httpOptions)
@@ -85,6 +90,5 @@ export class PagoService {
             this.archivos.showToast();
             }
         );
-
     }
 }

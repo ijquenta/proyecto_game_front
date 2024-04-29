@@ -1,176 +1,816 @@
-<div class="grid">
-
+<p-toast></p-toast>
+<!-- <div class="grid">
     <div class="col-12">
         <div class="card px-6 py-6">
-            <h2>Nueva Incripcion</h2>
-            <p-toast></p-toast>
-            <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
-                        <!-- <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button> -->
+            <p-table #dt [value]="listaTipoMatricula" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['tipmatrgestion']"
+                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
+                >
+                <ng-template pTemplate="caption">
+                    <div class="font-bold text-3xl text-center">
+                        <span class="text-900">Asignar</span>
+                        <span class="text-primary-600"> matricula </span>
+                    </div>
+                    <hr/>
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <button pButton pRipple label="Nuevo Matricula" icon="pi pi-plus" class="p-button-primary mr-2" pTooltip="Registrar una nueva matricula"
+                        (click)="abrirNuevoTipoMatricula()"></button>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                        </span>
+
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
+                        </span>
                     </div>
                 </ng-template>
 
-                <ng-template pTemplate="right">
-                    <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload> -->
-                    <!-- <button pButton pRipple label="Descargar" icon="pi pi-file" class="p-button-success" (click)="dt.exportCSV()"></button> -->
-                    <!-- <button pButton pRipple label="Exportar" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button> -->
-                    <!-- <button (click)="reporte.rptUsuarios()" pButton="pButton" pRipple="pRipple" type="button" label="Reporte Prueba" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button> -->
-                    <!-- <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-warning"></p-button> -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 8%;" pSortableColumn="tipmatrid">Código<p-sortIcon field="tipmatrid"></p-sortIcon></th>
+                        <th style="width: 15%;" pSortableColumn="tipmatrgestion">Nombre<p-sortIcon field="tipmatrgestion"></p-sortIcon></th>
+                        <th style="width: 10%;" pSortableColumn="tipmatrfecini">Fecha Inicio<p-sortIcon field="tipmatrfecini"></p-sortIcon></th>
+                        <th style="width: 10%;" pSortableColumn="tipmatrfecfin">Fecha Final<p-sortIcon field="tipmatrfecfin"></p-sortIcon></th>
+                        <th style="width: 8%;" pSortableColumn="tipmatrcosto">Costo<p-sortIcon field="tipmatrcosto"></p-sortIcon></th>
+                        <th>Registrado por</th>
+                        <th>Modificado por</th>
+                        <th>Descripción</th>
+                        <th style="width: 8%;" pSortableColumn="tipmatrestado">Estado<p-sortIcon field="tipmatrestado"></p-sortIcon></th>
+                        <th> Opciones </th>
+                        <th></th>
+                    </tr>
                 </ng-template>
-            </p-toolbar>
+                <ng-template pTemplate="body" let-matricula>
+                    <tr>
+                        <td>
+                            {{ 'MATR-' + matricula.tipmatrid}}
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    {{ matricula.tipmatrgestion}}
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecini}}
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecfin}}
+                        </td>
+                        <td>
+                            Bs. {{matricula.tipmatrcosto}}
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
+                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
+                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            {{matricula.matrdescripcion}}
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
+                                    (click)="editarTipoMatricula(matricula)"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
+                                    (click)="desactivarMatricula(matricula)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
 
-            <p-table #dt [value]="listaUsuarios" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id">
+
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-table #dt2 [value]="listaTipoMatriculaInactivo" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['tipmatrgestion']"
+                >
                 <ng-template pTemplate="caption">
+                    <div class="font-bold text-3xl text-center">
+                        <span class="text-900">Matriculas</span>
+                        <span class="text-primary-600"> Desactivadas </span>
+                    </div>
+                    <hr/>
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Lista de Inscripciones</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Final</th>
+                        <th>Costo</th>
+                        <th>Modificado por</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th> Opciones </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-matricula>
+                    <tr>
+                        <td>
+                            {{ 'MATR-' + matricula.tipmatrid}}
+                        </td>
+                        <td>
+                            {{matricula.tipmatrgestion}}
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecini}}
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecfin}}
+                        </td>
+                        <td>
+                            Bs. {{matricula.tipmatrcosto}}
+                        </td>
+
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
+                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            {{matricula.matrdescripcion}}
+                        </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
+                                    (click)="activarMatricula(matricula)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div> -->
+
+
+
+
+<!-- <div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Administrar</span>
+                <span class="text-primary-600"> Usuarios</span>
+            </div>
+            <p-dataView #dv [value]="listaTipoMatricula" [paginator]="true" [rows]="8" filterBy="pernomcompleto"
+                [sortField]="sortField" [sortOrder]="sortOrder" layout="grid"
+                [emptyMessage]="'No se encontraron registros de usuarios.'" [loadingIcon]="'pi pi-spin pi-spinner'">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                        <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"></button>
+
+                        <div class="flex">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
+                                    (input)="filterUsuarios()" />
+                            </span>
+                        </div>
+                        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                    </div>
+                </ng-template>
+
+                <ng-template let-usuario pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+                            <img [src]="'http://127.0.0.1:5001/static/files_fotoperfil/' + usuario.perfoto"
+                                [alt]="usuario.perfoto"
+                                class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover"
+                                style="border-radius: 5px;" />
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+                                <div class="font-bold text-xl">{{usuario.tipmatrgestion}}</div>
+                                <div>
+                                    <p-tag [rounded]="true">Usuario: {{usuario.tipmatrfecini}} </p-tag>
+                                </div>
+                                <div class="flex align-items-center mt-2">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-semibold">Usuario: {{usuario.tipmatrfecini}}</span>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-help mr-2"
+                                    tooltipPosition="left" pTooltip="Editar datos de usuario"
+                                    (click)="editarUsuario(usuario)"></button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                    class="p-button-rounded p-button-sm p-button-danger" tooltipPosition="left"
+                                    pTooltip="Eliminar registro de usuario" (click)="eliminarUsuario(usuario)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template let-usuario pTemplate="gridItem">
+                    <div class="col-12 md:col-3">
+                        <div class="card m-3 border-2 surface-border">
+                            <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+                                <div class="flex align-items-center">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-semibold">{{usuario.tipmatrid}}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-column align-items-center text-center mb-3">
+                                <img [src]="'http://127.0.0.1:5001/static/files_fotoperfil/' + usuario.perfoto"
+                                    [alt]="usuario.perfoto"
+                                    class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover m-2"
+                                    style="border-radius: 5px;" />
+                                <div class="text-xl font-bold">{{usuario.tipmatrgestion}}</div>
+                                <div>
+                                    <p-tag [rounded]="true">Usuario: {{usuario.tipmatrfecini}} </p-tag>
+                                </div>
+
+                            </div>
+                            <div class="flex justify-content-center">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-help mr-2"
+                                    tooltipPosition="left" pTooltip="Editar datos de usuario"
+                                    (click)="editarUsuario(usuario)"></button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                    class="p-button-rounded p-button-sm p-button-danger" tooltipPosition="right"
+                                    pTooltip="Eliminar registro de usuario" (click)="eliminarUsuario(usuario)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+</div> -->
+
+
+
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Asignar </span>
+                <span class="text-primary-600"> matricula</span>
+            </div>
+            <hr>
+            <p-table #dt [value]="listaMatricula" [loading]="loading" [rows]="10"
+                [globalFilterFields]="['pernomcompleto', 'pernrodoc', 'tipmatrgestion']" [paginator]="true"
+                [rowsPerPageOptions]="[5,10,20]" selectionMode="multiple" [rowHover]="true" dataKey="id"
+                rowGroupMode="rowspan" groupRowsBy="pernomcompleto" sortField="pernomcompleto" sortMode="single"
+                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
+                >
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <div class="flex">
+                            <button pButton pRipple label="Asignar matricula" icon="fa-regular fa-address-card" class="p-button-primary mr-2"
+                                (click)="nuevaAsignacion()" pTooltip="Asignar una matricula a un estudiante"
+                                tooltipPosition="top">
+                            </button>
+                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="top"></button>
+                        </div>
+
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto"
+                                pTooltip="Buscar por nombre completo, número de documento y matricula"
+                                tooltipPosition="left" />
                         </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
-                        <th pSortableColumn="code">Id <p-sortIcon field="code"></p-sortIcon></th>
-                        <th pSortableColumn="name">Usuario <p-sortIcon field="name"></p-sortIcon></th>
-                        <!-- <th>Image</th> -->
-                        <th pSortableColumn="price">Contraseña <p-sortIcon field="price"></p-sortIcon></th>
-                        <th pSortableColumn="category">Email <p-sortIcon field="category"></p-sortIcon></th>
+                        <th> Estudiante </th>
+                        <th></th>
+                        <th> Matricula </th>
+                        <th> Pago </th>
+                        <th> Fecha de matricula </th>
+                        <th> Registrado por </th>
+                        <th> Modificado por </th>
+                        <th> Descripción </th>
+                        <th> Estado </th>
                         <th> Opciones</th>
-                        <!-- <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th> -->
-                        <!-- <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon></th> -->
                         <th></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-product>
+                <ng-template pTemplate="body" let-matr let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+
                     <tr>
-                        <td>
-                            <p-tableCheckbox [value]="product"></p-tableCheckbox>
+
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
+                            <div *ngIf="matr.perfoto == null" class="user-display">
+                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
+                            </div>
+                            <div *ngIf="matr.perfoto != null" class="user-display">
+                                <p-avatar image="{{ apiUrl }}/{{ matr.perfoto }}" styleClass="mr-2" size="xlarge"
+                                    shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
+                            </div>
+                            <hr>
+                            <p-chip>
+                                <div class="p-1"> Número de documento: <strong>{{ matr.pernrodoc}}</strong> </div>
+                            </p-chip>
                         </td>
-                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">Codigo</span>
-                            {{product.code || product.id}}
+                        <td> {{'#'+matr.matrid}} </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <p-chip>
+                                <div class="p-1"> <strong>{{ matr.tipmatrgestion}}</strong> </div>
+                            </p-chip>
+                            <hr>
+                            {{ matr.tipmatrfecini + '-' + matr.tipmatrfecfin}}
+                            <hr>
+                            {{ 'Bs. '+ matr.tipmatrcosto }}
                         </td>
-                        <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Usuario</span>
-                            {{product.username}}
-                        </td>
-                        <!-- <td style="width:14%; min-width:10rem;"><span class="p-column-title">Image</span>
-                            <img [src]="'assets/release/images/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" />
-                        </td> -->
-                        <td style="width:14%; min-width:8rem;">
-                            <span class="p-column-title">Contraseña</span>
-                            {{product.pwd}}
-                        </td>
-                        <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Email</span>
-                            {{product.ema}}
-                        </td>
-                        <!-- <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Reviews</span>
-                            <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
-                        </td>
-                        <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Status</span>
-                            <span [class]="'product-badge status-' + (product.inventoryStatus ? product.inventoryStatus.toLowerCase() : '')">{{product.inventoryStatus}}</span>
-                        </td> -->
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editProduct(product)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+                        <td style="width:15%; min-width:10rem;">
+                            <div *ngIf="matr.pagdescripcion">
+                                <p-chip>
+                                    <div class="p-1"> <strong>{{ matr.pagdescripcion}}</strong> </div>
+                                </p-chip>
+                                <hr>
+                                 {{ matr.pagfecha}}
+                                <hr>
+                                 {{ 'Bs. '+ matr.pagmonto }}
+                            </div>
+                            <div *ngIf="!matr.pagdescripcion">
+                                <p-chip>
+                                    <div class="p-1"> <strong>{{  'No se pagó ' }}</strong> </div>
+                                </p-chip>
                             </div>
                         </td>
+
+                        <td> {{matr.matrfec}} </td>
+
+                        <td> <p-chip>
+                                <div class="p-2"> <strong>{{matr.matrusureg}}</strong> <br> {{matr.matrfecreg}} </div>
+                            </p-chip>
+                        </td>
+                        <td>
+                            <div *ngIf="matr.matrusumod != null">
+                                <p-chip>
+                                    <div class="p-2"> <strong> {{matr.matrusumod}}</strong> <br> {{matr.matrfecmod}} </div>
+                                </p-chip>
+                            </div>
+                            <div *ngIf="matr.matrusumod == null">
+                                <p-chip>
+                                    <div class="p-2"> <strong> {{ 'No se modificó' }} </strong> </div>
+                                </p-chip>
+                            </div>
+                        </td>
+                        <td> {{ matr.matrdescripcion }} </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matr.matrestado)" [severity]="obtenerSeverityEstado(matr.matrestado)" [rounded]="true"></p-tag></td>
+                        <td>
+                            <div class="flex">
+
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-primary mr-2" pTooltip="Editar matricula"
+                                        tooltipPosition="top" (click)="editarMatricula(matr)">
+                                    </button>
+
+                                    <button *ngIf="!matr.pagoidmatricula" pButton pRipple icon="fa-solid fa-money-bill-wave"
+                                        class="p-button-rounded p-button-info mr-2" pTooltip="Pagar matricula"
+                                        tooltipPosition="top" (click)="pagarMatricula(matr)">
+                                    </button>
+
+                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
+                                        icon="fa-solid fa-file-pen" class="p-button-rounded p-button-info mr-2"
+                                        pTooltip="Editar pago matricula" tooltipPosition="top" (click)="actualizarPago(matr)">
+                                    </button>
+
+                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
+                                            icon="pi pi-file-pdf" class="p-button-rounded p-button-secondary mr-2" pTooltip="Ver archivo de pago"
+                                            tooltipPosition="top" (click)="verArchivoPago(matr.pagarchivo)">
+                                    </button>
+
+                                    <button  pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2"
+                                        (click)="desactivarMatricula(matr)" pTooltip="Desactivar matricula"
+                                        tooltipPosition="top">
+                                    </button>
+
+                                </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
-
-        <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" class="p-fluid">
-            <ng-template pTemplate="content">
-                <img [src]="'assets/release/images/product/' + product.image" [alt]="product.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" *ngIf="product.image">
-                <div class="field">
-                    <label for="name">Name</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.name}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.name">Name is required.</small>
-                </div>
-                <div class="field">
-                    <label for="description">Description</label>
-                    <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
-                </div>
-                <div class="field">
-                    <label for="status">Inventory Status</label>
-                    <p-dropdown [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" optionValue="label" [options]="statuses" placeholder="Select">
-                        <ng-template pTemplate="selectedItem">
-                            <span *ngIf="product && product.inventoryStatus" [class]="'product-badge status-' + product.inventoryStatus.toString().toLowerCase()">{{product.inventoryStatus}}</span>
-                        </ng-template>
-                        <ng-template let-option pTemplate="item">
-                            <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
-                        </ng-template>
-                    </p-dropdown>
-                </div>
-
-                <div class="field">
-                    <label class="mb-3">Category</label>
-                    <div class="formgrid grid">
-                        <div class="field-radiobutton col-6">
-                            <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category"></p-radioButton>
-                            <label for="category1">Accessories</label>
-                        </div>
-                        <div class="field-radiobutton col-6">
-                            <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category"></p-radioButton>
-                            <label for="category2">Clothing</label>
-                        </div>
-                        <div class="field-radiobutton col-6">
-                            <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category"></p-radioButton>
-                            <label for="category3">Electronics</label>
-                        </div>
-                        <div class="field-radiobutton col-6">
-                            <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category"></p-radioButton>
-                            <label for="category4">Fitness</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="price">Price</label>
-                        <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
-                    </div>
-                    <div class="field col">
-                        <label for="quantity">Quantity</label>
-                        <p-inputNumber id="quantity" [(ngModel)]="product.quantity"></p-inputNumber>
-                    </div>
-                </div>
-            </ng-template>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="deleteProductDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="product">Are you sure you want to delete <b>{{product.name}}</b>?</span>
-            </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductDialog = false"></button>
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="deleteProductsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span>Are you sure you want to delete selected products?</span>
-            </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductsDialog = false"></button>
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
-            </ng-template>
-        </p-dialog>
     </div>
 </div>
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="font-bold text-3xl text-center">
+                <span class="text-900">Matricula </span>
+                <span class="text-primary-600"> desactivadas</span>
+            </div>
+            <hr>
+            <p-table #dt2 [value]="listaMatriculaInactivo" [loading]="loading" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['pernomcompleto']" [paginator]="true"  [scrollable]="true"
+                [rowsPerPageOptions]="[5,10,20]" selectionMode="multiple" [rowHover]="true" dataKey="id"
+                rowGroupMode="rowspan" groupRowsBy="pernomcompleto" sortField="pernomcompleto" sortMode="single">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto"
+                                pTooltip="Buscar por nombre completo, nombre de usuario y nombre de rol"
+                                tooltipPosition="left" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th> Estudiante </th>
+                        <th> Matricula </th>
+                        <th> Pago </th>
+                        <th> Fecha de matricula </th>
+                        <th> Registrado por </th>
+                        <th> Modificado por </th>
+                        <th> Descripción </th>
+                        <th> Estado </th>
+                        <th> Opciones</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-matr let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+                    <tr>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
+                            <div *ngIf="matr.perfoto == null" class="user-display">
+                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
+                            </div>
+                            <div *ngIf="matr.perfoto != null" class="user-display">
+                                <p-avatar image="{{ apiUrl }}/{{ matr.perfoto }}" styleClass="mr-2" size="xlarge"
+                                    shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
+                            </div>
+                            <hr>
+                            <p-chip>
+                                <div class="p-1"> Número de documento: <strong>{{ matr.pernrodoc}}</strong> </div>
+                            </p-chip>
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <p-chip>
+                                <div class="p-1"> <strong>{{ matr.tipmatrgestion}}</strong> </div>
+                            </p-chip>
+                            <hr>
+                            {{ matr.tipmatrfecini + '-' + matr.tipmatrfecfin}}
+                            <hr>
+                            {{ 'Bs. '+ matr.tipmatrcosto }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <div *ngIf="matr.pagdescripcion">
+                                <p-chip>
+                                    <div class="p-1"> <strong>{{ matr.pagdescripcion}}</strong> </div>
+                                </p-chip>
+                                <hr>
+                                 {{ matr.pagfecha}}
+                                <hr>
+                                 {{ 'Bs. '+ matr.pagmonto }}
+                            </div>
+                            <div *ngIf="!matr.pagdescripcion">
+                                <p-chip>
+                                    <div class="p-1"> <strong>{{  'No se pagó ' }}</strong> </div>
+                                </p-chip>
+                            </div>
+                        </td>
+                        <td> {{matr.matrfec}} </td>
+
+                        <td> <p-chip>
+                                <div class="p-2"> <strong>{{matr.matrusureg}}</strong> <br> {{matr.matrfecreg}} </div>
+                            </p-chip>
+                        </td>
+                        <td> <p-chip>
+                                <div class="p-2"> <strong> {{matr.matrusumod}}</strong> <br> {{matr.matrfecmod}} </div>
+                            </p-chip>
+                        </td>
+                        <td> {{ matr.matrdescripcion }} </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(matr.matrestado)" [severity]="obtenerSeverityEstado(matr.matrestado)" [rounded]="true"></p-tag></td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
+                                    (click)="activarMatricula(matr)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9">No se encontró ningún registro.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="matriculaDialog" header="Asignar matricula" [modal]="true"
+[breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
+class="p-fluid">
+<div *ngIf="!opcionMatricula">
+    <p-card>
+        <ng-template pTemplate="title">
+            Información de la matricula del estudiante
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="user-info-container">
+                <div class="user-info-avatar">
+                    <div *ngIf="matricula?.perfoto">
+                        <p-avatar [image]="apiUrl + '/' + matricula.perfoto" size="xlarge" shape="circle"></p-avatar>
+                    </div>
+                    <div *ngIf="!matricula?.perfoto">
+                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
+                            shape="circle"></p-avatar>
+                    </div>
+                </div>
+                <div class="user-info-details">
+                    <p><strong>Nombre del estudiante:</strong> {{ matricula?.pernomcompleto }}</p>
+                    <p><strong>Número de documento:</strong> {{ matricula?.pernrodoc }}</p>
+                    <p><strong>Estado:</strong>
+                        <p-tag [value]="obtenerDescripcionEstado(matricula?.matrestado)"
+                            [severity]="obtenerSeverityEstado(matricula?.matrestado)" [rounded]="true"></p-tag>
+                    </p>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
+</div>
+<form [formGroup]="matriculaForm" novalidate>
+    <div class="p-fluid">
+        <div class="field">
+                <label class="block font-bold mb-2">Elegir Tipo Matricula</label>
+                <p-dropdown  dropdownIcon="fa-regular fa-address-card" [options]="tiposMatricula" formControlName="tiposMatricula" appendTo="body"
+                    optionLabel="tipmatrgestion" [filter]="true" filterBy="tipmatrgestion" [showClear]="true"
+                    placeholder="Seleccionar Tipo Matricula" [emptyFilterMessage]="'No se encontraron registros.'">
+                    <ng-template let-tm pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="font-bold ml-2">{{ tm.tipmatrgestion }}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <small class="p-success block" *ngIf="matriculaForm.get('tiposMatricula').valid">
+                    La matricula seleccionada es valida.
+                </small>
+                <small class="p-error block"
+                    *ngIf="matriculaForm.get('tiposMatricula').invalid && matriculaForm.get('tiposMatricula').touched">
+                    <span *ngIf="matriculaForm.get('tiposMatricula').errors?.required">La matricula es requerida.</span>
+                    (*)
+                </small>
+        </div>
+        <div *ngIf="opcionMatricula" class="field">
+            <label class="block font-bold mb-2">Elegir Estudiante</label>
+            <p-dropdown dropdownIcon="pi pi-user" [options]="tipoPersonaEstudiante" formControlName="tipoPersona" appendTo="body"
+                optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
+                placeholder="Seleccionar estudiante" [emptyFilterMessage]="'No se encontraron registros.'">
+                <ng-template let-tm pTemplate="item">
+                    <div class="flex align-items-center">
+                        <div *ngIf="tm.perfoto == null" class="user-display">
+                            <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                            <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+                        </div>
+                        <div *ngIf="tm.perfoto != null" class="user-display">
+                            <p-avatar image="{{ apiUrl }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
+                                shape="circle"></p-avatar>
+                            <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <small class="p-success block" *ngIf="matriculaForm.get('tipoPersona').valid">
+                El estudiante seleccionada es valida.
+            </small>
+            <small class="p-error block"
+                *ngIf="matriculaForm.get('tipoPersona').invalid && matriculaForm.get('tipoPersona').touched">
+                <span *ngIf="matriculaForm.get('tipoPersona').errors?.required">El estudiante es requerida.</span>
+                (*)
+            </small>
+        </div>
+        <div class="field">
+            <label class="block font-bold mb-2" >Fecha</label>
+            <p-calendar inputId="matrfec" appendTo="body" formControlName="matrfec" placeholder="Ingrese un fecha"
+                            [showIcon]="true" dateFormat="dd/mm/yy"
+                            [ngClass]="{ 'ng-dirty': this.matriculaForm.get('matrfec').touched, 'valid-field': this.matriculaForm.get('matrfec').valid}"
+                            >
+            </p-calendar>
+            <small class="p-success block" *ngIf="matriculaForm.get('matrfec').valid">
+                La fecha es válido.
+            </small>
+            <small class="p-error block"
+                *ngIf="matriculaForm.get('matrfec').invalid && matriculaForm.get('matrfec').touched">
+                <span *ngIf="matriculaForm.get('matrfec').errors?.required">La fecha es requerido.</span>
+                (*)
+            </small>
+        </div>
+        <div class="field">
+            <label class="block font-bold mb-2" >Descripción</label>
+            <textarea rows="5" cols="30" pInputTextarea formControlName="matrdescripcion"
+            [ngClass]="{ 'ng-dirty': this.matriculaForm.get('matrdescripcion').touched, 'valid-field': this.matriculaForm.get('matrdescripcion').valid}"
+            >
+            </textarea>
+            <small class="p-error block"
+                *ngIf="matriculaForm.get('matrdescripcion').invalid && matriculaForm.get('matrdescripcion').dirty">
+                <span *ngIf="matriculaForm.get('matrdescripcion').errors?.required">La descripción es requerido.</span>
+                (*)
+            </small>
+            <small class="p-success block" *ngIf="matriculaForm.get('matrdescripcion')?.valid"> La descripción es
+                valido.
+            </small>
+        </div>
+    </div>
+</form>
+<ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+        (click)="ocultarDialog()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [disabled]="matriculaForm.invalid"
+        (click)="guardarMatricula()"></button>
+
+
+
+</ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="desactivarMatriculaDialog" header="Confirmar" [modal]="true" [draggable]="false" [resizable]="false">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="matricula">Estas seguro que quieres desactivar la matricula:<strong>{{matricula.tipmatrgestion}}</strong>,
+            de esta persona  <strong>{{matricula.pernomcompleto}}</strong>?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="desactivarMatriculaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarActivarDesactivar()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="activarMatriculaDialog" header="Confirmar" [modal]="true" >
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="matricula">Estas seguro que quieres activar la matricula:<strong>{{matricula.tipmatrgestion}}</strong>,
+            de esta persona  <strong>{{matricula.pernomcompleto}}</strong>?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+            (click)="activarMatriculaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
+            (click)="confirmarActivarDesactivar()"></button>
+    </ng-template>
+</p-dialog>
+
+
+
+<p-dialog [(visible)]="pagoMatriculaDialog" header="Pago matricula" [modal]="true"
+          [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
+          class="p-fluid">
+    <p-card>
+        <ng-template pTemplate="title">
+            Información del Pago
+        </ng-template>
+        <ng-template pTemplate="content">
+                <p><strong>Matricula:</strong> {{this.matricula.tipmatrgestion}}</p>
+                <!-- <p><strong>Materia:</strong> {{this.pago.matnombre}}</p> -->
+                <p><strong>Estudiante:</strong> {{this.matricula.pernomcompleto}}</p>
+        </ng-template>
+    </p-card>
+    <form [formGroup]="pagoForm">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-9">
+                <label class="font-bold block mb-2" for="pagdescripcion"> Descripción del pago </label>
+                <input type="text" id="pagdescripcion" pInputText formControlName="pagdescripcion" placeholder="Ingrese una descripción del pago"
+                [ngClass]="{ 'ng-dirty': this.pagoForm.get('pagdescripcion').touched,
+                             'valid-field': this.pagoForm.get('pagdescripcion').valid} "
+                >
+
+                <small class="p-error block" *ngIf="pagoForm.get('pagdescripcion').invalid && pagoForm.get('pagdescripcion').dirty">
+                    <span *ngIf="pagoForm.get('pagdescripcion').errors?.required">La descripción del pago es requerido.</span>
+                    (*)
+                </small>
+                <small class="p-success block" *ngIf="pagoForm.get('pagdescripcion')?.valid"> La descripción de pago es valido. </small>
+            </div>
+            <div class="field col-12 md:col-3">
+                <label class="font-bold block mb-2" for="pagfecha"> Fecha del pago </label>
+                <p-calendar id="pagfecha" dateFormat="dd/mm/yy" appendTo="body" formControlName="pagofecha" placeholder="Ingrese la fecha de pago"
+                [ngClass]="{ 'ng-dirty': pagoForm.get('pagofecha').touched, 'valid-field': pagoForm.get('pagofecha').valid }"></p-calendar>
+
+                <small class="p-error block" *ngIf="pagoForm.get('pagofecha').invalid && pagoForm.get('pagofecha').dirty">
+                    <span *ngIf="pagoForm.get('pagofecha').errors?.required">La fecha del pago es requerida. (*)</span>
+                </small>
+                <small class="p-success block" *ngIf="pagoForm.get('pagofecha')?.valid"> La fecha del pago es válida. </small>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block mb-2" for="monto">Monto del pago</label>
+                <p-inputNumber formControlName="pagmonto" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+                               spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger"
+                               incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                               decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO"
+                               [ngClass]="{ 'valid-field': this.pagoForm.get('pagmonto').valid}"
+               ></p-inputNumber>
+                <small class="p-error block" *ngIf="pagoForm.get('pagmonto').invalid && pagoForm.get('pagmonto').dirty">
+                    <span *ngIf="pagoForm.get('pagmonto').errors?.required">El monto del pago es requerido.</span>
+                    <span *ngIf="pagoForm.get('pagmonto').errors?.min"> El monto debe ser mayor o igual a cero.</span>
+                    (*)
+                </small>
+                <small class="p-success block" *ngIf="pagoForm.get('pagmonto')?.valid"> El monto del pago es valido. </small>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block mb-2" for="monto">Tipo Pago</label>
+                    <p-dropdown id="tipoPago" [autoDisplayFirst]="false"  appendTo="body" [options]="tipoPago" formControlName="tipoPago" optionLabel="tpagnombre" placeholder="Seleccionar tipo de pago"
+                               [emptyMessage]="'No se encontraron tipos de pagos.'"
+                    ></p-dropdown>
+                <small class="p-success block" *ngIf="pagoForm.get('tipoPago').valid">
+                    El tipo de pago es valido.
+                </small>
+                <small class="p-error block" *ngIf="pagoForm.get('tipoPago').invalid && pagoForm.get('tipoPago').touched">
+                    <span *ngIf="pagoForm.get('tipoPago').errors?.required">El tipo de pago es requerido.</span>
+                    (*)
+                </small>
+            </div>
+            <div class="field col-12">
+                <p-fileUpload
+                    #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+                    accept="application/pdf" maxFileSize="5000000" (onSelect)="onUpload($event)" [showUploadButton]="false"
+                    [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                    [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                    [invalidFileTypeMessageDetail]="'Solo se permiten archivos de pdf. El tipo de archivo permitido es: PDF.'"
+                >
+                </p-fileUpload>
+            </div>
+            <div *ngIf="loadingSpinner">
+                <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="ocultarDialog()"></button>
+        <button *ngIf="matricula.pagoidmatricula == null"pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+            (click)="registrarPago()"></button>
+        <button *ngIf="matricula.pagoidmatricula != null" pButton pRipple label="Modificar" icon="pi pi-check" class="p-button-text"
+            (click)="modificarPago(pago)"></button>
+    </ng-template>
+
+</p-dialog>

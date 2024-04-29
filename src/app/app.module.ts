@@ -68,11 +68,13 @@ import { ReportesComponent } from './modules/components/reportes/reportes.compon
 // import { ReporteRou}
 import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 import { TokenInterceptor } from './interceptors/token.interceptor';
+import { ReportV2Component } from './modules/components/reportes/report/report-v2.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         ReportComponent,
+        ReportV2Component,
         ReportesComponent,
         SafePipe,
         LoginComponent,

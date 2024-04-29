@@ -18,9 +18,23 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
+import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
+import { CalendarModule } from 'primeng/calendar';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { TooltipModule } from 'primeng/tooltip';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DataViewModule } from 'primeng/dataview';
+import { AvatarModule } from 'primeng/avatar';
+import { CardModule } from 'primeng/card';
+import { UploadService } from 'src/app/modules/service/data/upload.service';
 @NgModule({
     imports: [
+        CardModule,
+        AvatarModule,
+        DataViewModule,
+        ReactiveFormsModule,
+        TooltipModule,
         CommonModule,
         MatriculaNuevoRoutingModule,
         TableModule,
@@ -36,9 +50,12 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        CalendarModule,
+        TagModule,
+        ChipModule
     ],
     declarations: [MatriculaNuevoComponent],
-    providers: [UsuarioService, ReporteService]
+    providers: [UsuarioService, ReporteService, MatriculaService, UploadService]
 })
 export class MatriculaNuevoModule { }

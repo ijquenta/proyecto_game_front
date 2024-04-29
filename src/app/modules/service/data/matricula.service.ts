@@ -10,7 +10,6 @@ export class MatriculaService {
 
 
     listarMatricula(){
-        console.log("ListarMatricula_Service");
         return this.http.get(`${API_URL}/listarMatricula`);
     }
 
@@ -32,5 +31,25 @@ export class MatriculaService {
 
     gestionarMatriculaEstado(criterio: any){
         return this.http.post(`${API_URL}/gestionarMatriculaEstado`, criterio);
+    }
+
+    insertarTipoMatricula(criterio: any){
+        return this.http.post(`${API_URL}/insertarTipoMatricula`, criterio);
+    }
+
+    modificarTipoMatricula(criterio: any){
+        return this.http.post(`${API_URL}/modificarTipoMatricula`, criterio);
+    }
+
+    gestionarTipoMatriculaEstado(criterio: any){
+        return this.http.post(`${API_URL}/gestionarTipoMatriculaEstado`, criterio);
+    }
+
+    listarTipoMatriculaCombo(){
+        return this.http.get(`${API_URL}/listarTipoMatriculaCombo`);
+    }
+
+    listarTipoPersonaEstudiante(){
+        return this.http.get(`${API_URL}/listarTipoPersonaEstudiante`);
     }
 }

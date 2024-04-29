@@ -1,39 +1,46 @@
+// --------- Importación principal
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
-import { Matricula, TipoMatricula } from 'src/app/modules/models/matricula';
-import { TipoEstadoMatricula } from 'src/app/modules/models/diccionario';
 import { Table } from 'primeng/table';
-import { NgxSpinnerService } from 'ngx-spinner';
-// --------------- Modelo Usuario
-import { Usuario } from 'src/app/modules/models/usuario';
-// --------------- Importación de Autenticación
+import { NgxSpinnerService } from 'ngx-spinner'; // spinner
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // validaciones
+import { AbstractControl, AsyncValidatorFn, ValidatorFn } from '@angular/forms'; // validaciones asincronas
+import { Observable, of } from 'rxjs';
+// --------- Importación servicios
 import { AuthService } from 'src/app/services/auth.service';
+import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
+// --------- Importación modelos
+import { TipoMatricula } from 'src/app/modules/models/matricula';
+import { Usuario } from 'src/app/modules/models/usuario';
+import { ExportColumn, Column } from 'src/app/modules/models/exportFile';
+
 @Component({
     templateUrl: './matricula-listar.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
+    styleUrls: ['../../../../app.component.css']
 })
 export class MatriculaListarComponent implements OnInit {
 
-
-      //-----------------Variables-------------------//
-        listaMatriculas: Matricula[] = [];
-        listaMatriculasDesactivadas: Matricula[] = [];
-        listaMatriculasDuplicated: Matricula[] = [];
-        matricula: Matricula = {};
-        gestiones: number[] = [];
-        gestionSeleccionado: number;
-        matriculaDialog: boolean = false;
-        eliminarMatriculaDialog: boolean = false;
+        // Variables Tipo Matricula
+        listaTipoMatricula: TipoMatricula[] = [];
+        listaTipoMatriculaInactivo: TipoMatricula[] = [];
+        listaTipoMatriuclaDuplicado: TipoMatricula[] = [];
+        tipoMatriculaDialog: boolean = false;
+        opcionTipoMatricula: boolean = false;
         activarMatriculaDialog: boolean = false;
         desactivarMatriculaDialog: boolean = false;
-        fechaInicio: Date;
-        fechaFinal: Date;
-        costo: number;
-        tipoEstadoMatricula: TipoEstadoMatricula[] = [];
-        tipoEstadoMatriculaSeleccionado: TipoEstadoMatricula;
         opcionMatricula: boolean = false;
+        tipoMatricula = new TipoMatricula();
+        // Variables para validación
+        tipoMatriculaForm: FormGroup;
+        originalNombreMatricula: any;
+        // Usuario
         usuario: Usuario;
+        // Variables para exportar PDF
+        colsTable!: Column[];
+        exportColumns!: ExportColumn[];
+
+
       //-----------------Variables-------------------//s
 
     constructor(
@@ -41,21 +48,73 @@ export class MatriculaListarComponent implements OnInit {
                 private matriculaService: MatriculaService,
                 private spinner: NgxSpinnerService,
                 private authService: AuthService,
+                private formBuilder: FormBuilder,
                 ) { }
 
     ngOnInit() {
-        this.listarMatriculas()
-        this.gestionSeleccionado = new Date().getFullYear() + 1;
-        for (let anio = this.gestionSeleccionado; anio >= 2018; anio--) {
-            this.gestiones.push(anio);
-        }
-        this.tipoEstadoMatricula = [
-            new TipoEstadoMatricula(0, 'CERRADO'),
-            new TipoEstadoMatricula(1, 'ABIERTO')
-        ]
 
-        // Método de getPerfil() de usuario logeado
-        this.getPerfilUsuario();
+        this.listarTipoMatricula(); // listar tipo de matriculas
+
+        this.getPerfilUsuario(); // obtener los valores del usuario logueado
+
+        this.asignacionValidacion(); // se asigna los parametros para la variable de validación
+
+        this.obtenerColumnas(); // obtener Columnas para exportar en excel y pdf la listaTipoMatricula
+
+    }
+    obtenerColumnas() {
+        this.colsTable = [
+            { field: 'tipmatrid', header: 'Cod. Tipo Matricula' },
+            { field: 'tipmatrgestion', header: 'Gestión de la matricula' },
+            { field: 'tipmatrfecini', header: 'Fecha de inicio' },
+            { field: 'tipmatrfecfin', header: 'Fecha de fin' },
+            { field: 'tipmatrcosto', header: 'Costo' },
+            { field: 'tipmatrestado', header: 'Estado' },
+            { field: 'tipmatrdescripcion', header: 'Descripción' }
+        ];
+
+        this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
+    }
+
+    asignacionValidacion() {
+        // Método para asignar las variables de React Form Valid
+        this.tipoMatriculaForm = this.formBuilder.group({
+            tipmatrid: [''],
+            tipmatrgestion: [
+                '',
+                [Validators.required,
+                 Validators.minLength(5),
+                ],
+                [this.validarNombreTipoMatriculaExistente()] // validación asincrona
+            ],
+            tipmatrfecini: ['', [Validators.required]],
+            tipmatrfecfin: ['', [Validators.required]],
+            tipmatrcosto: ['', [Validators.required, this.noNegativoValidator()]],
+            tipmatrdescripcion: ['', [Validators.required]]
+        });
+    }
+
+    validarNombreTipoMatriculaExistente(): AsyncValidatorFn {
+        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
+            const nombreTipoMatricula = control.value;
+            if (!nombreTipoMatricula) {
+                return of(null);
+            }
+            // Se verifica si algún elemento en la lista de respaldo tiene el mismo nombre
+            const existe = this.listaTipoMatriuclaDuplicado.some(tipo_matricula => tipo_matricula.tipmatrgestion === nombreTipoMatricula);
+            // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
+            return of(existe ? { nombreTipoMatriculaExiste: true } : null);
+        }
+    }
+
+    noNegativoValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+          const esNumero = !isNaN(control.value);
+          if (esNumero && control.value < 0) {
+            return { 'numeroNegativo': { value: control.value } };
+          }
+          return null;
+        };
     }
 
     getPerfilUsuario() {
@@ -64,16 +123,14 @@ export class MatriculaListarComponent implements OnInit {
         });
     }
 
-
-    listarMatriculas(){
+    listarTipoMatricula(){
         this.spinner.show();
-        this.matriculaService.listarMatricula().subscribe(
+        this.matriculaService.listarTipoMatricula().subscribe(
             (result: any) => {
-                this.listaMatriculas = result;
-                console.log("Matriculas", this.listaMatriculas)
-                this.listaMatriculasDuplicated = this.listaMatriculas;
-                this.listaMatriculasDesactivadas = this.listaMatriculas.filter(matricula => matricula.matrestado === 0);
-                this.listaMatriculas = this.listaMatriculas.filter(matricula => matricula.matrestado === 1);
+                this.listaTipoMatricula = result;
+                this.listaTipoMatriuclaDuplicado = this.listaTipoMatricula;
+                this.listaTipoMatriculaInactivo = this.listaTipoMatricula.filter(tipoMatricula => tipoMatricula.tipmatrestado === 0);
+                this.listaTipoMatricula = this.listaTipoMatricula.filter(tipoMatricula => tipoMatricula.tipmatrestado === 1);
                 this.spinner.hide();
             },
             (error: any) => {
@@ -83,144 +140,144 @@ export class MatriculaListarComponent implements OnInit {
         )
     }
 
-    abrirNuevo() {
-        this.matricula = {};
-        this.gestionSeleccionado = 0;
-        this.matriculaDialog = true;
-        this.tipoEstadoMatriculaSeleccionado = new TipoEstadoMatricula(0, "");
-        this.opcionMatricula = true;
-        this.fechaInicio = null;
-        this.fechaFinal = null;
-        this.costo = null;
+    abrirNuevoTipoMatricula() {
+        this.tipoMatriculaDialog = true;
+        this.opcionTipoMatricula = true;
+    }
+
+    setData(){
+        this.tipoMatriculaForm.reset();
+
+        // Al cargar los datos para la edición, también guarda el nombre de usuario original
+        this.originalNombreMatricula = this.tipoMatricula.tipmatrgestion;
+
+        this.tipoMatriculaForm.patchValue({
+            tipmatrid: this.tipoMatricula.tipmatrid,
+            tipmatrgestion: this.tipoMatricula.tipmatrgestion,
+            tipmatrfecini: this.tipoMatricula.tipmatrfecini,
+            tipmatrfecfin: this.tipoMatricula.tipmatrfecfin,
+            tipmatrcosto: this.tipoMatricula.tipmatrcosto,
+            tipmatrdescripcion: this.tipoMatricula.tipmatrdescripcion,
+        })
+
+        const matrnombreControl = this.tipoMatriculaForm.get('tipmatrgestion');
+         matrnombreControl.clearAsyncValidators();
+         if (this.originalNombreMatricula) {
+            matrnombreControl.setAsyncValidators([this.validateMatriculaNombreIfChanged.bind(this)]);
+         }
+         matrnombreControl.updateValueAndValidity(); // Asegúrate de actualizar la validez del control
+    }
+
+    validateMatriculaNombreIfChanged(control: AbstractControl) {
+        if (control.value === this.originalNombreMatricula) {
+            return of(null);
+        } else {
+            return this.validarNombreTipoMatriculaExistente()(control);
+        }
+    }
+
+    editarTipoMatricula(data: any) {
+        this.tipoMatricula = { ...data };
+        this.setData();
+        this.tipoMatriculaDialog = true;
+        this.opcionTipoMatricula = false;
+    }
+
+    guardarTipoMatricula() {
+        if(this.tipoMatriculaForm.invalid){
+            this.messageService.add({ severity: 'error', summary: 'Ups! error de registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 5000 });
+            return Object.values(this.tipoMatriculaForm.controls).forEach(control=>{
+                control.markAllAsTouched();
+                control.markAsDirty();
+            })
+        }
+        if(this.tipoMatriculaForm.valid){
+
+            // window.alert("Hola mira mis datos: " + JSON.stringify(this.tipoMatriculaForm.value));
+
+            this.obtenerBody();
+
+            if(this.opcionTipoMatricula){
+                this.matriculaService.insertarTipoMatricula(this.tipoMatricula).subscribe(
+                    (result: any) => {
+                        // console.log("result", result);
+                        this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula agregada correctamente en el sistema', life: 5000 });
+                        this.listarTipoMatricula();
+                        this.tipoMatriculaDialog = false;
+                        this.opcionTipoMatricula = false;
+                        this.tipoMatriculaForm.reset();
+                    },
+                    (error: any) => {
+                    console.log("error",error);
+                        this.messageService.add({severity:'warn', summary:'Ups! error de registro', detail:'Algo salio mal al agregar la matricula', life: 5000});
+                    }
+                );
+            } else{
+                this.matriculaService.modificarTipoMatricula(this.tipoMatricula).subscribe(
+                    (result: any) => {
+                        this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula modificado correctamente en el sistema', life: 5000 });
+                        this.listarTipoMatricula();
+                        this.tipoMatriculaDialog = false;
+                        this.opcionMatricula = false;
+                        this.tipoMatriculaForm.reset();
+                    },
+                    (error: any) => {
+                    console.log("error",error);
+                        this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la matricula'});
+                    }
+                );
+            }
+        }
+
     }
 
     ocultarDialog() {
-        this.matriculaDialog = false;
+        this.tipoMatriculaDialog = false;
         this.opcionMatricula = false;
-        this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Proceso Cancelado', life: 3000 });
+        this.messageService.add({ severity: 'info', summary: 'Cancelar', detail: 'Operación cancelada', life: 3000 });
+        this.tipoMatriculaForm.reset();
     }
+
     obtenerBody(){
-        this.matricula.matrestado = 1;
-        this.matricula.matrestadodescripcion = this.tipoEstadoMatriculaSeleccionado.matrestadodescripcion;
-        this.matricula.matrfchini = this.fechaInicio;
-        this.matricula.matrfchfin = this.fechaFinal;
-        this.matricula.matrusureg = 'admin';
-        this.matricula.matrcos = this.costo;
-        const body = {...this.matricula}
+        this.tipoMatricula.tipmatrgestion = this.tipoMatriculaForm.value.tipmatrgestion;
+        this.tipoMatricula.tipmatrfecini = this.tipoMatriculaForm.value.tipmatrfecini;
+        this.tipoMatricula.tipmatrfecfin = this.tipoMatriculaForm.value.tipmatrfecfin;
+        this.tipoMatricula.tipmatrcosto = this.tipoMatriculaForm.value.tipmatrcosto;
+        this.tipoMatricula.tipmatrusureg = this.usuario.usuname;
+        this.tipoMatricula.tipmatrusumod = this.usuario.usuname;
+        this.tipoMatricula.tipmatrdescripcion = this.tipoMatriculaForm.value.tipmatrdescripcion;
+        const body = {...this.tipoMatricula}
         return body;
     }
-    setData(){
-        console.log(this.matricula);
-        this.tipoEstadoMatriculaSeleccionado = new TipoEstadoMatricula(this.matricula.matrestado, this.matricula.matrestadodescripcion);
-        this.fechaInicio = new Date(this.matricula.matrfchini);
-        this.fechaFinal = new Date(this.matricula.matrfchfin);
-        this.costo = this.matricula.matrcos;
-        this.gestionSeleccionado = this.matricula.matrgestion;
-        this.matricula.matrusumod = "admin";
-        this.matricula.matrestadodescripcion = null;
-        console.log("Nombre matricula", this.matricula)
-    }
-    editarMatricula(data: any) {
-        this.matricula = { ...data };
-        this.setData();
-        this.matriculaDialog = true;
-        this.opcionMatricula = false;
-    }
-    guardarMatricula(){
-        this.obtenerBody();
-        console.log("GuardarMatricual", this.matricula);
-        if(this.opcionMatricula){
-            this.matriculaService.insertarMatricula(this.matricula).subscribe(
-                (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Matricula Agregado', life: 3000 });
-                    this.listarMatriculas();
-                    this.matriculaDialog = false;
-                    this.opcionMatricula = false;
-                },
-                error => {
-                console.log("error",error);
-                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar la matricula', life: 3000});
-                }
-            );
-        }
-        else{
-            console.log("Editar", this.matricula);
-            this.matriculaService.modificarMatricula(this.matricula).subscribe(
-                (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Matricula Modificado', life: 3000 });
-                    this.listarMatriculas();
-                    this.matriculaDialog = false;
-                    this.opcionMatricula = false;
-                },
-                error => {
-                console.log("error",error);
-                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la matricula'});
-                }
-            );
-        }
-    }
 
-    eliminarMatricula(data: Matricula) {
-        this.eliminarMatriculaDialog = true;
-        this.matricula = { ...data };
-        console.log("Matricula Eliminar:", this.matricula);
-    }
-
-    activarMatricula(data: Matricula) {
-        this.activarMatriculaDialog = true;
-        this.matricula = { ...data };
-        this.matricula.tipo = 3;
-        console.log("Matricula Activar:", this.matricula);
-    }
-
-    desactivarMatricula(data: Matricula) {
+    desactivarMatricula(data: TipoMatricula) {
         this.desactivarMatriculaDialog = true;
-        this.matricula = { ...data };
-        this.matricula.tipo = 2;
-        console.log("Matricula Desactivar:", this.matricula);
+        this.tipoMatricula = { ...data };
+        this.tipoMatricula.tipo = 2;
     }
 
-    confirmarEliminar() {
-        console.log("confirmarEliminar: ", this.matricula)
-        this.matricula.matrusumod = this.usuario.usuname;
-        this.matriculaService.eliminarMatricula(this.matricula).subscribe(
-            (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de la matricula modificada correctamente', life: 3000 });
-                this.listarMatriculas();
-                this.matricula = new Matricula();
-                this.eliminarMatriculaDialog = false;
-                this.matricula = {};
-            },
-            error => {
-            console.log("error",error);
-            const descripcionError = error.error.message;
-                this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
-            }
-        );
+    activarMatricula(data: TipoMatricula) {
+        this.activarMatriculaDialog = true;
+        this.tipoMatricula = { ...data };
+        this.tipoMatricula.tipo = 3;
     }
 
     confirmarActivarDesactivar() {
-        console.log("confirmarActivarDesactivar: ", this.matricula)
-        console.log("confirmarEliminar: ", this.matricula)
-        this.matricula.matrusumod = this.usuario.usuname;
-        this.matriculaService.gestionarMatriculaEstado(this.matricula).subscribe(
+        this.tipoMatricula.tipmatrusumod = this.usuario.usuname;
+        this.matriculaService.gestionarTipoMatriculaEstado(this.tipoMatricula).subscribe(
             (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de la matricula modificada correctamente', life: 3000 });
-                this.listarMatriculas();
-                this.eliminarMatriculaDialog = false;
+                this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Estado del tipo matricula modificada correctamente en el sistema', life: 5000 });
+                this.listarTipoMatricula();
                 this.activarMatriculaDialog = false;
                 this.desactivarMatriculaDialog = false;
-                this.matricula = new Matricula();
+                this.tipoMatricula = new TipoMatricula();
             },
             error => {
             console.log("error",error);
-                // const descripcionError = error.error.message;
-                // this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal.', life: 5000});
             }
         );
     }
-
 
     obtenerSeverityEstado(estado: number): string {
         switch (estado) {
@@ -249,4 +306,19 @@ export class MatriculaListarComponent implements OnInit {
             'contains'
         );
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
