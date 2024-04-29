@@ -34,7 +34,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
 import { CardModule } from 'primeng/card';
 import { NgxSpinnerModule } from 'ngx-spinner';
-
 @NgModule({
     imports: [
         CommonModule,

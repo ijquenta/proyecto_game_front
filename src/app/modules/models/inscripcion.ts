@@ -1,7 +1,6 @@
 export class InscripcionRegistro {
     insid?: number = 0;
     matrid?: number | null = null;
-    matrgestion?: number | null;
     peridestudiante?: number | null = null;
     pagid?: number | null = null;
     insusureg?: string | null = null;
@@ -18,9 +17,10 @@ export class Inscripcion {
     tipo?:number;
     matricula: {
       matrid?: number | null;
-      matrgestion?: number | null;
       matrestado?: number | null;
-      matrestadodescripcion?: string | null;
+      matrdescripcion?: string | null;
+      tipmatrid?: number | null;
+      tipmatrgestion?: string | null;
     }[] = [];
     estudiante: {
       peridestudiante?: number | null;
@@ -57,4 +57,21 @@ export class Inscripcion {
       pernombrecompletodocente?: string;
       perfoto?: string;
     }[] = [];
+  }
+//   m.matrid, m.tipmatrid, tm.tipmatrgestion, m.peridestudiante, p.pernomcompleto, p.perfoto
+  export class TipoMatriculaEstudiante {
+    matrid: number = 0;
+    tipmatrid: number = 0;
+    tipmatrgestion: string = '';
+    peridestudiante: number = 0;
+    pernomcompleto: string = '';
+    perfoto: string = '';
+    constructor(matrid: number, tipmatrid: number, tipmatrgestion: string, peridestudiante: number, pernomcompleto: string, perfoto: string) {
+      this.matrid = matrid;
+      this.tipmatrid = tipmatrid;
+      this.tipmatrgestion = tipmatrgestion;
+      this.peridestudiante = peridestudiante;
+      this.pernomcompleto = pernomcompleto;
+      this.perfoto = perfoto;
+    }
   }

@@ -49,7 +49,7 @@ export class PagoCrudComponent implements OnInit {
   loading2: boolean = false;
   listarMateriasInscritas: CursoMateria[] = [];
   listarPagoEstudianteMateria: Pago[] = [];
-  verNotasClicked: boolean = false;
+  verPagosEstudianteClicked: boolean = false;
   errors: any;
   verMateriaClicked: boolean = false;
   pago = new Pago();
@@ -58,6 +58,8 @@ export class PagoCrudComponent implements OnInit {
   pagoRegistroDialog: boolean = false;
   curid: any;
   matid: any;
+  matnombre: any;
+  curnombre: any;
   tipoPago: TipoPago[] = [];
   tipoPagoSeleccionado = new Pago();
   pagidlast: any;
@@ -129,9 +131,11 @@ export class PagoCrudComponent implements OnInit {
         });
     }
     listarPagoMateria(data: any){
-      this.verNotasClicked = true;
+      this.verPagosEstudianteClicked = true;
       this.curid = data.curid; // respaldo curid
+      this.curnombre = data.curnombre;
       this.matid = data.matid; // respaldo matid
+      this.matnombre = data.matnombre
       const criterio = {
           curid: data.curid,
           matid: data.matid

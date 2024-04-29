@@ -8,8 +8,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from '../../models/usuario';
 import { PanelService } from '../../service/data/panel.service';
-import { DialogService } from 'primeng/dynamicdialog';
-import { PanelVideoComponent } from './panel-video/panel-video.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'; // Importa DynamicDialogRef
+
 @Component({
     templateUrl: './panel.component.html',
     styleUrls: ['./panel.component.css']
@@ -20,7 +20,16 @@ export class PanelComponent implements OnInit, OnDestroy {
 
     subscription!: Subscription;
 
+    visible: boolean = false;
+
+    position: string = 'center';
+
     usuario: Usuario;
+
+    dialogRef!: DynamicDialogRef; // Crea una variable para almacenar la referencia al modal
+
+    visible2: boolean = false;
+
 
     constructor(private productService: ProductService,
                         public layoutService: LayoutService,
@@ -53,21 +62,22 @@ export class PanelComponent implements OnInit, OnDestroy {
     }
 
 
+    showDialog2() {
+        this.visible2 = true;
+    }
+
+    closeDialog() {
+        this.visible2 = false;
+    }
+
+    showDialog(position: string) {
+        this.position = position;
+        this.visible = true;
+    }
+
     ngOnDestroy() {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
     }
-
-    openVideo() {
-        window.open("https://youtu.be/eGri2nz4kvs", "_blank");
-    }
-    openVideoModal() {
-        const modalRef = this.dialogService.open(PanelVideoComponent, {
-          // Puedes pasar opciones de configuración si es necesario
-        });
-      }
-
-
-
 }

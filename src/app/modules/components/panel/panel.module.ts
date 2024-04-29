@@ -10,10 +10,10 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { PanelRoutingModule } from './panel-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { PanelVideoComponent } from './panel-video/panel-video.component';
-
+import { DialogModule } from 'primeng/dialog';
 @NgModule({
     imports: [
+        DialogModule,
         CommonModule,
         FormsModule,
         ChartModule,
@@ -25,6 +25,6 @@ import { PanelVideoComponent } from './panel-video/panel-video.component';
         PanelRoutingModule,
         ProgressSpinnerModule
     ],
-    declarations: [PanelComponent, PanelVideoComponent]
+    declarations: [PanelComponent]
 })
 export class PanelModule { }

@@ -66,7 +66,7 @@
                 <div class="col-12 py-0" *ngIf="verBeneficiosSocialesClicked">
                     <!-- <reintegro-monto-reintegro [persona]="personaSeleccionada"></reintegro-monto-reintegro> -->
                     <p-table #dt1 [value]="inscripciones" selectionMode="single" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                    [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                    [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
                     styleClass="p-datatable-striped p-card"
                     [globalFilterFields]="['matrgestion','curnombre', 'matnombre']">
                         <ng-template pTemplate="caption">
@@ -143,7 +143,7 @@
                         <p-table #dt2 [value]="listarMateriaEstudianteCurso" responsiveLayout="scroll" class="m-2"
                             [loading]="loading2" styleClass="p-datatable-gridlines"
                             [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
-                            [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                            [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
                             styleClass="p-datatable-striped p-card"
                             >
                             <ng-template pTemplate="caption">

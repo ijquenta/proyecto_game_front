@@ -9,7 +9,8 @@
                 <div class="flex justify-center md:justify-start mt-4">
                     <button pButton pRipple label="Manual de usuario" type="button" class="mr-3 p-button-raised"></button>
                     <!-- <button (click)="openVideo()" pButton pRipple label="Ver demostración en video" type="button" class="p-button-outlined"></button> -->
-                    <button (click)="openVideoModal()" pButton pRipple label="Ver demostración en video" type="button" class="p-button-outlined"></button>
+                    <p-button (click)="showDialog('top')" icon="pi pi-youtube" label="Video de demostración" styleClass="p-button-danger"></p-button>
+
                 </div>
             </section>
         </div>
@@ -18,3 +19,9 @@
         </div>
     </div>
 </div>
+
+<p-dialog header="Video" [(visible)]="visible" [position]="position" [style]="{ width: '48vw' }">
+    <div class="modal-container">
+        <iframe width="800" height="450" src="https://www.youtube.com/embed/eGri2nz4kvs?controls=1&modestbranding=1&autoplay=0&rel=0" frameborder="0" allowfullscreen></iframe>
+    </div>
+</p-dialog>

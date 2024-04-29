@@ -29,10 +29,15 @@ export class InscripcionService {
     listarComboMatricula(){
         return this.http.get(`${API_URL}/listarComboMatricula`)
     }
+
+    listarComboMatriculaEstudiante(criterio: any){
+        return this.http.post(`${API_URL}/listarComboMatriculaEstudiante`, criterio)
+    }
+
     gestionarInscripcionEstado(criterio: any){
         return this.http.post(`${API_URL}/gestionarInscripcionEstado`, criterio);
     }
-    obtenerEstudiantesIncritos(criterio: any){
-        return this.http.post(`${API_URL}/obtenerEstudiantesIncritos`, criterio);
+    obtenerEstudiantesInscritos(criterio: any){
+        return this.http.post(`${API_URL}/obtenerEstudiantesInscritos`, criterio);
     }
 }

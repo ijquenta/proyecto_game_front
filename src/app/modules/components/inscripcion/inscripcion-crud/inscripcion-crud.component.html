@@ -8,7 +8,7 @@
             </div>
             <hr/>
             <p-table #dt [loading]="loading" [value]="inscripciones" dataKey="insid" [responsive]="true"
-                [globalFilterFields]="['pernombrecompleto']" [rowsPerPageOptions]="[5, 10, 20]" [rows]="5"
+                [globalFilterFields]="['pernombrecompleto']" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
                 [paginator]="true" styleClass="p-datatable-striped p-card">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -168,7 +168,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-matricula>
                         <tr>
-                            <td>{{ matricula.matrgestion }}</td>
+                            <td>{{ matricula.tipmatrgestion }}</td>
                         </tr>
                     </ng-template>
                 </p-table>
@@ -219,7 +219,7 @@
             </div>
             <hr/>
             <p-table #dt2 [loading]="loading" [value]="listaInscripcionDesactivados" dataKey="insid" [responsive]="true"
-                [globalFilterFields]="['pernombrecompleto']" [rowsPerPageOptions]="[5, 10, 20]" [rows]="5"
+                [globalFilterFields]="['pernombrecompleto']" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
                 [paginator]="true" styleClass="p-datatable-striped p-card">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -364,7 +364,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-matricula>
                         <tr>
-                            <td>{{ matricula.matrgestion }}</td>
+                            <td>{{ matricula.tipmatrgestion }}</td>
                         </tr>
                     </ng-template>
                 </p-table>
@@ -410,7 +410,9 @@
 </div>
 
 
-<p-dialog [(visible)]="inscripcionDialog" header="Inscripción" [style]="{width:'50%'}" [modal]="true" class="p-fluid">
+<p-dialog [(visible)]="inscripcionDialog" header="Inscripción" [modal]="true" class="p-fluid"
+[breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
+>
     <div *ngIf="!optionInscripcion">
         <p-card>
             <ng-template pTemplate="title">
@@ -446,25 +448,8 @@
     </div>
 
     <form [formGroup]="inscripcionForm">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-12">
-                <label for="status">Elegir Gestión de la Matricula</label>
-                <p-dropdown inputId="ddgestion" appendTo="body" [options]="tipoMatricula"
-                    formControlName="tipoMatricula" optionLabel="matrgestion"
-                    [emptyFilterMessage]="'No se encontraron matriculas registradas.'"
-                    placeholder="Seleccionar Gestion"></p-dropdown>
-
-                <small class="p-success block" *ngIf="inscripcionForm.get('tipoMatricula').valid">
-                    El tipo de matricula es valido.
-                </small>
-                <small class="p-error block"
-                    *ngIf="inscripcionForm.get('tipoMatricula').invalid && inscripcionForm.get('tipoMatricula').touched">
-                    <span *ngIf="inscripcionForm.get('tipoMatricula').errors?.required">El tipo de matricula es
-                        requerido.</span>
-                    (*)
-                </small>
-            </div>
-            <div class="field col-12 md:col-12">
+        <div class="p-fluid">
+            <div class="field">
                 <label for="status">Elegir Curso y Materia</label>
                 <p-dropdown inputId="ddTipoMateria" appendTo="body" [filter]="true" [options]="tipoCursoMateria"
                     formControlName="tipoCursoMateria" optionLabel="curmatdescripcion"
@@ -481,7 +466,8 @@
                     (*)
                 </small>
             </div>
-            <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
+
+            <div *ngIf="optionInscripcion" class="field">
                 <label for="status">Elegir Rol</label>
                 <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true"
                     filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol"
@@ -497,11 +483,29 @@
                     (*)
                 </small>
             </div>
-            <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
+            <div *ngIf="optionInscripcion" class="field">
                 <label for="status">Elegir Estudiante</label>
-                <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
+                <!-- <p-dropdown (onChange)="onSelectEstudianteMatricula($event)" [filter]="true" [options]="tipoPersona"
                     formControlName="tipoPersona" optionLabel="pernomcompleto"
                     [emptyFilterMessage]="'No se encontraron estudiantes.'" [emptyMessage]="'No se encontraron estudiantes.'" placeholder="Seleccionar estudiante">
+                </p-dropdown> -->
+                <p-dropdown (onChange)="onSelectEstudianteMatricula($event)"  inputId="ddTipoPersona" appendTo="body" dropdownIcon="pi pi-user" [options]="tipoPersona" placeholder="Seleccionar estudiante" formControlName="tipoPersona" appendTo="body"
+                optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
+                placeholder="Seleccionar estudiante"  [emptyFilterMessage]="'No se encontraron estudiantes.'" [emptyMessage]="'No se encontraron estudiantes.'">
+                <ng-template let-tm pTemplate="item">
+                    <div class="flex align-items-center">
+                            <div *ngIf="tm.perfoto == null" class="user-display">
+                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+                            </div>
+                            <div *ngIf="tm.perfoto != null" class="user-display">
+                                <p-avatar image="{{ apiUrl }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
+                                    shape="circle"></p-avatar>
+                                <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+                            </div>
+                        </div>
+                    </ng-template>
                 </p-dropdown>
                 <small class="p-success block" *ngIf="inscripcionForm.get('tipoPersona').valid">
                     El tipo de estudiante es valido.
@@ -513,6 +517,27 @@
                     (*)
                 </small>
             </div>
+
+            <div class="field">
+                <label for="status">Elegir Gestión de la Matricula</label>
+                <p-dropdown inputId="ddgestion" appendTo="body" [options]="tipoMatricula"
+                    formControlName="tipoMatricula" optionLabel="tipmatrgestion"
+                    [emptyFilterMessage]="'No se encontraron matriculas registradas.'"
+                    [emptyMessage]="'No se encontraron matriculas registradas.'"
+                    placeholder="Seleccionar Gestion"></p-dropdown>
+
+                <small class="p-success block" *ngIf="inscripcionForm.get('tipoMatricula').valid">
+                    El tipo de matricula es valido.
+                </small>
+                <small class="p-error block"
+                    *ngIf="inscripcionForm.get('tipoMatricula').invalid && inscripcionForm.get('tipoMatricula').touched">
+                    <span *ngIf="inscripcionForm.get('tipoMatricula').errors?.required">El tipo de matricula es
+                        requerido.</span>
+                    (*)
+                </small>
+            </div>
+
+
             <!-- <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
                 <label for="status">Elegir Estudiante</label>
                 <p-multiSelect inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"

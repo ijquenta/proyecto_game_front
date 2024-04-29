@@ -1,34 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-// import { Product } from 'src/app/release/api/product';
-import { Usuarios } from 'src/app/modules/models/usuarios';
+import { environment } from 'src/environments/environment';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-// import { ProductService } from 'src/app/release/service/product.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
 import { forkJoin } from 'rxjs';
 
-// ----------------------- Importaciones ----------------------------
+// Importación para validaciones
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+// Spinner
+import { NgxSpinnerService } from 'ngx-spinner';
+
+// Importación de services
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
+import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
+import { AuthService } from 'src/app/services/auth.service';
+// Importacion de modelos
+import { Usuarios } from 'src/app/modules/models/usuarios';
+import { TipoMatriculaEstudiante } from 'src/app/modules/models/inscripcion';
 import { TipoCurso, TipoRol, TipoPersona, TipoPersona2, TipoEstado, TipoMateria, TipoCursoMateria, TipoMatricula} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
-import { CursoService } from 'src/app/modules/service/data/curso.service';
-import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
-
-import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
 import { Inscripcion, InscripcionRegistro } from 'src/app/modules/models/inscripcion';
-
-// --------------- Modelo Usuario
 import { Usuario } from 'src/app/modules/models/usuario';
 
-// --------------- Importación de Autenticación
-import { AuthService } from 'src/app/services/auth.service';
-
-// --------------- Importación para validaciones
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-
-import { NgxSpinnerService } from 'ngx-spinner';
-import { environment } from 'src/environments/environment';
 @Component({
     templateUrl: './inscripcion-crud.component.html',
     providers: [MessageService],
@@ -36,20 +31,6 @@ import { environment } from 'src/environments/environment';
 })
 export class InscripcionCrudComponent implements OnInit {
 
-    productDialog: boolean = false;
-
-    deleteProductDialog: boolean = false;
-
-    deleteProductsDialog: boolean = false;
-
-    // products: Usuario[] = [];
-
-    // product: Product = {};
-    product: Usuarios = {};
-
-    selectedProducts: Usuario[] = [];
-
-    listaUsuarios: Usuario[] = [];
     // ------------------ Variables Inscripción -------------------------
     cols: any[] = [];
     statuses: any[] = [];
@@ -66,27 +47,17 @@ export class InscripcionCrudComponent implements OnInit {
     registroCursoMateria: CursoMateria = {};
 
     tipoCurso: TipoCurso[] = [];
-    tipoCursoSeleccionado: TipoCurso;
-
     tipoMateria: TipoMateria[] = [];
-    tipoMateriaSeleccionado: TipoMateria;
-
     tipoRol: TipoRol[] = [];
-    tipoRolSeleccionado: TipoRol;
-
     tipoPersona: TipoPersona2[] = [];
-    tipoPersonaSeleccionado: TipoPersona2;
-
     tipoEstado: TipoEstado[] = [];
-    tipoEstadoSeleccionado: TipoEstado;
-
 
     // Variables ------------------------------------------
     listaInscripcion: Inscripcion[] = [];
     listaInscripcionDuplicated: Inscripcion[] = [];
     listaInscripcionDesactivados: Inscripcion[] = [];
     inscripciones: Inscripcion[] = [];
-    products: Inscripcion[];
+    linscripciones: Inscripcion[];
     inscripcionDialog: boolean = false;
     optionInscripcion: boolean = false;
     eliminarInscripcionDialog: boolean = false;
@@ -99,9 +70,7 @@ export class InscripcionCrudComponent implements OnInit {
     tipoCursoMateria: TipoCursoMateria[] = [];
     tipoCursoMateriaSeleccionado: TipoCursoMateria;
 
-    // gestiones: number[] = [];
-    tipoMatricula: TipoMatricula[] = [];
-    // gestionSeleccionado: number;
+    tipoMatricula: TipoMatriculaEstudiante[] = [];
     gestionSeleccionado: TipoMatricula;
     loading: boolean = false;
     curmatid: any;
@@ -125,59 +94,51 @@ export class InscripcionCrudComponent implements OnInit {
         private spinner: NgxSpinnerService, // spinner para mostrar el spinner de carga
         )
         {
-        this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
-        this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
-        this.tipoPersonaSeleccionado = new TipoPersona2(0,"",0,"");
-        this.tipoRolSeleccionado = new TipoRol(0,"");
-        this.tipoEstadoSeleccionado = new TipoEstado(0, "");
         }
 
     ngOnInit() {
-    //    this.listarCursoMateria();
-       this.listarCursoCombo();
-       this.listarInscripciones();
-    //    this.gestionSeleccionado = new Date().getFullYear() + 1;
-    //    for (let anio = this.gestionSeleccionado; anio >= 2018; anio--) {
-    //        this.gestiones.push(anio);
-    //    }
-       this.inscripcionService.listarComboMatricula().subscribe(
-        (result: any) => {
-            this.tipoMatricula = result;
-        }
-       )
-       this.obtenerRoles();
 
-       this.tipoEstado = [
-           new TipoEstado(0, 'FINALIZADO'),
-           new TipoEstado(1, 'VIGENTE'),
-           new TipoEstado(2, 'OTRO')
-       ]
-       this.inscripcionService.listarComboCursoMateria().subscribe(
-        (result: any) => {
-          this.tipoCursoMateria = result;
-          console.log("Lista Curso Materia: ", this.tipoCursoMateria);
-        }
-      );
+       this.listarInscripciones(); // Método para listar las inscripciones
 
-       // Método de asignación de validaciones
-       this.asignacionValidacionesInscripcion();
+       this.obtenerRoles(); // Método para obtener datos para el combo tipo roles
 
-       // Método de getPerfil() de usuario logeado
-       this.getPerfilUsuario();
+       this.obtenerTipoCursoMateria(); // Método para obtener datos para el combo tipo curso materia
 
+       this.asignacionValidacionesInscripcion(); // Método de asignación de validaciones
+
+       this.getPerfilUsuario(); // Método de getPerfil() de usuario logeado
+
+    }
+
+    // Método para obtener los tipos de cursos y materias
+    obtenerTipoCursoMateria(){
+        this.inscripcionService.listarComboCursoMateria().subscribe(
+            (result: any) => {
+              this.tipoCursoMateria = result;
+            }
+          );
+    }
+
+    // Función para obtener los tipos de matricula por estudiante
+    obtenerTipoMatriculaEstudiante(perid: any){
+        const criterio = { peridestudiante: perid }
+        this.inscripcionService.listarComboMatriculaEstudiante(criterio).subscribe(
+            (result: any) => { this.tipoMatricula = result; console.log("datosTipoMatriculaEstudiante: ", this.tipoMatricula)}
+        )
     }
 
     // Método para asignar las variables de React Form Valid
     asignacionValidacionesInscripcion() {
-        //----- Asignación de la validaciones
         this.inscripcionForm = this.formBuilder.group({
             insid: [''],
             tipoMatricula: ['', [Validators.required]],
             tipoCursoMateria: ['', [Validators.required]],
             tipoRol: ['', [Validators.required]],
             tipoPersona: ['', [Validators.required]],
+            insdescripcion: ['']
         });
     }
+
     // Obtener datos del perfil del usuario logeado
     getPerfilUsuario() {
         this.authService.getPerfil().subscribe(usuario => {
@@ -185,32 +146,29 @@ export class InscripcionCrudComponent implements OnInit {
         });
     }
 
+    // Función para listar las inscripciones
     listarInscripciones(){
         this.loading = true;
         this.spinner.show();
         this.inscripcionService.listarInscripcion().subscribe(
             (result: any) => {
-              this.products = result;
+              this.linscripciones = result;
+              console.log("lista de inscripciones: ", this.linscripciones);
               this.spinner.hide();
-              this.inscripciones = this.products.map(item => this.organizarInscripcion(item));
+              this.inscripciones = this.linscripciones.map(item => this.organizarInscripcion(item));
               this.listaInscripcionDuplicated = this.inscripciones;
               this.listaInscripcionDesactivados = this.inscripciones.filter(item => item.insestado == 0);
               this.inscripciones = this.inscripciones.filter(item => item.insestado == 1);
-
-              console.log("Lista inscripciones", this.inscripciones);
+            //   console.log("Lista inscripciones", this.inscripciones);
               this.loading = false;
             }
           );
     }
-    editarInscripcion(data: any) {
-        this.inscripcion = { ...data };
-        console.log("Datos para editar: ",this.inscripcion);
-        this.setData();
-        this.inscripcionDialog = true;
-        this.optionInscripcion = false;
-    }
+
+    // Función para asignar los valores y sub-valores
     organizarInscripcion(data: any): Inscripcion {
-        const inscripcion = new Inscripcion();
+        const inscripcion = new Inscripcion(); // Creamos un variable de tipo Inscripcion
+        // Se asignana todas las variables
         inscripcion.insid = data.insid;
         inscripcion.insusureg = data.insusureg;
         inscripcion.insfecreg = data.insfecreg;
@@ -223,18 +181,15 @@ export class InscripcionCrudComponent implements OnInit {
 
         inscripcion.matricula.push({
           matrid: data.matrid,
-          matrgestion: data.matrgestion,
+          tipmatrid: data.tipmatrid,
+          tipmatrgestion: data.tipmatrgestion,
           matrestado: data.matrestado,
-          matrestadodescripcion: data.matrestadodescripcion,
+          matrdescripcion: data.matrdescripcion,
         });
 
         inscripcion.estudiante.push({
           peridestudiante: data.peridestudiante,
           pernombrecompletoestudiante: data.pernombrecompletoestudiante,
-        //   peridrol: data.peridrol,
-        //   rolnombre: data.rolnombre,
-
-        //   perfoto: data.perfoto
         });
 
         inscripcion.pago.push({
@@ -263,67 +218,50 @@ export class InscripcionCrudComponent implements OnInit {
         });
 
         return inscripcion;
-      }
-    // ---------------------------------- Funciones Curso Materia  ------------------------
-
-    abrirNuevo() {
-        this.inscripcionRegistro = new InscripcionRegistro();
-        this.inscripcionForm.reset();
-        this.inscripcionDialog = true;
-        this.optionInscripcion = true;
     }
+
+    // Función para editar la inscripción
+    editarInscripcion(data: any) {
+        this.inscripcion = { ...data }; // obtener los datos en inscripcion
+        // console.log("Datos para editar: ",this.inscripcion); // mostramos los datos en console.log
+        this.setData(); // se setea los datos en el formulario
+        this.inscripcionDialog = true; // abrimos el formulario
+        this.optionInscripcion = false; // optioneInscripcion=FALSE por que se va a editar para ocultar algunas partes del formulario
+    }
+
+    // Función para abrir nuevo formulario de inscripcion
+    abrirNuevo() {
+        this.inscripcionRegistro = new InscripcionRegistro(); // se crea una nueva inscripción
+        this.inscripcionForm.reset(); // se resetan los datos en la variables inscripcionForm para vaciar los datos
+        this.inscripcionDialog = true; // abrimos el formulario
+        this.optionInscripcion = true; // la opción optionInscripcion=TRUE por que se realizara un nuevo registro
+    }
+
+    // Función para ocultar el formulario
     ocultarDialog(){
         this.inscripcionDialog = false;
-        // this.optionCursoMateria = false;
-    }
-    listarCursoCombo(){
-        this.cursoService.listaCursoCombo().subscribe(
-            (result: any) => {
-                this.tipoCurso = result;
-            }
-        )
+        this.inscripcionForm.reset();
     }
 
-    listarCursoMateria(){
-        this.cursoService.listarCursoMateria().subscribe(
-            (result: any) => {
-                this.listaCursosMaterias = result;
-                console.log("Combo Cursos Materia", this.listaCursosMaterias)
-            }
-        )
-    }
-
-    onSelectCurso(data: any){
-        const nivel = parseInt(data.value.curnivel);
-
-        const criterio = {
-            curnivel: nivel
-        };
-
-        this.obtenerTipoMateria(criterio);
-    }
-
-    obtenerTipoMateria(criterio: any){
-        this.diccionarioService.getTipoMateria(criterio).subscribe(
-            (result: any) => {
-                this.tipoMateria = result;
-                // console.log("Lista Combo Materia: ", this.tipoMateria)
-            }
-        )
-    }
-
+    // Función para obtener tipo rol
     obtenerRoles(){
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
-                // this.tipoRol = result;
-                this.tipoRol = result.filter(rol => rol.rolnombre === "Estudiante");
-                console.log("Combo roles: ", this.tipoRol);
+                this.tipoRol = result.filter(rol => rol.rolnombre === "Estudiante"); // filtrar solo los roles estudiante y docente
+                // console.log("Combo roles: ", this.tipoRol);
             }
         )
     }
 
+    // Función para obtener las matriculas de un estudiante x al momento de seleccionar el tipo persona
+    onSelectEstudianteMatricula(data: any){
+        console.log("Dato elejido: ", data.value);
+        const perid = data.value.perid;
+        this.obtenerTipoMatriculaEstudiante(perid);
+
+    }
+
     onSelectPersona(data: any){
-        // console.log("Datos del rol elejido: ", data.value);
         const nombre = data.value.rolnombre;
         const criterio = {
             rolnombre: nombre
@@ -332,38 +270,22 @@ export class InscripcionCrudComponent implements OnInit {
 
     }
 
-    seleccionarPersona(data: any){
-        // console.log("rol Nombre: ", data);
-        const nombre = data;
-        const criterio = {
-            rolnombre: nombre
-        };
-        this.obtenerTipoPersona(criterio);
-
-    }
-
-
-
+    // Función obtener el tipo persona este con un criterio
     obtenerTipoPersona(criterio: any) {
         forkJoin([
             this.diccionarioService.getListaPersonaDocenteCombo(criterio),
-            this.inscripcionService.obtenerEstudiantesIncritos({ curmatid: this.inscripcionForm.value.tipoCursoMateria.curmatid })
+            this.inscripcionService.obtenerEstudiantesInscritos({ curmatid: this.inscripcionForm.value.tipoCursoMateria.curmatid })
         ]).subscribe(([personas, inscritos]) => {
-            console.log("Personas:", personas);
-            console.log("Estudiantes inscritos:", inscritos);
-
-            // Filtrar personas inscritas
+            // console.log("Personas:", personas);
+            // console.log("Estudiantes inscritos:", inscritos);
             const personasFiltradas = this.filtrarPersonasInscritas(personas, inscritos);
-            console.log("Personas filtradas:", personasFiltradas);
-
-            // Asignar personas filtradas a tipoPersona
             this.tipoPersona = personasFiltradas;
         }, error => {
             console.error("Error:", error);
         });
     }
 
-
+    // Función para filtrar persona ya inscritas, esto ayuda a no inscribir a las mismas personas a los mismos grupos
     filtrarPersonasInscritas(personas: any, inscritos: any): any[] {
         // Usamos el método filter para filtrar las personas que están inscritas
         return personas.filter(persona => {
@@ -372,35 +294,26 @@ export class InscripcionCrudComponent implements OnInit {
         });
     }
 
-
-    editarCursoMateria(data: any){
-        this.cursoMateria = { ...data };
-        this.setData();
-        this.cursoMateriaDialog = true;
-        this.optionCursoMateria = false;
-    }
-
+    // Función para setear los datos en el formulario
     setData(){
-        const rolnombre = {
-            //  rolnombre: this.inscripcion.estudiante[0].rolnombre
-             rolnombre: 'Estudiante'
-        };
+        const rolnombre = { rolnombre: 'Estudiante' };
         this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe(
-            (result: any) => {
-                this.tipoPersona = result;
-                console.log("SetData getListaPersona", this.tipoPersona);
-            }
+            (result: any) => { this.tipoPersona = result; }
         )
-            console.log("setdatos Estudiante", this.inscripcion)
+        this.obtenerTipoMatriculaEstudiante(this.inscripcion.estudiante[0].peridestudiante);
+
         this.inscripcionForm.patchValue({
             insid:this.inscripcion.insid,
-            tipoMatricula: new TipoMatricula(this.inscripcion.matricula[0]?.matrid, this.inscripcion.matricula[0].matrgestion),
+            tipoMatricula: new TipoMatriculaEstudiante(this.inscripcion.matricula[0].matrid, this.inscripcion.matricula[0]?.tipmatrid, this.inscripcion.matricula[0].tipmatrgestion, this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante, this.inscripcion.perfoto),
             tipoCursoMateria:new TipoCursoMateria(this.inscripcion.curso_materia[0].curmatid, this.inscripcion.curso_materia[0].curnombre + ' - ' + this.inscripcion.curso_materia[0].matnombre + ' - ' +this.inscripcion.curso_materia[0].curmatfecini + ' a ' +this.inscripcion.curso_materia[0].curmatfecfin),
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante)
         })
-        console.log("Set TipoPersona: ", this.inscripcionForm.value.tipoPersona)
+        console.log("set: ",this.inscripcionForm.value)
+        // console.log("Set TipoPersona: ", this.inscripcionForm.value.tipoPersona)
     }
+
+    // FUnción para obtener los datos en la variables incripcionRegistro
     obtenerBody(){
         this.inscripcionRegistro = new InscripcionRegistro();
         this.inscripcionRegistro.insid = this.inscripcionForm.value.insid;
@@ -415,8 +328,9 @@ export class InscripcionCrudComponent implements OnInit {
         const body = { ...this.inscripcionRegistro }
         return body;
     }
-    guardarInscripcion(){
 
+    guardarInscripcion(){
+        // Se valida cumplan las validaciones
         if(this.inscripcionForm.invalid){
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
             return Object.values(this.inscripcionForm.controls).forEach(control=>{
@@ -426,24 +340,32 @@ export class InscripcionCrudComponent implements OnInit {
         }
         this.obtenerBody();
         console.log("Datos a ingresar: ", this.inscripcionRegistro);
-        if(this.optionInscripcion){
+        if(this.optionInscripcion){ // Verifica que true o false, para adicionar o editar
             this.inscripcionService.insertarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Inscripción Insertardo', life: 3000 });
                     this.listarInscripciones();
                     this.inscripcionRegistro = {};
-
                     this.ocultarDialog();
                 },
                 (error: any) => {
-                console.log("error",error);
-                    this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal. No puede registrar al mismo estudiante.'})
+                    // console.log("error",error);
+                    // this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal. No puede registrar al mismo estudiante.'})
+
+                    console.log("error: ", error);
+                    let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
+
+                    // Verifica si el error contiene el mensaje específico de violación de clave única
+                    if (error.error.message.includes('UniqueViolation')) {
+                        errorMessage = 'No se puede agregar el registro, porque ya se encuentra registrado.';
+                    }
+
+                    this.messageService.add({ severity: 'error', summary: 'Error de registro', detail: errorMessage, life: 7000});
                 }
             );
 
         }
         else{
-            console.log("Modificar");
             this.inscripcionRegistro.insid = this.inscripcion.insid;
             this.inscripcionService.modificarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
@@ -459,39 +381,17 @@ export class InscripcionCrudComponent implements OnInit {
             )
         }
     }
-    eliminarInscripcion(data: Inscripcion) {
-        this.eliminarInscripcionDialog = true;
-        this.inscripcion = { ...data };
-    }
+
     desactivarInscripcion(data: Inscripcion) {
         this.desactivarInscripcionDialog = true;
         this.inscripcion = { ...data };
         this.inscripcion.tipo = 2;
     }
+
     activarInscripcion(data: Inscripcion) {
         this.activarInscripcionDialog = true;
         this.inscripcion = { ...data };
         this.inscripcion.tipo = 3;
-    }
-    confirmarEliminar() {
-        // console.log("confirmarEliminar: ", this.inscripcion);
-        const criterio = {
-            insid: this.inscripcion.insid
-        }
-        console.log("criterio: ", criterio)
-        this.inscripcionService.eliminarInscripcion(criterio).subscribe(
-            (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Inscripción Eliminado', life: 3000 });
-                this.listarInscripciones();
-                this.eliminarInscripcionDialog = false;
-                // this.inscripcion = {};
-            },
-            error => {
-            console.log("error",error);
-            const descripcionError = error.error.message;
-                this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
-            }
-        );
     }
 
     confirmarActivarDesactivar() {
@@ -504,12 +404,9 @@ export class InscripcionCrudComponent implements OnInit {
                 this.eliminarInscripcionDialog = false;
                 this.activarInscripcionDialog = false;
                 this.desactivarInscripcionDialog = false;
-                // this.inscripcion = {};
             },
             error => {
             console.log("error",error);
-            // const descripcionError = error.error.message;
-                // this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Ups! Algo salio mal', life: 5000});
             }
         );
@@ -522,6 +419,8 @@ export class InscripcionCrudComponent implements OnInit {
             'contains'
         );
     }
+
+    // Funciones para obtener el color de la barra de estado
     obtenerSeverityEstado(estado: number): string {
         switch (estado) {
             case 1:
@@ -543,6 +442,6 @@ export class InscripcionCrudComponent implements OnInit {
                 return 'Ninguno';
         }
     }
-    // ------------------------------ Funciones Curso Materia -----------------------------
+
 
 }

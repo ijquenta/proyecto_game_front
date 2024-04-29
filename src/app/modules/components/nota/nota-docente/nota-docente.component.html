@@ -6,7 +6,7 @@
             <ng-container>
                 <p-table #dt1 [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
                     data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                    [rowsPerPageOptions]="[5, 10, 20]" [rows]="5" [paginator]="true"
+                    [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
                     styleClass="p-datatable-striped p-card"
                     [globalFilterFields]="['curnombre', 'matnombre']">
                     <ng-template pTemplate="caption">
