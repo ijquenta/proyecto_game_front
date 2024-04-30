@@ -47,7 +47,7 @@ export class ForgotPasswordComponent implements OnInit {
     ngOnInit(): void {
     }
     doLogin() {
-        console.log("Usuario y Password: ", this.loginForm.value)
+        // console.log("Usuario y Password: ", this.loginForm.value)
         if(this.loginForm.invalid){
             return Object.values(this.loginForm.controls).forEach(control=>{
                 this.messages = [{ severity: 'error', summary: '', detail: 'Las credenciales son inválidas', life: 3000 }];

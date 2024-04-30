@@ -184,12 +184,12 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result;
-                console.log("datos usuario: ", this.datosUsuario)
+                // console.log("datos usuario: ", this.datosUsuario)
                 if(this.datosUsuario?.rolid == 2){
                     this.tipoRol = this.tipoRol.filter(usuario => usuario.rolid !== 1);
-                    console.log("echo")
+                    // console.log("echo")
                 }
-                console.log("tiporol normal: ", this.tipoRol)
+                // console.log("tiporol normal: ", this.tipoRol)
             },
             (error) => {
                 console.error('Error al obtener los roles:', error);
@@ -217,7 +217,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.listaUsuario().subscribe(
             (result: any) => {
                 this.usuarios = result;
-                console.log("usuarios: ", this.usuarios)
+                // console.log("usuarios: ", this.usuarios)
                 this.usuariosDuplicated = this.usuarios;
                 this.usuariosInactivos = this.usuarios.filter(usuario => usuario.usuestado === 0);
                 this.usuarios = this.usuarios.filter(usuario => usuario.usuestado === 1);
@@ -306,7 +306,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
         this.usuarioRegistro.usupassword = this.usuarioPwdForm.value.usupassword;
-        console.log("Cambiar password: ",this.usuarioRegistro);
+        // console.log("Cambiar password: ",this.usuarioRegistro);
         this.usuarioService.gestionarUsuarioPassword(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Activado.', life: 3000});

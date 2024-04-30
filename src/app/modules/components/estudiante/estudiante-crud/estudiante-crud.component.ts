@@ -138,7 +138,7 @@ export class EstudianteCrudComponent implements OnInit {
         this.spinner.show();
         this.estudianteService.listarEstudiante().subscribe((data: any) => {
             this.Estudiantes = data;
-            console.log("Estudiantes", this.Estudiantes)
+            // console.log("Estudiantes", this.Estudiantes)
             this.spinner.hide();
         },
         (error: any) => {
@@ -167,16 +167,16 @@ export class EstudianteCrudComponent implements OnInit {
             this.personaRegistro.tipo = 1;
             this.personaRegistro.perid = null;
             this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'admin';
+            this.personaRegistro.perusureg = this.usuario.usuname;;
             this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
             this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            console.log("personaRegistro: ", this.personaRegistro);
+            // console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.gestionarPersona(this.personaRegistro).subscribe(
                 (data: any) => {
-                    console.log("Gestionar Persona: ", data);
+                    // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
@@ -192,16 +192,16 @@ export class EstudianteCrudComponent implements OnInit {
             this.personaRegistro = { ...this.persona };
             this.personaRegistro.tipo = 2;
             this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'admin';
+            this.personaRegistro.perusureg = this.usuario.usuname;;
             this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
             this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            console.log("personaRegistro: ", this.personaRegistro);
+            // console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.gestionarPersona(this.personaRegistro).subscribe(
                 (data: any) => {
-                    console.log("Gestionar Persona: ", data);
+                    // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
@@ -256,12 +256,12 @@ export class EstudianteCrudComponent implements OnInit {
         this.optionDialog = true;
     }
     eliminarPersona() {
-        console.log("eliminarPersona: ", this.persona);
+        // console.log("eliminarPersona: ", this.persona);
         this.personaRegistro = { ...this.persona };
         this.personaRegistro.tipo = 3;
         this.personaService.gestionarPersona(this.personaRegistro).subscribe(
             (data: any) => {
-                console.log("Gestionar Persona: ", data);
+                // console.log("Gestionar Persona: ", data);
                 this.eliminarPersonaDialog = false;
                 this.optionDialog = false;
                 this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
@@ -305,25 +305,25 @@ export class EstudianteCrudComponent implements OnInit {
     }
     enviarFormularioUsuario() {
         this.personaRegistro = { ...this.persona};
-        console.log("antes: ", this.persona)
+        // console.log("antes: ", this.persona)
         this.personaRegistro.perid = null;
         this.personaRegistro.perfoto = null;
-        this.personaRegistro.perusureg = 'admin';
+        this.personaRegistro.perusureg = this.usuario.usuname;;
         this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
         this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
         this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
         this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
         this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-        console.log("personaRegistro: ", this.personaRegistro);
+        // console.log("personaRegistro: ", this.personaRegistro);
         this.personaService.registrarPersona(this.personaRegistro).subscribe(
             (data : any) =>{
-                console.log("Registrar Persona: ", data);
+                // console.log("Registrar Persona: ", data);
                 this.usuario = new Usuario();
                 const idper = {
                     perid : data['valor']
                 }
                 this.usuario.perid = data['valor'];
-                console.log("idpersona: ", this.usuario);
+                // console.log("idpersona: ", this.usuario);
                 this.optionDialog = false;
                 this.usuario.rolid = 4;
                 this.usuario.usupassword = this.personaRegistro.pernrodoc;
@@ -331,14 +331,14 @@ export class EstudianteCrudComponent implements OnInit {
                 this.usuario.usuname = this.personaRegistro.pernrodoc;
                 this.usuario.usuemail = this.personaRegistro.peremail;
                 this.usuario.tipo = 1;
-                this.usuario.usuusureg = 'admin';
+                this.usuario.usuusureg = this.usuario.usuname;
                 this.usuario.usudescripcion = 'Registro login';
                 this.usuario.usuestado = 1;
                 this.usuario.perid = idper.perid;
-                console.log("usuarioRegistro: ", this.usuario);
+                // console.log("usuarioRegistro: ", this.usuario);
                 this.usuarioService.gestionarUsuario(this.usuario).subscribe(
                     (data : any) =>{
-                        console.log("Registrar Usuario: ", data);
+                        // console.log("Registrar Usuario: ", data);
                         this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El Usuario se registro correctamente en el sistema.', life: 3000 });
                         this.regPerDialog = false;
                         this.regUsuDialog = false;
@@ -360,14 +360,14 @@ export class EstudianteCrudComponent implements OnInit {
         this.persona = { ...data }
         this.estudianteModificarDialog = true;
         this.nuevousuname = this.persona.usuname;
-        console.log("Modificar Estudiante", this.persona)
+        // console.log("Modificar Estudiante", this.persona)
     }
 
     modificarEstudianteDatosPersonales(data: Persona) {
         this.persona = { ...data }
         this.estudianteModificarDatosPersonalesDialog = true;
         this.nuevousuname = this.persona.usuname;
-        console.log("Modificar Estudiante", this.persona)
+        // console.log("Modificar Estudiante", this.persona)
 
         this.estudianteForm.reset();
         this.estudianteForm.patchValue({
@@ -412,7 +412,7 @@ export class EstudianteCrudComponent implements OnInit {
         this.persona.perbautismoespiritu = this.estudianteForm.value.perbautismoespiritu,
         this.persona.pernomdiriglesia = this.estudianteForm.value.pernomdiriglesia,
         this.persona.pernompastor = this.estudianteForm.value.pernompastor
-        console.log("persona modificar datos personales: ", this.persona);
+        // console.log("persona modificar datos personales: ", this.persona);
         this.personaService.actualizarDatosPersonales(this.persona).subscribe(
             (data: any) => {
                 this.estudianteModificarDatosPersonalesDialog = false;
@@ -448,7 +448,7 @@ export class EstudianteCrudComponent implements OnInit {
         }
         this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
                 (data : any) =>{
-                    console.log("usuarioRegistro: ", this.usuarioRegistro);
+                    // console.log("usuarioRegistro: ", this.usuarioRegistro);
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El estudiante se modifico correctamente en el sistema.', life: 3000 });
                     this.estudianteModificarDialog = false;
                     this.nuevousuname = null;

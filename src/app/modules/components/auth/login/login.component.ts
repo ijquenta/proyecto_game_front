@@ -23,7 +23,7 @@ import { AbstractControl } from '@angular/forms';
     }
     `
     ],
-    
+
 })
 export class LoginComponent implements OnInit {
 
@@ -78,7 +78,7 @@ export class LoginComponent implements OnInit {
     }
 
     doLogin() {
-        console.log("Usuario y Password: ", this.loginForm.value)
+        // console.log("Usuario y Password: ", this.loginForm.value)
         if(this.loginForm.invalid){
             return Object.values(this.loginForm.controls).forEach(control=>{
                 this.messages = [{ severity: 'error', summary: 'Ups!', detail: 'Las credenciales son incorrectas', life: 3000 }];

@@ -153,7 +153,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcionService.listarInscripcion().subscribe(
             (result: any) => {
               this.linscripciones = result;
-              console.log("lista de inscripciones: ", this.linscripciones);
+            //   console.log("lista de inscripciones: ", this.linscripciones);
               this.spinner.hide();
               this.inscripciones = this.linscripciones.map(item => this.organizarInscripcion(item));
               this.listaInscripcionDuplicated = this.inscripciones;
@@ -255,7 +255,7 @@ export class InscripcionCrudComponent implements OnInit {
 
     // Función para obtener las matriculas de un estudiante x al momento de seleccionar el tipo persona
     onSelectEstudianteMatricula(data: any){
-        console.log("Dato elejido: ", data.value);
+        // console.log("Dato elejido: ", data.value);
         const perid = data.value.perid;
         this.obtenerTipoMatriculaEstudiante(perid);
 
@@ -309,7 +309,7 @@ export class InscripcionCrudComponent implements OnInit {
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante)
         })
-        console.log("set: ",this.inscripcionForm.value)
+        // console.log("set: ",this.inscripcionForm.value)
         // console.log("Set TipoPersona: ", this.inscripcionForm.value.tipoPersona)
     }
 
@@ -339,7 +339,7 @@ export class InscripcionCrudComponent implements OnInit {
             })
         }
         this.obtenerBody();
-        console.log("Datos a ingresar: ", this.inscripcionRegistro);
+        // console.log("Datos a ingresar: ", this.inscripcionRegistro);
         if(this.optionInscripcion){ // Verifica que true o false, para adicionar o editar
             this.inscripcionService.insertarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
@@ -396,7 +396,7 @@ export class InscripcionCrudComponent implements OnInit {
 
     confirmarActivarDesactivar() {
         this.inscripcion.insusumod = this.usuario.usuname;
-        console.log("criterio: ", this.inscripcion)
+        // console.log("criterio: ", this.inscripcion)
         this.inscripcionService.gestionarInscripcionEstado(this.inscripcion).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de Inscripción modificado correctamente', life: 3000 });

@@ -238,7 +238,7 @@ export class MaterialAsignarComponent implements OnInit {
 
         if (this.asignarDialog) {
             const materiaTextos = this.obtenerBody();
-            console.log("materiaTextos:", materiaTextos);
+            // console.log("materiaTextos:", materiaTextos);
 
             // Crear un array de observables para cada solicitud de inserción
             const observables = materiaTextos.map(materiaTexto => {

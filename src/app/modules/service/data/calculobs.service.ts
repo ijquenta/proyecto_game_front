@@ -10,10 +10,10 @@ import { SharedService } from './shared.service';
 
 //Ivan
 import { AdmCalculobsService } from './adm-calculobs.service';
-import { FormCalculoBSModComponent } from 'src/app/components/adm-calculobs/form-calculobs-mod/form-calculobs-mod.component';
-import { RegistroCalculoBS } from 'src/app/models/registro-calculobs';
-import { RegistroPersona } from 'src/app/models/registro-calculobs-persona';
-import { FormDeduccionComponent } from 'src/app/components/adm-calculobs/deduccion/form-deduccion/form-deduccion.component';
+// import { FormCalculoBSModComponent } from 'src/app/components/adm-calculobs/form-calculobs-mod/form-calculobs-mod.component';
+// import { RegistroCalculoBS } from 'src/app/models/registro-calculobs';
+// import { RegistroPersona } from 'src/app/models/registro-calculobs-persona';
+// import { FormDeduccionComponent } from 'src/app/components/adm-calculobs/deduccion/form-deduccion/form-deduccion.component';
 
 @Injectable({
   providedIn: 'root'
@@ -24,13 +24,13 @@ export class BenSocialService {
 
   constructor(private http: HttpClient,
               private sharedService: SharedService,
-              private dialogService: DialogService, 
+              private dialogService: DialogService,
               private diccionario: DiccionarioService,
               private admCalculobsService: AdmCalculobsService
               ) { }
   errors: any;
   getData(registroCalculoBS: any){
-    console.log("getData->",registroCalculoBS);
+    // console.log("getData->",registroCalculoBS);
     this.confirmDialogObsData = false;
     const bodyTM = {"codTipoMotivo": ''}
     forkJoin(
@@ -40,7 +40,7 @@ export class BenSocialService {
       (result: any) => {
         this.sharedService.tipoMotivo = result[0];
         this.sharedService.listaDesignaciones = result[1];
-        this.setDataForm(registroCalculoBS);      
+        this.setDataForm(registroCalculoBS);
       }
       ,error => {
         this.errors = error;
@@ -56,7 +56,7 @@ export class BenSocialService {
     forkJoin(
       this.admCalculobsService.listarTipoMotivo(bodyTM),
       // this.diccionario.obtenerDatosModificar(body)
-      // this.diccionario.getApertura(body), 
+      // this.diccionario.getApertura(body),
       // this.diccionario.getNivel(body),
       // this.diccionario.getAutoridad(body),
       // this.diccionario.getTipoAutoridad(body),
@@ -75,10 +75,10 @@ export class BenSocialService {
         // this.sharedService.meses = result[6];
         // this.sharedService.tipoEstudio = result[7];
         // console.log(this.sharedService)
-        this.setDataForm2(dataModificar);    
+        this.setDataForm2(dataModificar);
       }
     )
-    
+
   }
   getDataDeduccion(registroDeduccion: any){
     // console.log("getData->",registroCalculoBS);
@@ -91,15 +91,15 @@ export class BenSocialService {
       (result: any) => {
         this.sharedService.tipoDeduccion = result[0];
       //  this.sharedService.saldo = result[1];
-        this.setDataFormDeduccion(registroDeduccion);      
+        this.setDataFormDeduccion(registroDeduccion);
       }
-    ) 
+    )
   }
   get confirmDialogObs(){
     return this.confirm.asObservable();
   }
   setDataFormDeduccion(registroDeduccion: any){
-    console.log("setDataForm->", registroDeduccion)
+    // console.log("setDataForm->", registroDeduccion)
     const ref = this.dialogService.open(FormDeduccionComponent, {
       data: registroDeduccion,
       header: 'Registrar Deduccion',
@@ -138,7 +138,7 @@ export class BenSocialService {
           this.confirmDialogObsData = result;
       });
     }
-    
+
   }
   setDataForm2(dataModificar: any){
     // console.log("setDataForm2->", dataModificar)

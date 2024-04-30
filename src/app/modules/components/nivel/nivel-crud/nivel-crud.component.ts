@@ -229,11 +229,11 @@ export class NivelCrudComponent implements OnInit {
     }
 
     confirmarEliminar() {
-        console.log("confirmarEliminar: ", this.nivel)
+        // console.log("confirmarEliminar: ", this.nivel)
         const criterio = {
             curid: this.nivel.curid
         }
-        console.log("criterio: ", criterio)
+        // console.log("criterio: ", criterio)
         this.nivelService.eliminarNivel(criterio).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Nivel Eliminado', life: 3000 });
@@ -248,7 +248,7 @@ export class NivelCrudComponent implements OnInit {
         );
     }
     confirmarActivarDesactivar() {
-        console.log("confirmarActivarDesactivar: ", this.nivel)
+        // console.log("confirmarActivarDesactivar: ", this.nivel)
         this.nivel.curusumod = this.usuario.usuname;
         this.nivelService.gestionarNivelEstado(this.nivel).subscribe(
             (result: any) => {
@@ -308,7 +308,7 @@ export class NivelCrudComponent implements OnInit {
         this.nivel.curestadodescripcion = "";
         this.nivel.curusureg = this.usuario.usuname;
         this.nivel.curusumod = this.usuario.usuname;
-        console.log("Obtener Body: ", this.nivel);
+        // console.log("Obtener Body: ", this.nivel);
         const body = {...this.nivel}
         return body;
     }
@@ -344,7 +344,7 @@ export class NivelCrudComponent implements OnInit {
         }
         this.obtenerBody();
         if (this.opcionNivel) {
-            console.log("Add nivel: ", this.nivel);
+            // console.log("Add nivel: ", this.nivel);
             this.nivelService.insertarNivel(this.nivel).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Agregado', life: 3000 });
@@ -360,7 +360,7 @@ export class NivelCrudComponent implements OnInit {
         }
         else{
             this.nivel.curid = this.nivelForm.value.nf_id;
-            console.log("Mod nivel: ", this.nivel);
+            // console.log("Mod nivel: ", this.nivel);
             this.nivelService.modificarNivel(this.nivel).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Modificado', life: 3000 });

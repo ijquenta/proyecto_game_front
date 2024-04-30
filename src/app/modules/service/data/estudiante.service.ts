@@ -25,7 +25,7 @@ export class EstudianteService {
 
 
     registrarPersona(criterio: any){
-        console.log("Datos a registarPersona: ", criterio);
+        // console.log("Datos a registarPersona: ", criterio);
         return this.http.post(`${API_URL}/registrarPersona`, criterio);
     }
 

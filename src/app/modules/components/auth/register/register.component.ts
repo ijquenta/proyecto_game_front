@@ -132,7 +132,7 @@ export class RegisterComponent implements OnInit {
             (result: any) => {
                 this.elements = result;
                 this.personasDuplicated = this.elements;
-                console.log("this.personasDuclicated", this.personasDuplicated)
+                // console.log("this.personasDuclicated", this.personasDuplicated)
                 this.loading = false;
                 this.spinner.hide();
             },
@@ -162,7 +162,7 @@ export class RegisterComponent implements OnInit {
         this.fListarPersonas();// Se llama al método para obtener la lista de personas
         return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
             const numeroDocumento = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
-            console.log("numeroDocumento", numeroDocumento)
+            // console.log("numeroDocumento", numeroDocumento)
             if (!numeroDocumento) {// Si el número de documento está vacío, no se realiza ninguna validación
                 return of(null); // Se devuelve un observable que emite null
             }
@@ -295,8 +295,8 @@ export class RegisterComponent implements OnInit {
 
         }
 
-        console.log("personaForm: ", this.personaForm.value)
-        console.log("usuarioForm: ", this.usuarioForm.value)
+        // console.log("personaForm: ", this.personaForm.value)
+        // console.log("usuarioForm: ", this.usuarioForm.value)
 
         /*
         console.log("Name, Email y Password: ",this.name, this.email, this.password)

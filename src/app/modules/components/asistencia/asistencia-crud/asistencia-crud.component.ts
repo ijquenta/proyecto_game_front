@@ -53,7 +53,7 @@ export class AsistenciaCrudComponent implements OnInit {
         this.usuarioService.getUsuario().subscribe(
             (result: any) => {
                 this.listaUsuarios = result;
-                console.log("usuarios", this.listaUsuarios)
+                // console.log("usuarios", this.listaUsuarios)
             }
         )
         // this.productService.getProducts().then(data => this.products = data);

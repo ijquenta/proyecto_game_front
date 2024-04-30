@@ -66,7 +66,7 @@ export class UsuarioRolesComponent implements OnInit {
         this.spinner.show();
         this.rolService.getListarRoles().subscribe((data: any) => {
           this.roles = data;
-          console.log("Roles: ", this.roles)
+        //   console.log("Roles: ", this.roles)
           this.loading = false;
           this.spinner.hide()
         },
@@ -92,7 +92,7 @@ export class UsuarioRolesComponent implements OnInit {
             if (this.rolForm.valid){
                // aqui si todos los datos son correctos
                if(this.optionRol){
-                console.log("rolForm.value",this.rolForm.value);
+                // console.log("rolForm.value",this.rolForm.value);
                 this.rolRegistro = new Rol();
                 this.rolRegistro.tipo = 1; // tipo 1, creación de rol
                 this.rolRegistro.rolid = null;
@@ -100,7 +100,7 @@ export class UsuarioRolesComponent implements OnInit {
                 this.rolRegistro.rolusureg = this.usuario.usuname;
                 this.rolRegistro.rolnombre = this.rolForm.value.nombreRol;
                 this.rolRegistro.roldescripcion = this.rolForm.value.descripcionRol;
-                console.log("rolRegistro", this.rolRegistro);
+                // console.log("rolRegistro", this.rolRegistro);
                 this.loading = true;
                 this.rolService.gestionarRol(this.rolRegistro).subscribe(
                     (result: any) => {
@@ -188,7 +188,7 @@ export class UsuarioRolesComponent implements OnInit {
 
     confirmarActivarDesactivar() {
       this.loading = true;
-      console.log("desactivar: ", this.rolRegistro);
+    //   console.log("desactivar: ", this.rolRegistro);
       this.rolService.gestionarRolEstado(this.rolRegistro).subscribe(
           (result: any) => {
               this.messageService.add({ key: 'tc',  severity: 'success', summary: 'Desactivación Exitosa', detail: 'El rol se ha desactivado correctamente del sistema.', life: 3000});

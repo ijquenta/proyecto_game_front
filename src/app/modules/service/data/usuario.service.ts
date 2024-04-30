@@ -23,13 +23,13 @@ export class UsuarioService {
     }
 
     modificarRol(criterio: any){
-        console.log("Service Modificar Rol", criterio);
+        // console.log("Service Modificar Rol", criterio);
         let registroModRol = new Rol();
-        console.log("datos service->", registroModRol);
+        // console.log("datos service->", registroModRol);
         return this.http.post(`${API_URL}/modificarRol`, registroModRol);
     }
     eliminarRol(criterio: any){
-        console.log("Service Eliminar Rol", criterio);
+        // console.log("Service Eliminar Rol", criterio);
         return this.http.post(`${API_URL}/eliminarRol`, criterio);
     }
 

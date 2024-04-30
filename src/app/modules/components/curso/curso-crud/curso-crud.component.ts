@@ -172,7 +172,7 @@ export class CursoCrudComponent implements OnInit {
         this.cursoService.listaCursoCombo().subscribe(
             (result: any) => {
                 this.tipoCurso = result;
-                console.log("Combo TipoCurso", this.tipoCurso)
+                // console.log("Combo TipoCurso", this.tipoCurso)
             }
         )
     }
@@ -188,7 +188,7 @@ export class CursoCrudComponent implements OnInit {
                 this.listaCursosMaterias = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 1);
                 this.loading = false;
                 this.spinner.hide();
-                console.log("Lista Cursos Materia", this.listaCursosMaterias)
+                // console.log("Lista Cursos Materia", this.listaCursosMaterias)
             },
             (error: any) => {
                 console.error("Error: ", error);
@@ -198,7 +198,7 @@ export class CursoCrudComponent implements OnInit {
     }
 
     onSelectCurso(data: any){
-        console.log("id nivel curso: ", data.value.curnivel);
+        // console.log("id nivel curso: ", data.value.curnivel);
         const nivel = parseInt(data.value.curnivel);
 
         const criterio = {
@@ -228,7 +228,7 @@ export class CursoCrudComponent implements OnInit {
     }
 
     onSelectPersona(data: any){
-        console.log("Datos del rol elejido: ", data.value);
+        // console.log("Datos del rol elejido: ", data.value);
         const nombre = data.value.rolnombre;
         const criterio = {
             rolnombre: nombre
@@ -238,7 +238,7 @@ export class CursoCrudComponent implements OnInit {
     }
 
     seleccionarPersona(data: any){
-        console.log("rol Nombre: ", data);
+        // console.log("rol Nombre: ", data);
         const nombre = data;
         const criterio = {
             rolnombre: nombre
@@ -252,7 +252,7 @@ export class CursoCrudComponent implements OnInit {
 
             (result: any) => {
                 this.tipoPersona = result;
-                console.log("Tipo Persona: ", this.tipoPersona)
+                // console.log("Tipo Persona: ", this.tipoPersona)
 
             }
         )
@@ -261,14 +261,14 @@ export class CursoCrudComponent implements OnInit {
     editarCursoMateria(data: any){
         // this.cursoForm.reset();
         this.cursoMateria = { ...data };
-        console.log("edi: ", this.cursoMateria)
+        // console.log("edi: ", this.cursoMateria)
         this.setData();
         this.cursoMateriaDialog = true;
         this.optionCursoMateria = false;
     }
 
     setData(){
-        console.log("set1: ", this.cursoForm.value)
+        // console.log("set1: ", this.cursoForm.value)
 
         const curnivel = {
             curnivel: this.cursoMateria.curnivel
@@ -300,11 +300,11 @@ export class CursoCrudComponent implements OnInit {
             curmatfecfin: this.cursoMateria.curmatfecfin,
         })
 
-        console.log("set: ", this.cursoForm.value)
+        // console.log("set: ", this.cursoForm.value)
     }
     obtenerBody(){
         this.cursoMateria = new CursoMateria();
-        console.log("cursoForm body: ", this.cursoForm.value);
+        // console.log("cursoForm body: ", this.cursoForm.value);
         this.cursoMateria.curmatid = this.cursoForm.value.curmatid;
         this.cursoMateria.curid = this.cursoForm.value.tipoCurso.curid;
         this.cursoMateria.matid = this.cursoForm.value.tipoMateria.matid;
@@ -323,7 +323,7 @@ export class CursoCrudComponent implements OnInit {
     guardarCursoMateria(){
 
         if(this.cursoForm.invalid){
-            console.log("cursoForm.value: ", this.cursoForm.value);
+            // console.log("cursoForm.value: ", this.cursoForm.value);
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
             return Object.values(this.cursoForm.controls).forEach(control=>{
                 control.markAllAsTouched();
@@ -334,7 +334,7 @@ export class CursoCrudComponent implements OnInit {
         this.obtenerBody();
 
         if(this.optionCursoMateria){
-            console.log("casi new: ", this.cursoMateria)
+            // console.log("casi new: ", this.cursoMateria)
             this.cursoService.insertarCursoMateria(this.cursoMateria).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia Insertardo', life: 3000 });
@@ -359,7 +359,7 @@ export class CursoCrudComponent implements OnInit {
             );
         }
         else{
-            console.log("casi mod: ", this.cursoMateria)
+            // console.log("casi mod: ", this.cursoMateria)
             this.cursoService.modificarCursoMateria(this.cursoMateria).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa', detail: 'Modificación Curso-Materia Existosamente!', life: 3000 });
@@ -377,28 +377,28 @@ export class CursoCrudComponent implements OnInit {
     eliminarCursoMateria(data: CursoMateria) {
         this.eliminarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
-        console.log("CursoMateria:", this.cursoMateria);
+        // console.log("CursoMateria:", this.cursoMateria);
     }
 
     desactivarCursoMateria(data: CursoMateria) {
         this.desactivarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
         this.cursoMateria.tipo = 2;
-        console.log("CursoMateria:", this.cursoMateria);
+        // console.log("CursoMateria:", this.cursoMateria);
     }
 
     activarCursoMateria(data: CursoMateria) {
         this.activarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
         this.cursoMateria.tipo = 3;
-        console.log("CursoMateria:", this.cursoMateria);
+        // console.log("CursoMateria:", this.cursoMateria);
     }
     confirmarEliminar() {
-        console.log("confirmarEliminar: ", this.cursoMateria)
+        // console.log("confirmarEliminar: ", this.cursoMateria)
         const criterio = {
             curmatid: this.cursoMateria.curmatid
         }
-        console.log("criterio: ", criterio)
+        // console.log("criterio: ", criterio)
         this.cursoService.eliminarCursoMateria(criterio).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia Eliminado', life: 3000 });
@@ -415,7 +415,7 @@ export class CursoCrudComponent implements OnInit {
     }
 
     confirmarActivarDesactivar() {
-        console.log("confirmarActivarDesactivar: ", this.cursoMateria)
+        // console.log("confirmarActivarDesactivar: ", this.cursoMateria)
         // const criterio = {
         //     curmatid: this.cursoMateria.curmatid
         // }

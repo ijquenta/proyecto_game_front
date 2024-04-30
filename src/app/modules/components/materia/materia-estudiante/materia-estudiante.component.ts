@@ -104,7 +104,7 @@ export class MateriaEstudianteComponent implements OnInit{
                     this.spinner.show();
                     this.estudianteService.obtenerMateriasInscritas(this.usuario).subscribe(data => {
                         this.inscripciones = data;
-                        console.log("mis materias", data);
+                        // console.log("mis materias", data);
                         this.spinner.hide();
                     },
                     (error => {

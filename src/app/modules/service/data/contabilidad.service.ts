@@ -49,7 +49,7 @@ export class ContabilidadService {
         //     return;
         // }
 
-        console.log("rpt", criterio)
+        // console.log("rpt", criterio)
         this.spinner.show();
         this.http.post(`${API_URL}/rptCursoMateriaContabilidad`, criterio, httpOptions)
             .subscribe(

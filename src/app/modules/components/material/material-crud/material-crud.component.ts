@@ -147,10 +147,10 @@ export class MaterialCrudComponent implements OnInit {
             this.texto.texdocumento = this.nombreArchivo;
             this.texto.textipo = this.textoForm.value.textipo;
             this.texto.texusureg = this.usuario.usuname;
-            console.log("this.texto: ", this.texto)
+            // console.log("this.texto: ", this.texto)
             this.materialService.insertarTexto(this.texto).subscribe(
                 (result: any) => {
-                    console.log("result", result);
+                    // console.log("result", result);
                     this.messageService.add({ severity: 'success', summary: '!Exito¡', detail: result['valor'] });
                     this.listarTextos();
                     this.textoForm.reset();
@@ -246,7 +246,7 @@ export class MaterialCrudComponent implements OnInit {
         this.materialService.listarTexto().subscribe((data: any) => {
             this.textos = data;
             this.loading = false;
-            console.log("Listar Textos:", this.textos)
+            // console.log("Listar Textos:", this.textos)
         })
     }
 
@@ -258,7 +258,7 @@ export class MaterialCrudComponent implements OnInit {
 
     modificarPersona(data: Persona) {
         this.persona = { ...data };
-        console.log("modificar Persona: ", this.persona);
+        // console.log("modificar Persona: ", this.persona);
         this.personaDialog = true;
         this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(this.persona.perestcivil, this.persona.estadocivilnombre);
         this.TipoGeneroSeleccionado = new TipoGenero(this.persona.pergenero, this.persona.generonombre);
@@ -276,16 +276,16 @@ export class MaterialCrudComponent implements OnInit {
             this.personaRegistro.tipo = 1;
             this.personaRegistro.perid = null;
             this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'admin';
+            this.personaRegistro.perusureg = this.usuario.usuname;;
             this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
             this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            console.log("personaRegistro: ", this.personaRegistro);
+            // console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.gestionarPersona(this.personaRegistro).subscribe(
                 (data: any) => {
-                    console.log("Gestionar Persona: ", data);
+                    // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
@@ -301,16 +301,16 @@ export class MaterialCrudComponent implements OnInit {
             this.personaRegistro = { ...this.persona };
             this.personaRegistro.tipo = 2;
             this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'admin';
+            this.personaRegistro.perusureg = this.usuario.usuname;
             this.personaRegistro.perestcivil = this.TipoEstadoCivilSeleccionado.estadocivilid;
             this.personaRegistro.pertipodoc = this.TipoDocumentoSeleccionado.tipodocid;
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            console.log("personaRegistro: ", this.personaRegistro);
+            // console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.gestionarPersona(this.personaRegistro).subscribe(
                 (data: any) => {
-                    console.log("Gestionar Persona: ", data);
+                    // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
@@ -358,12 +358,12 @@ export class MaterialCrudComponent implements OnInit {
         this.optionDialog = true;
     }
     eliminarPersona() {
-        console.log("eliminarPersona: ", this.persona);
+        // console.log("eliminarPersona: ", this.persona);
         this.personaRegistro = { ...this.persona };
         this.personaRegistro.tipo = 3;
         this.personaService.gestionarPersona(this.personaRegistro).subscribe(
             (data: any) => {
-                console.log("Gestionar Persona: ", data);
+                // console.log("Gestionar Persona: ", data);
                 this.eliminarPersonaDialog = false;
                 this.optionDialog = false;
                 this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });

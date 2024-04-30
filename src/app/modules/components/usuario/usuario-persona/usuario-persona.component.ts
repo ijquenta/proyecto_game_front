@@ -398,7 +398,7 @@ export class UsuarioPersonaComponent implements OnInit {
                     control.markAsDirty();
                 })
             }
-            console.log("Archivos: ", this.archivos);
+            // console.log("Archivos: ", this.archivos);
             if (!this.archivos?.currentFiles && this.personaForm.valid) {
                 this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Registro sin imagen.', life: 3000 });
                 this.tipoUpdate = 4;

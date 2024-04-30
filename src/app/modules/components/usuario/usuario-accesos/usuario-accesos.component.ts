@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
+import { Usuario } from 'src/app/modules/models/usuario';
+import { AuthService } from 'src/app/services/auth.service';
 
 // Modelos
 import { Rol } from 'src/app/modules/models/rol';
@@ -37,13 +39,24 @@ export class UsuarioAccesosComponent implements OnInit {
     statuses: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
     camposVacios: boolean = false;
+    usuario = new Usuario;
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
-        public rolService: RolService
+        public rolService: RolService,
+        private authService: AuthService
     ) {}
 
     ngOnInit() {
+
+
+        this.authService.usuario$.subscribe((user => {
+            if (user) {
+                if (Array.isArray(user) && user.length > 0) {
+                    this.usuario = user[0];
+                }
+            }
+        }));
         // console.log('ngOnInit: ');
         this.ListarRoles();
 
@@ -61,12 +74,12 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     registroRol(){
         if(this.optionRol){
-            console.log("registroRol: ", this.rol);
+            // console.log("registroRol: ", this.rol);
             this.rolRegistro = { ...this.rol };
             this.rolRegistro.tipo = 1;
             this.rolRegistro.rolid = null;
             this.rolRegistro.rolestado = 1;
-            this.rolRegistro.rolusureg = 'admin';
+            this.rolRegistro.rolusureg = this.usuario.usuname;
             this.rolService.gestionarRol(this.rolRegistro).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Registro Exitoso', detail: 'El rol se registró correctamente en el sistema.', life: 3000 });
@@ -82,12 +95,12 @@ export class UsuarioAccesosComponent implements OnInit {
                 }
             );
         }else{
-            console.log("registroRol: ", this.rol);
+            // console.log("registroRol: ", this.rol);
             this.rolRegistro = { ...this.rol };
             this.rolRegistro.tipo = 2;
             // this.rolRegistro.rolid = null;
             this.rolRegistro.rolestado = 1;
-            this.rolRegistro.rolusureg = 'admin';
+            this.rolRegistro.rolusureg = this.usuario.usuname;
             this.rolService.gestionarRol(this.rolRegistro).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Registro Exitoso', detail: 'El rol se modificó correctamente en el sistema.', life: 3000 });
@@ -212,7 +225,7 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     eliminarRol(data: Rol){
         this.rolRegistro = { ...data };
-        console.log("registroRol: ", this.rolRegistro);
+        // console.log("registroRol: ", this.rolRegistro);
         this.rolRegistro.tipo = 3;
         this.eliminarRolDialog = true;
 
