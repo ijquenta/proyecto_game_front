@@ -57,7 +57,9 @@
                     </ng-template>
                 </p-table>
                 <div *ngIf="verNotasClicked">
-
+                    <p-dialog [(visible)]="verNotasClicked" header="Lista de estudiantes" [modal]="true" class="p-fluid"
+                    [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
+                    >
                     <p-table #dt2 [value]="listarNotaEstudianteCurso" responsiveLayout="scroll" class="m-2"
                         [loading]="loading2" styleClass="p-datatable-gridlines"
                         [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']">
@@ -124,6 +126,7 @@
                             </tr>
                         </ng-template>
                     </p-table>
+                    </p-dialog>
                 </div>
             </ng-container>
             <p-dialog [(visible)]="notaRegistroDialog" [style]="{width: '50%'}" header="Nota" [modal]="true"

@@ -1,6 +1,7 @@
 export class InscripcionRegistro {
     insid?: number = 0;
     matrid?: number | null = null;
+    tipmatrgestion?: string | null = null;
     peridestudiante?: number | null = null;
     pagid?: number | null = null;
     insusureg?: string | null = null;
