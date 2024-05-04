@@ -7,7 +7,9 @@
             <hr>
             <p-table [loading]="loading" #dt dataKey="perid" [value]="personas" [rows]="10" [paginator]="true"
                 [rowsPerPageOptions]="[5,10,20]"
-                [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']">
+                [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']"
+                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
+                >
                 <ng-template pTemplate="caption">
 
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -163,7 +165,9 @@
 
 
 
-    <p-dialog [(visible)]="personaNuevoDialog" header="Persona" [modal]="true" class="p-fluid">
+    <p-dialog [(visible)]="personaNuevoDialog" header="Persona" [modal]="true" class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
+    >
         <form [formGroup]="personaForm" novalidate>
             <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el
                 sistema.</p>
