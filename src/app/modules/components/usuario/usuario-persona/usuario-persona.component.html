@@ -2,33 +2,20 @@
     <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span
-                    class="text-primary-600"> Personas </span> </div>
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Personas </span> </div>
             <hr>
-            <p-table [loading]="loading" #dt dataKey="perid" [value]="personas" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[5,10,20]"
-                [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']"
-                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
-                >
+            <p-table [loading]="loading" #dt dataKey="perid" [value]="personas" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5,10,20]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}">
                 <ng-template pTemplate="caption">
-
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <div>
-                            <button pButton pRipple label="Nuevo Persona" icon="pi pi-plus"
-                                class="p-button-primary mr-2" (click)="NuevoPersona()"
-                                pTooltip="Registrar persona nueva" tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
-                                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
-                                class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                            <button pButton pRipple label="Nuevo Persona" icon="pi pi-user-plus" class="p-button-primary mr-2" (click)="NuevoPersona()" pTooltip="Registrar persona" tooltipPosition="top"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="top"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="top"></button>
                         </div>
 
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto"
-                                pTooltip="Buscar por nombre completo, número de documento y genero"
-                                tooltipPosition="left" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por nombre completo, número de documento y genero" tooltipPosition="top" />
                         </span>
                     </div>
                 </ng-template>
@@ -36,74 +23,46 @@
                     <tr>
                         <th style="width: 5rem"></th>
                         <th></th>
+                        <th></th>
                         <th pSortableColumn="perapepat">Apellido Paterno<p-sortIcon field="perapepat"></p-sortIcon></th>
                         <th pSortableColumn="perapemat">Apellido Materno<p-sortIcon field="perapemat"></p-sortIcon></th>
                         <th pSortableColumn="pernombres">Nombres<p-sortIcon field="pernombres"></p-sortIcon></th>
                         <th pSortableColumn="pernrodoc">Nro. Documento<p-sortIcon field="pernrodoc"></p-sortIcon></th>
-                        <th pSortableColumn="perfecnac">Fecha de Nacimiento<p-sortIcon field="pernrodoc"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="pergenero">Género<p-sortIcon field="pergenero"></p-sortIcon></th>
-                        <th>Registrado por:</th>
-                        <th>Modificado por:</th>
-                        <th>Estado</th>
-                        <th>Opciones</th>
+                        <th pSortableColumn="perfecnac">Fecha de Nacimiento<p-sortIcon field="pernrodoc"></p-sortIcon></th>
+                        <th pSortableColumn="pergenero">Género <p-sortIcon field="pergenero"></p-sortIcon></th>
+                        <th pSortableColumn="perfecreg">Registrado <p-sortIcon field="perfecreg"></p-sortIcon></th>
+                        <th pSortableColumn="perfecmod">Modificado <p-sortIcon field="perfecmod"></p-sortIcon></th>
+                        <th pSortableColumn="perestado"> Estado <p-sortIcon field="perestado"></p-sortIcon></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-persona let-expanded="expanded">
                     <tr>
-                        <td> <button type="button" pButton pRipple [pRowToggler]="persona"
-                                class="p-button-text p-button-rounded p-button-plain"
-                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                                pTooltip="Mostrar más información de la persona" tooltipPosition="right"></button> </td>
-                        <td>
-                            <div *ngIf="persona.perfoto == null">
-                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
-                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                            </div>
-                            <div *ngIf="persona.perfoto != null">
-                                <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge"
-                                    shape="circle"></p-avatar>
-                            </div>
-                        </td>
-                        <td> <ng-container *ngIf="persona.perapepat; else noRegistro"> {{persona.perapepat}}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.perapemat; else noRegistro"> {{persona.perapemat}}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.pernombres; else noRegistro"> {{persona.pernombres}}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.pernrodoc; else noRegistro"> {{persona.pernrodoc}}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.perfecnac; else noRegistro"> {{persona.perfecnac |
-                                date:'dd/MM/yyyy':'UTC'}} </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container
-                                    *ngIf="persona.perusureg"> <p-chip>
-                                        <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div>
-                                    </p-chip> </ng-container> </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container
-                                    *ngIf="persona.perusumod"> <p-chip>
-                                        <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div>
-                                    </p-chip> </ng-container> </ng-container> </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(persona.perestado)"
-                                [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag></td>
-
-                        <ng-template #noRegistro> <p-chip>
-                                <div class="p-2"> S/R </div>
-                            </p-chip> </ng-template>
+                        <td> <button type="button" pButton pRipple [pRowToggler]="persona" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Mostrar más información de la persona" tooltipPosition="right"></button> </td>
                         <td>
                             <div class="flex justify-content-center">
-                                <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" (click)="modificarPersona(persona)"
-                                    pTooltip="Modificar Persona" tooltipPosition="left"></button>
-                                <button *ngIf="persona.perestado == 1" pButton pRipple icon="fa-solid fa-eye-slash"
-                                    class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)"
-                                    pTooltip="Desactivar Persona" tooltipPosition="left"></button>
-                                <button *ngIf="persona.perestado == 0" pButton pRipple icon="fa-solid fa-eye"
-                                    class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)"
-                                    pTooltip="Activar Persona" tooltipPosition="left"></button>
+                                <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar Persona" tooltipPosition="top"></button>
+                                <button *ngIf="persona.perestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" (click)="confirmarEliminar(persona)" pTooltip="Desactivar Persona" tooltipPosition="top"></button>
+                                <button *ngIf="persona.perestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)" pTooltip="Activar Persona" tooltipPosition="top"></button>
                             </div>
                         </td>
+                        <td>
+                            <div *ngIf="persona.perfoto == null">
+                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                            </div>
+                            <div *ngIf="persona.perfoto != null">
+                                <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                            </div>
+                        </td>
+                        <td> <ng-container *ngIf="persona.perapepat; else noRegistro"> {{persona.perapepat}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perapemat; else noRegistro"> {{persona.perapemat}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.pernombres; else noRegistro"> {{persona.pernombres}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.pernrodoc; else noRegistro"> {{persona.pernrodoc}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perfecnac; else noRegistro"> {{persona.perfecnac | date:'dd/MM/yyyy':'UTC'}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container *ngIf="persona.perusureg"> <p-chip> <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div> </p-chip> </ng-container> </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container *ngIf="persona.perusumod"> <p-chip> <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div> </p-chip> </ng-container> </ng-container> </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(persona.perestado)" [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag></td>
+                        <ng-template #noRegistro> <p-chip> <div class="p-2"> S/R </div> </p-chip> </ng-template>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -118,317 +77,220 @@
                         <td colspan="7">
                             <p-table [value]="persona.datos" dataKey="percod">
                                 <ng-template pTemplate="header">
-                    <tr>
-                        <th>Domicilio</th>
-                        <th>Correo Electrónico</th>
-                        <th>Número de Celular</th>
-                        <th>Número de Teléfono</th>
-                        <th>Estado Civil</th>
-                        <th>País</th>
-                        <th>Ciudad</th>
+                                    <tr>
+                                        <th>Domicilio</th>
+                                        <th>Correo Electrónico</th>
+                                        <th>Número de Celular</th>
+                                        <th>Número de Teléfono</th>
+                                        <th>Estado Civil</th>
+                                        <th>País</th>
+                                        <th>Ciudad</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-datos>
+                                    <tr>
+                                        <td> <ng-container *ngIf="datos.perdirec; else noRegistro"> {{ datos.perdirec }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.peremail; else noRegistro"> {{ datos.peremail }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.percelular; else noRegistro"> {{ datos.percelular }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.pertelefono; else noRegistro"> {{ datos.pertelefono }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.estadocivilnombre; else noRegistro"> {{ datos.estadocivilnombre }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.paisnombre; else noRegistro"> {{ datos.paisnombre }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.ciudadnombre; else noRegistro"> {{ datos.ciudadnombre }} </ng-container> </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template #noRegistro> <p-chip> <div class="p-2"> S/R </div> </p-chip> </ng-template>
+                            </p-table>
+                        </td>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-datos>
-                    <tr>
-                        <td> <ng-container *ngIf="datos.perdirec; else noRegistro"> {{ datos.perdirec }} </ng-container>
-                        </td>
-                        <td> <ng-container *ngIf="datos.peremail; else noRegistro"> {{ datos.peremail }} </ng-container>
-                        </td>
-                        <td> <ng-container *ngIf="datos.percelular; else noRegistro"> {{ datos.percelular }}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="datos.pertelefono; else noRegistro"> {{ datos.pertelefono }}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="datos.estadocivilnombre; else noRegistro"> {{ datos.estadocivilnombre
-                                }} </ng-container> </td>
-                        <td> <ng-container *ngIf="datos.paisnombre; else noRegistro"> {{ datos.paisnombre }}
-                            </ng-container> </td>
-                        <td> <ng-container *ngIf="datos.ciudadnombre; else noRegistro"> {{ datos.ciudadnombre }}
-                            </ng-container> </td>
-                    </tr>
-                </ng-template>
-                <ng-template #noRegistro> <p-chip>
-                        <div class="p-2"> S/R </div>
-                    </p-chip> </ng-template>
             </p-table>
-            </td>
-            </tr>
-            </ng-template>
-            </p-table>
-
-
-
-
         </div>
     </div>
 </div>
 
 
-
-
-    <p-dialog [(visible)]="personaNuevoDialog" header="Persona" [modal]="true" class="p-fluid"
-    [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
-    >
-        <form [formGroup]="personaForm" novalidate>
-            <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el
-                sistema.</p>
-            <hr>
-            <div class="grid p-fluid mt-3">
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="apellidoPaterno" pInputText formControlName="pf_apePat"
-                            [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_apePat').touched, 'valid-field': this.personaForm.get('pf_apePat').valid}">
-                        <label for="apellidoPaterno">Apellido Paterno</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_apePat').invalid && personaForm.get('pf_apePat').dirty">
-                        <span *ngIf="personaForm.get('pf_apePat').errors?.required">El apellido paterno es
-                            requerido.</span>
-                        (*)
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_apePat')?.valid"> El apellido es valido.
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="apellidoMaterno" pInputText formControlName="pf_apeMat">
-                        <label for="apellidoMaterno">Apellido Materno</label>
-                    </span>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="nombres" pInputText formControlName="pf_nombres"
-                            [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_nombres').touched, 'valid-field': this.personaForm.get('pf_nombres').valid}">
-                        <label for="nombres">Nombres</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_nombres').invalid && personaForm.get('pf_nombres').dirty">
-                        <span *ngIf="personaForm.get('pf_nombres').errors?.required">El/los nombre(s) es
-                            requerido.</span>
-                        (*)
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_nombres')?.valid"> El/los nombre(s) es
-                        valido. </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body"
-                            [options]="TipoDocumento" formControlName="pf_tipDoc" optionLabel="tipodocnombre"
-                            [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipDoc').valid}"> </p-dropdown>
-                        <label for="tipoDocumento">Tipo Documento</label>
-                    </span>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_tipDoc').valid">
-                        El tipo de documento es valido.
-                    </small>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_tipDoc').invalid && personaForm.get('pf_tipDoc').touched">
-                        <span *ngIf="personaForm.get('pf_tipDoc').errors?.required">El tipo de documento es
-                            requerido.</span>
-                        (*)
-                    </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="numeroDocumento" pInputText formControlName="pf_nroDoc"
-                            [ngClass]="{ 'ng-dirty': personaForm.get('pf_nroDoc').touched, 'valid-field': personaForm.get('pf_nroDoc').valid}">
-                        <label for="numeroDocumento">Número Documento</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_nroDoc').invalid && personaForm.get('pf_nroDoc').dirty">
-                        <span *ngIf="personaForm.get('pf_nroDoc').errors?.required">El número de documento es requerido.
-                            (*)</span>
-                        <span *ngIf="personaForm.get('pf_nroDoc').errors?.documentoExistente">Este número de documento
-                            ya existe.</span>
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_nroDoc')?.valid"> El número de documento
-                        es válido. </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy"
-                            formControlName="pf_fecNac"
-                            [ngClass]="{ 'ng-dirty': personaForm.get('pf_fecNac').touched, 'valid-field': personaForm.get('pf_fecNac').valid }">
-                        </p-calendar>
-                        <label for="fechaNacimiento">Fecha Nacimiento</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_fecNac').invalid && personaForm.get('pf_fecNac').dirty">
-                        <span *ngIf="personaForm.get('pf_fecNac').errors?.required">La fecha de nacimiento es requerida.
-                            (*)</span>
-                        <span *ngIf="personaForm.get('pf_fecNac').errors?.edadMinima">La fecha de nacimiento no es
-                            válida, la persona debe ser mayor de 15 años. </span>
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_fecNac')?.valid"> La fecha de nacimiento
-                        es válida. </small>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="numeroCelular" pInputText formControlName="pf_celular"
-                            [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_celular').touched, 'valid-field': this.personaForm.get('pf_celular').valid}">
-                        <label for="numeroCelular">Número de Celular</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_celular').invalid && personaForm.get('pf_celular').dirty">
-                        <span *ngIf="personaForm.get('pf_celular').errors?.required">El número de celular es
-                            requerido.</span>
-                        (*)
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_celular')?.valid"> El número de celular es
-                        valido. </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="numeroTelefono" pInputText formControlName="pf_telefono">
-                        <label for="numeroTelefono">Número de Teléfono</label>
-                    </span>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <input type="text" id="correoElectronico" pInputText formControlName="pf_email"
-                            [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_email').touched, 'valid-field': this.personaForm.get('pf_email').valid}">
-                        <label for="correoElectronico">Correo Electrónico</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_email').invalid && personaForm.get('pf_email').dirty">
-                        <span *ngIf="personaForm.get('pf_email').errors?.required">El correo electrónico es requerido.
-                            (*)</span>
-                        <span *ngIf="personaForm.get('pf_email').errors?.pattern">El formato del correo electrónico es
-                            inválido. </span>
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_email')?.valid"> El correo electrónico es
-                        válido.</small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body" [options]="TipoGenero"
-                            formControlName="pf_tipGen" optionLabel="generonombre"
-                            [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipGen').valid}"></p-dropdown>
-                        <label for="tipoGenero">Tipo Género</label>
-                    </span>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_tipGen').valid">
-                        El tipo de genero es valido.
-                    </small>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_tipGen').invalid && personaForm.get('pf_tipGen').touched">
-                        <span *ngIf="personaForm.get('pf_tipGen').errors?.required">El tipo de genero es
-                            requerido.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown id="tipoPais" [autoDisplayFirst]="false" (onChange)="onChangeTipoPais($event)"
-                            appendTo="body" [options]="TipoPais" formControlName="pf_tipPais" optionLabel="paisnombre"
-                            [filter]="true" filterBy="paisnombre"
-                            [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipPais').valid}"> </p-dropdown>
-                        <label for="tipoPais">Pais</label>
-                    </span>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_tipPais').valid">
-                        El Pais es valido.
-                    </small>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_tipPais').invalid && personaForm.get('pf_tipPais').touched">
-                        <span *ngIf="personaForm.get('pf_tipPais').errors?.required">El Pais es requerido.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body" [options]="TipoCiudad"
-                            formControlName="pf_tipCiudad" optionLabel="ciudadnombre"
-                            [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipCiudad').valid}"></p-dropdown>
-                        <label for="tipoCiudad">Ciudad</label>
-                    </span>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_tipCiudad').valid">
-                        La ciudad es valido.
-                    </small>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_tipCiudad').invalid && personaForm.get('pf_tipCiudad').touched">
-                        <span *ngIf="personaForm.get('pf_tipCiudad').errors?.required">La ciudad es requerido.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body"
-                            [options]="TipoEstadoCivil" formControlName="pf_tipoEstCivil"
-                            optionLabel="estadocivilnombre"
-                            [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipoEstCivil').valid}"></p-dropdown>
-                        <label for="tipoEstadoCivil">Estado Civil</label>
-                    </span>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_tipoEstCivil').valid">
-                        El estado civil es valido.
-                    </small>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_tipoEstCivil').invalid && personaForm.get('pf_tipoEstCivil').touched">
-                        <span *ngIf="personaForm.get('pf_tipoEstCivil').errors?.required">El estado civil es
-                            requerido.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <span class="p-float-label">
-                        <textarea inputId="textarea" rows="1" cols="30" formControlName="pf_direc" appendTo="body"
-                            pInputTextarea
-                            [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_direc').touched, 'valid-field': this.personaForm.get('pf_direc').valid}"></textarea>
-                        <label for="textarea">Dirección de Domicilio</label>
-                    </span>
-                    <small class="p-error block"
-                        *ngIf="personaForm.get('pf_direc').invalid && personaForm.get('pf_direc').dirty">
-                        <span *ngIf="personaForm.get('pf_direc').errors?.required">La dirección de domicilio es
-                            requerido.</span>
-                        (*)
-                    </small>
-                    <small class="p-success block" *ngIf="personaForm.get('pf_direc')?.valid"> La dirección es valida.
-                    </small>
-                </div>
+<p-dialog [(visible)]="personaNuevoDialog" header="Persona" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
+    <form [formGroup]="personaForm" novalidate>
+        <p>Debera ingresar todos los <mark>requeridos (*)</mark> para realizar el registro correctamente en el sistema.</p>
+        <hr>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="apellidoPaterno" pInputText formControlName="pf_apePat" [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_apePat').touched, 'valid-field': this.personaForm.get('pf_apePat').valid}">
+                    <label for="apellidoPaterno">Apellido Paterno</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_apePat').invalid && personaForm.get('pf_apePat').dirty">
+                    <span *ngIf="personaForm.get('pf_apePat').errors?.required">El apellido paterno es requerido.</span> (*)
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_apePat')?.valid"> El apellido es valido. </small>
             </div>
-            <div class="field col-12">
-                <p-fileUpload #fileUpload mode="advanced" chooseLabel="Elegir imagen" name="demo[]"
-                    url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="3000000"
-                    (onSelect)="onUpload($event)" previewWidth="100" [showUploadButton]="false"
-                    [showCancelButton]="false" cancelLabel="Cancelar"
-                    [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
-                    [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'"
-                    [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
-                    [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"></p-fileUpload>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="apellidoMaterno" pInputText formControlName="pf_apeMat">
+                    <label for="apellidoMaterno">Apellido Materno</label>
+                </span>
             </div>
-        </form>
-        <ng-template pTemplate="footer">
-            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-                (click)="ocultarDialog()"></button>
-            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                (click)="enviarFormulario()"></button>
-        </ng-template>
-    </p-dialog>
 
-    <p-dialog [(visible)]="eliminarPersonaDialog" header="Confirmar" [modal]="true">
-        <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3"
-                style="font-size: 2rem"></i> <span *ngIf="persona">Esta seguro de desactivar a la persona: <b>
-                    {{persona.pernomcompleto}}</b>?</span> </div>
-        <ng-template pTemplate="footer">
-            <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                (click)="eliminarPersonaDialog = false"></button>
-            <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-                (click)="eliminarPersona()"></button>
-        </ng-template>
-    </p-dialog>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="nombres" pInputText formControlName="pf_nombres" [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_nombres').touched, 'valid-field': this.personaForm.get('pf_nombres').valid}">
+                    <label for="nombres">Nombres</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_nombres').invalid && personaForm.get('pf_nombres').dirty">
+                    <span *ngIf="personaForm.get('pf_nombres').errors?.required">El/los nombre(s) es requerido.</span> (*)
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_nombres')?.valid"> El/los nombre(s) es valido. </small>
+            </div>
 
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" appendTo="body" [options]="TipoDocumento" formControlName="pf_tipDoc" optionLabel="tipodocnombre" [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipDoc').valid}"> </p-dropdown>
+                    <label for="tipoDocumento">Tipo Documento</label>
+                </span>
+                <small class="p-success block" *ngIf="personaForm.get('pf_tipDoc').valid">
+                    El tipo de documento es valido.
+                </small>
+                <small class="p-error block" *ngIf="personaForm.get('pf_tipDoc').invalid && personaForm.get('pf_tipDoc').touched">
+                    <span *ngIf="personaForm.get('pf_tipDoc').errors?.required">El tipo de documento es requerido.</span> (*)
+                </small>
+            </div>
 
-    <p-dialog [(visible)]="activarPersonaDialog" header="Confirmar" [modal]="true">
-        <div class="flex align-items-center justify-content-center">
-            <i class="pi pi-check" style="font-size: 2rem"></i>
-            <span *ngIf="persona">Esta seguro de activar a la persona: <b> {{persona.pernomcompleto}}</b>?</span>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="numeroDocumento" pInputText formControlName="pf_nroDoc" [ngClass]="{ 'ng-dirty': personaForm.get('pf_nroDoc').touched, 'valid-field': personaForm.get('pf_nroDoc').valid}">
+                    <label for="numeroDocumento">Número Documento</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_nroDoc').invalid && personaForm.get('pf_nroDoc').dirty">
+                    <span *ngIf="personaForm.get('pf_nroDoc').errors?.required">El número de documento es requerido. (*)</span>
+                    <span *ngIf="personaForm.get('pf_nroDoc').errors?.documentoExistente">Este número de documento ya existe.</span>
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_nroDoc')?.valid"> El número de documento es válido. </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-calendar id="fechaNacimiento" appendTo="body" dateFormat="dd/mm/yy" formControlName="pf_fecNac" [ngClass]="{ 'ng-dirty': personaForm.get('pf_fecNac').touched, 'valid-field': personaForm.get('pf_fecNac').valid }"> </p-calendar>
+                    <label for="fechaNacimiento">Fecha Nacimiento</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_fecNac').invalid && personaForm.get('pf_fecNac').dirty">
+                    <span *ngIf="personaForm.get('pf_fecNac').errors?.required">La fecha de nacimiento es requerida. (*)</span>
+                    <span *ngIf="personaForm.get('pf_fecNac').errors?.edadMinima">La fecha de nacimiento no es válida, la persona debe ser mayor de 15 años. </span>
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_fecNac')?.valid"> La fecha de nacimiento es válida. </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="numeroCelular" pInputText formControlName="pf_celular" [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_celular').touched, 'valid-field': this.personaForm.get('pf_celular').valid}">
+                    <label for="numeroCelular">Número de Celular</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_celular').invalid && personaForm.get('pf_celular').dirty">
+                    <span *ngIf="personaForm.get('pf_celular').errors?.required">El número de celular es requerido.</span> (*)
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_celular')?.valid"> El número de celular es valido. </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="numeroTelefono" pInputText formControlName="pf_telefono">
+                    <label for="numeroTelefono">Número de Teléfono</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input type="text" id="correoElectronico" pInputText formControlName="pf_email" [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_email').touched, 'valid-field': this.personaForm.get('pf_email').valid}">
+                    <label for="correoElectronico">Correo Electrónico</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_email').invalid && personaForm.get('pf_email').dirty">
+                    <span *ngIf="personaForm.get('pf_email').errors?.required">El correo electrónico es requerido. (*)</span>
+                    <span *ngIf="personaForm.get('pf_email').errors?.pattern">El formato del correo electrónico es inválido. </span>
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_email')?.valid"> El correo electrónico es válido.</small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoGenero" [autoDisplayFirst]="false" appendTo="body" [options]="TipoGenero" formControlName="pf_tipGen" optionLabel="generonombre" [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipGen').valid}"></p-dropdown>
+                    <label for="tipoGenero">Tipo Género</label>
+                </span>
+                <small class="p-success block" *ngIf="personaForm.get('pf_tipGen').valid"> El tipo de genero es valido. </small>
+                <small class="p-error block" *ngIf="personaForm.get('pf_tipGen').invalid && personaForm.get('pf_tipGen').touched">
+                    <span *ngIf="personaForm.get('pf_tipGen').errors?.required">El tipo de genero es requerido.</span> (*)
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoPais" [autoDisplayFirst]="false" (onChange)="onChangeTipoPais($event)" appendTo="body" [options]="TipoPais" formControlName="pf_tipPais" optionLabel="paisnombre" [filter]="true" filterBy="paisnombre" [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipPais').valid}"> </p-dropdown>
+                    <label for="tipoPais">Pais</label>
+                </span>
+                <small class="p-success block" *ngIf="personaForm.get('pf_tipPais').valid"> El Pais es valido. </small>
+                <small class="p-error block" *ngIf="personaForm.get('pf_tipPais').invalid && personaForm.get('pf_tipPais').touched">
+                    <span *ngIf="personaForm.get('pf_tipPais').errors?.required">El Pais es requerido.</span> (*)
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoCiudad" [autoDisplayFirst]="false" appendTo="body" [options]="TipoCiudad" formControlName="pf_tipCiudad" optionLabel="ciudadnombre" [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipCiudad').valid}"></p-dropdown>
+                    <label for="tipoCiudad">Ciudad</label>
+                </span>
+                <small class="p-success block" *ngIf="personaForm.get('pf_tipCiudad').valid"> La ciudad es valido. </small>
+                <small class="p-error block" *ngIf="personaForm.get('pf_tipCiudad').invalid && personaForm.get('pf_tipCiudad').touched">
+                    <span *ngIf="personaForm.get('pf_tipCiudad').errors?.required">La ciudad es requerido.</span> (*)
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body" [options]="TipoEstadoCivil" formControlName="pf_tipoEstCivil" optionLabel="estadocivilnombre" [ngClass]="{ 'valid-field': this.personaForm.get('pf_tipoEstCivil').valid}"></p-dropdown>
+                    <label for="tipoEstadoCivil">Estado Civil</label>
+                </span>
+                <small class="p-success block" *ngIf="personaForm.get('pf_tipoEstCivil').valid"> El estado civil es valido. </small>
+                <small class="p-error block" *ngIf="personaForm.get('pf_tipoEstCivil').invalid && personaForm.get('pf_tipoEstCivil').touched">
+                    <span *ngIf="personaForm.get('pf_tipoEstCivil').errors?.required">El estado civil es requerido.</span> (*)
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <textarea inputId="textarea" rows="1" cols="30" formControlName="pf_direc" appendTo="body" pInputTextarea [ngClass]="{ 'ng-dirty': this.personaForm.get('pf_direc').touched, 'valid-field': this.personaForm.get('pf_direc').valid}"></textarea>
+                    <label for="textarea">Dirección de Domicilio</label>
+                </span>
+                <small class="p-error block" *ngIf="personaForm.get('pf_direc').invalid && personaForm.get('pf_direc').dirty">
+                    <span *ngIf="personaForm.get('pf_direc').errors?.required">La dirección de domicilio es requerido.</span> (*)
+                </small>
+                <small class="p-success block" *ngIf="personaForm.get('pf_direc')?.valid"> La dirección es valida. </small>
+            </div>
+
         </div>
-        <ng-template pTemplate="footer">
-            <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                (click)="activarPersonaDialog = false"></button>
-            <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si"
-                (click)="activarPersona()"></button>
-        </ng-template>
-    </p-dialog>
+        <div class="field col-12">
+            <p-fileUpload #fileUpload mode="advanced" chooseLabel="Elegir imagen" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="3000000" (onSelect)="onUpload($event)" previewWidth="100" [showUploadButton]="false" [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'" [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'" [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"></p-fileUpload>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="enviarFormulario()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="eliminarPersonaDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> <span *ngIf="persona">Esta seguro de desactivar a la persona: <b> {{persona.pernomcompleto}}</b>?</span> </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="eliminarPersonaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="eliminarPersona()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="activarPersonaDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-check" style="font-size: 2rem"></i>
+        <span *ngIf="persona">Esta seguro de activar a la persona: <b> {{persona.pernomcompleto}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="activarPersonaDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="activarPersona()"></button>
+    </ng-template>
+</p-dialog>
