@@ -2,11 +2,10 @@
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="flex flex-column align-items-center justify-content-center">
         <div style="border-radius: 56px; padding: 0.3rem; background-image: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%), linear-gradient(0deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+            <div class="w-full surface-card py-6 px-5 sm:px-8" style="border-radius:53px">
                 <div class="text-center mb-5">
                     <div class="font-bold text-xl text-center">
                         <div class="text-center">
-                            <!-- <img src="assets/layout/images/logo_ibci.png" alt="logo" height="70" class="mb-1"> -->
                             <div class="font-bold text-xl text-900 d-flex align-items-center justify-content-center">
                                 <span><strong>SSGA</strong>Bolivia</span>
                                 <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia"
@@ -19,13 +18,12 @@
                     </div>
                 </div>
                 <div>
-                    <div *ngIf="status === 'success'">
+                    <!-- <div *ngIf="status === 'success'">
                         <p-messages [(value)]="messages" [enableService]="false" [closable]="false"></p-messages>
                         <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                            <button pButton pRipple label="Ingresar cuenta" class="w-full p-3 text-xl" [routerLink]="['/login']">
-                            </button>
+                            <button pButton pRipple label="Ingresar a su cuenta" class="w-full p-3 text-xl" [routerLink]="['/login']"> </button>
                         </div>
-                    </div>
+                    </div> -->
                         <div *ngIf="personaBool && !usuarioBool">
                             <form [formGroup]="personaForm" class="p-fluid">
                                 <div class="field">
@@ -69,8 +67,8 @@
                                             <li *ngIf="personaForm.get('pernrodoc').errors?.documentoExistente">Este número de documento
                                                 ya existe.</li>
                                         </ul>
-                                        <li class="p-success block" *ngIf="personaForm.get('pernrodoc')?.valid"> El número de documento
-                                            es válido. </li>
+                                        <ul class="p-success block" *ngIf="personaForm.get('pernrodoc')?.valid"> El número de documento
+                                            es válido. </ul>
                                 </div>
 
                                 <div class="field">
@@ -80,92 +78,138 @@
                                         class="w-full md:w-30rem" placeholder="Ingrese su correo electrónico" [ngClass]="{ 'ng-dirty': this.personaForm.get('peremail').touched, 'valid-field': this.personaForm.get('peremail').valid}">
                                     <ul class="p-error block list-none"
                                         *ngIf="personaForm.get('peremail').invalid && personaForm.get('peremail').dirty">
-                                        <il *ngIf="personaForm.get('peremail').errors?.required">El correo electrónico es requerido.
-                                            (*)</il>
-                                        <il *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es
-                                            inválido. </il>
+                                        <li *ngIf="personaForm.get('peremail').errors?.required">El correo electrónico es requerido.
+                                            (*)</li>
+                                        <li *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es
+                                            inválido. </li>
                                     </ul>
                                     <ul class="p-success block list-none" *ngIf="personaForm.get('peremail')?.valid"> El correo electrónico es
                                         válido.</ul>
                                 </div>
                                 <hr>
                                 <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                                    <button pButton pRipple icon="pi pi-times" class="w-full p-3 text-xl"
-                                        label="Cancelar" [routerLink]="['/login']">
-                                    </button>
-                                    <button pButton pRipple icon="pi pi-angle-right" class="w-full p-3 text-xl"
-                                        label="Siguiente" (click)="enviarFormulario()"></button>
+                                    <p-button
+                                            label="Cancelar"
+                                            icon="pi pi-times"
+                                            styleClass="p-button-primary w-10rem"
+                                            [routerLink]="['/login']"
+                                    ></p-button>
+                                    <p-button
+                                            label="Siguiente"
+                                            icon="pi pi-angle-right"
+                                            styleClass="p-button-warning w-10rem"
+                                            (click)="enviarFormulario()"
+                                    ></p-button>
                                 </div>
                             </form>
                         </div>
                         <div *ngIf="usuarioBool && !personaBool">
-                            <form [formGroup]="usuarioForm">
-                                <label for="name1" class="block text-900 text-xl font-medium mb-2">Usuario</label>
-                                <input id="name1" type="text" placeholder="Ingrese nombre" pInputText
-                                    class="w-full md:w-30rem mb-3" formControlName="usuname">
-                                <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
-                                <input id="email1" type="text" placeholder="Ingrese un correo electronico" pInputText
-                                    formControlName="usuemail" class="w-full md:w-30rem mb-3">
-                                <label for="tipoRol" class="block text-900 text-xl font-medium">Tipo Rol</label>
-                                <p-dropdown [options]="TipoRol" formControlName="tipoRol" optionLabel="rolnombre" [emptyFilterMessage]="'No se encontraron roles disponibles.'"
-                                    placeholder="Seleccionar rol" styleClass="w-full md:w-30rem mb-3"></p-dropdown>
-                                <label for="password1"
-                                    class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-                                <p-password id="password2" formControlName="usupassword"
-                                    placeholder="Ingrese una contraseña" [toggleMask]="true" [feedback]="false"
-                                    inputStyleClass="w-full p-3 md:w-30rem mb-2">
-                                </p-password>
-                                <ul class="p-error block list-none"
-                                    *ngIf="usuarioForm.get('usupassword').invalid && (usuarioForm.get('usupassword').dirty || usuarioForm.get('usupassword').touched)">
-                                    <li *ngIf="usuarioForm.get('usupassword').errors?.required">
-                                        La contraseña es obligatoria. <br>
-                                    </li>
-                                    <li *ngIf="usuarioForm.get('usupassword').errors?.minlength">
-                                        La contraseña debe tener al menos 8 caracteres. <br>
-                                    </li>
-                                    <li *ngIf="usuarioForm.get('usupassword').errors?.passwordStrength">
-                                        La contraseña debe incluir mayúsculas, minúsculas y números. <br>
-                                    </li>
-                                </ul>
-                                <!-- Mensaje de éxito -->
-                                <ul class="p-success block list-none"
-                                    *ngIf="usuarioForm.get('usupassword').valid && (usuarioForm.get('usupassword').dirty || usuarioForm.get('usupassword').touched)">
-                                    La contraseña es válida.
-                                </ul>
-                                <label for="password1" class="block text-900 font-medium text-xl mb-2">Confirmar
-                                    contraseña</label>
-                                <p-password id="password1" formControlName="usupasswordhash" [feedback]="false"
-                                    placeholder="Ingrese una contraseña" [toggleMask]="true"
-                                    inputStyleClass="w-full p-3 md:w-30rem mb-2"></p-password>
-                                    <!-- Mensajes de error para la confirmación de contraseña -->
-
-                                <ul class="p-error block list-none"
-                                    *ngIf="usuarioForm.get('usupasswordhash').dirty">
-                                    <li *ngIf="usuarioForm.get('usupasswordhash').errors?.required">
-                                        Confirmar la contraseña es obligatorio.
-                                    </li>
-                                    <li *ngIf="usuarioForm.errors?.['mismatch']">
-                                        Las contraseñas no coinciden.
-                                    </li>
-                                </ul>
-                                <!-- Mensaje de éxito -->
-                                <ul class="p-success block list-none"
-                                    *ngIf="usuarioForm.get('usupasswordhash').valid && !usuarioForm.errors?.['mismatch']">
-                                    La confirmación de la contraseña es válida.
-                                </ul>
-
-
-
-                                <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                                    <!-- <p-button label="Small" icon="pi pi-check" label="Ingresar cuenta"
-                                        styleClass="p-button-sm" [routerLink]="['/login']"></p-button> -->
+                            <form [formGroup]="usuarioForm" class="p-fluid">
+                                <div class="field">
+                                    <label for="name1" class="block text-900 text-xl font-medium">Nombre de Usuario</label>
+                                    <input
+                                            id="name1"
+                                            type="text"
+                                            placeholder="Ingrese su nombre de usuario"
+                                            pInputText
+                                            class="w-full md:w-30rem"
+                                            formControlName="usuname"
+                                    >
                                 </div>
-                                <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                                    <button pButton pRipple icon="pi pi-angle-left" class="w-full p-3 text-xl"
-                                        label="Atras" (click)="volverDatosPersona()"></button>
 
-                                    <button pButton pRipple label="Registrar" class="w-full p-3 text-xl"
-                                        (click)="doRegister()"></button>
+                                <div class="field">
+                                    <label for="email1" class="block text-900 text-xl font-medium">Correo Electrónico</label>
+
+                                    <input
+                                            id="email1"
+                                            type="text"
+                                            placeholder="Ingrese un correo electronico"
+                                            pInputText
+                                            formControlName="usuemail"
+                                            class="w-full md:w-30rem"
+                                            [disabled]="true"
+                                    >
+                                </div>
+
+                                <div class="field">
+                                    <label for="tipoRol" class="block text-900 text-xl font-medium">Tipo de Rol</label>
+                                    <p-dropdown
+                                            [options]="TipoRol"
+                                            formControlName="tipoRol"
+                                            optionLabel="rolnombre"
+                                            [emptyFilterMessage]="'No se encontraron roles disponibles.'"
+                                            placeholder="Seleccionar rol"
+                                            styleClass="w-full md:w-30rem"
+                                    ></p-dropdown>
+                                </div>
+
+                                <div class="field">
+                                    <label for="password1" class="block text-900 font-medium text-xl">Contraseña</label>
+                                    <p-password
+                                            id="password2"
+                                            formControlName="usupassword"
+                                            placeholder="Ingrese una contraseña"
+                                            [toggleMask]="true"
+                                            [feedback]="false"
+                                            inputStyleClass="w-full p-3 md:w-30rem"
+                                    > </p-password>
+
+                                    <ul class="p-error block list-none" *ngIf="usuarioForm.get('usupassword').invalid && (usuarioForm.get('usupassword').dirty || usuarioForm.get('usupassword').touched)">
+                                        <li *ngIf="usuarioForm.get('usupassword').errors?.required">
+                                            La contraseña es obligatoria. <br>
+                                        </li>
+                                        <li *ngIf="usuarioForm.get('usupassword').errors?.minlength">
+                                            Debe tener al menos 8 caracteres. <br>
+                                        </li>
+                                        <li *ngIf="usuarioForm.get('usupassword').errors?.passwordStrength">
+                                            Debe incluir mayúsculas, minúsculas y números. <br>
+                                        </li>
+                                    </ul>
+                                    <ul class="p-success block list-none"
+                                        *ngIf="usuarioForm.get('usupassword').valid && (usuarioForm.get('usupassword').dirty || usuarioForm.get('usupassword').touched)">
+                                        La contraseña es válida.
+                                    </ul>
+                                </div>
+
+                                <div class="field">
+                                    <label for="password1" class="block text-900 font-medium text-xl">Confirmar Contraseña</label>
+                                    <p-password
+                                            id="password1"
+                                            formControlName="usupasswordhash"
+                                            [feedback]="false"
+                                            placeholder="Ingrese una contraseña"
+                                            [toggleMask]="true"
+                                            inputStyleClass="w-full p-3 md:w-30rem"
+                                    ></p-password>
+                                    <ul class="p-error block list-none" *ngIf="usuarioForm.get('usupasswordhash').dirty">
+                                        <li *ngIf="usuarioForm.get('usupasswordhash').errors?.required">
+                                            Confirmar la contraseña es obligatorio.
+                                        </li>
+                                        <li *ngIf="usuarioForm.errors?.['mismatch']">
+                                            Las contraseñas no coinciden.
+                                        </li>
+                                    </ul>
+                                    <ul class="p-success block list-none"
+                                        *ngIf="usuarioForm.get('usupasswordhash').valid && !usuarioForm.errors?.['mismatch']">
+                                        La confirmación de la contraseña es válida.
+                                    </ul>
+                                </div>
+
+                                <hr>
+
+                                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                                    <p-button
+                                            label="Atras"
+                                            icon="pi pi-angle-left"
+                                            styleClass="p-button-primary w-10rem"
+                                            (click)="volverDatosPersona()"
+                                    ></p-button>
+                                    <p-button
+                                            label="Registrar"
+                                            icon="fa-solid fa-right-to-bracket"
+                                            styleClass="p-button-success w-10rem"
+                                            (click)="doRegister()"
+                                    ></p-button>
                                 </div>
                             </form>
                     </div>
