@@ -9,16 +9,17 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { AuthService } from 'src/app/services/auth.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
-    selector: 'app-login',
+    selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
-    styles: [`
-    :host ::ng-deep .pi-eye,
-    :host ::ng-deep .pi-eye-slash {
-      transform: scale(1.6);
-      margin-right: 1rem;
-      color: var(--primary-color) !important;
-    }
-  `]
+    styleUrls:['../login/login.component.css'],
+//     styles: [`
+//     :host ::ng-deep .pi-eye,
+//     :host ::ng-deep .pi-eye-slash {
+//       transform: scale(1.6);
+//       margin-right: 1rem;
+//       color: var(--primary-color) !important;
+//     }
+//   `]
 })
 export class ForgotPasswordComponent implements OnInit {
 
