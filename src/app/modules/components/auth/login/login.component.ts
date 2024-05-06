@@ -1,67 +1,63 @@
-import { Component, OnInit } from '@angular/core';
-import { LayoutService } from 'src/app/modules/layout/service/app.layout.service';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { Message } from 'primeng/api';
-import { RequestStatus } from 'src/app/modules/models/request-status.model';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'; // importamos para la validación
-// Service
-import { AuthService } from 'src/app/services/auth.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { StyleClass } from 'primeng/styleclass';
-import { AbstractControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core'; // Importa la clase Componente y OnInit desde Angular Core
+import { Router } from '@angular/router'; // Importa el servicio de enrutamiento de Angular
+import { Message } from 'primeng/api'; // Importa la interfaz Message de PrimeNG para representar mensajes
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms'; // Importa clases relacionadas con formularios reactivos de Angular
+import { AuthService } from 'src/app/services/auth.service'; // Importa el servicio AuthService desde el archivo auth.service
+import { NgxSpinnerService } from 'ngx-spinner'; // Importa el servicio NgxSpinnerService para manejar spinners de carga
+import { LayoutService } from 'src/app/modules/layout/service/app.layout.service'; // Importa el servicio LayoutService desde el archivo app.layout.service
+import { RequestStatus } from 'src/app/modules/models/request-status.model'; // Importa la clase RequestStatus desde el archivo request-status.model
+
+
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls:['./login.component.css'],
-    styles: [`
-    :host ::ng-deep .pi-eye,
-    :host ::ng-deep .pi-eye-slash {
-      transform: scale(1.6);
-      margin-right: 1rem;
-      color: var(--primary-color) !important;
-    }
-    `
-    ],
+    // styles: [`
+    // :host ::ng-deep .pi-eye,
+    // :host ::ng-deep .pi-eye-slash {
+    //   transform: scale(1.6);
+    //   margin-right: 1rem;
+    //   color: var(--primary-color) !important;
+    // }
+    // `
+    // ],
 
 })
 export class LoginComponent implements OnInit {
 
-    valCheck: string[] = ['remember'];
-    messages: Message[] | undefined;
-    usuario: string;
-    password: string;
-    //----------------Variables para validación----------------//
-    loginForm: FormGroup;
 
-    status: RequestStatus = 'init';
+    messages: Message[] | undefined;  // Variable de estados
+
+    loginForm: FormGroup; // Variable para validación de login
+
+    status: RequestStatus = 'init'; // Variable de estados
 
     constructor(
-        public layoutService: LayoutService,
         private authService: AuthService,
         private router: Router,
-        private http: HttpClient,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService
-    ) {
-
-    }
+    ) { }
 
 
     ngOnInit(): void {
+       this.asignacionValidacion();
+    }
+
+    asignacionValidacion(){ // Función para la asignación de la varialble de validación
         this.loginForm = this.formBuilder.group({
             usuario: [
                 '',
-                [Validators.required,
-                 Validators.minLength(5),
-                 Validators.maxLength(20),
-                 this.noEspacios
+                [Validators.required, // Es requerido
+                 Validators.minLength(5), // Es como minimo de 5 letras
+                 Validators.maxLength(20), // Es como maximo de 20 letras
+                 this.noEspacios // Sin espacios
                 ]],
-            password: ['', [Validators.required]],
+            password: ['', [Validators.required]], // Es requerido
         });
     }
 
-    noEspacios(control: AbstractControl) {
+    noEspacios(control: AbstractControl) { // Validación de que no se llene espacios vacios
         const valor = control.value;
         if (valor?.includes(' ')) {
           return { espaciosNoPermitidos: true };
@@ -69,16 +65,7 @@ export class LoginComponent implements OnInit {
         return null;
     }
 
-    inicioCorrecto(control: AbstractControl) {
-        const valor = control.value;
-        if (valor && !valor.match(/^[a-zA-Z]/)) {
-          return { inicioInvalido: true };
-        }
-        return null;
-    }
-
-    doLogin() {
-        // console.log("Usuario y Password: ", this.loginForm.value)
+    doLogin() { // Función para relizar el login de usuario
         if(this.loginForm.invalid){
             return Object.values(this.loginForm.controls).forEach(control=>{
                 this.messages = [{ severity: 'error', summary: 'Ups!', detail: 'Las credenciales son incorrectas', life: 3000 }];
@@ -97,28 +84,16 @@ export class LoginComponent implements OnInit {
                         this.messages = [{ severity: 'success', summary: 'Exitosamente', detail: 'Las credenciales son válidas', life: 2000 }];
                         this.spinner.hide();
                     },
-                    error: () => {
+                    error: (error: any) => {
                         this.status = 'failed';
+                        if(error.error.message.includes('Email not confirmed')){
+                            this.router.navigate(['/confirm']);
+                        }
                         this.spinner.hide();
                         this.messages = [{ severity: 'error', summary: '', detail: 'Las credenciales son inválidas', life: 3000 }];
                     }
                 }
             )
         }
-        /*
-        // Realizar la solicitud POST a la API para autenticar al usuario
-        this.http.post('/api/login', loginData).subscribe(
-          (response) => {
-            // Manejar la respuesta exitosa aquí, por ejemplo, redirigir a la página principal
-            this.status = 'success';
-            this.router.navigate(['/principal']);
-          },
-          (error) => {
-            // Manejar el error aquí, por ejemplo, mostrar un mensaje de error al usuario
-            this.status = 'failed';
-            console.error('Error en el inicio de sesión:', error);
-          }
-        );
-        */
     }
 }

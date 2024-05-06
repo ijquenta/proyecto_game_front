@@ -1,13 +1,12 @@
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="flex flex-column align-items-center justify-content-center">
-        <div style="border-radius: 56px; padding: 0.3rem; background-image: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%), linear-gradient(0deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+        <div style="border-radius: 56px; padding: 0.3rem; background-image: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%), linear-gradient(0deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%); ">
             <div class="w-full surface-card py-6 px-5 sm:px-8" style="border-radius:53px">
                 <div class="text-center mb-5">
                     <img src="assets/layout/images/logo_ibci.png" alt="logo" height="70" class="mb-1">
                     <div class="font-bold text-xl text-900 d-flex align-items-center justify-content-center">
                         <span><strong>SSGA</strong>Bolivia</span>
-                        <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia"
-                            class="topbar-flag ml-2" width="30" height="20" style="display: inline;">
+                        <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia" class="topbar-flag ml-2" width="30" height="20" style="display: inline;">
                     </div>
                     <br>
                     <div class="font-bold text-xl text-900">
@@ -18,59 +17,34 @@
 
                 <form [formGroup]="loginForm" class="p-fluid">
                     <div class="field">
-                        <label for="usuario" class="block text-900 text-xl font-medium mb-2">Usuario</label>
-                        <input id="usuario" type="text" placeholder="Ingrese su usuario" pInputText formControlName="usuario" class="w-full mb-2"
-                            [ngClass]="{ 'ng-dirty': this.loginForm.get('usuario').dirty, 'valid-field': this.loginForm.get('usuario').valid}">
-                        <!-- Lista de mensajes de error y éxito -->
-                        <ul class="p-error list-none" *ngIf="loginForm.get('usuario').invalid && loginForm.get('usuario').dirty">
-                            <li *ngIf="loginForm.get('usuario').errors?.required">
-                                El nombre de usuario es requerido. (*)
-                            </li>
-                            <li *ngIf="loginForm.get('usuario').errors?.minlength">
-                                El nombre de usuario debe tener al menos 5 caracteres.
-                            </li>
-                            <li *ngIf="loginForm.get('usuario').errors?.maxlength">
-                                El nombre de usuario no puede exceder los 20 caracteres.
-                            </li>
-                            <li *ngIf="loginForm.get('usuario').errors?.espaciosNoPermitidos">
-                                El nombre de usuario no debe contener espacios.
-                            </li>
-                            <li *ngIf="loginForm.get('usuario').errors?.inicioInvalido">
-                                El nombre de usuario debe comenzar con una letra.
-                            </li>
-                        </ul>
-                        <!-- Mensaje de éxito -->
-                        <ul class="p-success block list-none"
-                            *ngIf="loginForm.get('usuario').valid && (loginForm.get('usuario').dirty || loginForm.get('usuario').touched)">
-                            El nombre de usuario es válido.
-                        </ul>
+                        <label for="usuario" class="block text-900 text-xl font-medium">Usuario</label>
+                        <input id="usuario" type="text" placeholder="Ingrese su usuario" pInputText formControlName="usuario" class="w-full" [ngClass]="{ 'ng-dirty': this.loginForm.get('usuario').dirty, 'valid-field': this.loginForm.get('usuario').valid}">
+                            <ul class="p-error list-none" *ngIf="loginForm.get('usuario').invalid && loginForm.get('usuario').dirty">
+                                <li *ngIf="loginForm.get('usuario').errors?.required"> El nombre de usuario es requerido. (*) </li>
+                                <li *ngIf="loginForm.get('usuario').errors?.minlength"> El nombre de usuario debe tener al menos 5 caracteres. </li>
+                                <li *ngIf="loginForm.get('usuario').errors?.maxlength"> El nombre de usuario no puede exceder los 20 caracteres. </li>
+                                <li *ngIf="loginForm.get('usuario').errors?.espaciosNoPermitidos"> El nombre de usuario no debe contener espacios. </li>
+                                <li *ngIf="loginForm.get('usuario').errors?.inicioInvalido"> El nombre de usuario debe comenzar con una letra. </li>
+                            </ul>
+                            <ul class="p-success block list-none" *ngIf="loginForm.get('usuario').valid && (loginForm.get('usuario').dirty || loginForm.get('usuario').touched)">
+                                El nombre de usuario es válido.
+                            </ul>
                     </div>
 
                     <div class="field">
-                        <label for="password" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-                        <p-password formControlName="password" [feedback]="false" placeholder="Ingrese su contraseña" [toggleMask]="true" class="w-full md:w-30rem mb-2"
-                        [ngClass]="{ 'ng-dirty': this.loginForm.get('password').dirty, 'valid-field': this.loginForm.get('password').valid}"
-                        ></p-password>
-                        <!-- Mensajes de error para la contraseña -->
-                        <ul class="p-error block list-none"
-                            *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
-                            <li *ngIf="loginForm.get('password').errors?.required">
-                                La contraseña es obligatoria. (*) <br>
-                            </li>
+                        <label for="password" class="block text-900 font-medium text-xl">Contraseña</label>
+                        <p-password formControlName="password" [feedback]="false" placeholder="Ingrese su contraseña" [toggleMask]="true" class="w-full md:w-30rem" [ngClass]="{ 'ng-dirty': this.loginForm.get('password').dirty}" ></p-password>
+                        <ul class="p-error block list-none" *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                            <li *ngIf="loginForm.get('password').errors?.required"> La contraseña es requerido. (*) <br> </li>
                         </ul>
-                        <!-- Mensaje de éxito -->
-                        <ul class="p-success block list-none"
-                        *ngIf="loginForm.get('password').valid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
-                        La contraseña es válida.
-                        </ul>
-
+                        <ul class="p-success block list-none" *ngIf="loginForm.get('password').valid && (loginForm.get('password').dirty || loginForm.get('password').touched)"> La contraseña es válida. </ul>
                     </div>
                     <ng-container *ngIf="status === 'failed'">
                         <p-messages [(value)]="messages" [enableService]="false" [closable]="false"></p-messages>
                     </ng-container>
                     <hr>
                     <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                        <p-button icon="pi pi-user" label="Crear cuenta" styleClass="p-button-sm" [routerLink]="['/register']"></p-button>
+                        <p-button label="Registrarse" icon="pi pi-user-plus" styleClass="p-button-sm p-button-success w-10rem" [routerLink]="['/register']"></p-button>
                         <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)" [routerLink]="['/forgot-password']">Olvidaste tu contraseña?</a>
                     </div>
                     <button icon="fa-solid fa-right-to-bracket" pButton pRipple label="Ingresar" class="w-full p-3 text-xl" (click)="doLogin()"></button>

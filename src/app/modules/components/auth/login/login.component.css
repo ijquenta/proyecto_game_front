@@ -115,8 +115,17 @@
     padding-left: 0; /* Elimina el relleno izquierdo que podría haber dejado el marcador de lista */
 }
 
-.surface-ground {
-  background-image: url('../../../../../assets/layout/images/fondo-ibci-2.jpg');
-  background-size: cover;
-  background-position: center;
+/* Estilos para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    .surface-ground {
+        padding: 20px; /* Agrega un espacio alrededor del formulario en pantallas pequeñas */
+    }
+    .field {
+        width: 100%; /* Asegúrate de que los campos ocupen todo el ancho en pantallas pequeñas */
+    }
+    .surface-card {
+        border-radius: 30px; /* Reduzca el radio de borde en pantallas pequeñas */
+        padding: 20px; /* Agrega un espacio dentro de la tarjeta en pantallas pequeñas */
+    }
 }
+
