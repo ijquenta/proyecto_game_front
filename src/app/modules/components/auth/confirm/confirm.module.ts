@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginRoutingModule } from './confirm-routing.module';
+import { ConfirmRoutingModule } from './confirm-routing.module';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +14,7 @@ import { DividerModule } from 'primeng/divider';
     imports: [
         DividerModule,
         CommonModule,
-        LoginRoutingModule,
+        ConfirmRoutingModule,
         ButtonModule,
         CheckboxModule,
         InputTextModule,

@@ -30,12 +30,12 @@ export class VerifiedComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.route.queryParams.subscribe(params => {
-            const token = params['token'];
-            if (token) {
-            this.confirmEmail(token);
-            }
-        });
+        // this.route.queryParams.subscribe(params => {
+        //     const token = params['token'];
+        //     if (token) {
+        //     this.confirmEmail(token);
+        //     }
+        // });
     }
 
 
