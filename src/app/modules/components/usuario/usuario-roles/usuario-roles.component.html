@@ -1,7 +1,5 @@
-
+<p-toast></p-toast>
 <div class="grid">
-    <!-- <div *ngIf="loading"> <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner> </div> -->
-    <p-toast position="top-center" key="tc"></p-toast>
     <div class="col-12">
         <div class="card">
             <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Roles</span> </div>
@@ -14,61 +12,55 @@
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
+                        <th></th>
                         <th>Nombre</th>
                         <th>Descripción</th>
-                        <th>Registro por</th>
-                        <th>Modificado por</th>
+                        <th>Registrado</th>
+                        <th>Modificado</th>
                         <th>Estado</th>
-                        <th>Operaciones</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rol>
                     <tr>
+                        <td>
+                            <div class="flex justify-content-center">
+                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarRol(rol)" pTooltip="Editar Rol" tooltipPosition="top"></button>
+                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="desactivarRol(rol)" pTooltip="Desactivar Rol" tooltipPosition="top"></button>
+                                <button *ngIf="rol.rolestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" (click)="activarRol(rol)" pTooltip="Activar Rol" tooltipPosition="top"></button>
+                            </div>
+                        </td>
                         <td>{{rol.rolnombre}}</td>
                         <td>{{rol.roldescripcion}}</td>
                         <td> <p-chip> <div class="p-2"> {{ rol.rolusureg }} <br> {{ rol.rolfecreg }} </div> </p-chip> </td>
                         <td> <p-chip> <div class="p-2"> {{ rol.rolusumod }} <br> {{ rol.rolfecmod }} </div> </p-chip> </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(rol.rolestado)" [severity]="obtenerSeverityEstado(rol.rolestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex justify-content-center">
-                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarRol(rol)" pTooltip="Editar Rol" tooltipPosition="left"></button>
-                                <button *ngIf="rol.rolestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="desactivarRol(rol)" pTooltip="Desactivar Rol" tooltipPosition="left"></button>
-                                <button *ngIf="rol.rolestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" (click)="activarRol(rol)" pTooltip="Activar Rol" tooltipPosition="left"></button>
-                            </div>
-                        </td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
     </div>
+</div>
 
-    <p-dialog [(visible)]="roldialog" header="Registro rol" [modal]="true" class="p-fluid">
-        <div *ngIf="loading">
-            <p-progressSpinner class="progress-spinner" styleClass="w-4rem h-4rem" strokeWidth="8"
-                animationDuration=".5s"></p-progressSpinner>
-        </div>
-        <!-- <p-card styleClass="user-form"> -->
+    <p-dialog [(visible)]="roldialog" header="Registro Rol" [modal]="true" class="p-fluid">
             <form [formGroup]="rolForm" novalidate>
                 <div class="grid p-fluid mt-3">
                 <div class="field col-12">
-                    <label for="name" class="block">Nombre</label>
-                    <input type="text" pInputText id="name" formControlName="nombreRol" [ngClass]="{ 'ng-dirty': this.rolForm.get('nombreRol').touched, 'valid-field': this.rolForm.get('nombreRol').valid}"/>
+                    <label for="name" class="block">Nombre de Rol</label>
+                    <input type="text" placeholder="Ingresar nombre del rol" pInputText id="name" formControlName="nombreRol" [ngClass]="{ 'ng-dirty': this.rolForm.get('nombreRol').touched, 'valid-field': this.rolForm.get('nombreRol').valid}"/>
                     <small class="p-error block" *ngIf="rolForm.get('nombreRol').invalid && rolForm.get('nombreRol').dirty">
                         <span *ngIf="rolForm.get('nombreRol').errors?.required">El nombre de rol es requerido.</span>
-                        <span *ngIf="rolForm.get('nombreRol').errors?.['minlength']">El nombre de rol es muy corto.</span>
-                        (*)
+                        <span *ngIf="rolForm.get('nombreRol').errors?.['minlength']">El nombre de rol es muy corto.</span> (*)
                     </small>
                     <small class="p-success block" *ngIf="rolForm.get('nombreRol')?.valid"> El nombre de rol es correcto. </small>
                 </div>
                 <div class="field col-12">
                     <label for="description" class="block">Descripción</label>
-                    <textarea id="description" name="description" pInputTextarea rows="3" cols="20" formControlName="descripcionRol" [ngClass]="{ 'ng-dirty': this.rolForm.get('descripcionRol').touched, 'valid-field': this.rolForm.get('descripcionRol').valid}"></textarea>
+                    <textarea placeholder="Ingresar descripción del rol" id="description" name="description" pInputTextarea rows="3" cols="20" formControlName="descripcionRol" [ngClass]="{ 'ng-dirty': this.rolForm.get('descripcionRol').touched, 'valid-field': this.rolForm.get('descripcionRol').valid}"></textarea>
                     <small class="p-error block" *ngIf="rolForm.get('descripcionRol')?.invalid && rolForm.get('descripcionRol')?.dirty"> La descripción de rol es requerido. (*)</small>
                     <small class="p-success block" *ngIf="rolForm.get('descripcionRol')?.valid"> La descripción de rol es correcto.</small>
                 </div>
                 </div>
             </form>
-        <!-- </p-card> -->
         <ng-template pTemplate="footer">
             <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
             <button pButton pRipple label="Guardar"  icon="pi pi-check" class="p-button-text" (click)="registroRol()" ></button>
