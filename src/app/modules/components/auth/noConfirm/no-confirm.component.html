@@ -1,0 +1,32 @@
+<div class="bg-bluegray-900 text-gray-100 p-3 flex justify-content-center lg:justify-center items-center flex-wrap">
+    <div class="font-bold mr-8 text-xl" >✉️ ¡Hola!</div>
+    <div class="hidden lg:flex items-center">
+        <span class="line-height-3 text-xl">Se ha enviado un correo electrónico de confirmación por correo electrónico.</span>
+    </div>
+</div>
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <div style="border-radius: 56px; padding: 0.3rem; background-image: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%), linear-gradient(0deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%); ">
+            <div class="w-full surface-card" style="border-radius:53px">
+                <div class="px-2 py-8 md:px-3 lg:px-3">
+                    <div class="text-700 text-center">
+                        <div class="text-900 font-bold text-2xl mb-3">¡Bienvenido! 2</div>
+                        <div class="font-bold text-xl text-900 d-flex align-items-center justify-content-center">
+                            <span><strong>SSGA</strong>Bolivia</span>
+                            <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia" class="topbar-flag ml-2" width="30" height="20" style="display: inline;">
+                        </div>
+                        <hr>
+                        <div class="text-600 mb-2 text-xl">No has confirmado tu cuenta. Por favor, revisa tu bandeja de entrada (y tu carpeta de spam). </div>
+                        <div class="text-600 mb-2 text-xl">Deberías haber recibido un correo electrónico con un enlace de confirmación. 📧
+                        <div class="text-600 mb-2 text-xl">¿Necesitas que te lo enviemos de nuevo?</div>
+                        <br>
+                        <div class="flex justify-content-center">
+                            <button pButton pRipple label="Volver" icon="pi pi-angle-left" class="p-button-danger p-button-rounded white-space-nowrap mr-2" [routerLink]="['/login']"></button>
+                            <button pButton pRipple label="Reenviar" icon="pi pi-send" class="p-button-primary p-button-rounded white-space-nowrap mr-2"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
