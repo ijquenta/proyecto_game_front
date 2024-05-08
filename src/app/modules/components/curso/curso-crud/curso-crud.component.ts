@@ -141,6 +141,7 @@ export class CursoCrudComponent implements OnInit {
             tipoPersona: ['', [Validators.required]],
 	        curmatfecini: ['', [Validators.required]],
 	        curmatfecfin: ['', [Validators.required]],
+            curmatcosto: ['', [Validators.required, Validators.min(0)]]
         });
     }
     // Obtener datos del perfil del usuario logeado
@@ -188,7 +189,7 @@ export class CursoCrudComponent implements OnInit {
                 this.listaCursosMaterias = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 1);
                 this.loading = false;
                 this.spinner.hide();
-                // console.log("Lista Cursos Materia", this.listaCursosMaterias)
+                console.log("Lista Cursos Materia", this.listaCursosMaterias)
             },
             (error: any) => {
                 console.error("Error: ", error);
@@ -289,7 +290,7 @@ export class CursoCrudComponent implements OnInit {
                 this.tipoPersona = result;
             }
         )
-
+        console.log("editar: ", this.cursoMateria)
         this.cursoForm.patchValue({
             curmatid: this.cursoMateria.curmatid,
             tipoCurso: new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel),
@@ -298,6 +299,7 @@ export class CursoCrudComponent implements OnInit {
             tipoPersona: new TipoPersona2(this.cursoMateria.periddocente, this.cursoMateria.pernomcompleto, this.cursoMateria.pernrodoc, this.cursoMateria.perfoto),
             curmatfecini: this.cursoMateria.curmatfecini,
             curmatfecfin: this.cursoMateria.curmatfecfin,
+            curmatcosto: this.cursoMateria.curmatcosto
         })
 
         // console.log("set: ", this.cursoForm.value)

@@ -26,6 +26,7 @@ export class CursoMateria {
     perfoto?: any;
     pernrodoc?: any;
     tipo?: any;
+    curmatcosto?: any;
 }
 
 

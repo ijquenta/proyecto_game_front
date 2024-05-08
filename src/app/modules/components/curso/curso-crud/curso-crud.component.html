@@ -44,6 +44,7 @@
                             <p-sortIcon field="pernomcompleto"></p-sortIcon>
                         </th>
                         <th>Duración</th>
+                        <th>Costo</th>
                         <th>Creación</th>
                         <th>Modificación</th>
                         <th>Estado</th>
@@ -92,6 +93,7 @@
                                 </div>
                             </p-chip>
                         </td>
+                        <td> <strong>{{cursoMateria.curmatcosto}} Bs.</strong> </td>
                         <td>
                             <p-chip>
                                 <div class="p-2">
@@ -266,7 +268,7 @@
         <!-- <div class="card p-fluid"> -->
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-6">
-                <label for="status">Elegir Curso</label>
+                <label class="font-bold block mb-2" for="status">Elegir Curso</label>
                 <p-dropdown inputId="ddTipoCurso" (onChange)="onSelectCurso($event)" appendTo="body"
                     [options]="tipoCurso" formControlName="tipoCurso" optionLabel="curnombre" [filter]="true"
                     filterBy="curnombre" [emptyFilterMessage]="'No se encontraron cursos.'"
@@ -284,7 +286,7 @@
                 </small>
             </div>
             <div class="field col-12 md:col-6">
-                <label for="status">Elegir Materia</label>
+                <label class="font-bold block mb-2" for="status">Elegir Materia</label>
                 <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoMateria"
                     [emptyFilterMessage]="'No se encontraron materias para este curso.'"
                     [ngClass]="{ 'valid-field': this.cursoForm.get('tipoMateria').valid}"
@@ -302,7 +304,7 @@
                 </small>
             </div>
             <div class="field col-12 md:col-6">
-                <label for="status">Elegir Rol</label>
+                <label class="font-bold block mb-2" for="status">Elegir Rol</label>
                 <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body"
                     [filter]="true" filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol"
                     [ngClass]="{ 'valid-field': this.cursoForm.get('tipoRol').valid}"
@@ -356,6 +358,23 @@
                     (*)
                 </small>
             </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block mb-2" for="monto">Costo</label>
+                <p-inputNumber formControlName="curmatcosto" appendTo="body" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+                                              spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger"
+                                              incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                                              decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO"
+                                              [ngClass]="{ 'valid-field': this.cursoForm.get('curmatcosto').valid}"
+                ></p-inputNumber>
+                <small class="p-error block" *ngIf="cursoForm.get('curmatcosto').invalid && cursoForm.get('curmatcosto').dirty">
+                    <span *ngIf="cursoForm.get('curmatcosto').errors?.required">El costo es requerido.</span>
+                    <span *ngIf="cursoForm.get('curmatcosto').errors?.min"> El costo debe ser mayor o igual a cero.</span>
+                    (*)
+                </small>
+                <small class="p-success block" *ngIf="cursoForm.get('curmatcosto')?.valid"> El costo es valido. </small>
+
+            </div>
         </div>
         <hr>
         <div class="grid p-fluid mt-3">
@@ -364,7 +383,7 @@
                     <p-calendar inputId="fecini" appendTo="body" formControlName="curmatfecini"
                         [showIcon]="true" dateFormat="dd/mm/yy"
                         [ngClass]="{ 'ng-dirty': cursoForm.get('curmatfecini').touched, 'valid-field': cursoForm.get('curmatfecini').valid }"></p-calendar>
-                    <label for="fecIni">Elegir Fecha Inicio</label>
+                    <label class="font-bold block mb-2" for="fecIni">Elegir Fecha Inicio</label>
                 </span>
                 <small class="p-error block"
                     *ngIf="cursoForm.get('curmatfecini').invalid && cursoForm.get('curmatfecini').dirty">
@@ -381,7 +400,7 @@
                         dateFormat="dd/mm/yy"
                         [ngClass]="{ 'ng-dirty': cursoForm.get('curmatfecfin').touched, 'valid-field': cursoForm.get('curmatfecfin').valid }"
                         [showIcon]="true"></p-calendar>
-                    <label for="fecFin">Elegir Fecha Fin</label>
+                    <label class="font-bold block mb-2" for="fecFin">Elegir Fecha Fin</label>
                 </span>
                 <small class="p-error block"
                     *ngIf="cursoForm.get('curmatfecfin').invalid && cursoForm.get('curmatfecfin').dirty">
