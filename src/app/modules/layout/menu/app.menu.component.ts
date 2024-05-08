@@ -220,7 +220,7 @@ export class AppMenuComponent implements OnInit {
                             },
                             {
                                 label: 'Asignar notas',
-                                icon: 'pi pi-fw pi-wrench',
+                                icon: 'pi pi-fw pi-pencil',
                                 routerLink: ['nota/docente'],
                                 roles: ['Docente']
                             },
