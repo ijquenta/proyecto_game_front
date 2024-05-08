@@ -17,5 +17,6 @@ export class Nota {
     matnombre: any;
     peridestudiante: any;
     pernomcompleto: any;
+    pernrodoc: any;
 }
 
