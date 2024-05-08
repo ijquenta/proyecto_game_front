@@ -61,6 +61,59 @@ export class NotaService {
                 }
             );
     }
+    rptNotaEstudianteMateriaGeneral(data: any) {
+        this.usuario = this.authService.usuario$.getValue();
+        const criterio = {
+            usuname: this.usuario?.[0]?.usuname
+        };
+
+        if (!criterio.usuname) {
+            console.error('No se pudo obtener la información del usuario.');
+            return;
+        }
+
+        this.spinner.show();
+        this.http.post(`${API_URL}/rptNotaCursoMateriaGeneral`, criterio, httpOptions)
+            .subscribe(
+                (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, 'Reporte Nota General');
+                },
+                (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            );
+    }
+
+    rptNotaEstudianteMateriaDocente(data: any) {
+        this.usuario = this.authService.usuario$.getValue();
+        const criterio = {
+            periddocente: data['periddocente'],
+            usuname: this.usuario?.[0]?.usuname
+        };
+
+        if (!criterio.usuname) {
+            console.error('No se pudo obtener la información del usuario.');
+            return;
+        }
+
+        this.spinner.show();
+        this.http.post(`${API_URL}/rptNotaCursoMateriaDocente`, criterio, httpOptions)
+            .subscribe(
+                (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, 'Reporte Nota General');
+                },
+                (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            );
+    }
+
     rptNotaCursoMateria(data: any) {
         console.log(data);
         this.usuario = this.authService.usuario$.getValue();

@@ -29,8 +29,16 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import { TabViewModule } from 'primeng/tabview';
+import { AccordionModule } from 'primeng/accordion';
 @NgModule({
     imports: [
+        AccordionModule,
+        TabViewModule,
+        ChipModule,
+        TagModule,
         CommonModule,
         NotaCrudRoutingModule,
         TableModule,

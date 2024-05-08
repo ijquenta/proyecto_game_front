@@ -25,8 +25,12 @@ import { CalendarModule } from 'primeng/calendar';
 import { NotaDocenteComponent } from './nota-docente.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { KnobModule } from 'primeng/knob';
+import { AccordionModule } from 'primeng/accordion';
+import { AvatarModule } from 'primeng/avatar';
 @NgModule({
     imports: [
+        AvatarModule,
+        AccordionModule,
         CommonModule,
         // MateriaCrudRoutingModule,
         NotaDocenteRoutingModule,
