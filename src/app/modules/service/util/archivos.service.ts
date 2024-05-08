@@ -37,7 +37,7 @@ export class ArchivosService {
       data: initialState,
       header: file.name,
       width: '90%',
-      height: '80%'
+      height: '100%'
     });
     ref.onClose.subscribe((result: any) => {
         // console.log('fileName:', result);
