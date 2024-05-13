@@ -1,26 +1,21 @@
+// Importaciones
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { CursoService } from 'src/app/modules/service/data/curso.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-import { TipoMateria } from 'src/app/modules/models/diccionario';
-import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { Table } from 'primeng/table';
-import { TipoCurso, TipoRol, TipoPersona, TipoEstado, TipoPersona2} from 'src/app/modules/models/diccionario';
-import { CursoMateria } from 'src/app/modules/models/curso';
-
-// --------------- Modelo Usuario
-import { Usuario } from 'src/app/modules/models/usuario';
-
-// --------------- Importación de Autenticación
-import { AuthService } from 'src/app/services/auth.service';
-
-// --------------- Importación para validaciones
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import * as FileSaver from 'file-saver';
+// Modelos
+import { TipoCurso, TipoRol, TipoMateria, TipoEstado, TipoPersona2} from 'src/app/modules/models/diccionario';
+import { CursoMateria } from 'src/app/modules/models/curso';
+import { Usuario } from 'src/app/modules/models/usuario';
+// Servicios
+import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 interface Column {
     field: string;
@@ -38,6 +33,7 @@ interface ExportColumn {
     providers: [MessageService],
     styleUrls: ['../../../../app.component.css']
 })
+
 export class CursoCrudComponent implements OnInit {
 
     cols: any[] = [];
@@ -81,9 +77,10 @@ export class CursoCrudComponent implements OnInit {
     cursoForm: FormGroup;
     //----------------Variables para validación----------------//
     usuario: Usuario;
-
+    //-> Variables para exportar en excel
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
+    //->
     constructor(
                 private messageService: MessageService,
                 private cursoService: CursoService,
@@ -93,27 +90,15 @@ export class CursoCrudComponent implements OnInit {
                 private authService: AuthService, // auth para recuperar los datos del usuario logueado
                 private formBuilder: FormBuilder, // formBuilder para utilzar las validaciones del react form valid
                 private spinner: NgxSpinnerService
-                )
-                {
-                }
+                ) { }
 
     ngOnInit() {
         this.listarCursoMateria();
         this.listarCursoCombo();
         this.obtenerRoles();
-
-        this.tipoEstado = [
-            new TipoEstado(0, 'FINALIZADO'),
-            new TipoEstado(1, 'VIGENTE'),
-            new TipoEstado(2, 'OTRO')
-        ];
-
-        // Método de asignación de validaciones
-        this.asignacionValidacionesCurso();
-
-        // Método de getPerfil() de usuario logeado
-        this.getPerfilUsuario();
-
+        this.tipoEstado = [ new TipoEstado(0, 'FINALIZADO'), new TipoEstado(1, 'VIGENTE'), new TipoEstado(2, 'OTRO') ];
+        this.asignacionValidacionesCurso(); // Método de asignación de validaciones
+        this.getPerfilUsuario(); // Método de getPerfil() de usuario logeado
         this.colsTable = [
             { field: 'curmatid', header: 'ID curso-materia' },
             { field: 'curnombre', header: 'Nombre de nivel' },
@@ -127,7 +112,6 @@ export class CursoCrudComponent implements OnInit {
             { field: 'curmatusumod', header: 'Usuario Modificación' },
             { field: 'curmatfecmod', header: 'Fecha Modificación' }
         ];
-
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
     }
     // Método para asignar las variables de React Form Valid
@@ -157,11 +141,6 @@ export class CursoCrudComponent implements OnInit {
         this.cursoMateria = new CursoMateria();
         this.cursoMateriaDialog = true;
         this.optionCursoMateria = true;
-        // this.tipoCursoSeleccionado = new TipoCurso(0,"",0);
-        // this.tipoMateriaSeleccionado = new TipoMateria(0,"",0);
-        // this.tipoPersonaSeleccionado = new TipoPersona(0,"");
-        // this.tipoRolSeleccionado = new TipoRol(0,"");
-        // this.tipoEstadoSeleccionado = new TipoEstado(0, "");
     }
     ocultarDialog(){
         this.cursoForm.reset();
@@ -173,7 +152,6 @@ export class CursoCrudComponent implements OnInit {
         this.cursoService.listaCursoCombo().subscribe(
             (result: any) => {
                 this.tipoCurso = result;
-                // console.log("Combo TipoCurso", this.tipoCurso)
             }
         )
     }
@@ -189,7 +167,6 @@ export class CursoCrudComponent implements OnInit {
                 this.listaCursosMaterias = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 1);
                 this.loading = false;
                 this.spinner.hide();
-                console.log("Lista Cursos Materia", this.listaCursosMaterias)
             },
             (error: any) => {
                 console.error("Error: ", error);
@@ -199,98 +176,47 @@ export class CursoCrudComponent implements OnInit {
     }
 
     onSelectCurso(data: any){
-        // console.log("id nivel curso: ", data.value.curnivel);
         const nivel = parseInt(data.value.curnivel);
-
-        const criterio = {
-            curnivel: nivel
-        };
-
+        const criterio = { curnivel: nivel };
         this.obtenerTipoMateria(criterio);
     }
 
     obtenerTipoMateria(criterio: any){
-        this.diccionarioService.getTipoMateria(criterio).subscribe(
-            (result: any) => {
-                this.tipoMateria = result;
-                // console.log("Lista Combo Materia: ", this.tipoMateria)
-            }
-        )
+        this.diccionarioService.getTipoMateria(criterio).subscribe( (result: any) => { this.tipoMateria = result; } )
     }
 
     obtenerRoles(){
-        this.usuarioServicie.getRoles().subscribe(
-            (result: any) => {
-                // this.tipoRol = result;
-                this.tipoRol = result.filter((rol: any) => rol.rolnombre !== 'Secretaria' && rol.rolnombre !== 'Administrador');
-                // console.log("Combo roles: ", this.tipoRol);
-            }
-        )
+        this.usuarioServicie.getRoles().subscribe( (result: any) => { this.tipoRol = result.filter((rol: any) => rol.rolnombre !== 'Secretaria' && rol.rolnombre !== 'Administrador'); } )
     }
 
     onSelectPersona(data: any){
-        // console.log("Datos del rol elejido: ", data.value);
         const nombre = data.value.rolnombre;
-        const criterio = {
-            rolnombre: nombre
-        };
+        const criterio = { rolnombre: nombre };
         this.obtenerTipoPersona(criterio);
-
     }
 
     seleccionarPersona(data: any){
-        // console.log("rol Nombre: ", data);
         const nombre = data;
-        const criterio = {
-            rolnombre: nombre
-        };
+        const criterio = { rolnombre: nombre };
         this.obtenerTipoPersona(criterio);
-
     }
 
     obtenerTipoPersona(criterio: any){
-        this.diccionarioService.getListaPersonaDocenteCombo(criterio).subscribe(
-
-            (result: any) => {
-                this.tipoPersona = result;
-                // console.log("Tipo Persona: ", this.tipoPersona)
-
-            }
-        )
+        this.diccionarioService.getListaPersonaDocenteCombo(criterio).subscribe( (result: any) => { this.tipoPersona = result; } )
     }
 
     editarCursoMateria(data: any){
-        // this.cursoForm.reset();
         this.cursoMateria = { ...data };
-        // console.log("edi: ", this.cursoMateria)
         this.setData();
         this.cursoMateriaDialog = true;
         this.optionCursoMateria = false;
     }
 
     setData(){
-        // console.log("set1: ", this.cursoForm.value)
-
-        const curnivel = {
-            curnivel: this.cursoMateria.curnivel
-        };
-
-        this.diccionarioService.getTipoMateria(curnivel).subscribe(
-            (result: any) => {
-                this.tipoMateria = result;
-            }
-        )
-
-        const rolnombre = {
-            rolnombre: this.cursoMateria.rolnombre
-        };
-
-        this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe(
-            (result: any) => {
-                this.tipoPersona = result;
-            }
-        )
-        console.log("editar: ", this.cursoMateria)
+        const curnivel = { curnivel: this.cursoMateria.curnivel };
+        this.diccionarioService.getTipoMateria(curnivel).subscribe( (result: any) => { this.tipoMateria = result; } )
+        const rolnombre = {rolnombre: this.cursoMateria.rolnombre};
+        this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe( (result: any) => { this.tipoPersona = result; } )
         this.cursoForm.patchValue({
             curmatid: this.cursoMateria.curmatid,
             tipoCurso: new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel),
@@ -301,12 +227,9 @@ export class CursoCrudComponent implements OnInit {
             curmatfecfin: this.cursoMateria.curmatfecfin,
             curmatcosto: this.cursoMateria.curmatcosto
         })
-
-        // console.log("set: ", this.cursoForm.value)
     }
     obtenerBody(){
         this.cursoMateria = new CursoMateria();
-        // console.log("cursoForm body: ", this.cursoForm.value);
         this.cursoMateria.curmatid = this.cursoForm.value.curmatid;
         this.cursoMateria.curid = this.cursoForm.value.tipoCurso.curid;
         this.cursoMateria.matid = this.cursoForm.value.tipoMateria.matid;
@@ -315,28 +238,25 @@ export class CursoCrudComponent implements OnInit {
         this.cursoMateria.curmatidroldes = this.cursoForm.value.tipoRol.rolnombre;
         this.cursoMateria.curmatfecini = this.cursoForm.value.curmatfecini;
         this.cursoMateria.curmatfecfin = this.cursoForm.value.curmatfecfin;
+        this.cursoMateria.curmatcosto = this.cursoForm.value.curmatcosto;
         this.cursoMateria.curmatestado = 1;
         this.cursoMateria.curmatestadodescripcion="";
         this.cursoMateria.curmatusureg = this.usuario.usuname;
         this.cursoMateria.curmatusumod = this.usuario.usuname;
+        console.log("Datos: ", this.cursoMateria)
         const body = { ...this.cursoMateria }
         return body;
     }
     guardarCursoMateria(){
 
         if(this.cursoForm.invalid){
-            // console.log("cursoForm.value: ", this.cursoForm.value);
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-            return Object.values(this.cursoForm.controls).forEach(control=>{
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
+            return Object.values(this.cursoForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
         }
 
         this.obtenerBody();
 
         if(this.optionCursoMateria){
-            // console.log("casi new: ", this.cursoMateria)
             this.cursoService.insertarCursoMateria(this.cursoMateria).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia Insertardo', life: 3000 });
@@ -344,24 +264,17 @@ export class CursoCrudComponent implements OnInit {
                     this.cursoMateria = new CursoMateria();
                     this.ocultarDialog();
                 },
-                error => {
-                // console.log("error",error);
-                // const descripcionError = error.error.message;
-                //     this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
+                (error: any) => {
                     console.log("error: ", error);
-                    let errorMessage = 'Se produjo un error al intentar registrar el curso-materia.';
-
-                    // Verifica si el error contiene el mensaje específico de violación de clave única
-                    if (error.error.message.includes('UniqueViolation')) {
-                        errorMessage = 'No se puede crear la curso-materia porque ya existe un registro igual.';
+                    if (error.error.message?.includes('UniqueViolation')) {
+                        const errorMessage = 'No se puede crear la curso-materia porque ya existe un registro igual.';
+                        this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
                     }
-
-                    this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al intentar registrar el curso-materia.', life: 5000});
                 }
             );
         }
         else{
-            // console.log("casi mod: ", this.cursoMateria)
             this.cursoService.modificarCursoMateria(this.cursoMateria).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa', detail: 'Modificación Curso-Materia Existosamente!', life: 3000 });
@@ -379,28 +292,21 @@ export class CursoCrudComponent implements OnInit {
     eliminarCursoMateria(data: CursoMateria) {
         this.eliminarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
-        // console.log("CursoMateria:", this.cursoMateria);
     }
 
     desactivarCursoMateria(data: CursoMateria) {
         this.desactivarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
         this.cursoMateria.tipo = 2;
-        // console.log("CursoMateria:", this.cursoMateria);
     }
 
     activarCursoMateria(data: CursoMateria) {
         this.activarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
         this.cursoMateria.tipo = 3;
-        // console.log("CursoMateria:", this.cursoMateria);
     }
     confirmarEliminar() {
-        // console.log("confirmarEliminar: ", this.cursoMateria)
-        const criterio = {
-            curmatid: this.cursoMateria.curmatid
-        }
-        // console.log("criterio: ", criterio)
+        const criterio = { curmatid: this.cursoMateria.curmatid }
         this.cursoService.eliminarCursoMateria(criterio).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Curso-Materia Eliminado', life: 3000 });
@@ -417,11 +323,6 @@ export class CursoCrudComponent implements OnInit {
     }
 
     confirmarActivarDesactivar() {
-        // console.log("confirmarActivarDesactivar: ", this.cursoMateria)
-        // const criterio = {
-        //     curmatid: this.cursoMateria.curmatid
-        // }
-        // console.log("criterio: ", criterio)
         this.cursoMateria.curmatusumod = this.usuario.usuname;
         this.cursoService.gestonarCursoMateriaEstado(this.cursoMateria).subscribe(
             (result: any) => {
@@ -434,20 +335,16 @@ export class CursoCrudComponent implements OnInit {
             },
             error => {
             console.log("error",error);
-            // const descripcionError = error.error.message;
-                // this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal', life: 5000});
             }
         );
     }
 
-     // Método de busqueda en la tabla
-     onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal(
-            (event.target as HTMLInputElement).value,
-            'contains'
-        );
+    // Método de busqueda en la tabla
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal( (event.target as HTMLInputElement).value, 'contains' );
     }
+
     obtenerSeverityEstado(estado: number): string {
         switch (estado) {
             case 1:
