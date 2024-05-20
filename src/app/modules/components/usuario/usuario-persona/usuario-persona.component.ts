@@ -1,7 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-// Service
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { FileUpload } from 'primeng/fileupload';
+import { NgxSpinnerService } from 'ngx-spinner';
+import * as FileSaver from 'file-saver';
+import { environment } from 'src/environments/environment';
+import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
+// Servicios
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
@@ -10,15 +18,6 @@ import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { Persona, PersonaExpanded } from 'src/app/modules/models/persona';
 import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from 'src/app/modules/models/diccionario';
 import { Usuario } from 'src/app/modules/models/usuario';
-// For validations
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { FileUpload } from 'primeng/fileupload';
-import { NgxSpinnerService } from 'ngx-spinner';
-import * as FileSaver from 'file-saver';
-import { environment } from 'src/environments/environment';
-
 
 interface Column {
     field: string;
@@ -30,19 +29,23 @@ interface ExportColumn {
     title: string;
     dataKey: string;
 }
+
 @Component({
     templateUrl: './usuario-persona.component.html',
     providers: [MessageService],
     styleUrls: ['./usuario-persona.component.css']
 })
+
 export class UsuarioPersonaComponent implements OnInit {
-    // Variable from Validations
+
     @ViewChild('fileUpload') fileUpload: FileUpload;
     personaForm: FormGroup;
+
     // Variables
     persona: PersonaExpanded;
     personas: PersonaExpanded[] = [];
     personasDuplicated: PersonaExpanded[] = [];
+    personasInactivas: PersonaExpanded[] = [];
     elements: PersonaExpanded[];
     listaPersona: PersonaExpanded[] = [];
     personaRegistro: PersonaExpanded;
@@ -93,18 +96,11 @@ export class UsuarioPersonaComponent implements OnInit {
     totalRecords!: number;
     selectAll: boolean = false;
     selectedCustomers!: any[];
+    originalPerNroDoc: any;
 
     apiUrl = environment.API_URL_FOTO_PERFIL;
 
-    constructor(
-        public usuarioService: UsuarioService,
-        private messageService: MessageService,
-        public personaService: PersonaService,
-        private uploadService: UploadService,
-        private authService: AuthService,
-        private formBuilder: FormBuilder,
-        private spinner: NgxSpinnerService
-    ) {}
+    constructor( public usuarioService: UsuarioService, private messageService: MessageService, public personaService: PersonaService, private uploadService: UploadService, private authService: AuthService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService) {}
     ngOnInit() {
 
         this.colsTable = [
@@ -126,21 +122,20 @@ export class UsuarioPersonaComponent implements OnInit {
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
 
         this.fListarPersonas();
+
         this.fLlenarTipoCombo();
-        this.statuses = [
-            { label: 'Activo', value: 0 },
-            { label: 'Inactivo', value: 1 },
-        ];
-        this.authService.getPerfil().subscribe(user => {
-            this.usuario = user[0];
-        });
+
+        this.statuses = [ { label: 'Activo', value: 0 }, { label: 'Inactivo', value: 1 }, ];
+
+        this.authService.getPerfil().subscribe(user => { this.usuario = user[0]; });
+
         this.personaForm = this.formBuilder.group({
             pf_id: [''],
             pf_nombres: ['', [Validators.required]],
             pf_apePat: ['', [Validators.required]],
             pf_apeMat: [''],
             pf_tipDoc: ['',[Validators.required]],
-            pf_nroDoc: [{ value: '', disabled: false }, [Validators.required], [this.validarDocumentoExistente()]],
+            pf_nroDoc: [{ value: '' }, [Validators.required], [this.validarDocumentoExistente()]],
             pf_fecNac: ['', [Validators.required], [this.validarEdadMinima()]],
             pf_tipGen: ['', [Validators.required]],
             pf_direc: ['', [Validators.required]],
@@ -150,9 +145,8 @@ export class UsuarioPersonaComponent implements OnInit {
             pf_tipoEstCivil: ['', [Validators.required]],
             pf_tipPais: ['', [Validators.required]],
             pf_tipCiudad: ['', [Validators.required]],
+            perfoto: ['']
         });
-
-        this.loading = true;
     }
 
     validarEdadMinima(): AsyncValidatorFn {
@@ -172,7 +166,6 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     validarDocumentoExistente(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un número de documento ya existe
-        this.fListarPersonas();// Se llama al método para obtener la lista de personas
         return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
             const numeroDocumento = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
             if (!numeroDocumento) {// Si el número de documento está vacío, no se realiza ninguna validación
@@ -191,6 +184,8 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.elements = result;
                 this.personas = this.elements.map(item => this.fOrganizarDatosPersona(item));
                 this.personasDuplicated = this.personas;
+                this.personasInactivas = this.personas.filter(persona => persona.perestado === 0);
+                this.personas = this.personas.filter(persona => persona.perestado === 1);
                 this.loading = false;
                 this.spinner.hide();
             },
@@ -231,45 +226,20 @@ export class UsuarioPersonaComponent implements OnInit {
         persona.usuid = data.usuid;
         persona.usuname = data.usuname;
         persona.usuemail = data.usuemail;
-        persona.datos.push({
-            percod: data.perid,
-            perdirec: data.perdirec,
-            peremail: data.peremail,
-            percelular: data.percelular,
-            pertelefono: data.pertelefono,
-            perestcivil: data.perestcivil,
-            estadocivilnombre: data.estadocivilnombre,
-            perpais: data.perpais,
-            paisnombre: data.paisnombre,
-            perciudad: data.perciudad,
-            ciudadnombre: data.ciudadnombre,
-        });
+        persona.datos.push({ percod: data.perid, perdirec: data.perdirec, peremail: data.peremail, percelular: data.percelular, pertelefono: data.pertelefono, perestcivil: data.perestcivil, estadocivilnombre: data.estadocivilnombre, perpais: data.perpais, paisnombre: data.paisnombre, perciudad: data.perciudad, ciudadnombre: data.ciudadnombre, });
         return persona;
     }
 
     fLlenarTipoCombo() {
-        this.personaService.getTipoCiudad().subscribe((data: any) => {
-            this.TipoCiudad = data;
-            this.TipoCiudadRespaldo = data;
-        });
-        this.personaService.getTipoPais().subscribe((data: any) => {
-            this.TipoPais = data;
-        });
-        this.personaService.getTipoDocumento().subscribe((data: any) => {
-            this.TipoDocumento = data;
-        });
-        this.personaService.getTipoGenero().subscribe((data: any) => {
-            this.TipoGenero = data;
-        });
-        this.personaService.getTipoEstadoCivil().subscribe((data: any) => {
-            this.TipoEstadoCivil = data;
-        });
+        this.personaService.getTipoCiudad().subscribe((data: any) => { this.TipoCiudad = data; this.TipoCiudadRespaldo = data; });
+        this.personaService.getTipoPais().subscribe((data: any) => { this.TipoPais = data; });
+        this.personaService.getTipoDocumento().subscribe((data: any) => { this.TipoDocumento = data; });
+        this.personaService.getTipoGenero().subscribe((data: any) => { this.TipoGenero = data; });
+        this.personaService.getTipoEstadoCivil().subscribe((data: any) => { this.TipoEstadoCivil = data; });
     }
 
     ListarPersonas() {
-        this.personaService.ListarPersona().subscribe((data: any) => {
-            this.Personas = data;
-        });
+        this.personaService.ListarPersona().subscribe((data: any) => { this.Personas = data; });
     }
 
     onChangeTipoPais(data: any) {
@@ -283,7 +253,8 @@ export class UsuarioPersonaComponent implements OnInit {
         this.persona = { ...data };
         this.optionDialog = false;
         this.personaNuevoDialog = true;
-        this.personaForm.get('pf_nroDoc')?.disable();
+        this.originalPerNroDoc = this.persona.pernrodoc;
+
         this.personaForm.reset();
         this.personaForm.patchValue({
             pf_id: this.persona.perid,
@@ -300,8 +271,23 @@ export class UsuarioPersonaComponent implements OnInit {
             pf_telefono: this.persona.datos[0].pertelefono,
             pf_tipoEstCivil: new TipoEstadoCivil(this.persona.datos[0].perestcivil, this.persona.datos[0].estadocivilnombre),
             pf_tipPais: new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre),
-            pf_tipCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais)
+            pf_tipCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais),
+            perfoto: this.persona.perfoto
         });
+        const nroDocControl = this.personaForm.get('pf_nroDoc');
+        nroDocControl.clearAsyncValidators();
+        if (this.originalPerNroDoc) {
+            nroDocControl.setAsyncValidators([this.validateNroDocIfChanged.bind(this)]);
+        }
+        nroDocControl.updateValueAndValidity();
+    }
+
+    validateNroDocIfChanged(control: AbstractControl) {
+        if (control.value === this.originalPerNroDoc) {
+            return of(null);
+        } else {
+            return this.validarDocumentoExistente()(control);
+        }
     }
 
     cargarArchivos(currentFiles: File[]): void {
@@ -338,10 +324,7 @@ export class UsuarioPersonaComponent implements OnInit {
         if (this.optionDialog) {
             if(this.personaForm.invalid){
                 this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.personaForm.controls).forEach(control=>{
-                    control.markAllAsTouched();
-                    control.markAsDirty();
-                })
+                return Object.values(this.personaForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
             }
             if (this.archivos?.currentFiles && this.personaForm.valid) {
                 this.cargarArchivos(this.archivos.currentFiles);
@@ -398,17 +381,14 @@ export class UsuarioPersonaComponent implements OnInit {
                     control.markAsDirty();
                 })
             }
-            // console.log("Archivos: ", this.archivos);
             if (!this.archivos?.currentFiles && this.personaForm.valid) {
                 this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Registro sin imagen.', life: 3000 });
                 this.tipoUpdate = 4;
                 this.imagenName = '';
             }
             if (this.archivos?.currentFiles && this.personaForm.valid) {
-                // this.messageService.add({ severity: 'info', summary: 'Si selecciono una imagen', detail: 'Registro con imagen.', life: 3000 });
                 this.cargarArchivos(this.archivos.currentFiles);
                 this.tipoUpdate = 2;
-                // this.imagenName = this.archivos.currentFiles[0]?.name;
                 this.imagenName = this.nombreArchivo;
             }
 
@@ -419,7 +399,7 @@ export class UsuarioPersonaComponent implements OnInit {
             this.personaRegistroModificar.perapepat = this.personaForm.value.pf_apePat;
             this.personaRegistroModificar.perapemat = this.personaForm.value.pf_apeMat;
             this.personaRegistroModificar.pernombres = this.personaForm.value.pf_nombres;
-            // this.personaRegistroModificar.pernrodoc = this.personaForm.value.pf_nroDoc;
+            this.personaRegistroModificar.pernrodoc = this.personaForm.value.pf_nroDoc;
             this.personaRegistroModificar.perfecnac = this.personaForm.value.pf_fecNac;
             this.personaRegistroModificar.percelular = this.personaForm.value.pf_celular;
             this.personaRegistroModificar.pertelefono = this.personaForm.value.pf_telefono;
@@ -438,7 +418,6 @@ export class UsuarioPersonaComponent implements OnInit {
             this.personaRegistroModificar.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
 
             this.loading = true;
-            // console.log("Datos antes de modificar: ", this.personaRegistroModificar);
             this.personaService.gestionarPersona(this.personaRegistroModificar).subscribe(
                 (data: any) => {
                     this.personaNuevoDialog = false;
@@ -449,7 +428,7 @@ export class UsuarioPersonaComponent implements OnInit {
                     this.loading = false;
                 },
                 (error: any) => {
-                    // console.log("Error: ", error);
+                    console.log("Error: ", error);
                     this.messageService.add({severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
                     this.loading = false;
                 }
@@ -597,61 +576,93 @@ export class UsuarioPersonaComponent implements OnInit {
 
     // Métodos para exportar PDF y EXCEL
 
+    // Función para exportar el documento PDF
     exportPdf() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
-                // Cambia 'p' por 'l' para la orientación horizontal
-                // Considera ajustar las unidades a 'pt' para mejor manejo del tamaño
                 const doc = new jsPDF.default('l', 'pt', 'a4');
-                // Agregar un título
-                doc.setFontSize(16); // Tamaño de la fuente
-                doc.text('Lista de Personas', 14, 30); // Agrega texto en la posición x = 14, y = 30
-                // Configura las columnas y el cuerpo del PDF
-                (doc as any).autoTable({
-                    columns: this.exportColumns,
-                    body: this.personas,
-                    theme: 'striped',  // Puedes elegir otros temas como 'plain', 'striped' o 'grid'
-                    styles: { fontSize: 8, cellPadding: 3 },  // Ajusta el tamaño de fuente y el padding para acomodar más datos
-                });
-                // Guarda el archivo PDF
-                doc.save('ListaPersonas.pdf');
+
+                // Título centrado
+                const title = 'Lista Personas';
+                const titleFontSize = 16;
+                const titleWidth = doc.getStringUnitWidth(title) * titleFontSize / doc.internal.scaleFactor;
+                const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2;
+                const titleY = 60;
+                doc.setFontSize(titleFontSize);
+                doc.text(title, titleX, titleY);
+
+                // Subtítulo
+                const subtitle = 'Esta lista muestra todas las personas registradas en el sistema.';
+                const subtitleFontSize = 9;
+                const subtitleX = 20;
+                const subtitleY = 80;
+                doc.setFontSize(subtitleFontSize);
+                doc.text(subtitle, subtitleX, subtitleY);
+
+                // Descripción
+                const description = 'Sistema de Seguimiento y Gestión Académico';
+                const descriptionFontSize = 10;
+                const descriptionX = 100;
+                const descriptionY = 40;
+                doc.setFontSize(descriptionFontSize);
+                doc.text(description, descriptionX, descriptionY);
+
+                const description2 = 'Instituto Biblico de Capacitación Internacional';
+                const descriptionFontSize2 = 10;
+                const descriptionX2 = 100;
+                const descriptionY2 = 30;
+                doc.setFontSize(descriptionFontSize2);
+                doc.text(description2, descriptionX2, descriptionY2);
+
+                // Imagen en base64
+                const base64Image = logoIbciBase64;
+                const imageX = 20;
+                const imageY = 10;
+                const imageWidth = 80; // Ancho de la imagen en puntos
+                const imageHeight = 50; // Alto de la imagen en puntos
+                doc.addImage(base64Image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+
+                // Tabla de datos
+                (doc as any).autoTable({ columns: this.exportColumns, body: this.personas, theme: 'striped', styles: { fontSize: 8, cellPadding: 3 }, startY: 100, }); // Posición inicial de la tabla
+                const fechaActual = new Date(); // Obtener la fecha actual
+                const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1).toString().padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;// Formatear la fecha como YYYY-MM-DD
+                const horaFormateada = `${fechaActual.getHours().toString().padStart(2, '0')}-${fechaActual.getMinutes().toString().padStart(2, '0')}-${fechaActual.getSeconds().toString().padStart(2, '0')}`;// Formatear la hora como HH-MM-SS
+                const nombreArchivo = `rpt_pdf_lista_personas_${fechaFormateada}_${horaFormateada}.pdf`; // Concatenar la fecha y la hora al nombre del archivo
+                doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
             });
         });
     }
 
     exportExcel() {
         import('xlsx').then((xlsx) => {
-            // Define los campos que deseas incluir en la exportación
             const fieldsToExport = [
-                'perid', 'pernomcompleto', 'pernombres', 'perapepat', 'perapemat',
-                'tipodocnombre', 'pernrodoc', 'perfecnac','generonombre', 'perestado', 'perusureg',
-                'perfecreg', 'perusumod', 'perfecmod'
+                { field: 'perid', header: 'ID'},
+                { field: 'pernomcompleto', header: 'Nombre Completo'},
+                { field: 'pernombres', header: 'Nombres'},
+                { field: 'perapepat', header: 'Apellido Paterno'},
+                { field: 'perapemat',header: 'Apelido Materno'},
+                { field: 'tipodocnombre', header: 'Tipo de Documento'},
+                { field: 'pernrodoc', header: 'Número de Documento'},
+                { field: 'perfecnac',header: 'Fecha Nacimiento'},
+                { field: 'generonombre', header: 'Genero'},
+                { field: 'perestado', header: 'Estado'},
+                { field: 'perusureg',header: 'Usuario Registro'},
+                { field: 'perfecreg',header: 'Fecha Registro'},
+                { field: 'perusumod', header: 'Usuario Modificado'},
+                { field: 'perfecmod', header: 'Fecha Modificado'}
             ];
-            // Filtra y transforma 'this.personas' para incluir solo los campos deseados
-            const dataToExport = this.personas.map(persona => {
-                const filteredData = {};
-                fieldsToExport.forEach(field => {
-                    filteredData[field] = persona[field] || ''; // Asegura que todos los campos existan, incluso si están vacíos
-                });
-                return filteredData;
-            });
+            const dataToExport = this.personas.map(persona => { const filteredData = {}; fieldsToExport.forEach(field => { filteredData[field.header] = persona[field.field] || ''; }); return filteredData; }); // Asegura que todos los campos existan, incluso si están vacíos
             const worksheet = xlsx.utils.json_to_sheet(dataToExport);
             const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
             const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, 'persons');
+            this.saveAsExcelFile(excelBuffer, 'rpt_excel_lista_persona');
         });
     }
 
     saveAsExcelFile(buffer: any, fileName: string): void {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
-        const data: Blob = new Blob([buffer], {
-            type: EXCEL_TYPE
-        });
-        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+        const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
+        FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + EXCEL_EXTENSION);
     }
-
-
-
-
 }

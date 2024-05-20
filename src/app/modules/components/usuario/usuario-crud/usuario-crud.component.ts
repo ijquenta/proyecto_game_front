@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
+import { Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { NgxSpinnerService } from 'ngx-spinner';
+import * as FileSaver from 'file-saver';
 // Services
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
@@ -11,11 +15,8 @@ import { TipoPersona, TipoPersona2, TipoRol } from 'src/app/modules/models/dicci
 import { AuthService } from 'src/app/services/auth.service';
 // For validations
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { NgxSpinnerService } from 'ngx-spinner';
-import * as FileSaver from 'file-saver';
+import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+
 interface Column {
     field: string;
     header: string;
@@ -26,11 +27,13 @@ interface ExportColumn {
     title: string;
     dataKey: string;
 }
+
 @Component({
     templateUrl: './usuario-crud.component.html',
     providers: [MessageService],
     styleUrls: ['./usuario-crud.component.css']
 })
+
 export class UsuarioCrudComponent implements OnInit {
 
     // --------- Tipo Persona ---------
@@ -67,32 +70,15 @@ export class UsuarioCrudComponent implements OnInit {
     originalUsername: any;
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
-    constructor(
-                private messageService: MessageService,
-                private usuarioService: UsuarioService,
-                private authService: AuthService,
-                public reporte: ReporteService,
-                private formBuilder: FormBuilder,
-                private spinner: NgxSpinnerService
-                )
-                {}
+    constructor( private messageService: MessageService, private usuarioService: UsuarioService, private authService: AuthService, public reporte: ReporteService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService ) {}
+
     ngOnInit() {
-        this.loading = true;
         this.obtenerDatosUsuario();
         this.listarUsuarios();
         this.listarPersonaCombo();
-        // this.listarRolCombo();
         this.usuarioForm = this.formBuilder.group({
             uf_id: [''],
-            uf_usuname: [
-                '',
-                [Validators.required,
-                 Validators.minLength(5),
-                 Validators.maxLength(20),
-                 this.noEspacios
-                ],
-                [this.validarNombreUsuarioExistente()] // Asynchronous validators
-            ],
+            uf_usuname: [ '', [Validators.required, Validators.minLength(5), Validators.maxLength(20), this.noEspacios], [this.validarNombreUsuarioExistente()]],
             uf_tipPerSel: ['', Validators.required],
             uf_tipRolSel: ['', Validators.required],
             uf_email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
@@ -121,10 +107,11 @@ export class UsuarioCrudComponent implements OnInit {
         ];
 
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
-
     }
+
     passwordStrength(control: AbstractControl): { [key: string]: boolean } | null {
       const value = control.value;
+      console.log("3. ", value)
       if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
         return { passwordStrength: true };
       }
@@ -134,6 +121,7 @@ export class UsuarioCrudComponent implements OnInit {
     passwordMatchValidator(fg: FormGroup): { [key: string]: boolean } | null {
         const password = fg.get('usupassword').value;
         const confirmPassword = fg.get('usupassword2').value;
+        console.log("1: ", password, "2: ", confirmPassword)
         if (password && confirmPassword && password !== confirmPassword) {
             return { mismatch: true };
         }
@@ -172,32 +160,25 @@ export class UsuarioCrudComponent implements OnInit {
             if (user) {
                 if (Array.isArray(user) && user.length > 0) {
                     this.datosUsuario = user[0];
-
                     this.listarRolCombo();
                 }
             }
         }));
     }
 
-
     listarRolCombo() {
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result;
-                // console.log("datos usuario: ", this.datosUsuario)
                 if(this.datosUsuario?.rolid == 2){
                     this.tipoRol = this.tipoRol.filter(usuario => usuario.rolid !== 1);
-                    // console.log("echo")
                 }
-                // console.log("tiporol normal: ", this.tipoRol)
             },
             (error) => {
                 console.error('Error al obtener los roles:', error);
             }
         );
     }
-
-
 
     listarPersonaCombo(){
         this.usuarioService.getTipoPersona().subscribe(
@@ -247,10 +228,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuario = { ...data };
         this.usuarioDialog = true;
         this.optionDialog = false;
-
-        // Al cargar los datos para la edición, también guarda el nombre de usuario original
         this.originalUsername = this.usuario.usuname;
-
         this.usuarioForm.patchValue({
             uf_id: this.usuario.usuid,
             uf_usuname: this.usuario.usuname,
@@ -259,8 +237,6 @@ export class UsuarioCrudComponent implements OnInit {
             uf_email: this.usuario.usuemail,
             uf_descripcion: this.usuario.usudescripcion
         });
-
-        // Ajustar el validador asincrónico para el nombre de usuario solo si es necesario
         const usunameControl = this.usuarioForm.get('uf_usuname');
         usunameControl.clearAsyncValidators();
         if (this.originalUsername) {
@@ -270,14 +246,12 @@ export class UsuarioCrudComponent implements OnInit {
     }
 
     validateUsernameIfChanged(control: AbstractControl) {
-        // La validación se ignora si el valor no ha cambiado
         if (control.value === this.originalUsername) {
             return of(null);
         } else {
             return this.validarNombreUsuarioExistente()(control);
         }
     }
-
 
     confirmarDesactivar(data: Usuario){
         this.desactivarUsuarioDialog = true;
@@ -291,6 +265,15 @@ export class UsuarioCrudComponent implements OnInit {
     }
 
     confirmarCambiarPassword(data: Usuario){
+        console.log("Datos 1: ", data)
+        console.log("Datos 2 form: ", this.usuarioPwdForm.value)
+        // this.usuarioPwdForm.reset();
+        this.usuarioPwdForm.patchValue(
+            {
+                usupassword: null,
+                usupassword2: null
+            }
+        )
         this.usuarioCambiarPasswordDialog = true;
         this.usuario = { ...data };
     }
@@ -298,15 +281,11 @@ export class UsuarioCrudComponent implements OnInit {
     cambiarPasswordUsuario(){
         if(this.usuarioPwdForm.invalid){
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-            return Object.values(this.usuarioPwdForm.controls).forEach(control=>{
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
+            return Object.values(this.usuarioPwdForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
         }
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
         this.usuarioRegistro.usupassword = this.usuarioPwdForm.value.usupassword;
-        // console.log("Cambiar password: ",this.usuarioRegistro);
         this.usuarioService.gestionarUsuarioPassword(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Activado.', life: 3000});
@@ -319,8 +298,8 @@ export class UsuarioCrudComponent implements OnInit {
                 this.messageService.add({ severity: 'error', summary: 'Error de proceso', detail: 'Se produjo un error al intentar activar el usuario.', life: 3000});
             }
         )
-
     }
+
     desactivarUsuario() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
@@ -369,10 +348,7 @@ export class UsuarioCrudComponent implements OnInit {
         if (this.optionDialog) {
             if(this.usuarioForm.invalid){
                 this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.usuarioForm.controls).forEach(control=>{
-                    control.markAllAsTouched();
-                    control.markAsDirty();
-                })
+                return Object.values(this.usuarioForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
             }
             this.usuarioRegistro = new Usuario();
             this.usuarioRegistro.tipo = 1;
@@ -395,8 +371,6 @@ export class UsuarioCrudComponent implements OnInit {
                 (error) => {
                     console.log("error: ", error);
                     let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
-
-                    // Verifica si el error contiene el mensaje específico de violación de clave única
                     if (error.error.message.includes('UniqueViolation')) {
                         errorMessage = 'No se puede crear el usuario porque ya existe un registro con el mismo rol para esta persona.';
                     }
@@ -434,8 +408,6 @@ export class UsuarioCrudComponent implements OnInit {
                 (error) => {
                     console.log("error: ", error);
                     let errorMessage = 'Se produjo un error al intentar modificar el usuario.';
-
-                    // Verifica si el error contiene el mensaje específico de violación de clave única
                     if (error.error.message.includes('UniqueViolation')) {
                         errorMessage = 'No se puede modificar el usuario porque ya existe un registro con el mismo rol para esta persona.';
                     }
@@ -478,8 +450,6 @@ export class UsuarioCrudComponent implements OnInit {
     exportPdf() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
-                // Cambia 'p' por 'l' para la orientación horizontal
-                // Considera ajustar las unidades a 'pt' para mejor manejo del tamaño
                 const doc = new jsPDF.default('l', 'pt', 'a4');
                 // Agregar un título
                 doc.setFontSize(16); // Tamaño de la fuente

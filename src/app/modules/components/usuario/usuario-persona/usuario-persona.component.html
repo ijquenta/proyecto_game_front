@@ -2,17 +2,15 @@
     <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Personas </span> </div>
-            <hr>
-            <p-table [loading]="loading" #dt dataKey="perid" [value]="personas" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5,10,20]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}">
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Personas </span> </div> <hr>
+            <p-table [loading]="loading" #dt dataKey="perid" [value]="personas" [rows]="20" [paginator]="true" [rowsPerPageOptions]="[10,20,30,50,100]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <div>
+                        <div class="flex justify-content-center">
                             <button pButton pRipple label="Nuevo Persona" icon="pi pi-user-plus" class="p-button-primary mr-2" (click)="NuevoPersona()" pTooltip="Registrar persona" tooltipPosition="top"></button>
                             <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="top"></button>
                             <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="top"></button>
                         </div>
-
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por nombre completo, número de documento y genero" tooltipPosition="top" />
@@ -21,23 +19,43 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 5rem"></th>
+                        <th>#</th>
+                        <!-- <th style="width: 4rem"> <p-tableHeaderCheckbox></p-tableHeaderCheckbox> </th> -->
                         <th></th>
                         <th></th>
-                        <th pSortableColumn="perapepat">Apellido Paterno<p-sortIcon field="perapepat"></p-sortIcon></th>
-                        <th pSortableColumn="perapemat">Apellido Materno<p-sortIcon field="perapemat"></p-sortIcon></th>
+                        <th></th>
+                        <th pSortableColumn="perapepat">A. Paterno<p-sortIcon field="perapepat"></p-sortIcon></th>
+                        <th pSortableColumn="perapemat">A. Materno<p-sortIcon field="perapemat"></p-sortIcon></th>
                         <th pSortableColumn="pernombres">Nombres<p-sortIcon field="pernombres"></p-sortIcon></th>
-                        <th pSortableColumn="pernrodoc">Nro. Documento<p-sortIcon field="pernrodoc"></p-sortIcon></th>
-                        <th pSortableColumn="perfecnac">Fecha de Nacimiento<p-sortIcon field="pernrodoc"></p-sortIcon></th>
-                        <th pSortableColumn="pergenero">Género <p-sortIcon field="pergenero"></p-sortIcon></th>
-                        <th pSortableColumn="perfecreg">Registrado <p-sortIcon field="perfecreg"></p-sortIcon></th>
-                        <th pSortableColumn="perfecmod">Modificado <p-sortIcon field="perfecmod"></p-sortIcon></th>
-                        <th pSortableColumn="perestado"> Estado <p-sortIcon field="perestado"></p-sortIcon></th>
+                        <th pSortableColumn="pernrodoc">Nro. Doc.<p-sortIcon field="pernrodoc"></p-sortIcon></th>
+                        <th pSortableColumn="perfecnac">F. Nac.<p-sortIcon field="perfecnac"></p-sortIcon></th>
+                        <th pSortableColumn="pergenero">G.<p-sortIcon field="pergenero"></p-sortIcon></th>
+                        <th pSortableColumn="perfecreg">Registrado<p-sortIcon field="perfecreg"></p-sortIcon></th>
+                        <th pSortableColumn="perfecmod">Modificado<p-sortIcon field="perfecmod"></p-sortIcon></th>
+                        <th>Estado</th>
+                    </tr>
+                    <tr>
+                        <!-- <th></th> -->
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th><input pInputText type="text" (input)="dt.filter($event.target.value, 'perapepat', 'contains')" [value]="dt.filters['perapepat']?.value" class="w-full"></th>
+                        <th><input pInputText type="text" (input)="dt.filter($event.target.value, 'perapemat', 'contains')" [value]="dt.filters['perapemat']?.value" class="w-full"></th>
+                        <th><input pInputText type="text" (input)="dt.filter($event.target.value, 'pernombres', 'contains')" [value]="dt.filters['pernombres']?.value" class="w-full"></th>
+                        <th><input pInputText type="text" (input)="dt.filter($event.target.value, 'pernrodoc', 'contains')" [value]="dt.filters['pernrodoc']?.value" class="w-full"></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-persona let-expanded="expanded">
+                <ng-template pTemplate="body" let-persona let-expanded="expanded" let-rowIndex="rowIndex">
                     <tr>
-                        <td> <button type="button" pButton pRipple [pRowToggler]="persona" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Mostrar más información de la persona" tooltipPosition="right"></button> </td>
+                        <td>{{rowIndex+1}}</td>
+                        <!-- <td> <p-tableCheckbox [value]="persona"></p-tableCheckbox> </td> -->
+                        <td> <button type="button" pButton pRipple [pRowToggler]="persona" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Mostrar más información de la persona" tooltipPosition="top"></button> </td>
                         <td>
                             <div class="flex justify-content-center">
                                 <button *ngIf="persona.perestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="modificarPersona(persona)" pTooltip="Modificar Persona" tooltipPosition="top"></button>
@@ -46,30 +64,22 @@
                             </div>
                         </td>
                         <td>
-                            <div *ngIf="persona.perfoto == null">
-                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                            </div>
-                            <div *ngIf="persona.perfoto != null">
-                                <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                            </div>
+                            <div *ngIf="persona.perfoto == null"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> </div>
+                            <div *ngIf="persona.perfoto != null"> <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> </div>
                         </td>
                         <td> <ng-container *ngIf="persona.perapepat; else noRegistro"> {{persona.perapepat}} </ng-container> </td>
                         <td> <ng-container *ngIf="persona.perapemat; else noRegistro"> {{persona.perapemat}} </ng-container> </td>
                         <td> <ng-container *ngIf="persona.pernombres; else noRegistro"> {{persona.pernombres}} </ng-container> </td>
                         <td> <ng-container *ngIf="persona.pernrodoc; else noRegistro"> {{persona.pernrodoc}} </ng-container> </td>
-                        <td> <ng-container *ngIf="persona.perfecnac; else noRegistro"> {{persona.perfecnac | date:'dd/MM/yyyy':'UTC'}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perfecnac; else noRegistro"> {{persona.perfecnac | date:'dd/MM/yyyy'}} </ng-container> </td>
                         <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}} </ng-container> </td>
                         <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container *ngIf="persona.perusureg"> <p-chip> <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div> </p-chip> </ng-container> </ng-container> </td>
                         <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container *ngIf="persona.perusumod"> <p-chip> <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div> </p-chip> </ng-container> </ng-container> </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(persona.perestado)" [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag></td>
-                        <ng-template #noRegistro> <p-chip> <div class="p-2"> S/R </div> </p-chip> </ng-template>
+                        <ng-template #noRegistro> <p-chip> <div class="p-2">...</div> </p-chip> </ng-template>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
+                <ng-template pTemplate="emptymessage"> <tr> <td colspan="9">No se encontró ningún registro.</td> </tr> </ng-template>
                 <ng-template pTemplate="rowexpansion" let-persona>
                     <tr>
                         <td></td>
@@ -98,7 +108,7 @@
                                         <td> <ng-container *ngIf="datos.ciudadnombre; else noRegistro"> {{ datos.ciudadnombre }} </ng-container> </td>
                                     </tr>
                                 </ng-template>
-                                <ng-template #noRegistro> <p-chip> <div class="p-2"> S/R </div> </p-chip> </ng-template>
+                                <ng-template #noRegistro> <p-chip> <div class="p-2">...</div> </p-chip> </ng-template>
                             </p-table>
                         </td>
                     </tr>
@@ -108,6 +118,97 @@
     </div>
 </div>
 
+<div class="grid">
+    <p-toast></p-toast>
+    <div class="col-12">
+        <div class="card">
+            <div class="font-bold text-3xl text-center"> <span class="text-900">Personas </span> <span class="text-primary-600"> Inactivas </span> </div>
+            <hr>
+            <p-table [loading]="loading" #dt2 dataKey="perid" [value]="personasInactivas" [rows]="20" [paginator]="true" [rowsPerPageOptions]="[10,20,30,50,100]" [globalFilterFields]="['perapepat', 'perapemat', 'pernombres', 'pernrodoc', 'generonombre']" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por nombre completo, número de documento y genero" tooltipPosition="top" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th style="width: 4rem"></th>
+                        <th></th>
+                        <th></th>
+                        <th pSortableColumn="perapepat">Ape. Paterno<p-sortIcon field="perapepat"></p-sortIcon></th>
+                        <th pSortableColumn="perapemat">Ape. Materno<p-sortIcon field="perapemat"></p-sortIcon></th>
+                        <th pSortableColumn="pernombres">Nombres<p-sortIcon field="pernombres"></p-sortIcon></th>
+                        <th pSortableColumn="pernrodoc">Nro. Doc.<p-sortIcon field="pernrodoc"></p-sortIcon></th>
+                        <th pSortableColumn="perfecnac">Fec. Nac.<p-sortIcon field="perfecnac"></p-sortIcon></th>
+                        <th pSortableColumn="pergenero">Género <p-sortIcon field="pergenero"></p-sortIcon></th>
+                        <th pSortableColumn="perfecreg">Registrado <p-sortIcon field="perfecreg"></p-sortIcon></th>
+                        <th pSortableColumn="perfecmod">Modificado <p-sortIcon field="perfecmod"></p-sortIcon></th>
+                        <th pSortableColumn="perestado"> Estado <p-sortIcon field="perestado"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-persona let-expanded="expanded" let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{rowIndex+1}}</td>
+                        <td> <button type="button" pButton pRipple [pRowToggler]="persona" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Mostrar más información de la persona" tooltipPosition="top"></button> </td>
+                        <td> <div class="flex justify-content-center"> <button *ngIf="persona.perestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success" (click)="confirmarActivar(persona)" pTooltip="Activar Persona" tooltipPosition="top"></button> </div> </td>
+                        <td>
+                            <div *ngIf="persona.perfoto == null"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> </div>
+                            <div *ngIf="persona.perfoto != null"> <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> </div>
+                        </td>
+                        <td> <ng-container *ngIf="persona.perapepat; else noRegistro"> {{persona.perapepat}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perapemat; else noRegistro"> {{persona.perapemat}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.pernombres; else noRegistro"> {{persona.pernombres}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.pernrodoc; else noRegistro"> {{persona.pernrodoc}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perfecnac; else noRegistro"> {{persona.perfecnac | date:'dd/MM/yyyy'}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.pergenero; else noRegistro"> {{persona.generonombre}} </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perusureg; else noRegistro"> <ng-container *ngIf="persona.perusureg"> <p-chip> <div class="p-2"> {{persona.perusureg}} <br> {{persona.perfecreg}} </div> </p-chip> </ng-container> </ng-container> </td>
+                        <td> <ng-container *ngIf="persona.perusumod; else noRegistro"> <ng-container *ngIf="persona.perusumod"> <p-chip> <div class="p-2"> {{persona.perusumod}} <br> {{persona.perfecmod}} </div> </p-chip> </ng-container> </ng-container> </td>
+                        <td> <p-tag [value]="obtenerDescripcionEstado(persona.perestado)" [severity]="obtenerSeverityEstado(persona.perestado)" [rounded]="true"></p-tag></td>
+                        <ng-template #noRegistro> <p-chip> <div class="p-2">...</div> </p-chip> </ng-template>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage"> <tr> <td colspan="9">No se encontró ningún registro.</td> </tr> </ng-template>
+                <ng-template pTemplate="rowexpansion" let-persona>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td colspan="7">
+                            <p-table [value]="persona.datos" dataKey="percod">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Domicilio</th>
+                                        <th>Correo Electrónico</th>
+                                        <th>Número de Celular</th>
+                                        <th>Número de Teléfono</th>
+                                        <th>Estado Civil</th>
+                                        <th>País</th>
+                                        <th>Ciudad</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-datos>
+                                    <tr>
+                                        <td> <ng-container *ngIf="datos.perdirec; else noRegistro"> {{ datos.perdirec }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.peremail; else noRegistro"> {{ datos.peremail }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.percelular; else noRegistro"> {{ datos.percelular }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.pertelefono; else noRegistro"> {{ datos.pertelefono }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.estadocivilnombre; else noRegistro"> {{ datos.estadocivilnombre }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.paisnombre; else noRegistro"> {{ datos.paisnombre }} </ng-container> </td>
+                                        <td> <ng-container *ngIf="datos.ciudadnombre; else noRegistro"> {{ datos.ciudadnombre }} </ng-container> </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template #noRegistro> <p-chip> <div class="p-2">...</div> </p-chip> </ng-template>
+                            </p-table>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
 
 <p-dialog [(visible)]="personaNuevoDialog" header="Persona" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
     <form [formGroup]="personaForm" novalidate>
@@ -264,8 +365,14 @@
                 </small>
                 <small class="p-success block" *ngIf="personaForm.get('pf_direc')?.valid"> La dirección es valida. </small>
             </div>
-
-        </div>
+            <div class="field col-12 md:col-4">
+                <label class="mr-2">Foto</label>
+                <div class="flex justify-content-center">
+                    <div *ngIf="personaForm.value.perfoto == null"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> </div>
+                    <div *ngIf="personaForm.value.perfoto != null"> <p-avatar image="{{ apiUrl }}/{{ personaForm.value.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> </div>
+                </div>
+            </div>
+         </div>
         <div class="field col-12">
             <p-fileUpload #fileUpload mode="advanced" chooseLabel="Elegir imagen" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="3000000" (onSelect)="onUpload($event)" previewWidth="100" [showUploadButton]="false" [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'" [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 3 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'" [invalidFileTypeMessageDetail]="'Solo se permiten archivos de imagen. Tipos de archivo permitidos: JPG y PNG.'"></p-fileUpload>
         </div>

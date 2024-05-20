@@ -330,8 +330,9 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th> Estudiante </th>
                         <th></th>
+                        <th> Estudiante </th>
+                        <!-- <th></th> -->
                         <th> Matricula </th>
                         <th> Pago </th>
                         <th> Fecha de matricula </th>
@@ -339,7 +340,7 @@
                         <th> Modificado por </th>
                         <th> Descripción </th>
                         <th> Estado </th>
-                        <th> Opciones</th>
+
                         <th></th>
                     </tr>
                 </ng-template>
@@ -347,7 +348,36 @@
                     let-rowspan="rowspan">
 
                     <tr>
+                        <td>
+                            <div class="flex">
 
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-primary mr-2" pTooltip="Editar matricula"
+                                        tooltipPosition="top" (click)="editarMatricula(matr)">
+                                    </button>
+
+                                    <button *ngIf="!matr.pagoidmatricula" pButton pRipple icon="fa-solid fa-money-bill-wave"
+                                        class="p-button-rounded p-button-info mr-2" pTooltip="Pagar matricula"
+                                        tooltipPosition="top" (click)="pagarMatricula(matr)">
+                                    </button>
+
+                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
+                                        icon="fa-solid fa-file-pen" class="p-button-rounded p-button-info mr-2"
+                                        pTooltip="Editar pago matricula" tooltipPosition="top" (click)="actualizarPago(matr)">
+                                    </button>
+
+                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
+                                            icon="pi pi-file-pdf" class="p-button-rounded p-button-warning mr-2" pTooltip="Ver archivo de pago"
+                                            tooltipPosition="top" (click)="verArchivoPago(matr.pagarchivo)">
+                                    </button>
+
+                                    <button  pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2"
+                                        (click)="desactivarMatricula(matr)" pTooltip="Desactivar matricula"
+                                        tooltipPosition="top">
+                                    </button>
+
+                                </div>
+                        </td>
                         <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
                             <div *ngIf="matr.perfoto == null" class="user-display">
                                 <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
@@ -359,30 +389,31 @@
                                     shape="circle"></p-avatar>
                                 <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
                             </div>
-                            <hr>
+                            <!-- <hr> -->
                             <p-chip>
-                                <div class="p-1"> Número de documento: <strong>{{ matr.pernrodoc}}</strong> </div>
+                                <div class="p-1"> Nro. Doc: <strong>{{ matr.pernrodoc}}</strong> </div>
                             </p-chip>
                         </td>
-                        <td> {{'#'+matr.matrid}} </td>
+                        <!-- <td> {{'#'+matr.matrid}} </td> -->
                         <td style="width:15%; min-width:10rem;">
                             <p-chip>
                                 <div class="p-1"> <strong>{{ matr.tipmatrgestion}}</strong> </div>
+                                <div class="p-2"> {{ "Fechas: " + matr.tipmatrfecini + ' ' + matr.tipmatrfecfin}} </div>
+                                <div class="p-3">  {{ 'Bs. '+ matr.tipmatrcosto }} </div>
                             </p-chip>
-                            <hr>
-                            {{ matr.tipmatrfecini + '-' + matr.tipmatrfecfin}}
-                            <hr>
-                            {{ 'Bs. '+ matr.tipmatrcosto }}
+                            <!-- <hr> -->
+
+                            <!-- <hr> -->
+
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <div *ngIf="matr.pagdescripcion">
-                                <p-chip>
-                                    <div class="p-1"> <strong>{{ matr.pagdescripcion}}</strong> </div>
-                                </p-chip>
-                                <hr>
-                                 {{ matr.pagfecha}}
-                                <hr>
-                                 {{ 'Bs. '+ matr.pagmonto }}
+                                    <strong>{{ matr.pagdescripcion}}</strong> <br>
+                                     {{ matr.pagfecha}}  <br>
+                                     {{ 'Bs. '+ matr.pagmonto }}
+                                <!-- <hr> -->
+                                <!-- <hr> -->
+
                             </div>
                             <div *ngIf="!matr.pagdescripcion">
                                 <p-chip>
@@ -411,36 +442,7 @@
                         </td>
                         <td> {{ matr.matrdescripcion }} </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(matr.matrestado)" [severity]="obtenerSeverityEstado(matr.matrestado)" [rounded]="true"></p-tag></td>
-                        <td>
-                            <div class="flex">
 
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-primary mr-2" pTooltip="Editar matricula"
-                                        tooltipPosition="top" (click)="editarMatricula(matr)">
-                                    </button>
-
-                                    <button *ngIf="!matr.pagoidmatricula" pButton pRipple icon="fa-solid fa-money-bill-wave"
-                                        class="p-button-rounded p-button-info mr-2" pTooltip="Pagar matricula"
-                                        tooltipPosition="top" (click)="pagarMatricula(matr)">
-                                    </button>
-
-                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
-                                        icon="fa-solid fa-file-pen" class="p-button-rounded p-button-info mr-2"
-                                        pTooltip="Editar pago matricula" tooltipPosition="top" (click)="actualizarPago(matr)">
-                                    </button>
-
-                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
-                                            icon="pi pi-file-pdf" class="p-button-rounded p-button-secondary mr-2" pTooltip="Ver archivo de pago"
-                                            tooltipPosition="top" (click)="verArchivoPago(matr.pagarchivo)">
-                                    </button>
-
-                                    <button  pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2"
-                                        (click)="desactivarMatricula(matr)" pTooltip="Desactivar matricula"
-                                        tooltipPosition="top">
-                                    </button>
-
-                                </div>
-                        </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">

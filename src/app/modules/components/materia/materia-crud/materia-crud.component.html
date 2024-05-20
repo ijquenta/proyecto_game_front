@@ -26,18 +26,23 @@
 
                 <ng-template pTemplate="header">
                     <tr>
+                        <th></th>
                         <th pSortableColumn="matnombre">Nombre<p-sortIcon field="matnombre"></p-sortIcon></th>
                         <th>Descripción</th>
                         <th pSortableColumn="matnivel">Módulo<p-sortIcon field="matnivel"></p-sortIcon></th>
                         <th>Registrado</th>
                         <th>Modifcado</th>
                         <th>Estado</th>
-                        <th> Opciones </th>
-                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-materia>
                     <tr>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Modificar materia" tooltipPosition="left" (click)="editarMateria(materia)"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar materia" tooltipPosition="left" (click)="desactivarMateria(materia)"></button>
+                            </div>
+                        </td>
                         <td>
                             {{materia.matnombre}}
                         </td>
@@ -63,23 +68,14 @@
                                         {{materia.matusumod}} <br> {{materia.matfecmod}}
                                     </ng-container>
                                     <ng-template #noModificado>
-                                        No se ha modificado
+                                        ...
                                     </ng-template>
                                 </div>
                             </p-chip>
                         </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(materia.matestado)"
                                 [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Modificar materia"
-                                    tooltipPosition="left" (click)="editarMateria(materia)"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger"
-                                    pTooltip="Desactivar materia" tooltipPosition="left"
-                                    (click)="desactivarMateria(materia)"></button>
-                            </div>
-                        </td>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -109,18 +105,22 @@
 
                 <ng-template pTemplate="header">
                     <tr>
+                        <th></th>
                         <th pSortableColumn="matnombre">Nombre<p-sortIcon field="matnombre"></p-sortIcon></th>
                         <th>Descripción</th>
                         <th pSortableColumn="matnivel">Módulo<p-sortIcon field="matnivel"></p-sortIcon></th>
                         <th>Registrado</th>
                         <th>Modifcado</th>
                         <th>Estado</th>
-                        <th> Opciones </th>
-                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-materia>
                     <tr>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" pTooltip="Activar materia" tooltipPosition="left" (click)="activarMateria(materia)"></button>
+                            </div>
+                        </td>
                         <td>
                             {{materia.matnombre}}
                         </td>
@@ -153,11 +153,7 @@
                         </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(materia.matestado)"
                                 [severity]="obtenerSeverityEstado(materia.matestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" pTooltip="Activar materia" tooltipPosition="left" (click)="activarMateria(materia)"></button>
-                            </div>
-                        </td>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -172,7 +168,7 @@
 
 
 
-<p-dialog [(visible)]="materiaDialog" header="Materia" [modal]="true" class="p-fluid">
+<p-dialog [(visible)]="materiaDialog" header="Materia" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
 
     <form [formGroup]="materiaForm" novalidate>
 

@@ -216,6 +216,7 @@ export class MatriculaNuevoComponent implements OnInit {
     // Función de cancelar formulario
     ocultarDialog() {
         this.matriculaDialog = false;
+        this.pagoMatriculaDialog = false;
         this.opcionMatricula = true;
         this.messageService.add({ severity: 'info', summary: 'Cancelar', detail: 'Operación cancelada', life: 3000 });
         this.matriculaForm.reset();

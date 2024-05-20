@@ -21,13 +21,13 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="curnombre"> Curso <p-sortIcon field="curnombre"></p-sortIcon> </th>
-                        <th pSortableColumn="matnombre"> Materia <p-sortIcon field="matnombre"></p-sortIcon> </th>
+                        <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon> </th>
+                        <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon> </th>
                         <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon> </th>
-                        <th>Duración</th>
-                        <th>Costo</th>
-                        <th>Creación</th>
-                        <th>Modificación</th>
+                        <th pSortableColumn="curmatfecini">Duración  <p-sortIcon field="curmatfecini"></p-sortIcon></th>
+                        <th pSortableColumn="curmatcosto">Costo <p-sortIcon field="curmatcosto"></p-sortIcon></th>
+                        <th pSortableColumn="curmatfecreg">Creación <p-sortIcon field="curmatfecreg"></p-sortIcon></th>
+                        <th pSortableColumn="curmatfecmod">Modificación <p-sortIcon field="curmatfecmod"></p-sortIcon></th>
                         <th>Estado</th>
                         <th>Opciones</th>
                         <th></th>
@@ -42,7 +42,7 @@
                             <div *ngIf="cursoMateria.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
                             <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ apiUrl }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
                         </td>
-                        <td> <strong>Inicio:</strong> {{cursoMateria.curmatfecini}} <strong>Fin:</strong> {{cursoMateria.curmatfecfin}} </td>
+                        <td> <strong>Inicio:</strong> {{cursoMateria.curmatfecini}} <strong> <br> Fin:</strong> {{cursoMateria.curmatfecfin}} </td>
                         <td style="width:5%; min-width:7rem;"> <strong>{{cursoMateria.curmatcosto}} Bs.</strong> </td>
                         <td> <p-chip> <div class="p-2"> {{cursoMateria.curmatusureg}} <br> {{cursoMateria.curmatfecreg }} </div> </p-chip> </td>
                         <td> <p-chip> <div class="p-2"> <ng-container *ngIf="cursoMateria.curmatusumod; else noModificado"> {{ cursoMateria.curmatusumod }} <br> {{ cursoMateria.curmatfecmod }} </ng-container> <ng-template #noModificado> No se ha modificado </ng-template> </div> </p-chip> </td>
@@ -68,9 +68,9 @@
                         <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon> </th>
                         <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon> </th>
                         <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon> </th>
-                        <th>Duración</th>
-                        <th>Creación</th>
-                        <th>Modificación</th>
+                        <th pSortableColumn="curmatfecini">Duración  <p-sortIcon field="curmatfecini"></p-sortIcon></th>
+                        <th pSortableColumn="curmatfecreg">Creación <p-sortIcon field="curmatfecreg"></p-sortIcon></th>
+                        <th pSortableColumn="curmatfecmod">Modificación <p-sortIcon field="curmatfecmod"></p-sortIcon></th>
                         <th>Estado</th>
                         <th>Opciones</th>
                         <th> </th>
@@ -180,7 +180,7 @@
 <p-dialog [(visible)]="desactivarCursoMateriaDialog" header="Mensaje de Confirmación" [modal]="true">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="cursoMateria">¿Estas seguro de desactivar esta materia: <b>{{cursoMateria.matnombre}}</b> del curso <b>{{cursoMateria.curnombre}}</b> ?</span>
+        <span *ngIf="cursoMateria">¿Estas seguro de desactivar esta materia: <b>{{cursoMateria.matnombre}}</b> del curso <b>{{cursoMateria.curnombre}}</b>?</span>
     </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="desactivarCursoMateriaDialog = false"></button>
@@ -192,7 +192,7 @@
 <p-dialog [(visible)]="activarCursoMateriaDialog" header="Mensaje de Confirmación" [modal]="true">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="cursoMateria">¿Estas seguro de activar este curso-materia: <b> {{cursoMateria.curnombre}} </b>?</span>
+        <span *ngIf="cursoMateria">¿Estas seguro de activar este curso-materia: <b> {{cursoMateria.matnombre}}</b> del curso  <b>{{cursoMateria.curnombre}}</b>?</span>
     </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="activarCursoMateriaDialog = false"></button>

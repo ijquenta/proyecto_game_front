@@ -22,17 +22,19 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
+                        <th> </th>
                         <th pSortableColumn="curnombre"> Curso <p-sortIcon field="curnombre"></p-sortIcon> </th>
                         <th pSortableColumn="curmatid"> Id <p-sortIcon field="curmatid"></p-sortIcon></th>
                         <th> Fechas </th>
                         <th pSortableColumn="matnombre"> Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
                         <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
                         <th> Estado </th>
-                        <th> </th>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-notaMateria let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
                     <tr [pSelectableRow]="notaMateria" (click)="listarNotaMateria(notaMateria)" pTooltip="Ver notas de: {{notaMateria.matnombre}}" tooltipPosition="top">
+                        <td> <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-file-pdf" class="p-button-rounded p-button-danger mr-2" pTooltip="Ver reporte de notas por materia" tooltipPosition="top" (click)="notaService.rptNotaCursoMateria(notaMateria)"> </button> </td>
                         <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> <strong>{{notaMateria.curnombre}}</strong> </td> <!-- Se agrupa los datos por el nombre de curso-->
                         <td> {{"CM-" + notaMateria.curmatid}} </td>
                         <td> Inicio: <strong>{{ notaMateria.curmatfecini }}</strong> <hr> Fin: <strong>{{ notaMateria.curmatfecfin}}</strong> </td>
@@ -48,7 +50,6 @@
                             </div>
                         </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(notaMateria.curmatestado)" [severity]="obtenerSeverityEstado(notaMateria.curmatestado)" [rounded]="true"></p-tag> </td>
-                        <td> <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-file-pdf" class="p-button-rounded p-button-danger mr-2" pTooltip="Ver reporte de notas por materia" tooltipPosition="top" (click)="notaService.rptNotaCursoMateria(notaMateria)"> </button> </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">

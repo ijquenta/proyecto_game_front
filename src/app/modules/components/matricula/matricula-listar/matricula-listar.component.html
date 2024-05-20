@@ -31,6 +31,7 @@
 
                 <ng-template pTemplate="header">
                     <tr>
+                        <th></th>
                         <th style="width: 8%;" pSortableColumn="tipmatrid">Código<p-sortIcon field="tipmatrid"></p-sortIcon></th>
                         <th style="width: 15%;" pSortableColumn="tipmatrgestion">Nombre<p-sortIcon field="tipmatrgestion"></p-sortIcon></th>
                         <th style="width: 10%;" pSortableColumn="tipmatrfecini">Fecha Inicio<p-sortIcon field="tipmatrfecini"></p-sortIcon></th>
@@ -40,12 +41,21 @@
                         <th>Modificado por</th>
                         <th>Descripción</th>
                         <th style="width: 8%;" pSortableColumn="tipmatrestado">Estado<p-sortIcon field="tipmatrestado"></p-sortIcon></th>
-                        <th> Opciones </th>
+
                         <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-matricula>
                     <tr>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
+                                    (click)="editarTipoMatricula(matricula)"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
+                                    (click)="desactivarMatricula(matricula)"></button>
+                            </div>
+                        </td>
                         <td>
                             {{ 'MATR-' + matricula.tipmatrid}}
                         </td>
@@ -93,15 +103,7 @@
                             {{matricula.tipmatrdescripcion}}
                         </td>
                         <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
-                                    (click)="editarTipoMatricula(matricula)"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
-                                    (click)="desactivarMatricula(matricula)"></button>
-                            </div>
-                        </td>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">

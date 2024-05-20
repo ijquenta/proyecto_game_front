@@ -27,21 +27,39 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
+                        <th></th>
                         <th style="width: 5rem;"></th>
                         <th>N°</th>
                         <th>Estudiante</th>
                         <th>Registrado por</th>
                         <th>Modificado por</th>
                         <th>Estado</th>
-                        <th>Opciones</th>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-inscripcion let-expanded="expanded">
                     <tr>
                         <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar inscripción"
+                                    tooltipPosition="left" (click)="editarInscripcion(inscripcion)" tooltipPosition="top"></button>
+                                <button pButton pRipple icon="fa-solid fa-eye-slash"
+                                    class="p-button-rounded p-button-danger mr-2" pTooltip="Desactivar Inscripción"
+                                    tooltipPosition="left" (click)="desactivarInscripcion(inscripcion)" tooltipPosition="top"></button>
+                                <!-- <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-money-bill"
+                                    class="p-button-rounded p-button-info mr-2"
+                                    pTooltip="Administrar Pago"
+                                ></button> -->
+                            </div>
+                        </td>
+                        <td>
                             <button type="button" pButton pRipple [pRowToggler]="inscripcion"
                                 class="p-button-text p-button-rounded p-button-plain"
-                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Ver Información de la inscripción" tooltipPosition="top"></button>
                         </td>
                         <td>{{ 'INS000'+inscripcion.insid }}</td>
                         <td>
@@ -78,23 +96,7 @@
                         <td> <p-tag [value]="obtenerDescripcionEstado(inscripcion.insestado)"
                                 [severity]="obtenerSeverityEstado(inscripcion.insestado)" [rounded]="true"></p-tag>
                         </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar inscripción"
-                                    tooltipPosition="left" (click)="editarInscripcion(inscripcion)"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash"
-                                    class="p-button-rounded p-button-danger mr-2" pTooltip="Desactivar Inscripción"
-                                    tooltipPosition="left" (click)="desactivarInscripcion(inscripcion)"></button>
-                                <!-- <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-money-bill"
-                                    class="p-button-rounded p-button-info mr-2"
-                                    pTooltip="Administrar Pago"
-                                ></button> -->
-                            </div>
-                        </td>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">

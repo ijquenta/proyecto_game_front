@@ -6,6 +6,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
 // Modelos
 import { TipoCurso, TipoRol, TipoMateria, TipoEstado, TipoPersona2} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
@@ -100,17 +103,18 @@ export class CursoCrudComponent implements OnInit {
         this.asignacionValidacionesCurso(); // Método de asignación de validaciones
         this.getPerfilUsuario(); // Método de getPerfil() de usuario logeado
         this.colsTable = [
-            { field: 'curmatid', header: 'ID curso-materia' },
+            { field: 'curmatid', header: 'ID' },
             { field: 'curnombre', header: 'Nombre de nivel' },
             { field: 'matnombre', header: 'Nombre de la materia' },
-            { field: 'curmatfecini', header: 'Fecha inicio' },
-            { field: 'curmatfecfin', header: 'Fecha fin' },
+            { field: 'curmatfecini', header: 'Fec. inicio' },
+            { field: 'curmatfecfin', header: 'Fec. fin' },
+            { field: 'curmatcosto', header: 'Costo'},
             { field: 'pernomcompleto', header: 'Docente' },
             { field: 'rolnombre', header: 'Rol' },
-            { field: 'curmatusureg', header: 'Usuario Registro' },
-            { field: 'curmatfecreg', header: 'Fecha Registro' },
-            { field: 'curmatusumod', header: 'Usuario Modificación' },
-            { field: 'curmatfecmod', header: 'Fecha Modificación' }
+            { field: 'curmatusureg', header: 'Usu. Reg.' },
+            { field: 'curmatfecreg', header: 'Fec. Reg.' },
+            { field: 'curmatusumod', header: 'Usu. Mod.' },
+            { field: 'curmatfecmod', header: 'Fec. Mod.' }
         ];
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
     }
@@ -269,6 +273,7 @@ export class CursoCrudComponent implements OnInit {
                     if (error.error.message?.includes('UniqueViolation')) {
                         const errorMessage = 'No se puede crear la curso-materia porque ya existe un registro igual.';
                         this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                        return;
                     }
                     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al intentar registrar el curso-materia.', life: 5000});
                 }
@@ -281,10 +286,14 @@ export class CursoCrudComponent implements OnInit {
                     this.listarCursoMateria();
                     this.cursoMateria = new CursoMateria();
                     this.ocultarDialog();
-                },
-                error => {
-                    const descripcionError = error.erro.message;
-                    this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal.'})
+                },(error: any) => {
+                    console.log("error: ", error);
+                    if (error.error.message?.includes('UniqueViolation')) {
+                        const errorMessage = 'No se puede modificar la curso-materia porque ya existe un registro igual.';
+                        this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                        return;
+                    }
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al intentar modificar el curso-materia.', life: 5000});
                 }
             )
         }
@@ -369,47 +378,102 @@ export class CursoCrudComponent implements OnInit {
 
     // ------------------------------ Funciones Curso Materia -----------------------------
 
+    // Función para exportar el documento PDF
     exportPdf() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default('l', 'pt', 'a4');
-                doc.setFontSize(16); // Tamaño de la fuente
-                doc.text('Lista de Curso Materia', 14, 30); // Agrega texto en la posición x = 14, y = 30
+
+                // Título centrado
+                const title = 'Lista Curso-Materia registrados';
+                const titleFontSize = 16;
+                const titleWidth = doc.getStringUnitWidth(title) * titleFontSize / doc.internal.scaleFactor;
+                const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2;
+                const titleY = 60;
+                doc.setFontSize(titleFontSize);
+                doc.text(title, titleX, titleY);
+
+                // Subtítulo
+                const subtitle = 'Esta lista muestra todas las materias registradas en el sistema.';
+                const subtitleFontSize = 9;
+                const subtitleX = 20;
+                const subtitleY = 80;
+                doc.setFontSize(subtitleFontSize);
+                doc.text(subtitle, subtitleX, subtitleY);
+
+                // Descripción
+                const description = 'Sistema de Seguimiento y Gestión Académico';
+                const descriptionFontSize = 10;
+                const descriptionX = 100;
+                const descriptionY = 40;
+                doc.setFontSize(descriptionFontSize);
+                doc.text(description, descriptionX, descriptionY);
+
+                const description2 = 'Instituto Biblico de Capacitación Internacional';
+                const descriptionFontSize2 = 10;
+                const descriptionX2 = 100;
+                const descriptionY2 = 30;
+                doc.setFontSize(descriptionFontSize2);
+                doc.text(description2, descriptionX2, descriptionY2);
+
+                // Imagen en base64
+                const base64Image = logoIbciBase64;
+                const imageX = 20;
+                const imageY = 10;
+                const imageWidth = 80; // Ancho de la imagen en puntos
+                const imageHeight = 50; // Alto de la imagen en puntos
+                doc.addImage(base64Image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+
+                // Tabla de datos
                 (doc as any).autoTable({
                     columns: this.exportColumns,
                     body: this.listaCursosMateriasDuplicated,
-                    theme: 'striped',  // Puedes elegir otros temas como 'plain', 'striped' o 'grid'
-                    styles: { fontSize: 8, cellPadding: 3 },  // Ajusta el tamaño de fuente y el padding para acomodar más datos
+                    theme: 'striped',
+                    styles: { fontSize: 8, cellPadding: 3 },
+                    startY: 100, // Posición inicial de la tabla
                 });
-                doc.save('lista_curso_materia.pdf');
+                const fechaActual = new Date(); // Obtener la fecha actual
+                const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1).toString().padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;// Formatear la fecha como YYYY-MM-DD
+                const horaFormateada = `${fechaActual.getHours().toString().padStart(2, '0')}-${fechaActual.getMinutes().toString().padStart(2, '0')}-${fechaActual.getSeconds().toString().padStart(2, '0')}`;// Formatear la hora como HH-MM-SS
+                const nombreArchivo = `lista_curso_materia_${fechaFormateada}_${horaFormateada}.pdf`; // Concatenar la fecha y la hora al nombre del archivo
+                doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
             });
         });
     }
 
+
+
     exportExcel() {
         import('xlsx').then((xlsx) => {
             const fieldsToExport = [
-                'curmatid',
-                'curnombre',
-                'matnombre',
-                'curmatfecini',
-                'curmatfecfin',
-                'pernomcompleto',
-                'rolnombre',
-                'curmatusureg',
-                'curmatfecreg',
-                'curmatusumod',
-                'curmatfecmod'
+                { field: 'curmatid', header: 'ID' },
+                { field: 'curnombre', header: 'Nombre del Curso' },
+                { field: 'matnombre', header: 'Nombre de la Materia' },
+                { field: 'curmatfecini', header: 'Fecha de Inicio' },
+                { field: 'curmatfecfin', header: 'Fecha de Fin' },
+                { field: 'curmatcosto', header: 'Costo' },
+                { field: 'pernomcompleto', header: 'Nombre del Instructor' },
+                { field: 'rolnombre', header: 'Rol del Instructor' },
+                { field: 'curmatusureg', header: 'Usuario de Registro' },
+                { field: 'curmatfecreg', header: 'Fecha de Registro' },
+                { field: 'curmatusumod', header: 'Usuario de Modificación' },
+                { field: 'curmatfecmod', header: 'Fecha de Modificación' }
             ];
+
+            // Filtrar y ordenar los datos según sea necesario
+
             const dataToExport = this.listaCursosMateriasDuplicated.map(curso_materia => {
                 const filteredData = {};
                 fieldsToExport.forEach(field => {
-                    filteredData[field] = curso_materia[field] || ''; // Asegura que todos los campos existan, incluso si están vacíos
+                    filteredData[field.header] = curso_materia[field.field] || ''; // Asegura que todos los campos existan, incluso si están vacíos
                 });
                 return filteredData;
             });
+
             const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+
             const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
+
             const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
             this.saveAsExcelFile(excelBuffer, 'lista_curso_materia');
         });
@@ -421,6 +485,8 @@ export class CursoCrudComponent implements OnInit {
         const data: Blob = new Blob([buffer], {
             type: EXCEL_TYPE
         });
-        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+        FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + EXCEL_EXTENSION);
     }
+
+
 }
