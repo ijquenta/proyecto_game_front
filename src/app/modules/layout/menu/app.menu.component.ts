@@ -54,18 +54,18 @@ export class AppMenuComponent implements OnInit {
                                 routerLink: ['usuario/roles'],
                                 roles: ['Administrador']
                             },
-                            // {
-                            //     label: 'Gestionar Accesos',
-                            //     icon: 'pi pi-fw pi-wrench',
-                            //     routerLink: ['usuario/accesos'],
-                            //     roles: ['Administrador']
-                            // },
-                            // {
-                            //     label: 'Reporte Usuarios',
-                            //     icon: 'pi pi-fw pi-file-pdf',
-                            //     routerLink: ['usuario/reporte'],
-                            //     roles: ['Administrador']
-                            // }
+                            {
+                                label: 'Gestionar Accesos',
+                                icon: 'pi pi-fw pi-wrench',
+                                routerLink: ['usuario/acceso'],
+                                roles: ['Administrador']
+                            },
+                            {
+                                label: 'Gestionar Permisos',
+                                icon: 'pi pi-fw pi-wrench',
+                                routerLink: ['usuario/permiso'],
+                                roles: ['Administrador']
+                            }
                         ],
                         roles: ['Administrador', 'Secretaria']
                     }
@@ -219,13 +219,13 @@ export class AppMenuComponent implements OnInit {
                                 roles: ['Administrador', 'Secretaria']
                             },
                             {
-                                label: 'Asignar notas',
+                                label: 'Asignar Notas',
                                 icon: 'pi pi-fw pi-pencil',
                                 routerLink: ['nota/docente'],
                                 roles: ['Docente']
                             },
                             {
-                                label: 'Mis notas',
+                                label: 'Mis Notas',
                                 icon: 'pi pi-fw pi-star',
                                 routerLink: ['nota/estudiante'],
                                 roles: ['Estudiante']
@@ -243,7 +243,7 @@ export class AppMenuComponent implements OnInit {
                 roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
             },
             {
-                label: 'Docente',
+                label: 'Docentes',
                 icon: 'pi pi-fw pi-users',
                 items: [
                     {
@@ -299,7 +299,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'Matriculación', icon: 'pi pi-fw pi-check-square',
                         items: [
                             {
-                                label: 'Administrar matricula', icon: 'pi pi-fw pi-list', routerLink: ['matricula/listar'],
+                                label: 'Administrar Matricula', icon: 'pi pi-fw pi-list', routerLink: ['matricula/listar'],
                                 // items: [
                                     // { label: 'Nuevo Apertura Matricula', icon: 'pi pi-fw pi-plus', routerLink: ['matricula/nuevo'], roles: ['Administrador', 'Secretaria'] },
                                     // { label: 'Listar matriculas', icon: 'pi pi-fw pi-users', routerLink: ['matricula/listar'],  roles: ['Administrador', 'Secretaria']},
@@ -308,7 +308,7 @@ export class AppMenuComponent implements OnInit {
                                 roles: ['Administrador', 'Secretaria']
                             },
                             {
-                                label: 'Asignar matricula', icon: 'fa-regular fa-address-card',
+                                label: 'Asignar Matricula', icon: 'fa-regular fa-address-card',
                                 routerLink: ['matricula/asignar']
                                 // items: [
                                 //     { label: 'Reportes por Estudiante', icon: 'pi pi-fw pi-file-pdf', routerLink: ['inscripcion/reporteEstudiante']  },
@@ -453,7 +453,7 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-credit-card',
                         items: [
                             {
-                                label: 'Gestionar contabilidad',
+                                label: 'Gestionar Contabilidad',
                                 icon: 'pi pi-fw pi-money-bill',
                                 routerLink: ['contabilidad/gestionar'],
                                 roles: ['Administrador', 'Secretaria']

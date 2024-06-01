@@ -121,6 +121,14 @@ export class TipoRol {
         this.rolnombre = desrolnombre;
     }
 }
+export class TipoOperacion {
+    opeid: number = 0;
+	openombre: string = '';
+    constructor(opeid: number, openombre: string){
+        this.opeid = opeid;
+        this.openombre = openombre;
+    }
+}
 export class TipoPersona {
     perid: number = 0;
     pernomcompleto: string = '';

@@ -1,0 +1,115 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div>
+            <p-toast></p-toast>
+            <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+            <h3>Gestionar Permisos</h3>
+            <p>Seleccionar el rol con sus operaciones a asignar </p>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            label="Adicionar Permiso"
+                            icon="pi pi-plus" class="p-button-success mr-2" (click)="addPermiso()"></button>
+                    </div>
+                </ng-template>
+                <!-- <ng-template pTemplate="right">
+                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Permisos" styleClass="p-button-raised p-button-purple-200" icon="pi pi-file"></p-button>
+                </ng-template> -->
+            </p-toolbar>
+
+                <div *ngFor="let rol of roles">
+                    <p-accordion>
+                        <p-accordionTab header="{{ rol.rolnombre }}">
+                            <div *ngIf="getPermisosPorRol(rol?.rolid).length > 0; else noPermisos">
+                                <ul>
+                                    <li *ngFor="let permiso of getPermisosPorRol(rol?.rolid)" class="flex align-items-center" style="margin-bottom: 0.5rem;">
+                                      <div class="flex align-items-center" [style]="'margin: 0.2rem;'">
+                                        <!-- <p>{{permiso.permid}}</p> -->
+                                        <div style="padding: 0.2rem; margin-right: 0.5rem; cursor: pointer;" pTooltip="Eliminar" tooltipPosition="top" (click)="handleClickPermiso(permiso)">
+                                          <i class="pi pi-trash" style="color: #e57a7c"></i>
+                                        </div>
+                                        <p-checkbox
+                                          [ngModel]="permiso.permactivo === 1"
+                                          (ngModelChange)="permiso.permactivo = $event ? 1 : 0"
+                                          (onChange)="togglePermiso(permiso)"
+                                          binary="true"
+                                          [label]="getOperacionPorId(permiso.opeid)?.openombre">
+                                        </p-checkbox>
+                                      </div>
+                                    </li>
+                                  </ul>
+                            </div>
+                            <ng-template #noPermisos>
+                                <div class="no-permisos-message text-align-center">
+                                    No hay permisos disponibles para este rol.
+                                </div>
+                            </ng-template>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+
+    </div>
+</div>
+
+
+<p-dialog [(visible)]="dialogPermiso" [style]="{width: '650px'}" header="Permiso" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false">
+    <form [formGroup]="permisoForm" novalidate>
+        <div class="field">
+            <label for="idTipoRol">Rol</label>
+            <p-dropdown
+                inputId="pdTipoRol"
+                appendTo="body"
+                [options]="tipoRol"
+                formControlName="tipoRol"
+                optionLabel="rolnombre"
+                placeholder="Seleccionar Rol"
+            ></p-dropdown>
+        </div>
+        <div class="field">
+            <label for="idTipoOperaciones">Operaciones</label>
+            <p-multiSelect
+                [options]="tipoOperacion"
+                formControlName="tipoOperacion"
+                optionLabel="openombre"
+                placeholder="Selecionar Operaciones"
+                appendTo="body"
+            ></p-multiSelect>
+        </div>
+        <div class="field">
+            <label for="">Activo</label>
+            <div class="flex align-items-center justify-content-center">
+                <p-checkbox formControlName="permactivo" binary="true" inputId="ny"></p-checkbox>
+            </div>
+        </div>
+        <div class="field">
+            <label for="">Estado</label>
+            <div class="flex align-items-center justify-content-center">
+                <p-selectButton [options]="stateOptionsEstado" formControlName="permestado" optionLabel="label" optionValue="value"></p-selectButton>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogPermiso()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendFormPermiso()"></button>
+    </ng-template>
+
+</p-dialog>
+
+
+<p-dialog [(visible)]="deletePermisoDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <!-- <i class="pi pi-check"></i> -->
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Estas seguro de eliminar?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deletePermisoDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="deletePermiso()"></button>
+    </ng-template>
+</p-dialog>

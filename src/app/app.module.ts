@@ -54,6 +54,7 @@ import { ReportV2Component } from './modules/components/reportes/report/report-v
 import { ConfirmComponent } from './modules/components/auth/confirm/confirm.component';
 import { NoConfirmComponent } from './modules/components/auth/noConfirm/no-confirm.component';
 import { VerifiedComponent } from './modules/components/auth/verified/verified.component';
+// import { TreeTableModule } from 'primeng/treetable';
 @NgModule({
     declarations: [
         AppComponent,
@@ -69,6 +70,7 @@ import { VerifiedComponent } from './modules/components/auth/verified/verified.c
         VerifiedComponent
     ],
     imports: [
+        // TreeTableModule,
         AppRoutingModule,
         AppLayoutModule,
         ReactiveFormsModule,

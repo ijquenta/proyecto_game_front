@@ -35,6 +35,8 @@ import { NotfoundComponent } from '../notfound/notfound.component';
           canActivate: [AuthGuard],
           loadChildren: () => import('./usuario-reporte/usuario-reporte.module').then(m => m.UsuarioReporteModule)
         },
+        { path: 'acceso', canActivate: [AuthGuard], loadChildren: () => import('./usuario-accesos/usuario-accesos.module').then(m => m.UsuarioAccesosModule) },
+        { path: 'permiso', canActivate: [AuthGuard], loadChildren: () => import('./usuario-permiso/usuario-permiso.module').then(m => m.UsuarioPermisoModule) },
         // { path: '**', redirectTo: '/notfound'  }
 
         {
