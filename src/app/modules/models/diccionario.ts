@@ -129,6 +129,14 @@ export class TipoOperacion {
         this.openombre = openombre;
     }
 }
+export class TipoSubMenu {
+    submenid: number = 0;
+	submennombre: string = '';
+    constructor(submenid: number, submennombre: string){
+        this.submenid = submenid;
+        this.submennombre = submennombre;
+    }
+}
 export class TipoPersona {
     perid: number = 0;
     pernomcompleto: string = '';
