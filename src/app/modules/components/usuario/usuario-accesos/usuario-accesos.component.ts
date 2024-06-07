@@ -124,9 +124,6 @@ export class UsuarioAccesosComponent implements OnInit {
         this.addAccessdialog = true;
         this.accessForm.reset();
     }
-   
-
-    
 
     getDataRoles() {
         this.permisoService.getRoles().subscribe(
