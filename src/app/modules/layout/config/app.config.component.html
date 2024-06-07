@@ -2,17 +2,17 @@
     <i class="pi pi-cog"></i>
 </button>
 
-
-
-
-<p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-config-sidebar w-20rem">
+<p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'"
+    styleClass="layout-config-sidebar w-20rem">
+    
     <div class="flex align-items-center gap-2 flex-wrap">
         <h5>Panel de usuario</h5>
         <div class="text-left" style="display: flex; flex-direction: column; align-items: center;">
             <div *ngIf="usuario.perfoto == null" class="user-display">
                 <p-tag [style]="{ 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 100%)'}">
                     <div class="flex align-items-center gap-2">
-                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2"
+                            size="large" shape="circle"></p-avatar>
 
                         <h5>{{usuario.pernomcompleto}}</h5>
                     </div>
@@ -21,7 +21,8 @@
             <div *ngIf="usuario.perfoto != null" class="user-display">
                 <p-tag [style]="{ 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 70%)'}">
                     <div class="flex align-items-center gap-2">
-                        <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                        <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge"
+                            shape="circle"></p-avatar>
                         <h5>{{usuario.pernomcompleto}}</h5>
                     </div>
                 </p-tag>
@@ -30,34 +31,38 @@
         <hr>
         <div class="text-left" style="display: flex; flex-direction: column; align-items: center;"></div>
         <span>{{usuario?.rolnombre}}:</span>
-            <strong> {{ usuario?.usuname }} </strong>
-        </div>
+        <strong> {{ usuario?.usuname }} </strong>
+    </div>
 
-    <!-- <button class="p-link layout-topbar-button"  (click)="menu.toggle($event)"> <i class="pi pi-user"></i> </button> -->
-    <!-- <p-tieredMenu #menu [model]="modelOption" [popup]="true" appendTo="body" class="ui-tieredmenu" ></p-tieredMenu> -->
     <hr>
-        <h5>Ajustes de perfil</h5>
+    <h5>Ajustes de perfil</h5>
     <hr>
 
 
     <ng-container *ngIf="!minimal">
-    <h6><label for="model">{{ isDarkTheme ? 'Tema Oscuro' : 'Tema Claro' }}</label></h6>
+        <p class="text-xm w-10">Selecciona el tema</p>
+        <h6><label for="model">{{ isDarkTheme ? 'Tema Oscuro' : 'Tema Claro' }}</label></h6>
 
 
-    <div class="flex">
-        <p-inputSwitch [(ngModel)]="isDarkTheme" (onChange)="toggleTheme()"></p-inputSwitch>
-    </div>
+        <div class="flex">
+            <p-inputSwitch [(ngModel)]="isDarkTheme" (onChange)="toggleTheme()"></p-inputSwitch>
+        </div>
+
     </ng-container>
     <hr>
     <h5>Escala</h5>
     <div class="flex align-items-center">
-        <button icon="pi pi-minus" type="button" pButton (click)="decrementScale()" class="p-button-text p-button-rounded w-2rem h-2rem mr-2" [disabled]="scale === scales[0]"></button>
+        <button icon="pi pi-minus" type="button" pButton (click)="decrementScale()"
+            class="p-button-text p-button-rounded w-2rem h-2rem mr-2" [disabled]="scale === scales[0]"></button>
         <div class="flex gap-2 align-items-center">
-            <i class="pi pi-circle-fill text-300" *ngFor="let s of scales" [ngClass]="{'text-primary-500': s === scale}"></i>
+            <i class="pi pi-circle-fill text-300" *ngFor="let s of scales"
+                [ngClass]="{'text-primary-500': s === scale}"></i>
         </div>
-        <button icon="pi pi-plus"  type="button" pButton (click)="incrementScale()" class="p-button-text p-button-rounded w-2rem h-2rem ml-2" [disabled]="scale === scales[scales.length - 1]"></button>
+        <button icon="pi pi-plus" type="button" pButton (click)="incrementScale()"
+            class="p-button-text p-button-rounded w-2rem h-2rem ml-2"
+            [disabled]="scale === scales[scales.length - 1]"></button>
     </div>
-<hr>
+    <hr>
     <ng-container *ngIf="!minimal">
         <h5>Tipo de Menú</h5>
         <div class="field-radiobutton">
@@ -69,35 +74,16 @@
             <label for="mode2">Cubrierto</label>
         </div>
     </ng-container>
-<!-- <hr>
-    <ng-container *ngIf="!minimal">
-        <h5>Estilo de Entrada</h5>
-        <div class="flex">
-            <div class="field-radiobutton flex-1">
-                <p-radioButton name="inputStyle" value="outlined" [(ngModel)]="inputStyle" inputId="outlined_input"></p-radioButton>
-                <label for="outlined_input">Delineado</label>
-            </div>
-            <div class="field-radiobutton flex-1">
-                <p-radioButton name="inputStyle" value="filled" [(ngModel)]="inputStyle" inputId="filled_input"></p-radioButton>
-                <label for="filled_input">Completo</label>
-            </div>
-        </div>
-    </ng-container> -->
-<!-- <hr> -->
-        <!-- <h5>Efecto Domino</h5>
-        <p-inputSwitch [(ngModel)]="ripple"></p-inputSwitch>
-     -->
+    <hr>
 
-<hr>
+    <div>
+        <h5>Cerrar Sesión</h5>
 
-<div>
-    <h5>Cerrar Sesión</h5>
+        <p-button (click)="signOff()" icon="pi pi-sign-out" label="Salir" pTooltip="Cerrar sesión"
+            tooltipPosition="bottom"></p-button>
+        <p-confirmDialog rejectLabel="No" acceptLabel="Si"></p-confirmDialog>
 
-    <p-button (click)="confirm1()" icon="pi pi-sign-out" label="Salir" pTooltip="Cerrar sesión" tooltipPosition="bottom"></p-button>
-    <!-- <p-confirmPopup></p-confirmPopup> -->
-    <p-confirmDialog rejectLabel="No" acceptLabel="Si"></p-confirmDialog>
-
-</div>
+    </div>
 
 
 </p-sidebar>
