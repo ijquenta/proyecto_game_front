@@ -17,17 +17,13 @@ import { checktoken } from '../interceptors/token.interceptor'; // Importa la fu
 
 export class AuthService {
 
-    API_URL = environment.API_URL; // Api Url
-
-    usuario$ = new BehaviorSubject<Usuario | null>(null); // Usuario
-
-    isLoggedIn$: Observable<boolean> = this.usuario$.pipe(map(Boolean)); // Esta logueado
+    API_URL = environment.API_URL; 
+    usuario$ = new BehaviorSubject<Usuario | null>(null);
+    isLoggedIn$: Observable<boolean> = this.usuario$.pipe(map(Boolean));
 
     constructor(private http: HttpClient, private tokenService: TokenService) { }
 
     login(usuname: string, usupassword: string) {
-
-        // Realiza una solicitud POST al endpoint de inicio de sesión y guarda el token de autenticación
         return this.http.post<ResponseLogin>(`${this.API_URL}/login`, {
             usuname, usupassword
         })
@@ -65,7 +61,7 @@ export class AuthService {
     }
 
 
-    logout() { // Salir
+    logout() { 
         this.tokenService.removeToken();
     }
 
