@@ -2,119 +2,148 @@
     <div class="col-12">
         <div class="card">
             <p-toast></p-toast>
-            <h3>Accesos</h3>
-            <p>Administración Accesos del Sistema</p>
+            <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+            <h3>Gestionar Accesos</h3>
+            <p>Seleccionar un Rol de usuario, asignar los accesos</p>
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="Nuevo Rol" icon="pi pi-plus" class="p-button-success mr-2" (click)="NuevoRol()"></button>
+                        <button 
+                            pButton 
+                            pRipple 
+                            label="Adicionar Acceso" 
+                            icon="pi pi-plus" 
+                            class="p-button-success mr-2" 
+                            (click)="addAcceso()"
+                            pTooltip="Asignar Accesos"
+                            tooltipPosition="top"
+                        ></button>
                     </div>
                 </ng-template>
-                <ng-template pTemplate="right">
-                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Lista de Usuarios" styleClass="p-button-raised p-button-purple-200"></p-button>
-                </ng-template>
-
             </p-toolbar>
 
-        <div class="card ">
-            <p-table [value]="roles" [rows]="10" [tableStyle]="{'min-width': '20rem'}" [paginator]="true" [rowsPerPageOptions]="[5,10,20]" >
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Lista de Accesos</h5>
-                        <!-- <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."  class="w-full sm:w-auto"/>
-                        </span> -->
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre del Rol</th>
-                        <th>Descripción del Rol</th>
-                        <th>Registro por</th>
-                        <th>Modificado por</th>
-                        <!-- <th>Estado</th> -->
-                        <th>Opciones</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rol>
-                    <tr>
-                        <td>{{rol.rolid}}</td>
-                        <td>{{rol.rolnombre}}</td>
-                        <td>{{rol.roldescripcion}}</td>
-                        <td>{{rol.rolusureg}}<br>{{rol.rolfecreg | date:'dd/MM/yyyy HH:mm:ss'}}</td>
-                        <td>{{rol.rolusumod}}<br>{{rol.rolfecmod | date:'dd/MM/yyyy HH:mm:ss'}}</td>
-                        <!-- <td>
-                            <p-tag [value]="obtenerDescripcion(rol.rolestado)" [severity]="obtenerSeverity(rol.rolestado)" [rounded]="true"></p-tag>
-                        </td>  -->
-                        <td>
-                            <div class="flex justify-content-center">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2" (click)="modificarRol(rol)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="eliminarRol(rol)"></button>
+            <div class="card">
+                <p-tabView [(activeIndex)]="activeIndex" [scrollable]="true">
+                    <p-tabPanel *ngFor="let rol of roles" [header]="rol.rolnombre">
+                        <div *ngIf="getAccessesByRolId(rol?.rolid).length > 0; else noPermisos">
+                            <ul>
+                                <li *ngFor="let access of getAccessesByRolId(rol?.rolid)" class="flex align-items-center" style="margin-bottom: 0.5rem;">
+                                    <div class="flex align-items-center" [style]="'margin: 0.2rem;'">
+                                        <div style="padding: 0.2rem; margin-right: 0.5rem; cursor: pointer;" pTooltip="Eliminar" tooltipPosition="top" (click)="handleClickAccess(access)">
+                                            <i class="pi pi-trash" style="color: #e57a7c"></i>
+                                        </div>
+                                        <div style="padding-right: 0.5rem;"><i class="pi pi-desktop" style="color: slateblue"></i></div>
+                                        <p-checkbox
+                                            [ngModel]="access.accactivo === 1"
+                                            (ngModelChange)="access.accactivo = $event ? 1 : 0"
+                                            binary="true"
+                                            (onChange)="toggleAccess(access)"
+                                            [label]="getOperacionPorId(access.submenid)?.submennombre">
+                                        </p-checkbox>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <ng-template #noPermisos>
+                            <div class="no-permisos-message text-align-center">
+                                No hay accesos disponibles para este rol.
                             </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-        <p-dialog [(visible)]="roldialog" [style]="{width: '450px'}" header="Registro Rol" [modal]="true" class="p-fluid">
-            <ng-template pTemplate="content">
-                <div class="field">
-                    <label for="name">Nombre</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="rol.rolnombre" required autofocus
-                        [ngClass]="{'ng-invalid ng-dirty': submitted && (!rol.rolnombre || !rol.rolnombre.trim())}" />
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && (!rol.rolnombre || !rol.rolnombre.trim())">
-                        El nombre de rol es requerido y no puede estar vacío.
-                    </small>
-                </div>
-                <div class="field">
-                    <label for="description">Descripción</label>
-                    <textarea id="description" pInputTextarea [(ngModel)]="rol.roldescripcion" required rows="3" cols="20"
-                        [ngClass]="{'ng-invalid ng-dirty': submitted && (!rol.roldescripcion || !rol.roldescripcion.trim())}"></textarea>
-                    <small class="ng-dirty ng-invalid"
-                        *ngIf="submitted && (!rol.roldescripcion || !rol.roldescripcion.trim())">
-                        La descripción es requerida y no puede estar vacía.
-                    </small>
-                </div>
-            </ng-template>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple label="Registrar" icon="pi pi-check" class="p-button-rounded p-button" (click)="registroRol()"></button>
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  (click)="ocultarDialog()"></button>
-            </ng-template>
-        </p-dialog>
-
-
-        <p-dialog [(visible)]="rolModificarDialog" [style]="{width: '400px'}" header="Modificar Rol" [modal]="true" class="p-fluid">
-            <ng-template pTemplate="content">
-                <div class="field">
-                    <label for="name">Nombre del Rol</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="role.rolnombre" required autofocus [ngClass]="{'ng-invalid ng-dirty' : camposVacios && !role.rolnombre}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="camposVacios && !role.rolnombre">El nombre de rol es requerido.</small>
-                </div>
-                <div class="field">
-                    <label for="description">Descripción</label>
-                    <textarea id="description" pInputTextarea [(ngModel)]="role.roldescripcion" required rows="1" cols="10"></textarea>
-                    <small class="ng-dirty ng-invalid" *ngIf="camposVacios && !role.roldescripcion">La descripción es requerida.</small>
-                </div>
-            </ng-template>
-
-            <ng-template pTemplate="footer">
-                <button pButton pRipple label="Modificar" icon="pi pi-check" class="p-button-rounded p-button" (click)="enviarFormulario(role)"></button>
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-rounded p-button-danger"  (click)="hideDialog()"></button>
-            </ng-template>
-        </p-dialog>
-
-        <p-dialog [(visible)]="eliminarRolDialog" header="Aviso: Confirmar" [modal]="true" [style]="{width:'400px'}">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="rolRegistro">Estas seguro de eliminar el registro <b>{{rolRegistro.rolnombre}}</b>?</span>
+                        </ng-template>
+                    </p-tabPanel>
+                </p-tabView>
             </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button" label="Si" (click)="confirmarEliminar()"></button>
-                <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-danger" label="No" (click)="ocultarDialog()"></button>
-            </ng-template>
-        </p-dialog>
+            
+        <!-- Example in accordionTab model  -->
+        <!-- <div class="card ">
+            <div *ngFor="let rol of roles">
+                <p-accordion>
+                    <p-accordionTab header="{{ rol.rolnombre }}">
+                        <div *ngIf="getAccessesByRolId(rol?.rolid).length > 0; else noPermisos">
+                            <ul>
+                                <li *ngFor="let access of getAccessesByRolId(rol?.rolid)" class="flex align-items-center" style="margin-bottom: 0.5rem;">
+                                  <div class="flex align-items-center" [style]="'margin: 0.2rem;'">
+                                    <div style="padding: 0.2rem; margin-right: 0.5rem; cursor: pointer;" pTooltip="Eliminar" tooltipPosition="top" (click)="handleClickPermiso(access)">
+                                      <i class="pi pi-trash" style="color: #e57a7c"></i>
+                                    </div>
+                                    <p-checkbox
+                                      [ngModel]="access.accactivo === 1"
+                                      (ngModelChange)="access.accactivo = $event ? 1 : 0"
+                                      binary="true"
+                                      (onChange)="togglePermiso(access)"
+                                      [label]="getOperacionPorId(access.submenid)?.submennombre">
+                                    </p-checkbox>
+                                  </div>
+                                </li>
+                              </ul>
+                        </div>
+                        <ng-template #noPermisos>
+                            <div class="no-permisos-message text-align-center">
+                                No hay accesos disponibles para este rol.
+                            </div>
+                        </ng-template>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+        </div> -->
+
+        </div>
     </div>
 </div>
+
+<p-dialog [(visible)]="deleteAccessDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Estas seguro de eliminar el acceso?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteAccessDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="deleteAccess()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="addAccessdialog" [style]="{width: '650px'}" header="Acceso" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false">
+    <form [formGroup]="accessForm" novalidate>
+        <div class="field">
+            <label for="idTipoRol">Rol</label>
+            <p-dropdown
+                inputId="pdTipoRol"
+                appendTo="body"
+                [options]="tipoRol"
+                formControlName="tipoRol"
+                optionLabel="rolnombre"
+                placeholder="Seleccionar Rol"
+                [filter]="true"
+                filterBy="rolnombre"
+            ></p-dropdown>
+        </div>
+        <div class="field">
+            <label for="idTipoSubMen">Sub Menus</label>
+            <p-multiSelect
+                [options]="tipoSubMenu"
+                formControlName="tipoSubMenu"
+                optionLabel="submennombre"
+                placeholder="Selecionar Sub Menu"
+                appendTo="body"
+            ></p-multiSelect>
+        </div>
+        <div class="field">
+            <label for="">Activo</label>
+            <div class="flex align-items-center justify-content-center">
+                <p-checkbox formControlName="accactivo" binary="true" inputId="ny"></p-checkbox>
+            </div>
+        </div>
+        <div class="field">
+            <label for="">Estado</label>
+            <div class="flex align-items-center justify-content-center">
+                <p-selectButton [options]="stateOptionsEstado" formControlName="accestado" optionLabel="label" optionValue="value"></p-selectButton>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogAccess()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendFormAccess()"></button>
+    </ng-template>
+
+</p-dialog>
+

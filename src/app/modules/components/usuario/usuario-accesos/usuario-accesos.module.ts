@@ -17,15 +17,30 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { UsuarioAccesosRoutingModule } from './usuario-accesos-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { UsuarioAccesosComponent } from './usuario-accesos.component';
-
+import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
-
+import { AccordionModule } from 'primeng/accordion';
+import { AccesoService } from 'src/app/modules/service/data/acceso.service';
+import { PermisoService } from 'src/app/modules/service/data/permiso.service';
+import { TabViewModule } from 'primeng/tabview';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MultiSelectModule } from "primeng/multiselect";
+import { SelectButtonModule } from 'primeng/selectbutton';
 @NgModule({
     imports: [
+        SelectButtonModule,
+        MultiSelectModule,
+        ReactiveFormsModule,
+        CheckboxModule,
+        TabViewModule,
+        AccordionModule,
+        TooltipModule,
+        BreadcrumbModule,
         CommonModule,
         UsuarioAccesosRoutingModule,
         TableModule,
@@ -46,6 +61,6 @@ import { RolService } from 'src/app/modules/service/data/rol.service';
         ProgressSpinnerModule
     ],
     declarations: [UsuarioAccesosComponent],
-    providers: [UsuarioService, RolService]
+    providers: [UsuarioService, RolService, AccesoService, PermisoService]
 })
 export class UsuarioAccesosModule { }
