@@ -6,6 +6,8 @@ import { AuthService } from 'src/app/services/auth.service'; // Importa el servi
 import { NgxSpinnerService } from 'ngx-spinner'; // Importa el servicio NgxSpinnerService para manejar spinners de carga
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service'; // Importa el servicio LayoutService desde el archivo app.layout.service
 import { RequestStatus } from 'src/app/modules/models/request-status.model'; // Importa la clase RequestStatus desde el archivo request-status.model
+import { timeout, catchError } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
 
 
 @Component({
@@ -74,9 +76,20 @@ export class LoginComponent implements OnInit {
                 this.status = 'failed';
             })
         }
-        if(this.loginForm.valid){
+        if (this.loginForm.valid) {
             this.spinner.show();
+            const REQUEST_TIMEOUT = 5000; // 5 segundos
             this.authService.login(this.loginForm.value.usuario, this.loginForm.value.password)
+                .pipe(
+                    timeout(REQUEST_TIMEOUT),
+                    // Captura cualquier error y lo procesa
+                    catchError((error) => {
+                        if (error.name === 'TimeoutError') {
+                            return throwError(() => new Error('El servidor no está disponible, por favor intente más tarde.'));
+                        }
+                        return throwError(() => error);
+                    })
+                )
                 .subscribe({
                     next: () => {
                         this.status = 'success';
@@ -86,14 +99,17 @@ export class LoginComponent implements OnInit {
                     },
                     error: (error: any) => {
                         this.status = 'failed';
-                        if(error.error.message.includes('Email not confirmed')){
-                            this.router.navigate(['/confirm']);
-                        }
                         this.spinner.hide();
-                        this.messages = [{ severity: 'error', summary: '', detail: 'Las credenciales son inválidas', life: 3000 }];
+                        if (error.message === 'El servidor no está disponible, por favor intente más tarde.') {
+                            this.messages = [{ severity: 'error', summary: 'Error:', detail: error.message, life: 3000 }];
+                        } else {
+                            if (error.error.message.includes('Email not confirmed')) {
+                                this.router.navigate(['/confirm']);
+                            }
+                            this.messages = [{ severity: 'error', summary: 'Error', detail: 'Las credenciales son inválidas', life: 3000 }];
+                        }
                     }
-                }
-            )
+                });
         }
     }
 }
