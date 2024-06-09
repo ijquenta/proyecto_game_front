@@ -95,7 +95,6 @@ export class UsuarioPermisoComponent implements OnInit {
     ngOnInit() {
 
         this.items = [{ label: 'Usuarios'}, { label: 'Gestionar Permisos', routerLink:''},];
-
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
         this.getDataUser();
