@@ -69,7 +69,6 @@ export class AppConfigComponent {
 
     changeTheme(theme: string) {
         const themeLink = document.getElementById('app-theme') as HTMLLinkElement;
-        console.log("themeLink: ", themeLink)
         if(themeLink) {
             themeLink.href = '/assets/layout/styles/theme/' + theme + '/' + theme + '.css'
         }
