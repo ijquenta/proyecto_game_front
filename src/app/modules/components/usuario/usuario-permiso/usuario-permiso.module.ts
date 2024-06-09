@@ -19,7 +19,6 @@ import { UsuarioPermisoRoutingModule } from './usuario-permiso-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { UsuarioPermisoComponent } from './usuario-permiso.component';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 import { PermisoService } from 'src/app/modules/service/data/permiso.service';
 import { CheckboxModule } from 'primeng/checkbox';
