@@ -12,13 +12,27 @@
                         <button
                             pButton
                             pRipple
-                            label="Adicionar Permiso"
-                            icon="pi pi-plus" class="p-button-success mr-2" (click)="addPermiso()"></button>
+                            label="Adicionar"
+                            icon="pi pi-plus" 
+                            class="p-button-success mr-2" 
+                            (click)="addPermiso()"
+                            pTooltip="Adicionar Permiso"
+                            tooltipPosition="top"
+                        ></button>
+                    </div>
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            label="Operaciones"
+                            icon="pi pi-wrench" 
+                            class="p-button-primary mr-2" 
+                            (click)="manageOperations()"
+                            pTooltip="Administrar operaciones"
+                            tooltipPosition="top"
+                        ></button>
                     </div>
                 </ng-template>
-                <!-- <ng-template pTemplate="right">
-                    <p-button (click)="reporte.rptUsuarios()" label="Reporte Permisos" styleClass="p-button-raised p-button-purple-200" icon="pi pi-file"></p-button>
-                </ng-template> -->
             </p-toolbar>
 
                 <div *ngFor="let rol of roles">
@@ -28,7 +42,6 @@
                                 <ul>
                                     <li *ngFor="let permiso of getPermisosPorRol(rol?.rolid)" class="flex align-items-center" style="margin-bottom: 0.5rem;">
                                       <div class="flex align-items-center" [style]="'margin: 0.2rem;'">
-                                        <!-- <p>{{permiso.permid}}</p> -->
                                         <div style="padding: 0.2rem; margin-right: 0.5rem; cursor: pointer;" pTooltip="Eliminar" tooltipPosition="top" (click)="handleClickPermiso(permiso)">
                                           <i class="pi pi-trash" style="color: #e57a7c"></i>
                                         </div>
@@ -68,6 +81,8 @@
                 formControlName="tipoRol"
                 optionLabel="rolnombre"
                 placeholder="Seleccionar Rol"
+                [filter]="true"
+                filterBy="rolnombre"
             ></p-dropdown>
         </div>
         <div class="field">
@@ -104,12 +119,211 @@
 
 <p-dialog [(visible)]="deletePermisoDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center">
-        <!-- <i class="pi pi-check"></i> -->
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         <span>Estas seguro de eliminar?</span>
     </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deletePermisoDialog = false"></button>
         <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="deletePermiso()"></button>
+    </ng-template>
+</p-dialog>
+
+
+
+<div *ngIf="manageOperationDialog">
+    <p-dialog 
+        [(visible)]="manageOperationDialog" 
+        header="Gestionar Operaciones" 
+        [modal]="true" 
+        class="p-fluid"
+        [breakpoints]="{ '960px': '75vw' }" 
+        [style]="{ width: '90vw' }" 
+        [draggable]="false" 
+        [resizable]="false" 
+        [maximizable]="true"
+    >
+    <p>Sección para administrar las operaciones de los usuarios</p>
+        <p-toolbar styleClass="mb-4">
+            <ng-template pTemplate="left">
+                <div class="flex my-2">
+                    <button
+                        pButton
+                        pRipple
+                        label="Nuevo"
+                        icon="pi pi-plus" 
+                        class="p-button-success mr-2" 
+                        (click)="OperationCreate()"
+                        pTooltip="Nueva Operación"
+                        tooltipPosition="top"
+                    ></button>
+                </div>
+            </ng-template>
+        </p-toolbar>
+
+        <p-table 
+            #dtOperation 
+            [value]="operations" 
+            responsiveLayout="stack" 
+            class="m-2"
+            [loading]="loading" 
+            [rowsPerPageOptions]="[5, 10, 20]" 
+            [rows]="10" 
+            [paginator]="true"
+            styleClass="p-datatable-striped p-card p-datatable-sm"
+            [globalFilterFields]="['openombre']"
+            rowGroupMode="rowspan" 
+            groupRowsBy="openombre"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+            [rowHover]="true"
+            
+        >
+        <ng-template pTemplate="caption">
+           
+        <div class="flex align-items-center justify-content-between table-header">
+            Lista de Operaciones
+            <!-- <p-multiSelect 
+            [options]="status" 
+            [(ngModel)]="selectedStatus" 
+            optionLabel="header"
+            [style]="{'min-width': '200px'}" 
+            placeholder="Elegir estados"
+            pTooltip="Filter por estado"
+            tooltipPosition="top"
+            ></p-multiSelect> -->
+                <span class="p-input-icon-left w-auto">
+                    <i class="pi pi-search"></i>
+                    <input 
+                        pInputText 
+                        type="text" 
+                        (input)="dtOperation.filterGlobal($event.target.value, 'contains')" 
+                        placeholder="Buscar..." 
+                        pTooltip="Buscar por nombre"
+                        tooltipPosition="top"
+                    />
+                </span>
+        </div>
+        </ng-template>
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th> </th>
+                <th> Nombre </th>
+                <th> Descripción </th>
+                <th> Registrado </th>
+                <th> Modificado </th>
+                <th> Estado </th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-operation>
+            <tr>
+                <td>
+                    <div class="flex justify-content-center">
+                        <button 
+                            pButton="pButton" 
+                            pRipple="pRipple" 
+                            type="button"
+                            icon="pi pi-pencil" 
+                            class="p-button-rounded p-button-warning mr-2" 
+                            pTooltip="Editar"
+                            tooltipPosition="top" 
+                            (click)="OperationUpdate(operation)"
+                        ></button>
+                        <button 
+                            pButton="pButton" 
+                            pRipple="pRipple" 
+                            type="button"
+                            icon="pi pi-trash" 
+                            class="p-button-rounded p-button-danger mr-2" 
+                            pTooltip="Eliminar"
+                            tooltipPosition="top" 
+                            (click)="OperationDelete(operation)"
+                        ></button>
+                    </div>
+                </td>
+                <td> {{ operation.openombre }}  </td>
+                <td> {{ operation.opedescripcion }} </td>
+                <td> 
+                    {{ operation.opeusureg }} <br>
+                    {{ operation.opefecreg | date: 'd \'de\' MMMM, y' }} <br>
+                    {{ operation.opefecreg | date: 'h:mm:ss a' }}
+                </td>
+                <td> 
+                    {{ operation.opeusumod}} <br>
+                    {{ operation.opefecmod | date: 'd \'de\' MMMM, y' }} <br>
+                    {{ operation.opefecmod | date: 'h:mm:ss a' }}
+                </td>
+                <td> 
+                    <div class="flex justify-content-center">
+                        <p-tag 
+                        [value]="obtenerDescripcionEstado(operation.opeestado)" 
+                        [severity]="obtenerSeverityEstado(operation.opeestado)" 
+                        [rounded]="true"
+                    ></p-tag> 
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9">No se encontraron registros.</td>
+            </tr>
+        </ng-template>
+    </p-table> 
+    </p-dialog>
+</div>
+
+
+<p-dialog [(visible)]="dialogOperation" header="Operación" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '20vw' }" [draggable]="false" [resizable]="false">
+    <form [formGroup]="operationForm" novalidate>
+        <div class="field">
+            <label for="idTipoRol">Nombre</label>
+            <input 
+                type="text" 
+                id="idOpeNombre" 
+                pInputText 
+                formControlName="openombre"
+            >
+        </div>
+        <div class="field">
+            <label for="idTipoOperaciones">Descripción</label>
+            <textarea 
+                inputId="idOpeDescripcion" 
+                rows="2" 
+                cols="30" 
+                formControlName="opedescripcion" 
+                appendTo="body" 
+                pInputTextarea
+            ></textarea>
+        </div>
+        <div class="field">
+            <label for="">Estado</label>
+            <div class="flex align-items-center justify-content-center">
+                <p-selectButton 
+                    [options]="stateOptionsEstado" 
+                    formControlName="opeestado" 
+                    optionLabel="label" 
+                    optionValue="value">
+                </p-selectButton>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogOperation()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendFormOperation()"></button>
+    </ng-template>
+
+</p-dialog>
+
+<p-dialog [(visible)]="dialogOperationDelete" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>¿Estas seguro de eliminar este registro?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="dialogOperationDelete = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="SendOperationDelete()"></button>
     </ng-template>
 </p-dialog>
