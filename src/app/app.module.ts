@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './modules/layout/app.layout.module';
@@ -55,6 +55,9 @@ import { ConfirmComponent } from './modules/components/auth/confirm/confirm.comp
 import { NoConfirmComponent } from './modules/components/auth/noConfirm/no-confirm.component';
 import { VerifiedComponent } from './modules/components/auth/verified/verified.component';
 // import { TreeTableModule } from 'primeng/treetable';
+import localeBo from '@angular/common/locales/es-BO';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeBo, 'es');
 @NgModule({
     declarations: [
         AppComponent,
@@ -115,7 +118,8 @@ import { VerifiedComponent } from './modules/components/auth/verified/verified.c
         CountryService, CustomerService, EventService, IconService,
         NodeService, PhotoService, ProductService, DialogService,
         PrimeIcons, ConfirmationService, MessageService,
-        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        { provide: LOCALE_ID, useValue: 'es'}
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
