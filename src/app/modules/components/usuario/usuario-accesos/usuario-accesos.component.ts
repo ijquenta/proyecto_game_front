@@ -9,22 +9,26 @@ import { Usuario } from 'src/app/modules/models/usuario';
 import { Rol } from 'src/app/modules/models/rol';
 import { MenuItem } from 'primeng/api';
 import { Acceso } from 'src/app/modules/models/acceso';
-import { TipoRol, TipoSubMenu } from 'src/app/modules/models/diccionario';
+import { TipoIcono, TipoRol, TipoSubMenu } from 'src/app/modules/models/diccionario';
+import { Menu } from 'src/app/modules/models/menu';
 // Serivices
 import { AuthService } from 'src/app/services/auth.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AccesoService } from 'src/app/modules/service/data/acceso.service';
 import { PermisoService } from 'src/app/modules/service/data/permiso.service';
-
+import { MenuService } from 'src/app/modules/service/data/menu.service';
+import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service';
 
 @Component({
     selector: 'usuario-accesos-component', // This is for called in other component
     templateUrl: './usuario-accesos.component.html',
     providers: [MessageService],
+    styleUrls: ['./usuario-accesos.component.css'],
+
 })
 export class UsuarioAccesosComponent implements OnInit {
-    
+
     items: MenuItem[] | undefined;
     home: MenuItem | undefined;
     accesses: Acceso[] = [];
@@ -42,6 +46,18 @@ export class UsuarioAccesosComponent implements OnInit {
     stateOptionsEstado: any[];
     count: any;
 
+    // Menu Variables
+    manageMenuDialog: boolean = false;
+    menus : Menu[] = [];;
+    menu: Menu;
+    loading: boolean = false;
+    menuForm: FormGroup;
+    dialogMenu: boolean = false;
+    optionMenu: boolean = false;
+    tipoIcono: TipoIcono[] = [];
+
+
+
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
@@ -50,12 +66,14 @@ export class UsuarioAccesosComponent implements OnInit {
         private accesoService: AccesoService,
         private permisoService: PermisoService,
         private formBuilder: FormBuilder,
+        private menuService: MenuService,
+        private tipoIconoService: TipoIconoService
     ) {}
 
     ngOnInit() {
-        
+
         this.items = [{ label: 'Usuarios'}, { label: 'Gestionar Accesos', routerLink:''},];
-        
+
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
         this.stateOptionsEstado = [ { label: 'Habilitado', value: 1 }, { label: 'Inabilitado', value: 0 } ]
@@ -83,10 +101,20 @@ export class UsuarioAccesosComponent implements OnInit {
             accdescripcion: [''],
             accestado: ['', [Validators.required]]
         })
+
+        this.menuForm = this.formBuilder.group({
+            menuid: [''],
+            menunombre: ['', [Validators.required]],
+            tipoIcono: ['', [Validators.required]],
+            menusureg: [''],
+            menusumod: [''],
+            menudescripcion: [''],
+            menuestado: ['', [Validators.required]]
+        })
     }
 
     // Important Functions
-    
+
     getUser() {
         this.authService.usuario$.subscribe((user => {
             if (user) {
@@ -97,7 +125,7 @@ export class UsuarioAccesosComponent implements OnInit {
         }));
     }
 
-    // Access Functions 
+    // Access Functions
     listAccesses() {
         this.accesoService.getAccesses().subscribe((data: any) => {
             this.accesses = data;
@@ -214,7 +242,7 @@ export class UsuarioAccesosComponent implements OnInit {
                 })
             );
         });
-        
+
         forkJoin(requests).subscribe(
             (responses: any[]) => {
                 let count = 0;
@@ -238,8 +266,8 @@ export class UsuarioAccesosComponent implements OnInit {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error adicionando accesos.', life: 3000 });
             }
         );
-        
-        
+
+
     }
 
     toggleAccess(access: Acceso): void {
@@ -256,19 +284,19 @@ export class UsuarioAccesosComponent implements OnInit {
 
 
     // Other Fuctions
-   
+
     getAccessesByRolId(rolId: number) {
         if (this.accesses) {
             // Filtra los accesos por rolId
             let filteredAccesses = this.accesses.filter(access => access.rolid === rolId);
-            
-            // Ordena los accesos por submennombre
-            filteredAccesses.sort((a, b) => {
-                const submenA = this.getOperacionPorId(a.submenid)?.submennombre || '';
-                const submenB = this.getOperacionPorId(b.submenid)?.submennombre || '';
-                return submenA.localeCompare(submenB);
-            });
-            
+
+            // Ordena los accesos por mennombre
+            // filteredAccesses.sort((a, b) => {
+            //     const submenA = this.getOperacionPorId(a.submenid)?.submennombre || '';
+            //     const submenB = this.getOperacionPorId(b.submenid)?.submennombre || '';
+            //     return submenA.localeCompare(submenB);
+            // });
+
             return filteredAccesses;
         } else {
             return [];
@@ -284,7 +312,167 @@ export class UsuarioAccesosComponent implements OnInit {
     hideDialogAccess() {
         this.addAccessdialog = false;
     }
-    
 
-   
+
+    // Menu Functions
+
+    getDataMenus(){
+        this.menuService.getMenus().subscribe({
+            next: (data) => {
+                this.menus = data as Menu[];
+                console.log("Menus: ", this.menus)
+            },
+            error: (error) => {
+                console.error('Error when listing getDatamenus', error);
+            }
+            ,complete: () => {
+            }
+        })
+    }
+
+    manageMenus(){
+        this.getDataMenus();
+        this.manageMenuDialog = true;
+
+    }
+
+    MenuCreate() {
+        // this.menuForm.reset();
+        this.dialogMenu = true;
+        this.optionMenu = true;
+        this.getDataTipoIcono();
+    }
+
+    MenuDelete(menu: Menu){
+
+    }
+
+    MenuUpdate(menu: Menu){
+
+    }
+
+    hideDialogMenu(){
+        this.dialogMenu = false;
+        this.menuForm.reset();
+    }
+
+    sendFormMenu(){
+        console.log("optionMenuForm: ", this.optionMenu);
+        console.log("Send Data: ", this.menuForm);
+
+        if (this.menuForm.invalid) {
+            Object.values(this.menuForm.controls).forEach( control => {
+                control.markAsTouched();
+                control.markAsDirty();
+            });
+            return;
+        }
+
+        this.menu = new Menu();
+        this.menu.menicono = this.menuForm.value.tipoIcono.tipicono;
+        this.menu.mennombre = this.menuForm.value.mennombre;
+        this.menu.menestado = this.menuForm.value.menestado;
+        this.menu.menusureg = this.usuario.usuname;
+        this.menu.mendescripcion = this.menuForm.value.mendescripcion;
+        this.loading = true;
+
+        if(this.optionMenu){
+            console.log("Send Data Create Menu: ", this.menu);
+            this.menuService.createMenu(this.menu).subscribe({
+                next: (data) => {
+                    console.log("createMenu: ",data);
+                },
+                error: (error) => {
+                    this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
+                    console.error('Error in createMenu: ', error);
+                    this.loading = false;
+                },
+                complete: () => {
+                    this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Creación correcta.', life: 3000 });
+                    this.loading = false;
+                    this.dialogMenu = false;
+                    this.optionMenu = false;
+                    this.getDataMenus();
+                }
+            })
+        }
+        else{
+            this.menu.menid = this.menuForm.value.menid;
+            this.menu.menusumod = this.usuario.usuname;
+            console.log("Send Data Update Menu: ", this.menu);
+            this.menuService.updateMenu(this.menu.menid, this.menu).subscribe({
+                next: (data) => {
+                    console.log("updateMenu: ", data);
+                },
+                error: (error) => {
+                    this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
+                    console.error('Error in updateMenu: ', error);
+                    this.loading = false;
+                },
+                complete: () => {
+                    this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Actualización correcta.', life: 3000 });
+                    this.loading = false;
+                    this.dialogMenu = false;
+                    this.optionMenu = false;
+                    this.getDataMenus();
+                }
+            })
+        }
+
+    }
+
+    getDataTipoIcono(){
+        this.tipoIconoService.getTipoIcono().subscribe({
+
+            next: (data) => {
+                this.tipoIcono = data as TipoIcono[];
+                console.log("TipoIcono: ", this.tipoIcono)
+            },
+
+            error: (error) => {
+                console.error('Error when listing getDataTipoIcono', error);
+            },
+
+            complete: () => {
+
+            }
+        })
+    }
+
+    getStatusDescription(status: number): string {
+        switch (status) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'info'
+        }
+    }
+
+    getStatusSeverity(status: number): string{
+        switch (status) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info'
+        }
+    }
+
+    getDataIconoNombre(submenid: number) {
+        this.accesoService.getIconoNombre(submenid).subscribe({
+            next: (data) => {
+                return data as string;
+
+            },
+            error: (error) => {
+                console.error('Error when listing getDataIconoNombre', error);
+            },
+            complete: () => {
+
+            }
+        })
+    }
 }

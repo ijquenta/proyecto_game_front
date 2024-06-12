@@ -31,6 +31,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from "primeng/multiselect";
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { MenuService } from 'src/app/modules/service/data/menu.service';
+import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service';
 @NgModule({
     imports: [
         SelectButtonModule,
@@ -61,6 +63,13 @@ import { SelectButtonModule } from 'primeng/selectbutton';
         ProgressSpinnerModule
     ],
     declarations: [UsuarioAccesosComponent],
-    providers: [UsuarioService, RolService, AccesoService, PermisoService]
+    providers: [
+            UsuarioService,
+            RolService,
+            AccesoService,
+            PermisoService,
+            MenuService,
+            TipoIconoService
+        ]
 })
 export class UsuarioAccesosModule { }

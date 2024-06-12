@@ -1,0 +1,8 @@
+.mennombre {
+    font-size: 14px; /* Ajusta el tamaño de fuente según tus necesidades */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Oculta el texto que desborda el contenedor */
+    text-overflow: ellipsis; /* Muestra puntos suspensivos (...) si el texto es demasiado largo */
+    max-width: 200px; /* Establece un ancho máximo para el contenedor */
+    display: block; /* Asegura que se comporta como un bloque */
+}
