@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { catchError, forkJoin, of } from 'rxjs';
 import { MenuItem } from 'primeng/api';
 import { Table } from 'primeng/table';
@@ -24,6 +24,7 @@ interface Column {
     field: string;
     header: string;
 }
+
 @Component({
     selector: 'usuario-permiso-component',
     templateUrl: './usuario-permiso.component.html',
@@ -32,17 +33,13 @@ interface Column {
 })
 export class UsuarioPermisoComponent implements OnInit {
 
-    items: MenuItem[] | undefined;
-    home: MenuItem | undefined;
-
-    usuario = new Usuario;
-
     // modal
     dialogPermiso: boolean;
     visible: boolean = false;
     deletePermisoDialog: boolean = false;
 
     // Variables
+    usuario = new Usuario;
     operaciones: any[];
     roles: any[];
     permisos: Permiso[] = [];
@@ -57,6 +54,10 @@ export class UsuarioPermisoComponent implements OnInit {
     // Validation
     permisoForm: FormGroup;
 
+    // Other variables
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
+
     stateOptionsEstado: any[] = [
         { label: 'Habilitado', value: 1 },
         { label: 'Inabilitado', value: 0 }
@@ -66,7 +67,6 @@ export class UsuarioPermisoComponent implements OnInit {
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 }
     ]
-    
 
     // Operation Variable
     manageOperationDialog: boolean;
@@ -96,6 +96,27 @@ export class UsuarioPermisoComponent implements OnInit {
 
         this.items = [{ label: 'Usuarios'}, { label: 'Gestionar Permisos', routerLink:''},];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
+        this.status = [ { field: 'activos', header: 'Activos' }, { field: 'inactivos', header: 'Inactivos' } ];
+        this.selectedStatus = this.status;
+
+        this.permisoForm = this.formBuilder.group({
+            permid: [''],
+            tipoRol: ['', [Validators.required]],
+            tipoOperacion: ['', [Validators.required]],
+            permactivo: ['', [Validators.required]],
+            permusureg: [''],
+            permdescripcion: [''],
+            permestado: ['', [Validators.required]]
+        })
+
+        this.operationForm = this.formBuilder.group({
+            opeid: [''],
+            openombre: ['', [Validators.required]],
+            opeusureg: [''],
+            opeusumod: [''],
+            opedescripcion: [''],
+            opeestado: ['', [Validators.required]]
+        })
 
         this.getDataUser();
 
@@ -108,36 +129,10 @@ export class UsuarioPermisoComponent implements OnInit {
         this.getDataTipoRol();
 
         this.getDataTipoOperacion();
-
-        this.permisoForm = this.formBuilder.group({
-            permid: [''],
-            tipoRol: ['', [Validators.required]],
-            tipoOperacion: ['', [Validators.required]],
-            permactivo: ['', [Validators.required]],
-            permusureg: [''],
-            permdescripcion: [''],
-            permestado: ['', [Validators.required]]
-        })
-
-        // Operation Section
-        this.status = [
-            { field: 'activos', header: 'Activos' },
-            { field: 'inactivos', header: 'Inactivos' }
-        ];
-
-        this.selectedStatus = this.status;
-
-        this.operationForm = this.formBuilder.group({
-            opeid: [''],
-            openombre: ['', [Validators.required]],
-            opeusureg: [''],
-            opeusumod: [''],
-            opedescripcion: [''],
-            opeestado: ['', [Validators.required]]
-        })
-
     }
 
+    // Retrieve Necessary Information --------------------------------------------------------------------------
+    // Get User
     getDataUser(){
         this.authService.usuario$.subscribe((user => {
             if (user) {
@@ -147,21 +142,7 @@ export class UsuarioPermisoComponent implements OnInit {
             }
         }));
     }
-
-    getOperations() {
-        this.operacionService.getOperations().subscribe({
-          next: (data: Operacion[]) => {
-            this.operations = data;
-          },
-          error: (error) => {
-            console.error('Error in getOperations', error);
-          },
-          complete: () => {
-            console.log("Operations: ", this.operations);
-          }
-        });
-    }
-
+    // Get Tipo Operacion
     getDataTipoOperacion() {
         this.operacionService.getTipoOperacion().subscribe({
             next: (data) => {
@@ -176,8 +157,7 @@ export class UsuarioPermisoComponent implements OnInit {
             }
         });
     }
-    
-
+    // Get Tipo Rol
     getDataTipoRol() {
         this.rolService.getTipoRol().subscribe({
             next: (data) => {
@@ -192,7 +172,44 @@ export class UsuarioPermisoComponent implements OnInit {
             }
         });
     }
+    // Get Roles list
+    ListarRoles() {
+        this.rolService.getListarRoles().subscribe((data: any) => {
+            this.roles = data;
+        });
+    }
+    // Get Rolres
+    getDataRoles() {
+        this.permisoService.getRoles().subscribe({
+            next: (data) => {
+                this.roles = data as any[];
+            },
+            error: (error) => {
+                console.error('Error al listar roles', error);
+            },
+            complete: () => {
+                console.log('Roles obtenidos correctamente.');
+            }
+        })
+    }
+    // Get Operations
+    getDataOperaciones() {
+        this.permisoService.getOperaciones().subscribe({
+            next: (data) => {
+                this.operaciones = data as any[];
+            },
+            error: (error) => {
+                console.error('Error al listar operaciones', error);
+            },
+            complete: () => {
+                console.log('Operaciones obtenidas correctamente.');
+            }
+        })
+    }
+    // ---------------------------------------------------------------------------------------------------------
 
+    // Permiso -------------------------------------------------------------------------------------------------
+    // Get permisos list
     getDataPermisos() {
         this.spinner.show();
         this.permisoService.getPermisos().subscribe({
@@ -210,35 +227,7 @@ export class UsuarioPermisoComponent implements OnInit {
             }
         })
     }
-
-    getDataRoles() {
-        this.permisoService.getRoles().subscribe({
-            next: (data) => {
-                this.roles = data as any[];
-            },
-            error: (error) => {
-                console.error('Error al listar roles', error);
-            },
-            complete: () => {
-                console.log('Roles obtenidos correctamente.');
-            }
-        })
-    }
-
-    getDataOperaciones() {
-        this.permisoService.getOperaciones().subscribe({
-            next: (data) => {
-                this.operaciones = data as any[];
-            },
-            error: (error) => {
-                console.error('Error al listar operaciones', error);
-            },
-            complete: () => {
-                console.log('Operaciones obtenidas correctamente.');
-            }
-        })
-    }
-
+    // Get Permiso by Rol
     getPermisosPorRol(rolId: number) {
         if (this.permisos) {
             return this.permisos.filter(permiso => permiso.rolid === rolId);
@@ -246,7 +235,12 @@ export class UsuarioPermisoComponent implements OnInit {
             return [];
         }
     }
-
+    // Create
+    addPermiso() {
+        this.permisoForm.reset();
+        this.dialogPermiso = true;
+    }
+    // Update
     togglePermiso(permiso: Permiso): void {
         permiso.permusumod = this.usuario.usuname;
         this.permisoService.updatePermiso(permiso).subscribe({
@@ -258,31 +252,10 @@ export class UsuarioPermisoComponent implements OnInit {
             },
             complete: () => {
                 this.messageService.add({ severity: 'success', summary: 'Permiso', detail: 'Actualizado correcto.', life: 3000 });
-            } 
+            }
         })
     }
-
-    getOperacionPorId(opeId: number) {
-        return this.operaciones.find(operacion => operacion?.opeid === opeId);
-    }
-
-    ListarRoles() {
-        this.rolService.getListarRoles().subscribe((data: any) => {
-            this.roles = data;
-        });
-    }
-
-    addPermiso() {
-        this.permisoForm.reset();
-        this.dialogPermiso = true;
-
-    }
-
-    hideDialogPermiso() {
-        this.permisoForm.reset();
-        this.dialogPermiso = false;
-    }
-
+    // Confirm Create and Update
     sendFormPermiso() {
         if (this.permisoForm.invalid) {
             Object.values(this.permisoForm.controls).forEach(control => {
@@ -348,28 +321,7 @@ export class UsuarioPermisoComponent implements OnInit {
             }
         );
     }
-
-    handleClickPermiso(permiso: any) {
-        console.log('Clicked: ', permiso);
-        this.permiso = permiso;
-        this.deletePermisoDialog = true;
-    }
-
-    confirm(event: Event) {
-        console.log('Confirm: ', event);
-        this.confirmationService.confirm({
-            target: event.target as EventTarget,
-            message: 'Estas seguro de continuar con este proceso?',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.messageService.add({ severity: 'info', summary: 'Permiso', detail: 'Eliminado' });
-            },
-            reject: () => {
-                this.messageService.add({ severity: 'error', summary: 'Operación', detail: 'Cancelado' });
-            }
-        });
-    }
-
+    // Delete
     deletePermiso(){
         this.spinner.show();
         this.permisoService.deletePermiso(this.permiso).subscribe({
@@ -391,62 +343,76 @@ export class UsuarioPermisoComponent implements OnInit {
 
         })
     }
+    // Confirm delete
+    confirm(event: Event) {
+        console.log('Confirm: ', event);
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            message: 'Estas seguro de continuar con este proceso?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.messageService.add({ severity: 'info', summary: 'Permiso', detail: 'Eliminado' });
+            },
+            reject: () => {
+                this.messageService.add({ severity: 'error', summary: 'Operación', detail: 'Cancelado' });
+            }
+        });
+    }
+    // hadle Click Permiso Dialog Delete
+    handleClickPermiso(permiso: any) {
+        this.permiso = permiso;
+        this.deletePermisoDialog = true;
+    }
+    // Hide permiso
+    hideDialogPermiso() {
+        this.permisoForm.reset();
+        this.dialogPermiso = false;
+    }
+    // ---------------------------------------------------------------------------------------------------------
 
+    // Operation -----------------------------------------------------------------------------------------------
+    // Get Operations
+    getOperations() {
+        this.operacionService.getOperations().subscribe({
+          next: (data: Operacion[]) => {
+            this.operations = data;
+          },
+          error: (error) => {
+            console.error('Error in getOperations', error);
+          },
+          complete: () => {
+            console.log("Operations: ", this.operations);
+          }
+        });
+    }
+    // Get Operation by opeid
+    getOperacionPorId(opeId: number) {
+        return this.operaciones.find(operacion => operacion?.opeid === opeId);
+    }
     // Manage Operations
     manageOperations() {
-
         this.manageOperationDialog = true;
-
         this.getOperations();
-        
     }
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal(
-            (event.target as HTMLInputElement).value,
-            'contains'
-        );
-    }
-
-    obtenerSeverityEstado(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'success';
-            case 0:
-                return 'danger';
-            default:
-                return 'info';
-        }
-    }
-
-    obtenerDescripcionEstado(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'Activo';
-            case 0:
-                return 'Inactivo';
-            default:
-                return 'Ninguno';
-        }
-
-    }
-
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.operations.length; i++) {
-            if (this.operations[i].openombre === id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
+    // Create
     OperationCreate(){
         this.operationForm.reset();
         this.dialogOperation = true;
         this.optionOperation = true;
     }
-
+    // Update
+    OperationUpdate(operation: Operacion){
+        this.dialogOperation = true;
+        this.optionOperation = false;
+        console.log("Data OperationUpdate: ", operation)
+        this.operationForm.patchValue({
+            opeid: operation.opeid,
+            openombre: operation.openombre,
+            opedescripcion: operation.opedescripcion,
+            opeestado: operation.opeestado
+        })
+    }
+    // Confirm Create and Update
     sendFormOperation() {
         if (this.operationForm.invalid) {
             Object.values(this.operationForm.controls).forEach(control => {
@@ -507,33 +473,16 @@ export class UsuarioPermisoComponent implements OnInit {
             });
         }
     }
-
-    hideDialogOperation(){
-        this.operationForm.reset();
-        this.dialogOperation = false;
-    }
-
-    OperationUpdate(operation: Operacion){
-        this.dialogOperation = true;
-        this.optionOperation = false;
-        console.log("Data OperationUpdate: ", operation)
-        this.operationForm.patchValue({
-            opeid: operation.opeid,
-            openombre: operation.openombre,
-            opedescripcion: operation.opedescripcion,
-            opeestado: operation.opeestado
-        })
-    }
-
+    // Delete
     OperationDelete(operation: Operacion){
         console.log("OperationDelete: ", operation);
         this.dialogOperationDelete = true;
         this.operation = {
             ...operation
         }
-        
-    }
 
+    }
+    // Confirm Delete
     SendOperationDelete(){
         console.log("SendOperationDelete: ", this.operation)
         this.operacionService.deleteOperation(this.operation.opeid).subscribe({
@@ -553,4 +502,57 @@ export class UsuarioPermisoComponent implements OnInit {
             }
         } );
     }
+    // Hide Dialog
+    hideDialogOperation(){
+        this.operationForm.reset();
+        this.dialogOperation = false;
+    }
+    // --------------------------------------------------------------------------------------------------------
+
+
+
+    // Complementary Functions --------------------------------------------------------------------------------
+    // Search v1
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
+    }
+    // Get Severity Status
+    obtenerSeverityEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+    // Get Description Status
+    obtenerDescripcionEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
+        }
+
+    }
+    // Search v2
+    findIndexById(id: string): number {
+        let index = -1;
+        for (let i = 0; i < this.operations.length; i++) {
+            if (this.operations[i].openombre === id) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+    // --------------------------------------------------------------------------------------------------------
+
 }
