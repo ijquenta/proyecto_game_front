@@ -113,6 +113,15 @@ export class TipoCurso {
 //         this.desTipoRolNombre = desTipoRolNombre;
 //     }
 // }
+
+export class TipoIcono {
+    icoid: number = 0;
+    iconombre: string = '';
+    constructor(codIcoid: number, desIconombre: string){
+        this.icoid = codIcoid;
+        this.iconombre = desIconombre;
+    }
+}
 export class TipoRol {
     rolid: number = 0;
 	rolnombre: string = '';

@@ -9,4 +9,6 @@ export class Acceso {
     accfecmod?: Date;
     accdescripcion?: string;
     accestado: number;
+    menicono?: string;
+    mennombre?: string;
 }
