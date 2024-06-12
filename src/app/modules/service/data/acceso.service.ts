@@ -31,6 +31,10 @@ export class AccesoService {
         return this.http.delete(`${API_URL}/deleteAccess/${accid}`)
     }
 
+    getIconoNombre(submenid: number){
+        return this.http.get(`${API_URL}/getIconoNombre/${submenid}`)
+    }
+
     // Examples
 
     listarPermiso(){
