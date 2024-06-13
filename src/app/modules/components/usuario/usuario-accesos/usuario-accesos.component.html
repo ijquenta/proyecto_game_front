@@ -267,7 +267,7 @@
                 </td>
                 <td> {{ menu.mennombre }} </td>
                 <td> <i class="{{ menu.menicono }}"></i> </td>
-                <td> {{ menu.descripcion }} </td>
+                <td> {{ menu.mendescripcion }} </td>
                 <td>
                     {{ menu.menusureg }} <br>
                     {{ menu.menfecreg | date: 'd \'de\' MMMM, y' }} <br>
@@ -323,7 +323,7 @@
             <label for="idTipoIcono">Icono</label>
 
             <p-dropdown
-                formControlName="TipoIcono"
+                formControlName="tipoIcono"
                 [options]="tipoIcono"
                 optionLabel="iconombre"
                 placeholder="Seleccionar Icono"
@@ -369,4 +369,16 @@
         <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendFormMenu()" ></button>
     </ng-template>
 
+</p-dialog>
+
+
+<p-dialog [(visible)]="deleteMenuDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Estas seguro de eliminar este menú?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteMenuDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="sendDeleteMenu()"></button>
+    </ng-template>
 </p-dialog>
