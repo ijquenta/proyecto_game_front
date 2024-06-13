@@ -114,6 +114,14 @@ export class TipoCurso {
 //     }
 // }
 
+export class TipoMenu {
+    menid: number = 0;
+	mennombre: string = '';
+    constructor(codmenid: number, desmennombre: string){
+        this.menid = codmenid;
+        this.mennombre = desmennombre;
+    }
+}
 export class TipoIcono {
     icoid: number = 0;
     iconombre: string = '';
