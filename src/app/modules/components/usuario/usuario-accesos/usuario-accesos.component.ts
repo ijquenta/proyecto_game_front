@@ -10,8 +10,9 @@ import { Usuario } from 'src/app/modules/models/usuario';
 import { Rol } from 'src/app/modules/models/rol';
 import { MenuItem } from 'primeng/api';
 import { Acceso } from 'src/app/modules/models/acceso';
-import { TipoIcono, TipoRol, TipoSubMenu } from 'src/app/modules/models/diccionario';
+import { TipoIcono, TipoRol, TipoSubMenu, TipoMenu } from 'src/app/modules/models/diccionario';
 import { Menu } from 'src/app/modules/models/menu';
+import { SubMenu } from 'src/app/modules/models/submenu';
 // Serivices
 import { AuthService } from 'src/app/services/auth.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
@@ -20,7 +21,7 @@ import { AccesoService } from 'src/app/modules/service/data/acceso.service';
 import { PermisoService } from 'src/app/modules/service/data/permiso.service';
 import { MenuService } from 'src/app/modules/service/data/menu.service';
 import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service';
-
+import { SubMenuService } from 'src/app/modules/service/data/submenu.service';
 @Component({
     selector: 'usuario-accesos-component', // This is for called in other component
     templateUrl: './usuario-accesos.component.html',
@@ -37,7 +38,7 @@ export class UsuarioAccesosComponent implements OnInit {
     deleteAccessDialog: boolean = false;
     addAccessdialog: boolean = false;
     roles: any[];
-    submenus: any[];
+    // submenus: any[];
     activeIndex: number = 0;
     scrollableTabs: any[];
     usuario = new Usuario;
@@ -60,6 +61,16 @@ export class UsuarioAccesosComponent implements OnInit {
     icoid: number;
 
 
+    // SubMenu Variables
+    manageSubMenuDialog: boolean = false;
+    deleteSubMenuDialog: boolean = false;
+    submenus : SubMenu[] = [];;
+    submenu: SubMenu;
+    submenuForm: FormGroup;
+    dialogSubMenu: boolean = false;
+    optionSubMenu: boolean = false;
+    tipoMenu: TipoMenu[] = [];
+
 
     constructor(
         public usuarioService: UsuarioService,
@@ -71,7 +82,8 @@ export class UsuarioAccesosComponent implements OnInit {
         private formBuilder: FormBuilder,
         private menuService: MenuService,
         private tipoIconoService: TipoIconoService,
-        private spinner: NgxSpinnerService
+        private spinner: NgxSpinnerService,
+        private subMenService: SubMenuService
     ) {}
 
     ngOnInit() {
@@ -99,6 +111,16 @@ export class UsuarioAccesosComponent implements OnInit {
             menusumod: [''],
             mendescripcion: [''],
             menestado: ['', [Validators.required]]
+        })
+
+        this.submenuForm = this.formBuilder.group({
+            submenid: [''],
+            submennombre: ['', [Validators.required]],
+            tipoMenu: ['', [Validators.required]],
+            submenusureg: [''],
+            submenusumod: [''],
+            submendescripcion: [''],
+            submenestado: ['', [Validators.required]]
         })
 
         this.getUser();
@@ -527,4 +549,176 @@ export class UsuarioAccesosComponent implements OnInit {
                 return 'info'
         }
     }
+
+    // Sub Menu -------------------------------------------------------------------------------------------------------------
+    // Get Menus
+    getListSubMenu() {
+        this.spinner.show();
+        this.subMenService.getListSubMenu().subscribe({
+          next: (data) => {
+            // Merge mennombre into each submenu
+            this.submenus = data.map((item: any) => {
+              return {
+                ...item.submenu,
+                mennombre: item.mennombre
+              } as SubMenu;
+            });
+    
+            this.spinner.hide();
+            console.log("SubMenus: ", this.submenus);
+          },
+          error: (error) => {
+            this.spinner.hide();
+            console.error('Error when listing getDatamenus', error);
+          },
+          complete: () => {}
+        });
+    }
+    // button manage SubMenu
+    manageSubMenu(){
+        this.getListSubMenu();
+        this.getTipoMenu();
+        // this.getDataTipoIcono();
+        this.manageSubMenuDialog = true;
+    }
+     // Create
+    SubMenuCreate() {
+        this.submenuForm.reset();
+        this.dialogSubMenu = true;
+        this.optionSubMenu = true;
+        this.getTipoMenu();
+        // this.getDataTipoIcono();
+    }
+    // Get Tipo Menu
+    getTipoMenu(){
+        this.spinner.show();
+        this.subMenService.getTipoMenu().subscribe({
+            next: (data) => {
+                this.tipoMenu = data as TipoMenu[];
+                this.spinner.hide();
+                // console.log("Menus: ", this.menus)
+            },
+            error: (error) => {
+                this.spinner.hide();
+                console.error('Error when listing getDatamenus', error);
+            }
+            ,complete: () => {
+            }
+        })
+    }
+    // Update
+    SubMenuUpdate(submenu: SubMenu){
+        console.log("SubMenuUpdate: ", submenu);
+        this.submenuForm.reset();
+        this.dialogSubMenu = true;
+        this.submenu = {...submenu}
+        this.optionSubMenu = false;
+        console.log("this.submenu", this.submenu)
+        this.submenuForm.patchValue({
+            submenid: this.submenu.submenid,
+            submennombre: this.submenu.submennombre,
+            tipoMenu: new TipoMenu(this.submenu.menid, this.submenu.mennombre),
+            submendescripcion: this.submenu.submendescripcion,
+            submenusureg: this.submenu.submenusureg,
+            submenumod: this.submenu.submenusureg,
+            submenestado: this.submenu.submenestado
+        });
+
+        console.log("submenuForm: ", this.submenuForm.value);
+    }
+     // Hialog dialog menu
+    hideDialogSubMenu(){
+        this.dialogSubMenu = false;
+        this.submenuForm.reset();
+    }
+    // Send from menu for create or update
+    sendFormSubMenu(){
+        // console.log("optionMenuForm: ", this.optionMenu);
+        // console.log("Send Data: ", this.menuForm);
+
+        if (this.submenuForm.invalid) {
+            Object.values(this.submenuForm.controls).forEach( control => {
+                control.markAsTouched();
+                control.markAsDirty();
+            });
+            return;
+        }
+        this.submenu = new SubMenu();
+        this.submenu.menid = this.submenuForm.value.tipoMenu.menid;
+        this.submenu.submennombre = this.submenuForm.value.submennombre;
+        this.submenu.submenestado = this.submenuForm.value.submenestado;
+        this.submenu.submenusureg = this.usuario.usuname;
+        this.submenu.submendescripcion = this.submenuForm.value.submendescripcion;
+        this.loading = true;
+
+        if(this.optionSubMenu){
+
+            console.log("Send Data Create SubMenu: ", this.submenu);
+            this.subMenService.createSubMenu(this.submenu).subscribe({
+                next: (data) => {
+                    console.log("createSubMenu: ",data);
+                },
+                error: (error) => {
+                    this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
+                    console.error('Error in createSubMenu: ', error);
+                    this.loading = false;
+                },
+                complete: () => {
+                    this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Creación correcta.', life: 3000 });
+                    this.loading = false;
+                    this.dialogSubMenu = false;
+                    this.optionSubMenu = false;
+                    this.getListSubMenu();
+                }
+            })
+        }
+        else{
+            this.submenu.submenid = this.submenuForm.value.submenid;
+            this.submenu.submenusumod = this.usuario.usuname;
+            console.log("Data Update SubMenu: ", this.submenu);
+            this.subMenService.updateSubMenu(this.submenu.submenid, this.submenu).subscribe({
+                next: (data) => {
+                    console.log("updateSubMenu: ", data);
+                },
+                error: (error) => {
+                    this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
+                    console.error('Error in updateSubMenu: ', error);
+                    this.loading = false;
+                },
+                complete: () => {
+                    this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Actualización correcta.', life: 3000 });
+                    this.loading = false;
+                    this.dialogSubMenu = false;
+                    this.optionSubMenu = false;
+                    this.getListSubMenu();
+                }
+            })
+        }
+
+    }
+    // Delete
+    SubMenuDelete(submenu: SubMenu){
+        console.log("SubMenuDelete: ", submenu)
+        this.submenu = {...submenu};
+        this.deleteSubMenuDialog = true;
+    }
+     // Send Delete Menu
+    sendDeleteSubMenu(){
+        this.loading = true;
+        this.subMenService.deleteSubMenu(this.submenu.submenid).subscribe({
+            next: (data) => {
+                this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Eliminado, correcto.', life: 3000 });
+                this.deleteSubMenuDialog = false;
+                this.loading = false;
+                this.getListSubMenu();
+            },
+            error: (error) => {
+                console.error('Error when listing deleteMenu', error);
+                this.loading = false;
+            }
+            ,complete: () => {
+            }
+        })
+    }
+  
 }
