@@ -15,12 +15,16 @@ export class MenuService {
         return this.http.get<Menu[]>(`${API_URL}/getMenus`)
     }
 
-    createMenu(data: Menu){
+    createMenu(data: any){
         return this.http.post(`${API_URL}/createMenu`, data);
     }
 
     updateMenu(menuid: number, data: Menu){
         return this.http.put(`${API_URL}/updateMenu/${menuid}`, data)
+    }
+
+    deleteMenu(menuid: number) {
+        return this.http.delete(`${API_URL}/deleteMenu/${menuid}`)
     }
 
 

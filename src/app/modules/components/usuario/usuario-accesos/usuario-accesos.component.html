@@ -21,11 +21,21 @@
                         <button
                             pButton
                             pRipple
-                            label="Menus"
+                            label="Menu"
                             icon="pi pi-plus"
                             class="p-button-primary mr-2"
                             (click)="manageMenus()"
                             pTooltip="Gestionar Menus"
+                            tooltipPosition="top"
+                        ></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="SubMenu"
+                            icon="pi pi-plus"
+                            class="p-button-primary mr-2"
+                            (click)="manageSubMenu()"
+                            pTooltip="Gestionar Sub Menu"
                             tooltipPosition="top"
                         ></button>
                     </div>
@@ -267,7 +277,7 @@
                 </td>
                 <td> {{ menu.mennombre }} </td>
                 <td> <i class="{{ menu.menicono }}"></i> </td>
-                <td> {{ menu.descripcion }} </td>
+                <td> {{ menu.mendescripcion }} </td>
                 <td>
                     {{ menu.menusureg }} <br>
                     {{ menu.menfecreg | date: 'd \'de\' MMMM, y' }} <br>
@@ -323,7 +333,7 @@
             <label for="idTipoIcono">Icono</label>
 
             <p-dropdown
-                formControlName="TipoIcono"
+                formControlName="tipoIcono"
                 [options]="tipoIcono"
                 optionLabel="iconombre"
                 placeholder="Seleccionar Icono"
@@ -370,3 +380,238 @@
     </ng-template>
 
 </p-dialog>
+
+
+<p-dialog [(visible)]="deleteMenuDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Estas seguro de eliminar este menú?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteMenuDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="sendDeleteMenu()"></button>
+    </ng-template>
+</p-dialog>
+
+
+
+
+<!-- SubMenu Section -->
+
+<div *ngIf="manageSubMenuDialog">
+    <p-dialog
+        [(visible)]="manageSubMenuDialog"
+        header="Gestionar Sub Menu"
+        [modal]="true"
+        class="p-fluid"
+        [breakpoints]="{'960px':'75vw'}"
+        [style]="{width: '90vw'}"
+        [draggable]="false"
+        [resizable]="false"
+        [maximizable]="true"
+    >
+    <p>Sección para administrar los submenus de infertaz de usuario</p>
+        <p-toolbar styleClass="mb-4">
+            <ng-template pTemplate="left">
+                <div class="flex my-2">
+                    <button
+                        pButton
+                        pRipple
+                        label="Nuevo"
+                        icon="pi pi-plus"
+                        class="p-button-success mr-2"
+                        (click)="SubMenuCreate()"
+                        pTooltip="Nuevo SubMenu"
+                        tooltipPosition="top"
+                    ></button>
+                </div>
+            </ng-template>
+        </p-toolbar>
+
+        <p-table
+            #dtMenu
+            [value]="submenus"
+            responsiveLayout="stack"
+            class="m-2"
+            [loading]="loading"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            [rows]="10"
+            [paginator]="true"
+            styleClass="p-datatable-striped p-card p-datatable-sm"
+            [globalFilterFields]="['submennombre']"
+            rowGroupMode="rowspan"
+            groupRowsBy="submennombre"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+            [rowHover]="true"
+        >
+
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between table-reader">
+                Lista de SubMenu
+                <span class="p-input-icon-left w-auto">
+                    <i class="pi pi-search"></i>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="dtMenu.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Buscar..."
+                        pTooltip="Buscar por nombre"
+                        tooltipPosition="top"
+                    />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th> </th>
+                <th pSortableColumn="submennombre"> Nombre <p-sortIcon field="submennombre"></p-sortIcon> </th>
+                <th pSortableColumn="mennombre"> Menu  <p-sortIcon field="mennombre"></p-sortIcon> </th>
+                <th> Descripción </th>
+                <th> Registrado </th>
+                <th> Modificado </th>
+                <th> Estado </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-submenu>
+            <tr>
+                <td>
+                    <div class="flex justify-content-center">
+                        <button
+                            pButton="pButton"
+                            pRipple="pRipple"
+                            type="button"
+                            icon="pi pi-pencil"
+                            class="p-button-rounded p-button-warning mr-2"
+                            pTooltip="Editar"
+                            tooltipPosition="top"
+                            (click)="SubMenuUpdate(submenu)"
+                            ></button>
+                        <button
+                            pButton="pButton"
+                            pRipple="pRipple"
+                            type="button"
+                            icon="pi pi-trash"
+                            class="p-button-rounded p-button-danger mr-2"
+                            pTooltip="Eliminar"
+                            tooltipPosition="top"
+                            (click)="SubMenuDelete(submenu)"
+                        ></button>
+                    </div>
+                </td>
+                <td> {{ submenu.submennombre }} </td>
+                <td> {{ submenu.mennombre }} </td>
+                <td> {{ submenu.submendescripcion }} </td>
+                <td>
+                    {{ submenu.submenusureg }} <br>
+                    {{ submenu.submenfecreg | date: 'd \'de\' MMMM, y' }} <br>
+                    {{ submenu.submenfecreg | date: 'h:mm:ss a'}}
+                </td>
+                <td>
+                    {{ submenu.submenusumod }} <br>
+                    {{ submenu.submenfecmod | date: 'd \'de\' MMMM, y' }} <br>
+                    {{ submenu.submenfecmod | date: 'h:mm:ss a'}}
+                </td>
+                <td>
+                    <div class="flex justify-content-center">
+                        <p-tag
+                            [value]="getStatusDescription(submenu.submenestado)"
+                            [severity]="getStatusSeverity(submenu.submenestado)"
+                            [rounded]="true"
+                        ></p-tag>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No se encontraron registros</td>
+            </tr>
+        </ng-template>
+        </p-table>
+    </p-dialog>
+</div>
+
+
+<!-- Dialog SubMenu CRUD -->
+<p-dialog
+    [(visible)]="dialogSubMenu"
+    header="SubMenu"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{'960px': '75vw'}"
+    [style]="{width: '20vw'}"
+    [draggable]="false"
+    [resizable]="false"
+>
+    <form [formGroup]="submenuForm">
+        <div class="field">
+            <label for="idSubMenNombre">Nombre</label>
+            <input
+                type="text"
+                id="idInputSubMenNombre"
+                pInputText
+                formControlName="submennombre"
+            >
+        </div>
+        <div class="field">
+            <label for="idTipoMenu">Tipo Menú</label>
+
+            <p-dropdown
+                formControlName="tipoMenu"
+                [options]="tipoMenu"
+                optionLabel="mennombre"
+                placeholder="Seleccionar Menu"
+                appendTo="body"
+                [filter]="true"
+                [showClear]="true"
+                [emptyFilterMessage]="'No se encontraron registros.'"
+            >
+            </p-dropdown>
+
+        </div>
+        <div class="field">
+            <label for="idSubMenDescripcion">Descripción</label>
+            <textarea
+                inputId="idTextAreaDescripcion"
+                rows="2"
+                cols="30"
+                formControlName="submendescripcion"
+                appendTo="body"
+                pInputTextarea
+            ></textarea>
+        </div>
+        <div class="field">
+            <label for="">Estado</label>
+            <div class="flex align-items-center justify-content-center">
+                <p-selectButton
+                    [options]="stateOptionsEstado"
+                    formControlName="submenestado"
+                    optionLabel="label"
+                    optionValue="value">
+                </p-selectButton>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogSubMenu()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendFormSubMenu()" ></button>
+    </ng-template>
+
+</p-dialog>
+
+<!-- Dialog SubMenu Delete -->
+<p-dialog [(visible)]="deleteSubMenuDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Estas seguro de eliminar este submenú?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteSubMenuDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="sendDeleteSubMenu()"></button>
+    </ng-template>
+</p-dialog>
+

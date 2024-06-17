@@ -33,6 +33,7 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { MenuService } from 'src/app/modules/service/data/menu.service';
 import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service';
+import { SubMenuService } from 'src/app/modules/service/data/submenu.service';
 @NgModule({
     imports: [
         SelectButtonModule,
@@ -69,7 +70,8 @@ import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service
             AccesoService,
             PermisoService,
             MenuService,
-            TipoIconoService
+            TipoIconoService,
+            SubMenuService
         ]
 })
 export class UsuarioAccesosModule { }

@@ -15,6 +15,11 @@ export class TipoIconoService {
         return this.http.get<TipoIcono[]>(`${API_URL}/getTipoIcono`)
     }
 
+    findIdIcono(data: any){
+        console.log("Datos service: ", data)
+        return this.http.post(`${API_URL}/findIdIcono`, data)
+    }
+
 
 
 
