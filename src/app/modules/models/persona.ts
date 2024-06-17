@@ -1,11 +1,13 @@
 export class Persona {
+
     tipo: number;
+
     perid: number | null = null;
     pernomcompleto: string = "";
     pernombres: string = "";
     perapepat: string = "";
     perapemat: string;
-    perfecnac: any; // Puedes asignar una fecha por defecto si es aplicable
+    perfecnac: any;
     perdirec: string;
     peremail: string;
     percelular: string;
@@ -13,9 +15,7 @@ export class Persona {
     perpais: number;
     paisnombre: string;
     pergenero: number;
-    generonombre: string;
     perestcivil: number;
-    estadocivilnombre: string;
     perfoto: any;
     perusureg: string = "";
     perobservacion: string = "";
@@ -24,14 +24,16 @@ export class Persona {
     perfecmod: Date = new Date();
     perestado: number = 1;
 	pertipodoc: number;
-    tipodocnombre: string;
 	pernrodoc: any;
 	perciudad: number;
+
+    generonombre: string;
+    estadocivilnombre: string;
+    tipodocnombre: string;
     ciudadnombre: string;
     usuid: any;
     usuname: string;
     usuemail: string;
-
     pernrohijos: number;
     perprofesion: string;
     perfeclugconversion: string;
