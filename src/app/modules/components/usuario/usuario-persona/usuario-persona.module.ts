@@ -34,9 +34,21 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
 import { UsuarioPersonaComponent } from './usuario-persona.component';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { CardModule } from 'primeng/card';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ImageModule } from 'primeng/image';
+import { SidebarModule } from 'primeng/sidebar';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
     imports: [
+        DividerModule,
+        SidebarModule,
+        ImageModule,
+        SelectButtonModule,
+        CardModule,
+        BreadcrumbModule,
         CommonModule,
         UsuarioPersonaRoutingModule,
         TableModule,

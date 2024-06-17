@@ -18,6 +18,7 @@ import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { Persona, PersonaExpanded } from 'src/app/modules/models/persona';
 import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from 'src/app/modules/models/diccionario';
 import { Usuario } from 'src/app/modules/models/usuario';
+import { MenuItem } from 'primeng/api';
 
 interface Column {
     field: string;
@@ -100,23 +101,50 @@ export class UsuarioPersonaComponent implements OnInit {
 
     apiUrl = environment.API_URL_FOTO_PERFIL;
 
-    constructor( public usuarioService: UsuarioService, private messageService: MessageService, public personaService: PersonaService, private uploadService: UploadService, private authService: AuthService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService) {}
+    // Other variables
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
+
+    stateOptionsEstado: any[] = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
+    ];
+
+    stateOptionsActivo: any[] = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
+    ]
+
+    showDialogPersona: boolean = false;
+
+    constructor( public usuarioService: UsuarioService,
+                 private messageService: MessageService,
+                 public personaService: PersonaService,
+                 private uploadService: UploadService,
+                 private authService: AuthService,
+                 private formBuilder: FormBuilder,
+                 private spinner: NgxSpinnerService,
+                ) {}
     ngOnInit() {
 
+        this.items = [{ label: 'Usuarios'}, { label: 'Gestionar Personas', routerLink:''},];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+
         this.colsTable = [
+            { field: 'perid', header: 'ID' },
+            { field: 'tipodocnombre', header: 'Tipo de Documento' },
+            { field: 'pernrodoc', header: 'Número de Documento' },
             { field: 'pernomcompleto', header: 'Nombre Completo' },
             { field: 'pernombres', header: 'Nombres' },
             { field: 'perapepat', header: 'Apellido Paterno' },
             { field: 'perapemat', header: 'Apellido Materno' },
-            { field: 'perid', header: 'ID' },
-            { field: 'tipodocnombre', header: 'Tipo de Documento' },
-            { field: 'pernrodoc', header: 'Número de Documento' },
+            { field: 'perfecnac', header: 'Fecha de Nacimiento' },
             { field: 'generonombre', header: 'Género' },
-            { field: 'perestado', header: 'Estado' },
             { field: 'perusureg', header: 'Usuario Registro' },
             { field: 'perfecreg', header: 'Fecha Registro' },
             { field: 'perusumod', header: 'Usuario Modificación' },
-            { field: 'perfecmod', header: 'Fecha Modificación' }
+            { field: 'perfecmod', header: 'Fecha Modificación' },
+            { field: 'perestado', header: 'Estado' },
         ];
 
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
@@ -127,28 +155,38 @@ export class UsuarioPersonaComponent implements OnInit {
 
         this.statuses = [ { label: 'Activo', value: 0 }, { label: 'Inactivo', value: 1 }, ];
 
-        this.authService.getPerfil().subscribe(user => { this.usuario = user[0]; });
+        this.obtenerPerfil()
 
         this.personaForm = this.formBuilder.group({
-            pf_id: [''],
-            pf_nombres: ['', [Validators.required]],
-            pf_apePat: ['', [Validators.required]],
-            pf_apeMat: [''],
-            pf_tipDoc: ['',[Validators.required]],
-            pf_nroDoc: [{ value: '' }, [Validators.required], [this.validarDocumentoExistente()]],
-            pf_fecNac: ['', [Validators.required], [this.validarEdadMinima()]],
-            pf_tipGen: ['', [Validators.required]],
-            pf_direc: ['', [Validators.required]],
-            pf_email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-            pf_celular: ['', [Validators.required]],
-            pf_telefono: [''],
-            pf_tipoEstCivil: ['', [Validators.required]],
-            pf_tipPais: ['', [Validators.required]],
-            pf_tipCiudad: ['', [Validators.required]],
-            perfoto: ['']
+            perid: [''],
+            pernombres: ['', [Validators.required]],
+            perapepat: ['', [Validators.required]],
+            perapemat: [''],
+            pernrodoc: [{ value: '' }, [Validators.required], [this.validarDocumentoExistente()]],
+            perfecnac: ['', [Validators.required], [this.validarEdadMinima()]],
+            perdirec: ['', [Validators.required]],
+            peremail: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+            percelular: ['', [Validators.required]],
+            pertelefono: [''],
+            perfoto: [''],
+            tipoGenero: ['', [Validators.required]],
+            tipoEstadoCivil: ['', [Validators.required]],
+            tipoPais: ['', [Validators.required]],
+            tipoCiudad: ['', [Validators.required]],
+            tipoDocumento: ['',[Validators.required]],
+            perobservacion: [''],
+            perestado: ['', [Validators.required]]
         });
     }
 
+    // Usuario
+    // obtener perfil
+    obtenerPerfil(){
+        this.authService.getPerfil().subscribe(user => { this.usuario = user[0]; });
+    }
+
+    // Validaciones
+    // Validar Edad Minima > 15 años | Mejorar
     validarEdadMinima(): AsyncValidatorFn {
         return (control: AbstractControl): Promise<ValidationErrors | null> => {
           return new Promise((resolve) => {
@@ -164,7 +202,7 @@ export class UsuarioPersonaComponent implements OnInit {
           });
         };
     }
-
+    // Validar si el número de documento ya existe
     validarDocumentoExistente(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un número de documento ya existe
         return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
             const numeroDocumento = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
@@ -174,8 +212,29 @@ export class UsuarioPersonaComponent implements OnInit {
             const existe = this.personasDuplicated.some(persona => persona.pernrodoc === numeroDocumento);// Se verifica si algún elemento en la lista de personas tiene el mismo número de documento
             return of(existe ? { documentoExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
     };
-}
+    }
+    // Validar cuando el número de documento cambia, validar si ya existe
+    validateNroDocIfChanged(control: AbstractControl) {
+        if (control.value === this.originalPerNroDoc) {
+            return of(null);
+        } else {
+            return this.validarDocumentoExistente()(control);
+        }
+    }
 
+
+
+    // Persona
+    // Nuevo Persona
+    NuevoPersona() {
+        this.person = new Persona();
+        this.personaForm.reset();
+        this.personaForm.get('pernrodoc')?.enable();
+        // this.fileUpload.clear();
+        this.personaNuevoDialog = true;
+        this.optionDialog = true;
+    }
+    // f Listar Personas
     fListarPersonas() {
         this.spinner.show();
         this.loading = true;
@@ -184,8 +243,10 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.elements = result;
                 this.personas = this.elements.map(item => this.fOrganizarDatosPersona(item));
                 this.personasDuplicated = this.personas;
-                this.personasInactivas = this.personas.filter(persona => persona.perestado === 0);
-                this.personas = this.personas.filter(persona => persona.perestado === 1);
+
+                // this.personasInactivas = this.personas.filter(persona => persona.perestado === 0);
+                // console.log("listade no activas: ", this.personasInactivas);
+                // this.personas = this.personas.filter(persona => persona.perestado === 1);
                 this.loading = false;
                 this.spinner.hide();
             },
@@ -196,7 +257,7 @@ export class UsuarioPersonaComponent implements OnInit {
             }
         );
     }
-
+    // Organizar datos de persona
     fOrganizarDatosPersona(data: any): PersonaExpanded {
         const persona = new PersonaExpanded();
         persona.tipo = data.tipo;
@@ -208,12 +269,7 @@ export class UsuarioPersonaComponent implements OnInit {
         persona.pertipodoc = data.pertipodoc;
         persona.tipodocnombre = data.tipodocnombre;
         persona.pernrodoc = data.pernrodoc;
-        if(data.perfecnac == null) {
-            persona.perfecnac = data.perfecnac;
-        }
-        if(data.perfecnac != null ){
-            persona.perfecnac = this.convertirAFecha(data.perfecnac);
-        }
+        persona.perfecnac = data.perfecnac;
         persona.pergenero = data.pergenero;
         persona.generonombre = data.generonombre;
         persona.perfoto = data.perfoto;
@@ -229,137 +285,90 @@ export class UsuarioPersonaComponent implements OnInit {
         persona.datos.push({ percod: data.perid, perdirec: data.perdirec, peremail: data.peremail, percelular: data.percelular, pertelefono: data.pertelefono, perestcivil: data.perestcivil, estadocivilnombre: data.estadocivilnombre, perpais: data.perpais, paisnombre: data.paisnombre, perciudad: data.perciudad, ciudadnombre: data.ciudadnombre, });
         return persona;
     }
-
-    fLlenarTipoCombo() {
-        this.personaService.getTipoCiudad().subscribe((data: any) => { this.TipoCiudad = data; this.TipoCiudadRespaldo = data; });
-        this.personaService.getTipoPais().subscribe((data: any) => { this.TipoPais = data; });
-        this.personaService.getTipoDocumento().subscribe((data: any) => { this.TipoDocumento = data; });
-        this.personaService.getTipoGenero().subscribe((data: any) => { this.TipoGenero = data; });
-        this.personaService.getTipoEstadoCivil().subscribe((data: any) => { this.TipoEstadoCivil = data; });
-    }
-
+    // Lista Personas
     ListarPersonas() {
         this.personaService.ListarPersona().subscribe((data: any) => { this.Personas = data; });
     }
-
-    onChangeTipoPais(data: any) {
-        this.TipoCiudad = this.TipoCiudadRespaldo;
-        this.id = data.value.paisid;
-        this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === this.id);
-    }
-
+    // Modificar persona
     modificarPersona(data: PersonaExpanded) {
         this.fLlenarTipoCombo();
         this.persona = { ...data };
+        console.log("mod:", this.persona)
         this.optionDialog = false;
         this.personaNuevoDialog = true;
         this.originalPerNroDoc = this.persona.pernrodoc;
 
         this.personaForm.reset();
         this.personaForm.patchValue({
-            pf_id: this.persona.perid,
-            pf_nombres: this.persona.pernombres,
-            pf_apePat: this.persona.perapepat,
-            pf_apeMat: this.persona.perapemat,
-            pf_tipDoc: new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre),
-            pf_nroDoc: this.persona.pernrodoc,
-            pf_fecNac: new Date(this.persona.perfecnac),
-            pf_tipGen: new TipoGenero(this.persona.pergenero, this.persona.generonombre),
-            pf_direc: this.persona.datos[0].perdirec,
-            pf_email: this.persona.datos[0].peremail,
-            pf_celular: this.persona.datos[0].percelular,
-            pf_telefono: this.persona.datos[0].pertelefono,
-            pf_tipoEstCivil: new TipoEstadoCivil(this.persona.datos[0].perestcivil, this.persona.datos[0].estadocivilnombre),
-            pf_tipPais: new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre),
-            pf_tipCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais),
-            perfoto: this.persona.perfoto
+            perid: this.persona.perid,
+            pernombres: this.persona.pernombres,
+            perapepat: this.persona.perapepat,
+            perapemat: this.persona.perapemat,
+            tipoDocumento: new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre),
+            pernrodoc: this.persona.pernrodoc,
+            perfecnac: this.persona.perfecnac,
+            tipoGenero: new TipoGenero(this.persona.pergenero, this.persona.generonombre),
+            perdirec: this.persona.datos[0].perdirec,
+            peremail: this.persona.datos[0].peremail,
+            percelular: this.persona.datos[0].percelular,
+            pertelefono: this.persona.datos[0].pertelefono,
+            tipoEstadoCivil: new TipoEstadoCivil(this.persona.datos[0].perestcivil, this.persona.datos[0].estadocivilnombre),
+            tipoPais: new TipoPais(this.persona.datos[0].perpais, this.persona.datos[0].paisnombre),
+            tipoCiudad: new TipoCiudad(this.persona.datos[0].perciudad, this.persona.datos[0].ciudadnombre, this.persona.datos[0].perpais),
+            perfoto: this.persona.perfoto,
+            perobservacion: this.persona.perobservacion,
+            perestado: this.persona.perestado
         });
-        const nroDocControl = this.personaForm.get('pf_nroDoc');
+        const nroDocControl = this.personaForm.get('pernrodoc');
         nroDocControl.clearAsyncValidators();
         if (this.originalPerNroDoc) {
             nroDocControl.setAsyncValidators([this.validateNroDocIfChanged.bind(this)]);
         }
         nroDocControl.updateValueAndValidity();
     }
-
-    validateNroDocIfChanged(control: AbstractControl) {
-        if (control.value === this.originalPerNroDoc) {
-            return of(null);
-        } else {
-            return this.validarDocumentoExistente()(control);
-        }
-    }
-
-    cargarArchivos(currentFiles: File[]): void {
-        if (currentFiles) {
-            const formData = new FormData();
-            for (let i = 0; i < currentFiles.length; i++) {
-                const file: File = currentFiles[i];
-                const nombreArchivoSinEspacios = file.name.replace(/\s+/g, '');
-                const cleanedFilename = nombreArchivoSinEspacios.replace(/[^\w.-]/g, '');
-                this.nombreArchivo = 'fperfil' + '_' + cleanedFilename;
-                formData.append('files[]', file, this.nombreArchivo);
-            }
-            this.spinner.show();
-            this.uploadService.uploadFilesFotoPerfil(formData).subscribe(
-                (data: any) => {
-                    this.fileUpload.clear();
-                    this.messageService.add({ severity: 'success', summary: 'Registro de Imagen!', detail: 'La imagen se registró existosamente en el sistema.', life: 3000 });
-                    this.spinner.hide();
-                },
-                (error: any) => {
-                    console.error('Error en la carga:', error);
-                    this.fileUpload.clear();
-                    this.messageService.add({ severity: 'error', summary: '¡Error!', detail: 'La imagen no se registró en el sistema.', life: 3000 });
-                    this.spinner.hide();
-                }
-            );
-        } else {
-            console.warn('No se seleccionaron archivos.');
-        }
-    }
-
+    // Enviar datos formulario para crear o actualzar persona
     enviarFormulario() {
-
         if (this.optionDialog) {
             if(this.personaForm.invalid){
                 this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
                 return Object.values(this.personaForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
             }
-            if (this.archivos?.currentFiles && this.personaForm.valid) {
-                this.cargarArchivos(this.archivos.currentFiles);
+            if (this.personaForm.valid) {
+
                 this.personaRegistroNuevo = new Persona();
                 this.personaRegistroNuevo.tipo = 1;
                 this.personaRegistroNuevo.perid = null;
                 this.personaRegistroNuevo.perusureg = this.usuario.usuname;
-                this.personaRegistroNuevo.perapepat = this.personaForm.value.pf_apePat;
-                this.personaRegistroNuevo.perapemat = this.personaForm.value.pf_apeMat;
-                this.personaRegistroNuevo.pernombres = this.personaForm.value.pf_nombres;
-                this.personaRegistroNuevo.pernrodoc = this.personaForm.value.pf_nroDoc;
-                this.personaRegistroNuevo.perfecnac = this.personaForm.value.pf_fecNac;
-                this.personaRegistroNuevo.percelular = this.personaForm.value.pf_celular;
-                this.personaRegistroNuevo.pertelefono = this.personaForm.value.pf_telefono;
-                this.personaRegistroNuevo.peremail = this.personaForm.value.pf_email;
-                this.personaRegistroNuevo.perdirec = this.personaForm.value.pf_direc;
+                this.personaRegistroNuevo.perapepat = this.personaForm.value.perapepat;
+                this.personaRegistroNuevo.perapemat = this.personaForm.value.perapemat;
+                this.personaRegistroNuevo.pernombres = this.personaForm.value.pernombres;
+                this.personaRegistroNuevo.pernrodoc = this.personaForm.value.pernrodoc;
+                this.personaRegistroNuevo.perfecnac = this.personaForm.value.perfecnac;
+                this.personaRegistroNuevo.percelular = this.personaForm.value.percelular;
+                this.personaRegistroNuevo.pertelefono = this.personaForm.value.pertelefono;
+                this.personaRegistroNuevo.peremail = this.personaForm.value.peremail;
+                this.personaRegistroNuevo.perdirec = this.personaForm.value.perdirec;
+                this.personaRegistroNuevo.perestcivil = this.personaForm.value.tipoEstadoCivil.estadocivilid;
+                this.personaRegistroNuevo.estadocivilnombre = this.personaForm.value.tipoEstadoCivil.estadocivilnombre;
+                this.personaRegistroNuevo.pertipodoc = this.personaForm.value.tipoDocumento.tipodocid;
+                this.personaRegistroNuevo.tipodocnombre = this.personaForm.value.tipoDocumento.tipodocid;
+                this.personaRegistroNuevo.pergenero = this.personaForm.value.tipoGenero.generoid;
+                this.personaRegistroNuevo.generonombre = this.personaForm.value.tipoGenero.generonombre;
+                this.personaRegistroNuevo.perpais = this.personaForm.value.tipoPais.paisid;
+                this.personaRegistroNuevo.paisnombre = this.personaForm.value.tipoPais.paisnombre;
+                this.personaRegistroNuevo.perciudad = this.personaForm.value.tipoCiudad.ciudadid;
+                this.personaRegistroNuevo.ciudadnombre = this.personaForm.value.tipoCiudad.ciudadnombre;
+                this.personaRegistroNuevo.perobservacion = this.personaForm.value.perobservacion;
                 this.personaRegistroNuevo.perfoto = this.nombreArchivo;
-                this.personaRegistroNuevo.perestcivil = this.personaForm.value.pf_tipoEstCivil.estadocivilid;
-                this.personaRegistroNuevo.estadocivilnombre = this.personaForm.value.pf_tipoEstCivil.estadocivilnombre;
-                this.personaRegistroNuevo.pertipodoc = this.personaForm.value.pf_tipDoc.tipodocid;
-                this.personaRegistroNuevo.tipodocnombre = this.personaForm.value.pf_tipDoc.tipodocid;
-                this.personaRegistroNuevo.pergenero = this.personaForm.value.pf_tipGen.generoid;
-                this.personaRegistroNuevo.generonombre = this.personaForm.value.pf_tipGen.generonombre;
-                this.personaRegistroNuevo.perpais = this.personaForm.value.pf_tipPais.paisid;
-                this.personaRegistroNuevo.paisnombre = this.personaForm.value.pf_tipPais.paisnombre;
-                this.personaRegistroNuevo.perciudad = this.personaForm.value.pf_tipCiudad.ciudadid;
-                this.personaRegistroNuevo.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
+                this.personaRegistroNuevo.perestado = this.personaForm.value.perestado;
                 this.loading = true;
+                console.log("persona nuevo: ", this.personaRegistroNuevo)
                 this.personaService.gestionarPersona(this.personaRegistroNuevo).subscribe(
                     (data: any) => {
                         this.personaNuevoDialog = false;
                         this.optionDialog = false;
-                        this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
+                        this.messageService.add({ severity: 'success', summary: 'Persona', detail: 'Se registró correctamente en el sistema.', life: 3000 });
                         this.fListarPersonas();
-                        this.archivos.currentFiles.length = 0;
                         this.loading = false;
                     },
                     (error: any) => {
@@ -369,9 +378,9 @@ export class UsuarioPersonaComponent implements OnInit {
                     }
                 );
             }
-            else{
-                this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Por favor, debe seleccionar una imagen de perfil.', life: 3000 });
-            }
+            // else{
+            //     this.messageService.add({ severity: 'info', summary: 'No selecciono ninguna imagen', detail: 'Por favor, debe seleccionar una imagen de perfil.', life: 3000 });
+            // }
         }
         else {
             if(this.personaForm.invalid){
@@ -391,39 +400,46 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.tipoUpdate = 2;
                 this.imagenName = this.nombreArchivo;
             }
-
+            console.log("datos modificar: ", this.personaForm.value)
             this.personaRegistroModificar = new Persona();
             this.personaRegistroModificar.tipo = this.tipoUpdate;
-            this.personaRegistroModificar.perid = this.personaForm.value.pf_id;
+            this.personaRegistroModificar.perid = this.personaForm.value.perid;
             this.personaRegistroModificar.perusumod = this.usuario.usuname;
-            this.personaRegistroModificar.perapepat = this.personaForm.value.pf_apePat;
-            this.personaRegistroModificar.perapemat = this.personaForm.value.pf_apeMat;
-            this.personaRegistroModificar.pernombres = this.personaForm.value.pf_nombres;
-            this.personaRegistroModificar.pernrodoc = this.personaForm.value.pf_nroDoc;
-            this.personaRegistroModificar.perfecnac = this.personaForm.value.pf_fecNac;
-            this.personaRegistroModificar.percelular = this.personaForm.value.pf_celular;
-            this.personaRegistroModificar.pertelefono = this.personaForm.value.pf_telefono;
-            this.personaRegistroModificar.peremail = this.personaForm.value.pf_email;
-            this.personaRegistroModificar.perdirec = this.personaForm.value.pf_direc;
-            this.personaRegistroModificar.perfoto = this.imagenName;
-            this.personaRegistroModificar.perestcivil = this.personaForm.value.pf_tipoEstCivil.estadocivilid;
-            this.personaRegistroModificar.estadocivilnombre = this.personaForm.value.pf_tipoEstCivil.estadocivilnombre;
-            this.personaRegistroModificar.pertipodoc = this.personaForm.value.pf_tipDoc.tipodocid;
-            this.personaRegistroModificar.tipodocnombre = this.personaForm.value.pf_tipDoc.tipodocid;
-            this.personaRegistroModificar.pergenero = this.personaForm.value.pf_tipGen.generoid;
-            this.personaRegistroModificar.generonombre = this.personaForm.value.pf_tipGen.generonombre;
-            this.personaRegistroModificar.perpais = this.personaForm.value.pf_tipPais.paisid;
-            this.personaRegistroModificar.paisnombre = this.personaForm.value.pf_tipPais.paisnombre;
-            this.personaRegistroModificar.perciudad = this.personaForm.value.pf_tipCiudad.ciudadid;
-            this.personaRegistroModificar.ciudadnombre = this.personaForm.value.pf_tipCiudad.ciudadnombre;
-
+            this.personaRegistroModificar.perapepat = this.personaForm.value.perapepat;
+            this.personaRegistroModificar.perapemat = this.personaForm.value.perapemat;
+            this.personaRegistroModificar.pernombres = this.personaForm.value.pernombres;
+            this.personaRegistroModificar.pernrodoc = this.personaForm.value.pernrodoc;
+            this.personaRegistroModificar.perfecnac = this.personaForm.value.perfecnac;
+            this.personaRegistroModificar.percelular = this.personaForm.value.percelular;
+            this.personaRegistroModificar.pertelefono = this.personaForm.value.pertelefono;
+            this.personaRegistroModificar.peremail = this.personaForm.value.peremail;
+            this.personaRegistroModificar.perdirec = this.personaForm.value.perdirec;
+            this.personaRegistroModificar.perfoto = this.nombreArchivo;
+            this.personaRegistroModificar.perestcivil = this.personaForm.value.tipoEstadoCivil.estadocivilid;
+            this.personaRegistroModificar.estadocivilnombre = this.personaForm.value.tipoEstadoCivil.estadocivilnombre;
+            this.personaRegistroModificar.pertipodoc = this.personaForm.value.tipoDocumento.tipodocid;
+            this.personaRegistroModificar.tipodocnombre = this.personaForm.value.tipoDocumento.tipodocid;
+            this.personaRegistroModificar.pergenero = this.personaForm.value.tipoGenero.generoid;
+            this.personaRegistroModificar.generonombre = this.personaForm.value.tipoGenero.generonombre;
+            this.personaRegistroModificar.perpais = this.personaForm.value.tipoPais.paisid;
+            this.personaRegistroModificar.paisnombre = this.personaForm.value.tipoPais.paisnombre;
+            this.personaRegistroModificar.perciudad = this.personaForm.value.tipoCiudad.ciudadid;
+            this.personaRegistroModificar.ciudadnombre = this.personaForm.value.tipoCiudad.ciudadnombre;
+            this.personaRegistroModificar.perobservacion = this.personaForm.value.perobservacion;
+            this.personaRegistroModificar.perestado = this.personaForm.value.perestado;
             this.loading = true;
+
+            if(!this.nombreArchivo){
+                this.personaRegistroModificar.perfoto = null;
+            }
+
+            console.log("Persona a modificar:", this.personaRegistroModificar)
             this.personaService.gestionarPersona(this.personaRegistroModificar).subscribe(
                 (data: any) => {
                     this.personaNuevoDialog = false;
                     this.optionDialog = false;
                     this.personaRegistroModificar = new Persona();
-                    this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
+                    this.messageService.add({ severity: 'success', summary: 'Persona', detail: 'Se modificó correctamente en el sistema.', life: 3000 });
                     this.fListarPersonas();
                     this.loading = false;
                 },
@@ -435,84 +451,45 @@ export class UsuarioPersonaComponent implements OnInit {
             );
         }
     }
-
-    obtenerSeverity(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'danger';
-            case 2:
-                return 'success';
-            case 3:
-                return 'warning';
-            default:
-                return 'info';
-        }
-    }
-
-    obtenerDescripcion(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'Activo';
-            case 0:
-                return 'Desactivo';
-            default:
-                return 'Ninguno';
-        }
-    }
-
-    obtenerSeverityEstado(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'success';
-            case 0:
-                return 'danger';
-            default:
-                return 'info';
-        }
-    }
-
-    obtenerDescripcionEstado(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'Activo';
-            case 0:
-                return 'Inactivo';
-            default:
-                return 'Ninguno';
-        }
-    }
-
-    NuevoPersona() {
+    // Eliminar Persona
+    async eliminarPersona() {
         this.person = new Persona();
-        this.personaForm.reset();
-        this.personaForm.get('pf_nroDoc')?.enable();
-        this.fileUpload.clear();
-        this.personaNuevoDialog = true;
-        this.optionDialog = true;
-    }
-
-    eliminarPersona() {
-        this.person = new Persona();
-        this.person.tipo = 2;
+        this.person.tipo = 1;
         this.person.perid = this.persona.perid;
         this.person.perusumod = this.usuario.usuname;
         this.loading = true;
+
         this.personaService.eliminarPersona(this.person).subscribe(
             (data: any) => {
+                const currentPhoto = this.persona.perfoto;
+                console.log("Nombre de la imagen actual: ", currentPhoto); // ok
+
+                if (currentPhoto) {
+                    const deleteSuccess = this.uploadService.deleteProfilePhoto(currentPhoto);
+                    console.log("¿Se eliminó la imagen?", deleteSuccess);
+                    if (!deleteSuccess) {
+                        this.messageService.add({ severity: 'warn', summary: 'Imagen', detail: 'No se pudo eliminar la imagen actual.', life: 3000 });
+                    }
+                    if(deleteSuccess) {
+                        this.messageService.add({ severity: 'info', summary: 'Imagen', detail: 'Se eliminó correctamente.', life: 3000 });
+                    }
+                }
+
                 this.eliminarPersonaDialog = false;
                 this.optionDialog = false;
-                this.messageService.add({ key: 'bc', severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
+                this.messageService.add({ severity: 'success', summary: 'Persona', detail: 'Se elimino correctamente en el sistema.', life: 3000 });
                 this.fListarPersonas();
                 this.loading = false;
+
             },
             (error: any) => {
                 console.log("Error: ", error);
-                this.messageService.add({ key: 'bc', severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en la eliminación de , porfavor comunicarse con soporte.', life: 3000 });
+                this.messageService.add({ severity: 'error', summary: 'Persona', detail: 'Ocurrio un error, porfavor comunicarse con soporte.', life: 3000 });
                 this.loading = false;
             }
-            )
+        )
     }
-
+    // Activar persona
     activarPersona() {
         this.person = new Persona();
         this.person.tipo = 3;
@@ -534,29 +511,182 @@ export class UsuarioPersonaComponent implements OnInit {
             }
             )
     }
-
+    // Confirmar eliminar
     confirmarEliminar(data: any) {
         this.persona = { ...data };
         this.eliminarPersonaDialog = true;
     }
-
+    // Confirmar Activar
     confirmarActivar(data: any) {
         this.persona = { ...data };
         this.activarPersonaDialog = true;
     }
-
+    // Ocultar dialog
     hideDialog() {
         this.personaDialog = false;
         this.submitted = false;
         this.deleteProductDialog = false;
     }
-
+    // Ocultar dialog y llenar tipo combo
     ocultarDialog() {
         this.personaDialog = false;
         this.personaNuevoDialog = false;
         this.fLlenarTipoCombo()
     }
+    // Mostrara Persona
+    showPerson(persona: PersonaExpanded){
+        this.persona = {...persona};
+        console.log("showPerson: ", this.persona)
+        this.showDialogPersona = true;
+    }
 
+    // Tipo Combo
+    // Llenar tipo combo
+    fLlenarTipoCombo() {
+        this.personaService.getTipoCiudad().subscribe((data: any) => { this.TipoCiudad = data; this.TipoCiudadRespaldo = data; });
+        this.personaService.getTipoPais().subscribe((data: any) => { this.TipoPais = data; });
+        this.personaService.getTipoDocumento().subscribe((data: any) => { this.TipoDocumento = data; });
+        this.personaService.getTipoGenero().subscribe((data: any) => { this.TipoGenero = data; });
+        this.personaService.getTipoEstadoCivil().subscribe((data: any) => { this.TipoEstadoCivil = data; });
+    }
+    // Cuando cambia el tipo pais
+    onChangeTipoPais(data: any) {
+        this.TipoCiudad = this.TipoCiudadRespaldo;
+        this.id = data.value.paisid;
+        this.TipoCiudad = this.TipoCiudad.filter(ciudad => ciudad.paisid === this.id);
+    }
+
+    // Archivo
+    // Cargar archivos
+
+    // Generate Unique File name
+    generateUniqueFilename(originalName: string): string {
+        const timestamp = new Date().getTime();
+        const extension = originalName.split('.').pop(); // Obtiene la extensión del archivo
+        return `${timestamp}.${extension}`;
+    }
+    // Asyncrone onUpload
+    async onUpload(event: any) {
+        const currentPhoto = this.personaForm.value.perfoto;
+        console.log("Nombre de la imagen actual: ", currentPhoto); // ok
+
+        if (!currentPhoto) {
+          this.archivos = event;
+          const success = await this.cargarArchivos(this.archivos.files);
+          if (!success) {
+            this.messageService.add({ severity: 'error', summary: 'Subir Imagen', detail: 'No se registró en el sistema.', life: 3000 });
+          } else {
+            this.messageService.add({ severity: 'success', summary: 'Subir Imagen', detail: 'Se registró existosamente en el sistema.', life: 3000 });
+            this.ListarPersonas();
+            this.personaForm.patchValue({ perfoto: this.nombreArchivo });
+          }
+          return;
+        }
+        this.archivos = event;
+        const deleteSuccess = await this.uploadService.deleteProfilePhoto(currentPhoto);
+        console.log("¿Se eliminó la imagen?", deleteSuccess);
+        if (!deleteSuccess) {
+          this.messageService.add({ severity: 'warn', summary: 'Subir Imagen', detail: 'No se pudo eliminar la imagen actual.', life: 3000 });
+          const newuploadSuccess = await this.cargarArchivos(this.archivos.currentFiles);
+          if (!newuploadSuccess) {
+            this.messageService.add({ severity: 'error', summary: 'Subir Imagen', detail: 'no se registró en el sistema.', life: 3000 });
+          } else {
+            this.messageService.add({ severity: 'info', summary: 'Subir Imagen', detail: 'Se registró existosamente', life: 3000 });
+            this.ListarPersonas();
+            this.personaForm.patchValue({ perfoto: this.nombreArchivo });
+          }
+          return;
+        }
+
+        console.log("Imagen para subir: ", this.archivos);
+        const uploadSuccess = await this.cargarArchivos(this.archivos.currentFiles);
+        if (!uploadSuccess) {
+          this.messageService.add({ severity: 'error', summary: 'Imagen', detail: 'no se registró en el sistema.', life: 3000 });
+        } else {
+          this.messageService.add({ severity: 'info', summary: 'Imagen', detail: 'Se registró existosamente', life: 3000 });
+          this.ListarPersonas();
+          this.personaForm.patchValue({ perfoto: this.nombreArchivo });
+        }
+    }
+    // Cargar Archivos
+    cargarArchivos(currentFiles: File[]): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        if (!currentFiles || currentFiles.length === 0) {
+          this.messageService.add({ severity: 'info', summary: 'Subir Imagen', detail: 'No se seleccionó ninguna imagen.', life: 3000 });
+          resolve(false);
+        }
+        const formData = new FormData();
+        for (let i = 0; i < currentFiles.length; i++) {
+          const file: File = currentFiles[i];
+          this.nombreArchivo = this.generateUniqueFilename(file.name);
+          formData.append('files[]', file, this.nombreArchivo);
+        }
+        this.spinner.show();
+        this.uploadService.uploadProfilePhoto(formData).subscribe({
+          next: (data: any) => {
+            this.spinner.hide();
+            resolve(true);
+          },
+          error: (error) => {
+            console.error('Error en la carga:', error);
+            this.spinner.hide();
+            resolve(false);
+          },
+          complete: () => {
+            // Lógica adicional después de la carga completada
+          }
+        });
+      });
+    }
+
+    // Otros
+    // Obtener Severity
+    obtenerSeverity(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'danger';
+            case 2:
+                return 'success';
+            case 3:
+                return 'warning';
+            default:
+                return 'info';
+        }
+    }
+    // Obtener Descripción
+    obtenerDescripcion(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Desactivo';
+            default:
+                return 'Ninguno';
+        }
+    }
+    // Obtener Severity Estado
+    obtenerSeverityEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+    // Obtener Descripción de estado
+    obtenerDescripcionEstado(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
+        }
+    }
+    // Buscador en la tabla
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
             (event.target as HTMLInputElement).value,
@@ -564,26 +694,15 @@ export class UsuarioPersonaComponent implements OnInit {
         );
     }
 
-    onUpload(event: any) {
-        this.archivos = event;
-    }
-
-    convertirAFecha(fechaStr: string): Date {
-        const partesFecha = fechaStr.split('/');
-        const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
-        return fecha;
-    }
-
-    // Métodos para exportar PDF y EXCEL
-
-    // Función para exportar el documento PDF
+    // Archivo PDF
+    // Export PDF
     exportPdf() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default('l', 'pt', 'a4');
 
                 // Título centrado
-                const title = 'Lista Personas';
+                const title = 'Lista de Personas';
                 const titleFontSize = 16;
                 const titleWidth = doc.getStringUnitWidth(title) * titleFontSize / doc.internal.scaleFactor;
                 const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2;
@@ -624,15 +743,13 @@ export class UsuarioPersonaComponent implements OnInit {
 
                 // Tabla de datos
                 (doc as any).autoTable({ columns: this.exportColumns, body: this.personas, theme: 'striped', styles: { fontSize: 8, cellPadding: 3 }, startY: 100, }); // Posición inicial de la tabla
-                const fechaActual = new Date(); // Obtener la fecha actual
-                const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1).toString().padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;// Formatear la fecha como YYYY-MM-DD
-                const horaFormateada = `${fechaActual.getHours().toString().padStart(2, '0')}-${fechaActual.getMinutes().toString().padStart(2, '0')}-${fechaActual.getSeconds().toString().padStart(2, '0')}`;// Formatear la hora como HH-MM-SS
-                const nombreArchivo = `rpt_pdf_lista_personas_${fechaFormateada}_${horaFormateada}.pdf`; // Concatenar la fecha y la hora al nombre del archivo
+                let PDF_EXTENSION = '.pdf';
+                const nombreArchivo = 'rptPdf'+'_'+new Date().getTime()+PDF_EXTENSION;
                 doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
             });
         });
     }
-
+    // Export Excel
     exportExcel() {
         import('xlsx').then((xlsx) => {
             const fieldsToExport = [
@@ -645,20 +762,20 @@ export class UsuarioPersonaComponent implements OnInit {
                 { field: 'pernrodoc', header: 'Número de Documento'},
                 { field: 'perfecnac',header: 'Fecha Nacimiento'},
                 { field: 'generonombre', header: 'Genero'},
-                { field: 'perestado', header: 'Estado'},
                 { field: 'perusureg',header: 'Usuario Registro'},
                 { field: 'perfecreg',header: 'Fecha Registro'},
                 { field: 'perusumod', header: 'Usuario Modificado'},
-                { field: 'perfecmod', header: 'Fecha Modificado'}
+                { field: 'perfecmod', header: 'Fecha Modificado'},
+                { field: 'perestado', header: 'Estado'},
             ];
             const dataToExport = this.personas.map(persona => { const filteredData = {}; fieldsToExport.forEach(field => { filteredData[field.header] = persona[field.field] || ''; }); return filteredData; }); // Asegura que todos los campos existan, incluso si están vacíos
             const worksheet = xlsx.utils.json_to_sheet(dataToExport);
             const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
             const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, 'rpt_excel_lista_persona');
+            this.saveAsExcelFile(excelBuffer, 'rptExcel');
         });
     }
-
+    // Save as Excel File
     saveAsExcelFile(buffer: any, fileName: string): void {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
