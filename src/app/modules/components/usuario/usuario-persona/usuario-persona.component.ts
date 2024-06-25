@@ -361,6 +361,9 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.personaRegistroNuevo.perobservacion = this.personaForm.value.perobservacion;
                 this.personaRegistroNuevo.perfoto = this.nombreArchivo;
                 this.personaRegistroNuevo.perestado = this.personaForm.value.perestado;
+                if(!this.nombreArchivo){
+                    this.personaRegistroNuevo.perfoto = null;
+                }
                 this.loading = true;
                 console.log("persona nuevo: ", this.personaRegistroNuevo)
                 this.personaService.gestionarPersona(this.personaRegistroNuevo).subscribe(
@@ -744,7 +747,7 @@ export class UsuarioPersonaComponent implements OnInit {
                 // Tabla de datos
                 (doc as any).autoTable({ columns: this.exportColumns, body: this.personas, theme: 'striped', styles: { fontSize: 8, cellPadding: 3 }, startY: 100, }); // Posición inicial de la tabla
                 let PDF_EXTENSION = '.pdf';
-                const nombreArchivo = 'rptPdf'+'_'+new Date().getTime()+PDF_EXTENSION;
+                const nombreArchivo = 'rptPdf_persona'+'_'+new Date().getTime()+PDF_EXTENSION;
                 doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
             });
         });
@@ -753,28 +756,55 @@ export class UsuarioPersonaComponent implements OnInit {
     exportExcel() {
         import('xlsx').then((xlsx) => {
             const fieldsToExport = [
-                { field: 'perid', header: 'ID'},
-                { field: 'pernomcompleto', header: 'Nombre Completo'},
-                { field: 'pernombres', header: 'Nombres'},
-                { field: 'perapepat', header: 'Apellido Paterno'},
-                { field: 'perapemat',header: 'Apelido Materno'},
-                { field: 'tipodocnombre', header: 'Tipo de Documento'},
-                { field: 'pernrodoc', header: 'Número de Documento'},
-                { field: 'perfecnac',header: 'Fecha Nacimiento'},
-                { field: 'generonombre', header: 'Genero'},
-                { field: 'perusureg',header: 'Usuario Registro'},
-                { field: 'perfecreg',header: 'Fecha Registro'},
-                { field: 'perusumod', header: 'Usuario Modificado'},
-                { field: 'perfecmod', header: 'Fecha Modificado'},
-                { field: 'perestado', header: 'Estado'},
+                { field: 'perid', header: 'ID' },
+                { field: 'pernomcompleto', header: 'Nombre Completo' },
+                { field: 'pernombres', header: 'Nombres' },
+                { field: 'perapepat', header: 'Apellido Paterno' },
+                { field: 'perapemat', header: 'Apellido Materno' },
+                { field: 'tipodocnombre', header: 'Tipo de Documento' },
+                { field: 'pernrodoc', header: 'Número de Documento' },
+                { field: 'perfecnac', header: 'Fecha Nacimiento' },
+                { field: 'generonombre', header: 'Género' },
+                { field: 'perusureg', header: 'Usuario Registro' },
+                { field: 'perfecreg', header: 'Fecha Registro' },
+                { field: 'perusumod', header: 'Usuario Modificado' },
+                { field: 'perfecmod', header: 'Fecha Modificado' },
+                { field: 'perobservacion', header: 'Observación'},
+                { field: 'perestado', header: 'Estado' },
             ];
-            const dataToExport = this.personas.map(persona => { const filteredData = {}; fieldsToExport.forEach(field => { filteredData[field.header] = persona[field.field] || ''; }); return filteredData; }); // Asegura que todos los campos existan, incluso si están vacíos
+
+            const dataToExport = this.personas.map(persona => {
+                const filteredData = {};
+                fieldsToExport.forEach(field => {
+                    if (field.field === 'perfecnac') {
+                        filteredData[field.header] = persona[field.field] ? new Date(persona[field.field]).toLocaleDateString() : '';
+                    } else if (field.field === 'perfecreg' || field.field === 'perfecmod') {
+                        filteredData[field.header] = persona[field.field] ? new Date(persona[field.field]).toLocaleString() : '';
+                    } else {
+                        filteredData[field.header] = persona[field.field] || '';
+                    }
+                });
+                return filteredData;
+            });
+
             const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+
+            // Calcular el ancho de las columnas basado en el contenido más largo
+            const columnWidths = fieldsToExport.map(field => {
+                const columnData = dataToExport.map(row => row[field.header]);
+                const maxLength = columnData.reduce((acc, val) => Math.max(acc, val.toString().length), 0);
+                return { wch: maxLength + 2 }; // Ajuste según necesidades
+            });
+
+            worksheet['!cols'] = columnWidths;
+
             const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
-            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, 'rptExcel');
+            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, 'rptExcel_persona');
         });
     }
+
+
     // Save as Excel File
     saveAsExcelFile(buffer: any, fileName: string): void {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';

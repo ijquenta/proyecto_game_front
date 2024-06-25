@@ -35,8 +35,16 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { ChipModule } from 'primeng/chip';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ImageModule } from 'primeng/image';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TabViewModule } from 'primeng/tabview';
 @NgModule({
     imports: [
+        TabViewModule,
+        SelectButtonModule,
+        ImageModule,
+        BreadcrumbModule,
         DataViewModule,
         CommonModule,
         CrudRoutingModule,

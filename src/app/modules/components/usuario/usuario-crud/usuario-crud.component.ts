@@ -5,28 +5,23 @@ import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as FileSaver from 'file-saver';
-// Services
+
+// Servicios
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-// Models
-import { Usuarios } from 'src/app/modules/models/usuarios';
+import { AuthService } from 'src/app/services/auth.service';
+import { ArchivosService } from 'src/app/modules/service/util/archivos.service';
+
+// Modelos
 import { Usuario,  } from 'src/app/modules/models/usuario';
 import { TipoPersona, TipoPersona2, TipoRol } from 'src/app/modules/models/diccionario';
-import { AuthService } from 'src/app/services/auth.service';
-// For validations
+import { Column, ExportColumn } from 'src/app/modules/models/exportFile';
+import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
+
+// Para validaciones
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 
-interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
-}
-
-interface ExportColumn {
-    title: string;
-    dataKey: string;
-}
 
 @Component({
     templateUrl: './usuario-crud.component.html',
@@ -36,136 +31,138 @@ interface ExportColumn {
 
 export class UsuarioCrudComponent implements OnInit {
 
-    // --------- Tipo Persona ---------
-    tipoPersona: TipoPersona2[] = [];
-    tipoPersonaSeleccionada:  TipoPersona2;
-    loading: boolean = false;
+    // Variables
+
+    // API
+    apiUrl = environment.API_URL_FOTO_PERFIL;
+
+    // Usuario
+    usuario: Usuario;
     usuarios: Usuario[] = [];
     usuariosInactivos: Usuario[] = [];
-    usuariosDuplicated: Usuario[] = [];
-    usuario: Usuario;
+    usuariosDuplicado: Usuario[] = [];
     datosUsuario: Usuario;
     usuarioRegistro: Usuario;
     usuarioDialog: boolean = false;
-    optionDialog: boolean = false;
-    // --------- Tipo Rol ---------
-    tipoRol: TipoRol[] = [];
-    tipoRolSeleccionada: TipoRol;
-    // --------- Variables any ---------
-    errors: any;
     desactivarUsuarioDialog: boolean = false;
     activarUsuarioDialog: boolean = false;
     usuarioCambiarPasswordDialog: boolean = false;
+    filteredUsuarios: any[] = [];
+
+    // Otras variables
+    loading: boolean = false;
+    optionDialog: boolean = false;
+    errors: any;
     rowsPerPageOptions = [5, 10, 20];
-    // --------- Variables for Dataview ---------
+
+    // Persona
+    tipoPersona: TipoPersona2[] = [];
+
+    // Rol
+    tipoRol: TipoRol[] = [];
+
+    // Variables para Dataview
     sortOrder: number = 0;
     sortField: string = '';
-    filteredUsuarios: any[] = [];
     searchText: string = '';
     items: MenuItem[];
-    // --------- Variables para validaciones ---------
+
+    // Variables para validación
     usuarioForm: FormGroup;
     usuarioPwdForm: FormGroup;
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+
     originalUsername: any;
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
-    constructor( private messageService: MessageService, private usuarioService: UsuarioService, private authService: AuthService, public reporte: ReporteService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService ) {}
+
+    home: MenuItem | undefined;
+    stateOptionsEstado: any;
+
+
+
+    constructor( private messageService: MessageService,
+                 private usuarioService: UsuarioService,
+                 private authService: AuthService,
+                 private reporte: ReporteService,
+                 private formBuilder: FormBuilder,
+                 private spinner: NgxSpinnerService,
+                 private archivoService: ArchivosService
+                ) {}
 
     ngOnInit() {
+
+        this.stateOptionsEstado = [
+            { label: 'Activo', value: 1 },
+            { label: 'Inactivo', value: 0 }
+        ];
+
+        this.items = [
+            { label: 'Usuarios'},
+            { label: 'Gestionar Usuarios', routerLink:''},
+        ];
+
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+
         this.obtenerDatosUsuario();
         this.listarUsuarios();
         this.listarPersonaCombo();
+
         this.usuarioForm = this.formBuilder.group({
-            uf_id: [''],
-            uf_usuname: [ '', [Validators.required, Validators.minLength(5), Validators.maxLength(20), this.noEspacios], [this.validarNombreUsuarioExistente()]],
-            uf_tipPerSel: ['', Validators.required],
-            uf_tipRolSel: ['', Validators.required],
-            uf_email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-            uf_descripcion: ['']
+            usuid: [''],
+            usuname: [ '', [Validators.required, Validators.minLength(5), Validators.maxLength(20), this.noEspacios], [this.validarNombreUsuarioExistente()]],
+            tipoPersona: ['', Validators.required],
+            tipoRol: ['', Validators.required],
+            usuemail: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+            usudescripcion: [''],
+            usuestado: ['', Validators.required],
         });
 
         this.usuarioPwdForm = this.formBuilder.group({
-            usupassword: ['', [Validators.required, Validators.minLength(8), this.passwordStrength]],
+            usupassword: ['', [Validators.required, Validators.minLength(8), this.seguridadPassword]],
             usupassword2: ['', [Validators.required]]
-        }, { validator: this.passwordMatchValidator });
-
+        }, { validator: this.validardorPasswords });
 
         this.colsTable = [
-            { field: 'usuid', header: 'ID usuario' },
+            { field: 'usuid', header: 'ID' },
             { field: 'usuname', header: 'Nombre de usuario' },
             { field: 'pernomcompleto', header: 'Nombre completo' },
-            { field: 'pernrodoc', header: 'Número de documento' },
-            { field: 'usuemail', header: 'Email de usuario' },
-            { field: 'rolnombre', header: 'Rol de usuario' },
-            { field: 'usuestado', header: 'Estado del usuario' },
+            { field: 'pernrodoc', header: 'Nro. doc.' },
+            { field: 'usuemail', header: 'Email' },
+            { field: 'rolnombre', header: 'Rol' },
+            { field: 'usuestado', header: 'Estado' },
             { field: 'usudescripcion', header: 'Descripcion' },
-            { field: 'usuusureg', header: 'Usuario Registro' },
-            { field: 'usufecreg', header: 'Fecha Registro' },
-            { field: 'usuusumod', header: 'Usuario Modificación' },
-            { field: 'usufecmod', header: 'Fecha Modificación' }
+            { field: 'usuusureg', header: 'Registro' },
+            { field: 'usufecreg', header: 'Fecha' },
+            { field: 'usuusumod', header: 'Modificación' },
+            { field: 'usufecmod', header: 'Fecha' }
         ];
 
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
     }
 
-    passwordStrength(control: AbstractControl): { [key: string]: boolean } | null {
-      const value = control.value;
-      console.log("3. ", value)
-      if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
-        return { passwordStrength: true };
-      }
-      return null;
-    }
 
-    passwordMatchValidator(fg: FormGroup): { [key: string]: boolean } | null {
-        const password = fg.get('usupassword').value;
-        const confirmPassword = fg.get('usupassword2').value;
-        console.log("1: ", password, "2: ", confirmPassword)
-        if (password && confirmPassword && password !== confirmPassword) {
-            return { mismatch: true };
-        }
-        return null;
-    }
-
-    noEspacios(control: AbstractControl) {
-        const valor = control.value;
-        if (valor?.includes(' ')) {
-          return { espaciosNoPermitidos: true };
-        }
-        return null;
-    }
-
-    inicioCorrecto(control: AbstractControl) {
-        const valor = control.value;
-        if (valor && !valor.match(/^[a-zA-Z]/)) {
-          return { inicioInvalido: true };
-        }
-        return null;
-    }
-
-    validarNombreUsuarioExistente(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un nombre de usuario ya existe
-        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
-            const nombreUsuario = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
-            if (!nombreUsuario) { // Si el número de documento está vacío, no se realiza ninguna validación
-                return of(null); // Se devuelve un observable que emite null
+    //  Funciones
+    // Lista a los usuarios
+    listarUsuarios(){
+        this.spinner.show();
+        this.loading = true;
+        this.usuarioService.listaUsuario().subscribe(
+            (result: any) => {
+                this.usuarios = result;
+                console.log("usuarios: ", this.usuarios)
+                this.usuariosDuplicado = this.usuarios;
+                this.filteredUsuarios = this.usuarios;
+                this.loading = false;
+                this.spinner.hide();
+            },
+            (error: any) => {
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Ocurrío un error al recuperar información del sistema.', life: 3000 });
+                this.loading = false;
+                this.spinner.hide();
             }
-            const existe = this.usuariosDuplicated.some(usuario => usuario.usuname === nombreUsuario);// Se verifica si algún elemento en la lista de personas tiene el mismo nombre de usuario
-            return of(existe ? { nombreUsuarioExiste: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
-        }
+        )
     }
-
-    obtenerDatosUsuario() {
-        this.authService.usuario$.subscribe((user => {
-            if (user) {
-                if (Array.isArray(user) && user.length > 0) {
-                    this.datosUsuario = user[0];
-                    this.listarRolCombo();
-                }
-            }
-        }));
-    }
-
+    // Lista los roles para el combo de opciones
     listarRolCombo() {
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
@@ -179,7 +176,7 @@ export class UsuarioCrudComponent implements OnInit {
             }
         );
     }
-
+    // lista las personas para el combo de opciones
     listarPersonaCombo(){
         this.usuarioService.getTipoPersona().subscribe(
             (result: any) => {
@@ -187,87 +184,130 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
-
-    filterUsuarios(){
+    // filtra los usuarios por su nombre completo
+    filtarUsuarios(){
         this.filteredUsuarios = this.usuarios.filter(usuario => usuario.pernomcompleto.toLowerCase().includes(this.searchText.toLowerCase()));
     }
-
-    listarUsuarios(){
-        this.spinner.show();
-        this.loading = true;
-        this.usuarioService.listaUsuario().subscribe(
-            (result: any) => {
-                this.usuarios = result;
-                // console.log("usuarios: ", this.usuarios)
-                this.usuariosDuplicated = this.usuarios;
-                this.usuariosInactivos = this.usuarios.filter(usuario => usuario.usuestado === 0);
-                this.usuarios = this.usuarios.filter(usuario => usuario.usuestado === 1);
-                this.filteredUsuarios = this.usuarios;
-                this.loading = false;
-                this.spinner.hide();
-            },
-            (error: any) => {
-                this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el recuperar información del sistema.', life: 3000 });
-                this.loading = false;
-                this.spinner.hide();
-            }
-        )
-    }
-
+    // Abre el modal para nueva persona
     nuevaPersona() {
         this.usuario = new Usuario();
         this.usuarioRegistro = new Usuario();
-        this.tipoPersonaSeleccionada = null;
-        this.tipoRolSeleccionada = null;
         this.usuarioDialog = true;
         this.optionDialog = true;
         this.usuarioForm.reset();
     }
-
+    // Edita los datos del usuario
     editarUsuario(data: Usuario){
         this.usuario = { ...data };
         this.usuarioDialog = true;
         this.optionDialog = false;
         this.originalUsername = this.usuario.usuname;
+
         this.usuarioForm.patchValue({
-            uf_id: this.usuario.usuid,
-            uf_usuname: this.usuario.usuname,
-            uf_tipPerSel: new TipoPersona2(this.usuario.perid, this.usuario.pernomcompleto, this.usuario.pernrodoc, this.usuario.perfoto),
-            uf_tipRolSel: new TipoRol(this.usuario.rolid, this.usuario.rolnombre),
-            uf_email: this.usuario.usuemail,
-            uf_descripcion: this.usuario.usudescripcion
+            usuid: this.usuario.usuid,
+            usuname: this.usuario.usuname,
+            tipoPersona: new TipoPersona2(this.usuario.perid, this.usuario.pernomcompleto, this.usuario.pernrodoc, this.usuario.perfoto),
+            tipoRol: new TipoRol(this.usuario.rolid, this.usuario.rolnombre),
+            usuemail: this.usuario.usuemail,
+            usudescripcion: this.usuario.usudescripcion,
+            usuestado: this.usuario.usuestado
         });
-        const usunameControl = this.usuarioForm.get('uf_usuname');
+
+        const usunameControl = this.usuarioForm.get('usuname');
         usunameControl.clearAsyncValidators();
+
         if (this.originalUsername) {
-            usunameControl.setAsyncValidators([this.validateUsernameIfChanged.bind(this)]);
+            usunameControl.setAsyncValidators([this.validarUsernameSiCambia.bind(this)]);
         }
-        usunameControl.updateValueAndValidity(); // Asegúrate de actualizar la validez del control
+        usunameControl.updateValueAndValidity();
     }
+    // Enviar información para editar/crear usurario
+    enviarFormulario(){
+        if (this.optionDialog) {
+            if(this.usuarioForm.invalid){
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+                return Object.values(this.usuarioForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
+            }
+            this.usuarioRegistro = new Usuario();
+            this.usuarioRegistro.tipo = 1;
+            this.usuarioRegistro.usuid = null;
+            this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
+            this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
+            this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
+            this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
+            this.usuarioRegistro.usuimagen = null;
+            this.usuarioRegistro.usuestado = 1;
+            this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
+            this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
+            this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
+                (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Usuario', detail: 'Se registro correctamente.', life: 5000});
+                    this.optionDialog = false;
+                    this.usuarioDialog = false;
+                    this.listarUsuarios();
+                },
+                (error) => {
+                    console.log("error: ", error);
+                    let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
+                    if (error.error.message.includes('UniqueViolation')) {
+                        errorMessage = 'Ya existe un registro con el mismo rol para esta persona.';
+                    }
 
-    validateUsernameIfChanged(control: AbstractControl) {
-        if (control.value === this.originalUsername) {
-            return of(null);
-        } else {
-            return this.validarNombreUsuarioExistente()(control);
+                    this.messageService.add({ severity: 'error', summary: 'Usuario', detail: errorMessage, life: 7000});
+                }
+            );
+        }
+        else{
+            if(this.usuarioForm.invalid){
+                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+                return Object.values(this.usuarioForm.controls).forEach(control=>{
+                    control.markAllAsTouched();
+                    control.markAsDirty();
+                })
+            }
+            this.usuarioRegistro = new Usuario();
+            this.usuarioRegistro.tipo = 2;
+            this.usuarioRegistro.usuid = this.usuarioForm.value.usuid;
+            this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
+            this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
+            this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
+            this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
+            this.usuarioRegistro.usuimagen = null;
+            this.usuarioRegistro.usuestado = 1;
+            this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
+            this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
+            this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
+                (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Persona', detail: 'Se modificado correctamente.', life: 3000});
+                    this.optionDialog = false;
+                    this.usuarioDialog = false;
+                    this.listarUsuarios();
+                },
+                (error) => {
+                    console.log("error: ", error);
+                    let errorMessage = 'Se produjo un error al intentar modificar el usuario.';
+                    if (error.error.message.includes('UniqueViolation')) {
+                        errorMessage = 'No se puede modificar el usuario porque ya existe un registro con el mismo rol para esta persona.';
+                    }
+
+                    this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: errorMessage, life: 7000});
+                }
+            )
         }
     }
-
+    // Abre modal para desactivar usuario
     confirmarDesactivar(data: Usuario){
         this.desactivarUsuarioDialog = true;
         this.usuario = { ...data };
     }
-
+    // Abre modal para activar usuario
     confirmarActivar(data: any) {
         this.usuario = { ...data };
         console.log(this.usuario);
         this.activarUsuarioDialog = true;
     }
-
+    // Abre modal para cambiar contraseña
     confirmarCambiarPassword(data: Usuario){
-        console.log("Datos 1: ", data)
-        console.log("Datos 2 form: ", this.usuarioPwdForm.value)
-        // this.usuarioPwdForm.reset();
         this.usuarioPwdForm.patchValue(
             {
                 usupassword: null,
@@ -277,7 +317,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioCambiarPasswordDialog = true;
         this.usuario = { ...data };
     }
-
+    // Edita contraseña
     cambiarPasswordUsuario(){
         if(this.usuarioPwdForm.invalid){
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
@@ -299,7 +339,7 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
-
+    // Desactiva usuario
     desactivarUsuario() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
@@ -318,7 +358,7 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
-
+    // Activa usuario
     activarUsuario() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
@@ -337,94 +377,92 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
-
+    // oculta model de editar/crear usuario
     ocultarDialog(){
         this.usuarioDialog = false;
         this.usuarioCambiarPasswordDialog = false;
         this.usuarioPwdForm.reset();
     }
 
-    enviarFormulario(){
-        if (this.optionDialog) {
-            if(this.usuarioForm.invalid){
-                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.usuarioForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
-            }
-            this.usuarioRegistro = new Usuario();
-            this.usuarioRegistro.tipo = 1;
-            this.usuarioRegistro.usuid = null;
-            this.usuarioRegistro.perid = this.usuarioForm.value.uf_tipPerSel.perid;
-            this.usuarioRegistro.rolid = this.usuarioForm.value.uf_tipRolSel.rolid;
-            this.usuarioRegistro.usuname = this.usuarioForm.value.uf_usuname;
-            this.usuarioRegistro.usuemail = this.usuarioForm.value.uf_email;
-            this.usuarioRegistro.usuimagen = null;
-            this.usuarioRegistro.usuestado = 1;
-            this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
-            this.usuarioRegistro.usudescripcion = this.usuarioForm.value.uf_descripcion;
-            this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
-                (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Proceso realizado correctamente.', life: 5000});
-                    this.optionDialog = false;
-                    this.usuarioDialog = false;
-                    this.listarUsuarios();
-                },
-                (error) => {
-                    console.log("error: ", error);
-                    let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
-                    if (error.error.message.includes('UniqueViolation')) {
-                        errorMessage = 'No se puede crear el usuario porque ya existe un registro con el mismo rol para esta persona.';
-                    }
 
-                    this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: errorMessage, life: 7000});
-                }
-            );
+
+    // Funciones para validaciones
+    // Verifica que la contraseña: debe incluir mayúsculas, minúsculas y números
+    seguridadPassword(control: AbstractControl): { [key: string]: boolean } | null {
+      const value = control.value;
+      if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
+        return { seguridadPassword: true };
+      }
+      return null;
+    }
+    // Verifica si las contraseña y repetir la contraseña sean iguales
+    validardorPasswords(fg: FormGroup): { [key: string]: boolean } | null {
+        const password = fg.get('usupassword').value;
+        const confirmPassword = fg.get('usupassword2').value;
+        if (password && confirmPassword && password !== confirmPassword) {
+            return { mismatch: true };
         }
-        else{
-            if(this.usuarioForm.invalid){
-                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.usuarioForm.controls).forEach(control=>{
-                    control.markAllAsTouched();
-                    control.markAsDirty();
-                })
+        return null;
+    }
+    // Verifica que el texto no tenga espacios
+    noEspacios(control: AbstractControl) {
+        const valor = control.value;
+        if (valor?.includes(' ')) {
+          return { espaciosNoPermitidos: true };
+        }
+        return null;
+    }
+    // Verifica que el texto inicie con una letra
+    inicioCorrecto(control: AbstractControl) {
+        const valor = control.value;
+        if (valor && !valor.match(/^[a-zA-Z]/)) {
+          return { inicioInvalido: true };
+        }
+        return null;
+    }
+    // Verifica si exite el nombre
+    validarNombreUsuarioExistente(): AsyncValidatorFn {
+        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
+            const nombreUsuario = control.value;
+            if (!nombreUsuario) {
+                return of(null);
             }
-            this.usuarioRegistro = new Usuario();
-            this.usuarioRegistro.tipo = 2;
-            this.usuarioRegistro.usuid = this.usuarioForm.value.uf_id;
-            this.usuarioRegistro.usuname = this.usuarioForm.value.uf_usuname;
-            this.usuarioRegistro.usuemail = this.usuarioForm.value.uf_email;
-            this.usuarioRegistro.perid = this.usuarioForm.value.uf_tipPerSel.perid;
-            this.usuarioRegistro.rolid = this.usuarioForm.value.uf_tipRolSel.rolid;
-            this.usuarioRegistro.usuimagen = null;
-            this.usuarioRegistro.usuestado = 1;
-            this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
-            this.usuarioRegistro.usudescripcion = this.usuarioForm.value.uf_descripcion;
-            this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
-                (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Proceso de modificado realizado correctamente.', life: 3000});
-                    this.optionDialog = false;
-                    this.usuarioDialog = false;
-                    this.listarUsuarios();
-                },
-                (error) => {
-                    console.log("error: ", error);
-                    let errorMessage = 'Se produjo un error al intentar modificar el usuario.';
-                    if (error.error.message.includes('UniqueViolation')) {
-                        errorMessage = 'No se puede modificar el usuario porque ya existe un registro con el mismo rol para esta persona.';
-                    }
-
-                    this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: errorMessage, life: 7000});
-                }
-            )
+            const existe = this.usuariosDuplicado.some(usuario => usuario.usuname === nombreUsuario);
+            return of(existe ? { nombreUsuarioExiste: true } : null);
+        }
+    }
+    // Verifica si el nombre de usuario cambia o no para realizar la busqueda si existiera
+    validarUsernameSiCambia(control: AbstractControl) {
+        if (control.value === this.originalUsername) {
+            return of(null);
+        } else {
+            return this.validarNombreUsuarioExistente()(control);
         }
     }
 
+    // Usuario
+    // obtiene los datos del usuario logeado
+    obtenerDatosUsuario() {
+        this.authService.usuario$.subscribe((user => {
+            if (user) {
+                if (Array.isArray(user) && user.length > 0) {
+                    this.datosUsuario = user[0];
+                    this.listarRolCombo();
+                }
+            }
+        }));
+    }
+
+
+    // Otras fucniones
+    // Filtra desde la tabla principal
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
             (event.target as HTMLInputElement).value,
             'contains'
         );
     }
-
+    // Obtiene el color del estado
     obtenerSeverityEstado(estado: number): string {
         switch (estado) {
             case 1:
@@ -435,7 +473,7 @@ export class UsuarioCrudComponent implements OnInit {
                 return 'info';
         }
     }
-
+    // Obtiene la descripción del estado
     obtenerDescripcionEstado(estado: number): string {
         switch (estado) {
             case 1:
@@ -447,64 +485,119 @@ export class UsuarioCrudComponent implements OnInit {
         }
     }
 
+    // Fucniones para exportar en documentos PDF y/o Excel
+    // Exporta en PDF
     exportPdf() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default('l', 'pt', 'a4');
-                // Agregar un título
-                doc.setFontSize(16); // Tamaño de la fuente
-                doc.text('Lista de Usuarios', 14, 30); // Agrega texto en la posición x = 14, y = 30
-                // Configura las columnas y el cuerpo del PDF
-                (doc as any).autoTable({
-                    columns: this.exportColumns,
-                    body: this.usuariosDuplicated,
-                    theme: 'striped',  // Puedes elegir otros temas como 'plain', 'striped' o 'grid'
-                    styles: { fontSize: 8, cellPadding: 3 },  // Ajusta el tamaño de fuente y el padding para acomodar más datos
-                });
-                // Guarda el archivo PDF
-                doc.save('lista_usuarios.pdf');
+
+                // Título centrado
+                const title = 'Lista de Usuarios';
+                const titleFontSize = 16;
+                const titleWidth = doc.getStringUnitWidth(title) * titleFontSize / doc.internal.scaleFactor;
+                const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2;
+                const titleY = 60;
+                doc.setFontSize(titleFontSize);
+                doc.text(title, titleX, titleY);
+
+                // Subtítulo
+                const subtitle = 'Esta lista muestra todos los usuarios registradas en el sistema.';
+                const subtitleFontSize = 9;
+                const subtitleX = 20;
+                const subtitleY = 80;
+                doc.setFontSize(subtitleFontSize);
+                doc.text(subtitle, subtitleX, subtitleY);
+
+                // Descripción
+                const description = 'Sistema de Seguimiento y Gestión Académico';
+                const descriptionFontSize = 10;
+                const descriptionX = 100;
+                const descriptionY = 40;
+                doc.setFontSize(descriptionFontSize);
+                doc.text(description, descriptionX, descriptionY);
+
+                const description2 = 'Instituto Biblico de Capacitación Internacional';
+                const descriptionFontSize2 = 10;
+                const descriptionX2 = 100;
+                const descriptionY2 = 30;
+                doc.setFontSize(descriptionFontSize2);
+                doc.text(description2, descriptionX2, descriptionY2);
+
+                // Imagen en base64
+                const base64Image = logoIbciBase64;
+                const imageX = 20;
+                const imageY = 10;
+                const imageWidth = 80; // Ancho de la imagen en puntos
+                const imageHeight = 50; // Alto de la imagen en puntos
+                doc.addImage(base64Image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+
+                // Tabla de datos
+                (doc as any).autoTable(
+                    { columns: this.exportColumns,
+                      body: this.usuariosDuplicado,
+                      theme: 'striped',
+                      styles: { fontSize: 8, cellPadding: 3 },
+                    startY: 100, }); // Posición inicial de la tabla
+                let PDF_EXTENSION = '.pdf';
+                const nombreArchivo = 'rptPdf'+'_'+new Date().getTime()+PDF_EXTENSION;
+                doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
             });
         });
     }
-
+    // Export Excel
     exportExcel() {
         import('xlsx').then((xlsx) => {
-            // Define los campos que deseas incluir en la exportación
             const fieldsToExport = [
-                'usuid',
-                'usuname',
-                'pernomcompleto',
-                'pernrodoc',
-                'usuemail',
-                'rolnombre',
-                'usuestado',
-                'usudescripcion',
-                'usuusureg',
-                'usufecreg',
-                'usuusumod',
-                'usufecmod',
+                { field: 'usuid', header: 'ID' },
+                { field: 'usuname', header: 'Usuario' },
+                { field: 'pernomcompleto', header: 'Nombre completo' },
+                { field: 'pernrodoc', header: 'Nro. doc.' },
+                { field: 'usuemail', header: 'Email' },
+                { field: 'rolnombre', header: 'Rol' },
+                { field: 'usuestado', header: 'Estado' },
+                { field: 'usudescripcion', header: 'Descripción' },
+                { field: 'usuusureg', header: 'Registro' },
+                { field: 'usufecreg', header: 'Fecha de registro' },
+                { field: 'usuusumod', header: 'Modificado' },
+                { field: 'usufecmod', header: 'Fecha de modificado' },
             ];
-            // Filtra y transforma 'this.personas' para incluir solo los campos deseados
-            const dataToExport = this.usuariosDuplicated.map(persona => {
+
+            const dataToExport = this.usuariosDuplicado.map(usuario => {
                 const filteredData = {};
                 fieldsToExport.forEach(field => {
-                    filteredData[field] = persona[field] || ''; // Asegura que todos los campos existan, incluso si están vacíos
+                    if (field.field === 'usufecreg' || field.field === 'usufecmod') {
+                        filteredData[field.header] = usuario[field.field] ? new Date(usuario[field.field]).toLocaleString() : '';
+                    } else {
+                        filteredData[field.header] = usuario[field.field] || '';
+                    }
                 });
                 return filteredData;
             });
+
             const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+
+
+            // Calcular el ancho de las columnas basado en el contenido más largo
+            const columnWidths = fieldsToExport.map(field => {
+                const columnData = dataToExport.map(row => row[field.header]);
+                const maxLength = columnData.reduce((acc, val) => Math.max(acc, val.toString().length), 0);
+                return { wch: maxLength + 2 }; // Puedes ajustar el factor de ajuste según tus necesidades
+            });
+
+            worksheet['!cols'] = columnWidths;
+
             const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
-            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, 'persons');
+            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, 'rptExcel_usuario');
         });
+
     }
 
     saveAsExcelFile(buffer: any, fileName: string): void {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
-        const data: Blob = new Blob([buffer], {
-            type: EXCEL_TYPE
-        });
-        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+        const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
+        FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + EXCEL_EXTENSION);
     }
 }
