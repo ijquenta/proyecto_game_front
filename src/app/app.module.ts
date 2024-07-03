@@ -54,9 +54,11 @@ import { ReportV2Component } from './modules/components/reportes/report/report-v
 import { ConfirmComponent } from './modules/components/auth/confirm/confirm.component';
 import { NoConfirmComponent } from './modules/components/auth/noConfirm/no-confirm.component';
 import { VerifiedComponent } from './modules/components/auth/verified/verified.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 // import { TreeTableModule } from 'primeng/treetable';
 import localeBo from '@angular/common/locales/es-BO';
 import { registerLocaleData } from '@angular/common';
+
 registerLocaleData(localeBo, 'es');
 @NgModule({
     declarations: [
@@ -73,6 +75,7 @@ registerLocaleData(localeBo, 'es');
         VerifiedComponent
     ],
     imports: [
+        NgxExtendedPdfViewerModule,
         // TreeTableModule,
         AppRoutingModule,
         AppLayoutModule,

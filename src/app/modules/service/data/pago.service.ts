@@ -78,7 +78,7 @@ export class PagoService {
         const nombreArchivov2 = 'ArchivoPago';
         this.spinner.show();
         console.log(this.spinner);
-        this.http.get(`${API_URL}/pago/download/${nombreArchivo}`, httpOptions)
+        this.http.get(`${API_URL}/pago/ /${nombreArchivo}`, httpOptions)
         .subscribe(
             (data: any) => {
             this.spinner.hide();

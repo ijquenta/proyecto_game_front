@@ -1,0 +1,1651 @@
+<p-toast></p-toast>
+<div class="grid">
+    <div class="col-12">
+        <!-- <h2>Estudiante Admisión</h2> -->
+        <div class="card">
+            <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+            <h3>Admisión</h3>
+            <p>Generar reporte de ficha de admisión</p>
+            <hr>
+            <form [formGroup]="buscarForm">
+                <div class="p-fluid">
+                    <div class="p-field">
+                        <label class="font-bold text-lg">Busqueda de persona:</label>
+                        <hr>
+                        <div class="card flex grid">
+                            <div class="col-12 md:col-10 lg:col-11">
+                                <p-autoComplete
+                                    formControlName="buscar"
+                                    [suggestions]="personasFiltradas"
+                                    (completeMethod)="filtrarPersona($event)"
+                                    field="pernomcompleto"
+                                    (onSelect)="seleccionarPersona($event)"
+                                    appendTo="body"
+                                    emptyMessage="No se encontraron resultados"
+                                    [showEmptyMessage]="true"
+                                    placeholder="Ingrese el nombre, apellidos o CI"
+                                >
+                                    <ng-template let-persona pTemplate="item">
+                                        <div class="flex align-items-center gap-2">
+                                            <div *ngIf="!persona.perfoto">
+                                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                            </div>
+                                            <div *ngIf="persona.perfoto">
+                                                <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                            </div>
+                                            <div>{{persona.pernomcompleto}}</div>
+                                            <div>{{persona.pernrodoc}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
+                            </div>
+                            <div class="col-12 md:col-2 lg:col-1">
+                                <button (click)="limpiar()"
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        icon="pi pi-filter-slash"
+                                        class="p-button-rounded p-button-text p-button-primary"
+                                        pTooltip="Limpiar busqueda"
+                                        tooltipPosition="top">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div *ngIf="persona?.perid != null" class="flex grid">
+                <div class="col-12 md:col-6 lg:col-3">
+
+                    <p-divider align="center">
+                        <div class="inline-flex align-items-center">
+                            <i class="fa-solid fa-address-book mr-2"></i>
+                            <b>Datos Personales</b>
+                        </div>
+                    </p-divider>
+                    <!-- Datos personales -->
+                    <p-card header="{{persona.pernomcompleto}}" styleClass="w-full" *ngIf="showDialogPersona">
+                        <ng-template pTemplate="header">
+                            <div class="flex justify-content-center">
+                                <p-image src="{{apiUrl}}/{{persona.perfoto}}"
+                                        alt="Image"
+                                        width="100"
+                                        height="100"
+                                        [preview]="true"
+                                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}">
+                                </p-image>
+                            </div>
+                        </ng-template>
+                        <div class="p-grid">
+                            <p>
+                                <strong>Tipo Documento:</strong> {{persona.tipodocnombre}} <br>
+                                <strong>Nro. Doc.:</strong> {{persona.pernrodoc}} <br>
+                                <strong>Email:</strong> {{persona.peremail}} <br>
+                                <strong>Fecha nacimiento:</strong> {{persona.perfecnac | date:'d MMMM, y'}} <br>
+                                <strong>Género:</strong> {{persona.generonombre}} <br>
+                                <strong>Dirección:</strong> {{persona.perdirec}} <br>
+                                <strong>Teléfono:</strong> {{persona.pertelefono}} <br>
+                                <strong>Celular:</strong> {{persona.percelular}} <br>
+                                <strong>Estado civil:</strong> {{persona.estadocivilnombre}} <br>
+                                <strong>País:</strong> {{persona.paisnombre}} <br>
+                                <strong>Ciudad:</strong> {{persona.ciudadnombre}} <br>
+                                <strong>Registrado:</strong> {{ persona.perusureg }} <br>
+                                {{ persona.perfecreg | date: 'd MMMM, y' }} <br>
+                                {{ persona.perfecreg | date: 'h:mm:ss a' }} <br>
+                                <strong>Modificado:</strong> {{ persona.perusumod}} <br>
+                                {{ persona.perfecmod | date: 'd MMMM, y' }} <br>
+                                {{ persona.perfecmod | date: 'h:mm:ss a' }} <br>
+                            </p>
+                        </div>
+
+                        <hr>
+
+                        <div class="flex mb-3 justify-content-center">
+                            <button
+                                pButton
+                                pRipple
+                                icon="pi pi-file-pdf"
+                                label="Ficha de Admisión"
+                                class="p-button-rounded p-button-danger mr-2"
+                                (click)="personaService.rptInformacionAdmision(persona?.perid)"
+                                pTooltip="Generar reporte"
+                                tooltipPosition="top"
+                            ></button>
+                        </div>
+                    </p-card>
+                </div>
+
+                <div *ngIf="persona?.perid != null" class="col-12 md:col-6 lg:col-9">
+
+                    <p-divider align="center">
+                        <div class="inline-flex align-items-center">
+                            <i class="fa-solid fa-address-book mr-2"></i>
+                            <b>Información Personal</b>
+                        </div>
+                    </p-divider>
+
+                    <!-- p-card información personal -->
+
+                    <p-card *ngIf="showDialogPersonaInformacionPersonal">
+                        <p-table
+                            #dt2
+                            [value]="infoPersonal"
+                            [tableStyle]="{'min-width': '50rem'}"
+                            responsiveLayout="stack"
+                            [breakpoint]="'960px'"
+                            styleClass="p-datatable-striped p-card p-datatable-sm"
+                            [loading]="loadingIP"
+                        >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div *ngIf="infoPersonal?.length === 0"  class="flex justify-content-center">
+                                        <button
+                                            pButton
+                                            pRipple
+                                            icon="pi pi-plus"
+                                            class="p-button-rounded p-button-text p-button-primary mr-2"
+                                            (click)="adicionarInformacionPersonal()"
+                                            pTooltip="Adicionar Información Personal"
+                                            tooltipPosition="right"
+                                        ></button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th></th>
+                                    <th pTooltip="Número de hijos" tooltipPosition="top">Hijos</th>
+                                    <th>Profesión</th>
+                                    <th pTooltip="Lugar y fecha de conversión" tooltipPosition="top">Conversión</th>
+                                    <th pTooltip="Bautizo en aguas" tooltipPosition="top">Bautizo A.</th>
+                                    <th pTooltip="Bautizo en el espiritu santo" tooltipPosition="top">Bautizo E. S.</th>
+                                    <th pTooltip="Nombre y dirección de la iglesia" tooltipPosition="top">Iglesia</th>
+                                    <th pTooltip="Nombre y celular del pastor" tooltipPosition="top">Pastor</th>
+                                    <th>Experiencia</th>
+                                    <th>Motivo</th>
+                                    <th>Planes y metas</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-infoper>
+                                <tr>
+                                    <td>
+                                        <div class="flex justify-content-center">
+                                            <button pButton
+                                                    pRipple
+                                                    icon="pi pi-pencil"
+                                                    class="p-button-rounded p-button-text p-button-info mr-2"
+                                                    (click)="modificarInformacionPersonal(infoper)"
+                                                    pTooltip="Modificar Información Personal"
+                                                    tooltipPosition="top"
+                                            ></button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.pernrohijos != null; else noRegistro">
+                                            {{infoper.pernrohijos}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.pronombre; else noRegistro">
+                                            {{infoper.pronombre}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.perlugconversion; else noRegistro">
+                                            {{infoper.perlugconversion}} <hr>
+                                            {{infoper.perfecconversion | date:'d MMMM, y'}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.perbautizoagua != null">
+                                            <ng-container *ngIf="infoper.perbautizoagua === 1; else noRegistro">Sí</ng-container>
+                                            <ng-template #noRegistro>No</ng-template>
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.perbautizoespiritu != null">
+                                            <ng-container *ngIf="infoper.perbautizoespiritu === 1; else noRegistro">Sí</ng-container>
+                                            <ng-template #noRegistro>No</ng-template>
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.pernomiglesia; else noRegistro">
+                                            {{infoper.pernomiglesia}} <hr>
+                                            {{infoper.perdiriglesia}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.pernompastor; else noRegistro">
+                                            {{infoper.pernompastor}} <hr>
+                                            {{infoper.percelpastor}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.perexperiencia; else noRegistro">
+                                            {{infoper.perexperiencia}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.permotivo; else noRegistro">
+                                            {{infoper.permotivo}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.perplanesmetas; else noRegistro">
+                                            {{infoper.perplanesmetas}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoper.perobservacion; else noRegistro">
+                                            {{infoper.perobservacion}}
+                                        </ng-container>
+                                    </td>
+                                    <ng-template #noRegistro>...</ng-template>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="12">No se encontró la información solicitada.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-card>
+
+                    <p-divider align="center">
+                        <div class="inline-flex align-items-center">
+                            <i class="fa-solid fa-graduation-cap mr-2"></i>
+                            <b>Información Académica</b>
+                        </div>
+                    </p-divider>
+
+                    <!-- p-card información académica -->
+
+                    <p-card *ngIf="showDialogPersonaInformacionAcademica">
+                        <p-table
+                            #dt2
+                            [value]="infoAcademica"
+                            [tableStyle]="{'min-width': '50rem'}"
+                            responsiveLayout="stack"
+                            [breakpoint]="'960px'"
+                            styleClass="p-datatable-striped p-card p-datatable-sm"
+                        >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div class="flex justify-content-center">
+                                        <button
+                                            pButton
+                                            pRipple
+                                            icon="pi pi-plus"
+                                            class="p-button-rounded p-button-text p-button-primary mr-2"
+                                            (click)="adicionarInformacionAcademica()"
+                                            pTooltip="Adicionar Información Académica"
+                                            tooltipPosition="right"
+                                        ></button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th></th>
+                                    <th>Educación</th>
+                                    <th>Institución</th>
+                                    <th>Dirección</th>
+                                    <th>Años cursados.</th>
+                                    <th>Fechas</th>
+                                    <th>Titulo Obtenido</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-infoaca>
+                                <tr>
+                                    <td>
+                                        <div class="flex justify-content-center">
+                                            <button pButton
+                                                    pRipple
+                                                    icon="pi pi-pencil"
+                                                    class="p-button-rounded p-button-text p-button-info mr-2"
+                                                    (click)="modificarInformacionAcademica(infoaca)"
+                                                    pTooltip="Modificar información personal"
+                                                    tooltipPosition="top">
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoaca.pereducacion != null; else noRegistro">
+                                            {{infoaca.edunombre}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoaca.pernominstitucion; else noRegistro">
+                                            {{infoaca.pernominstitucion}}
+
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoaca.perdirinstitucion; else noRegistro">
+                                            {{infoaca.perdirinstitucion}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoaca.pergescursadas; else noRegistro">
+                                            {{infoaca.pergescursadas}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoaca.perfechas; else noRegistro">
+                                            {{infoaca.perfechas}}
+                                        </ng-container>
+                                    </td>
+
+                                    <td>
+                                        <ng-container *ngIf="infoaca.pertitulo; else noRegistro">
+                                            {{infoaca.pertitulo}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infoaca.perobservacion; else noRegistro">
+                                            {{infoaca.perobservacion}}
+                                        </ng-container>
+                                    </td>
+                                    <ng-template #noRegistro>...</ng-template>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="9">No se encontró la información solicitada.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-card>
+
+                    <p-divider align="center">
+                        <div class="inline-flex align-items-center">
+                            <i class="fa-solid fa-church mr-2"></i>
+                            <b>Información Ministerial</b>
+                        </div>
+                    </p-divider>
+
+                    <!-- p-card información ministerial -->
+
+                    <p-card *ngIf="showDialogPersonaInformacionMinisterial">
+                        <p-table
+                            #dt2
+                            [value]="infoMinisterial"
+                            [tableStyle]="{'min-width': '50rem'}"
+                            responsiveLayout="stack"
+                            [breakpoint]="'960px'"
+                            styleClass="p-datatable-striped p-card p-datatable-sm"
+                        >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div class="flex justify-content-center">
+                                        <button
+                                            pButton
+                                            pRipple
+                                            icon="pi pi-plus"
+                                            class="p-button-rounded p-button-text p-button-primary mr-2"
+                                            (click)="adicionarInformacionMinisterial()"
+                                            pTooltip="Adicionar Informacioń Ministerial"
+                                            tooltipPosition="right"
+                                        ></button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th></th>
+                                    <th>Iglesia</th>
+                                    <th>Cargo</th>
+                                    <th>Gestión</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-infomin>
+                                <tr>
+                                    <td>
+                                        <div class="flex justify-content-center">
+                                            <button pButton
+                                                    pRipple
+                                                    icon="pi pi-pencil"
+                                                    class="p-button-rounded p-button-text p-button-info mr-2"
+                                                    (click)="modificarInformacionMinisterial(infomin)"
+                                                    pTooltip="Modificar información personal"
+                                                    tooltipPosition="top">
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infomin.pernomiglesia != null; else noRegistro">
+                                            {{infomin.pernomiglesia}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infomin.percargo; else noRegistro">
+                                            {{infomin.carnombre}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infomin.pergestion; else noRegistro">
+                                            {{infomin.pergestion}}
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="infomin.perobservacion; else noRegistro">
+                                            {{infomin.perobservacion}}
+                                        </ng-container>
+                                    </td>
+                                    <ng-template #noRegistro>...</ng-template>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="11">No se encontró la información solicitada.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-card>
+
+                    <p-divider align="center">
+                        <div class="inline-flex align-items-center">
+                            <i class="pi pi-file mr-2"></i>
+                            <b>Documentos de Admisión</b>
+                        </div>
+                    </p-divider>
+
+                    <!-- p-card documentos de admisión -->
+
+                    <p-card *ngIf="showDialogPersonaDocumentoAdmision">
+                        <p-table
+                            #dt2
+                            [value]="documentoAdmision"
+                            [tableStyle]="{'min-width': '50rem'}"
+                            responsiveLayout="stack"
+                            [breakpoint]="'960px'"
+                            styleClass="p-datatable-striped p-card p-datatable-sm"
+                        >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div *ngIf="documentoAdmision?.length === 0" class="flex justify-content-center">
+                                        <button
+                                            pButton
+                                            pRipple
+                                            icon="pi pi-plus"
+                                            class="p-button-rounded p-button-text p-button-primary mr-2"
+                                            (click)="adicionarDocumentoAdmision()"
+                                            pTooltip="Adicionar Documento Admisión"
+                                            tooltipPosition="right"
+                                        ></button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th></th>
+                                    <th>Foto</th>
+                                    <th>Fotocopia CI</th>
+                                    <th>Fotocopia Titulo</th>
+                                    <th>Carta</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-docadm>
+                                <tr>
+                                    <td>
+                                        <div class="flex justify-content-center">
+                                            <button pButton
+                                                    pRipple
+                                                    icon="pi pi-file-edit"
+                                                    class="p-button-rounded p-button-text p-button-info mr-2"
+                                                    (click)="modificarDocumentoAdmision(docadm)"
+                                                    pTooltip="Modificar Documento Admisión"
+                                                    tooltipPosition="top"
+                                            ></button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="docadm.perfoto">
+                                          <ng-container *ngIf="esImagen(docadm.perfoto); else noImagenFoto">
+                                            <p-image
+                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.perfoto"
+                                              alt="Foto 4x4"
+                                              width="100"
+                                              height="100"
+                                              [preview]="true"
+                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                            ></p-image>
+                                          </ng-container>
+                                          <ng-template #noImagenFoto>
+                                            <button
+                                              pButton
+                                              pRipple
+                                              icon="pi pi-file-pdf"
+                                              label="Ver PDF"
+                                              class="p-button-rounded p-button-text p-button-info mr-2"
+                                              (click)="mostrarDocumentoAdmision(docadm.perfoto)"
+                                              pTooltip="Mostrar"
+                                              tooltipPosition="top"
+                                            ></button>
+                                          </ng-template>
+                                        </ng-container>
+                                      </td>
+
+                                      <td>
+                                        <ng-container *ngIf="docadm.perfotoci">
+                                          <ng-container *ngIf="esImagen(docadm.perfotoci); else noImagenCi">
+                                            <p-image
+                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.perfotoci"
+                                              alt="Documento de Identidad"
+                                              width="100"
+                                              height="100"
+                                              [preview]="true"
+                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                            ></p-image>
+                                          </ng-container>
+                                          <ng-template #noImagenCi>
+                                            <button
+                                              pButton
+                                              pRipple
+                                              icon="pi pi-file-pdf"
+                                              label="Ver PDF"
+                                              class="p-button-rounded p-button-text p-button-info mr-2"
+                                              (click)="mostrarDocumentoAdmision(docadm.perfotoci)"
+                                              pTooltip="Mostrar"
+                                              tooltipPosition="top"
+                                            ></button>
+                                          </ng-template>
+                                        </ng-container>
+                                      </td>
+
+                                      <td>
+                                        <ng-container *ngIf="docadm.perfototitulo">
+                                          <ng-container *ngIf="esImagen(docadm.perfototitulo); else noImagenTitulo">
+                                            <p-image
+                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.perfototitulo"
+                                              alt="Título"
+                                              width="100"
+                                              height="100"
+                                              [preview]="true"
+                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                            ></p-image>
+                                          </ng-container>
+                                          <ng-template #noImagenTitulo>
+                                            <button
+                                              pButton
+                                              pRipple
+                                              icon="pi pi-file-pdf"
+                                              label="Ver PDF"
+                                              class="p-button-rounded p-button-text p-button-info mr-2"
+                                              (click)="mostrarDocumentoAdmision(docadm.perfototitulo)"
+                                              pTooltip="Mostrar"
+                                              tooltipPosition="top"
+                                            ></button>
+                                          </ng-template>
+                                        </ng-container>
+                                      </td>
+                                      <td>
+                                        <ng-container *ngIf="docadm.percartapastor">
+                                          <ng-container *ngIf="esImagen(docadm.percartapastor); else noImagenCarta">
+                                            <p-image
+                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.percartapastor"
+                                              alt="Carta"
+                                              width="100"
+                                              height="100"
+                                              [preview]="true"
+                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                            ></p-image>
+                                          </ng-container>
+                                          <ng-template #noImagenCarta>
+                                            <button
+                                              pButton
+                                              pRipple
+                                              icon="pi pi-file-pdf"
+                                              label="Ver PDF"
+                                              class="p-button-rounded p-button-text p-button-info mr-2"
+                                              (click)="mostrarDocumentoAdmision(docadm.percartapastor)"
+                                              pTooltip="Mostrar"
+                                              tooltipPosition="top"
+                                            ></button>
+                                          </ng-template>
+                                        </ng-container>
+                                      </td>
+                                      <td>
+                                            {{docadm.perobservacion}}
+                                      </td>
+                                    <ng-template #noRegistro>...</ng-template>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="5">No se encontró la información solicitada.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dialog Información Personal -->
+
+<p-dialog
+    [(visible)]="informacionPersonalDialog"
+    header="Información Personal"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '50vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+>
+    <form [formGroup]="infoPersonalForm" novalidate>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-6">
+                <label class="mb-2 block font-bold" for="pernrohijos">Número de Hijos</label>
+                <p-inputNumber
+                    formControlName="pernrohijos"
+                    [showButtons]="true"
+                    inputId="pernrohijos"
+                    placeholder="Ingrese el número de hijos"
+                ></p-inputNumber>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('pernrohijos').invalid && infoPersonalForm.get('pernrohijos').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('pernrohijos').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="mb-2 block font-bold" for="peredad">Edad</label>
+                <p-inputNumber
+                    formControlName="peredad"
+                    [showButtons]="true"
+                    inputId="peredad"
+                    placeholder="Ingrese la edad"
+                ></p-inputNumber>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('peredad').invalid && infoPersonalForm.get('peredad').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('peredad').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="block font-bold" for="tipoDocumento">Tipo Profesión</label>
+                <p-dropdown
+                    class="my-2"
+                    id="tipoProfesion"
+                    [autoDisplayFirst]="false"
+                    appendTo="body"
+                    [options]="TipoProfesion"
+                    formControlName="tipoProfesion"
+                    optionLabel="pronombre"
+                    [ngClass]="{ 'valid-field': this.infoPersonalForm.get('tipoProfesion').valid}"
+                    [filter]="true"
+                    filterBy="pronombre"
+                    [showClear]="true"
+                    placeholder="Seleccionar un Tipo de Profesión"
+                ></p-dropdown>
+                <small class="p-success block" *ngIf="infoPersonalForm.get('tipoProfesion').valid">
+                    El tipo de documento es valido.
+                </small>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('tipoProfesion').invalid && infoPersonalForm.get('tipoProfesion').touched">
+                    <span
+                        *ngIf="infoPersonalForm.get('tipoProfesion').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="perlugconversion" class="block font-bold">Lugar Conversión</label>
+                <textarea id="perlugconversion"
+                    pInputTextarea
+                    formControlName="perlugconversion"
+                    rows="1"
+                    cols="30"
+                    placeholder="Ingrese el lugar de conversión"
+                ></textarea>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perlugconversion').invalid && infoPersonalForm.get('perlugconversion').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perlugconversion').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block" for="perfecconversion">Fecha Conversión</label>
+                <p-calendar
+                    id="perfecconversion"
+                    class="my-2"
+                    appendTo="body"
+                    dateFormat="yy-mm-dd"
+                    formControlName="perfecconversion"
+                    [ngClass]="{ 'ng-dirty': infoPersonalForm.get('perfecconversion').touched, 'valid-field': infoPersonalForm.get('perfecconversion').valid }"
+                    placeholder="Ingrese la fecha de conversión"
+                ></p-calendar>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perfecconversion').invalid && infoPersonalForm.get('perfecconversion').dirty"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perfecconversion').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+                <small
+                    class="p-success block"
+                    *ngIf="infoPersonalForm.get('perfecconversion')?.valid"
+                >
+                    La fecha de conversión es válida.
+                </small>
+
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <div class="flex">
+                    <label class="font-bold block mb-2" for="perbautismoaguas">¿Bautismo en aguas?</label> <br>
+                </div>
+                    <div class="flex flex-wrap gap-3 justify-content-center align-items-center">
+                        <div class="flex align-items-center">
+                            <p-radioButton
+                                name="perbautizoagua"
+                                label="Sí"
+                                [value]="1"
+                                formControlName="perbautizoagua"
+                            ></p-radioButton>
+                        </div>
+                        <div class="flex align-items-center">
+                            <p-radioButton
+                                name="perbautizoagua"
+                                label="No"
+                                [value]="0"
+                                formControlName="perbautizoagua"
+                            ></p-radioButton>
+                        </div>
+                </div>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perbautizoagua').invalid && infoPersonalForm.get('perbautizoagua').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perbautizoagua').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <div class="flex">
+                    <label class="font-bold block mb-2" for="perbautizoespiritu">¿Bautismo en Espíritu Santo?</label>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-content-center align-items-center">
+                    <div class="flex align-items-center">
+                        <p-radioButton
+                            name="perbautizoespiritu"
+                            label="Sí"
+                            [value]="1"
+                            formControlName="perbautizoespiritu"
+                        ></p-radioButton>
+                    </div>
+                    <div class="flex align-items-center">
+                        <p-radioButton
+                            name="perbautizoespiritu"
+                            label="No"
+                            [value]="0"
+                            formControlName="perbautizoespiritu"
+                            ></p-radioButton>
+                    </div>
+                </div>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perbautizoespiritu').invalid && infoPersonalForm.get('perbautizoespiritu').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perbautizoespiritu').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input type="text" id="pernomiglesia" pInputText formControlName="pernomiglesia">
+                    <label for="pernomiglesia">Nombre de la Iglesia</label>
+                </span>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('pernomiglesia').invalid && infoPersonalForm.get('pernomiglesia').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('pernomiglesia').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input type="text" id="perdiriglesia" pInputText formControlName="perdiriglesia">
+                    <label for="perdiriglesia">Dirección de la Iglesia</label>
+                </span>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perdiriglesia').invalid && infoPersonalForm.get('perdiriglesia').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perdiriglesia').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input type="text" id="pernompastor" pInputText formControlName="pernompastor">
+                    <label for="pernompastor">Nombre del Pastor</label>
+                </span>
+                <small
+                    class="p-error block" *ngIf="infoPersonalForm.get('pernompastor').invalid && infoPersonalForm.get('pernompastor').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('pernompastor').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="font-bold block mb-2">Número de celular de su Pastor</span>
+                <p-inputMask
+                    mask="+999 99999999"
+                    formControlName="percelpastor"
+                    placeholder="+591 77777777"
+                ></p-inputMask>
+
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('percelpastor').invalid && infoPersonalForm.get('percelpastor').dirty"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('percelpastor').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+                <small
+                    class="p-success block"
+                    *ngIf="infoPersonalForm.get('percelpastor')?.valid"
+                >
+                    El número de celular es valido.
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="mb-2 block font-bold" for="perexperiencia">Años de experiencia en el ministerio cristiano:</label>
+                <p-inputNumber
+                    formControlName="perexperiencia"
+                    [showButtons]="true"
+                    inputId="perexperiencia"
+                    placeholder="Ingrese la experiencia"
+                ></p-inputNumber>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perexperiencia').invalid && infoPersonalForm.get('perexperiencia').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perexperiencia').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="permotivo" class="block font-bold">El motivo por el cual quiere estudiar en I.B.C.I:</label>
+                <textarea id="permotivo"
+                    pInputTextarea
+                    formControlName="permotivo"
+                    rows="3"
+                    cols="30"
+                    placeholder="Ingrese el motivo"
+                ></textarea>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('permotivo').invalid && infoPersonalForm.get('permotivo').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('permotivo').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="perplanesmetas" class="block font-bold">¿Cuáles son sus planes y metas futuras para su servicio en el ministerio?</label>
+                <textarea id="permotivo"
+                    pInputTextarea
+                    formControlName="perplanesmetas"
+                    rows="3"
+                    cols="30"
+                    placeholder="Ingrese sus planes y metas"
+                ></textarea>
+                <small
+                    class="p-error block"
+                    *ngIf="infoPersonalForm.get('perplanesmetas').invalid && infoPersonalForm.get('perplanesmetas').touched"
+                >
+                    <span
+                        *ngIf="infoPersonalForm.get('perplanesmetas').errors?.required"
+                    >
+                        Este campo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block mb-2" for="perobservacion">Observación</label>
+                <textarea
+                    inputId="textarea"
+                    rows="3"
+                    cols="30"
+                    formControlName="perobservacion"
+                    appendTo="body"
+                    pInputTextarea
+                ></textarea>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block" for="perestado">Estado</label>
+                <div class="flex align-items-center justify-content-center">
+                    <p-selectButton
+                        [options]="stateOptionsEstado"
+                        formControlName="perestado"
+                        optionLabel="label"
+                        optionValue="value"
+                    ></p-selectButton>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="ocultarInformacionPersonal()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="enviarInformacionPersonal()"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+<!-- Dialog Información Académica -->
+
+<p-dialog
+    [(visible)]="informacionAcademicaDialog"
+    header="Información Académica"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '25vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+>
+    <form [formGroup]="infoAcademicaForm" novalidate>
+        <div class="grid p-fluid mt-3">
+
+            <div class="field col-12">
+                <label for="tipoEducacion" class="font-bold block">Tipo Educación</label>
+                <p-dropdown
+                    class="my-2"
+                    id="tipoEducacion"
+                    [autoDisplayFirst]="false"
+                    appendTo="body"
+                    [options]="TipoEducacion"
+                    formControlName="tipoEducacion"
+                    optionLabel="edunombre"
+                    [ngClass]="{ 'valid-field': this.infoAcademicaForm.get('tipoEducacion').valid}"
+                    [filter]="true"
+                    filterBy="edunombre"
+                    [showClear]="true"
+                    placeholder="Seleccionar un Tipo de Educación"
+                ></p-dropdown>
+                <small class="p-success block" *ngIf="infoAcademicaForm.get('tipoEducacion').valid">
+                    El tipo de educación es valido.
+                </small>
+                <small
+                    class="p-error block"
+                    *ngIf="infoAcademicaForm.get('tipoEducacion').invalid && infoAcademicaForm.get('tipoEducacion').touched">
+                    <span
+                        *ngIf="infoAcademicaForm.get('tipoEducacion').errors?.required"
+                    >
+                        El tipo de educación es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12">
+                <span class="p-float-label">
+                    <input type="text" id="pernominstitucion" pInputText formControlName="pernominstitucion">
+                    <label for="pernominstitucion">Nombre de la Institución</label>
+                </span>
+                <small
+                    class="p-error block"
+                    *ngIf="infoAcademicaForm.get('pernominstitucion').invalid && infoAcademicaForm.get('pernominstitucion').touched"
+                >
+                    <span
+                        *ngIf="infoAcademicaForm.get('pernominstitucion').errors?.required"
+                    >
+                        El nombre de la institución es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12">
+                <span class="p-float-label">
+                    <input type="text" id="perdirinstitucion" pInputText formControlName="perdirinstitucion">
+                    <label for="perdirinstitucion">Dirección de la institución</label>
+                </span>
+                <small
+                    class="p-error block"
+                    *ngIf="infoAcademicaForm.get('perdirinstitucion').invalid && infoAcademicaForm.get('perdirinstitucion').touched"
+                >
+                    <span
+                        *ngIf="infoAcademicaForm.get('perdirinstitucion').errors?.required"
+                    >
+                        El nombre de la institución es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12">
+                <label class="mb-2 block font-bold" for="pergescursadas">Años Cursados</label>
+                <p-inputNumber
+                    formControlName="pergescursadas"
+                    [showButtons]="true"
+                    inputId="pergescursadas"
+                    placeholder="Ingrese los años cursados"
+                ></p-inputNumber>
+                <small
+                    class="p-error block"
+                    *ngIf="infoAcademicaForm.get('pergescursadas').invalid && infoAcademicaForm.get('pergescursadas').touched"
+                >
+                    <span
+                        *ngIf="infoAcademicaForm.get('pergescursadas').errors?.required"
+                    >
+                        El número años cursadas es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perfechas">Fechas</label>
+                <textarea
+                    class="my-2"
+                    inputId="textarea"
+                    rows="2" cols="30"
+                    formControlName="perfechas"
+                    appendTo="body"
+                    pInputTextarea
+                    placeholder="Ingrese las fechas de información académica"
+                ></textarea>
+            </div>
+
+            <div class="field col-12">
+                <span class="p-float-label">
+                    <input type="text" id="pertitulo" pInputText formControlName="pertitulo">
+                    <label for="pertitulo">Titulo Obtenido</label>
+                </span>
+                <small
+                    class="p-error block"
+                    *ngIf="infoAcademicaForm.get('pertitulo').invalid && infoAcademicaForm.get('pertitulo').touched"
+                >
+                    <span
+                        *ngIf="infoAcademicaForm.get('pertitulo').errors?.required"
+                    >
+                        El titulo obtenido es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perobservacion">Observación</label>
+                <textarea
+                    class="my-2"
+                    inputId="textarea"
+                    rows="2" cols="30"
+                    formControlName="perobservacion"
+                    appendTo="body"
+                    pInputTextarea
+                ></textarea>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perestado">Estado</label>
+                <div class="flex align-items-center justify-content-center">
+                    <p-selectButton
+                        [options]="stateOptionsEstado"
+                        formControlName="perestado"
+                        optionLabel="label"
+                        optionValue="value"
+                    ></p-selectButton>
+                </div>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="ocultarInformacionAcademica()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="enviarInformacionAcademica()"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+<!-- Dialog Información Ministerial -->
+
+<p-dialog
+    [(visible)]="informacionMinisterialDialog"
+    header="Información Ministerial"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '25vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+>
+    <form [formGroup]="infoMinisterialForm" novalidate>
+        <div class="grid p-fluid mt-3">
+            <p>CARGOS O MINISTERIOS QUE DESEMPEÑA O HA DESEMPEÑADO EN LA IGLESIA LOCAL, O A NIVEL REGIONAL Y NACIONAL (ejemplo: pastor, copastor, anciano, diacono, lider de jovenes, maestra EBD etc)</p>
+            <div class="field col-12 ">
+                <span class="p-float-label">
+                    <input type="text" id="pernomiglesia" pInputText formControlName="pernomiglesia">
+                    <label for="pernomiglesia">Nombre de la Iglesia</label>
+                </span>
+                <small
+                    class="p-error block"
+                    *ngIf="infoMinisterialForm.get('pernomiglesia').invalid && infoMinisterialForm.get('pernomiglesia').touched"
+                >
+                    <span
+                        *ngIf="infoMinisterialForm.get('pernomiglesia').errors?.required"
+                    >
+                        El nombre de la iglesia es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 ">
+                <label for="tipoDocumento" class="font-bold block">Tipo Cargo</label>
+                <p-dropdown
+                    class="my-2"
+                    id="tipoCargo"
+                    [autoDisplayFirst]="false"
+                    appendTo="body"
+                    [options]="TipoCargo"
+                    formControlName="tipoCargo"
+                    optionLabel="carnombre"
+                    [ngClass]="{ 'valid-field': this.infoMinisterialForm.get('tipoCargo').valid}"
+                    [filter]="true"
+                    filterBy="carnombre"
+                    [showClear]="true"
+                    placeholder="Seleccionar un Tipo de Cargo"
+                ></p-dropdown>
+                <small class="p-success block" *ngIf="infoMinisterialForm.get('tipoCargo').valid">
+                    El tipo de cargo es valido.
+                </small>
+                <small
+                    class="p-error block"
+                    *ngIf="infoMinisterialForm.get('tipoCargo').invalid && infoMinisterialForm.get('tipoCargo').touched">
+                    <span
+                        *ngIf="infoMinisterialForm.get('tipoCargo').errors?.required"
+                    >
+                        El tipo de cargo es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 ">
+                <label for="pergestion" class="font-bold block">Gestión</label>
+                <p-dropdown
+                    class="my-2"
+                    id="pergestion"
+                    [autoDisplayFirst]="false"
+                    appendTo="body"
+                    [options]="TipoGestion"
+                    formControlName="pergestion"
+                    optionLabel="gesid"
+                    [ngClass]="{ 'valid-field': this.infoMinisterialForm.get('pergestion').valid}"
+                    [filter]="true"
+                    filterBy="gesid"
+                    [showClear]="true"
+                    placeholder="Seleccionar una gestión"
+                ></p-dropdown>
+                <small class="p-success block" *ngIf="infoMinisterialForm.get('pergestion').valid">
+                    La gestión es valido.
+                </small>
+                <small
+                    class="p-error block"
+                    *ngIf="infoMinisterialForm.get('pergestion').invalid && infoMinisterialForm.get('pergestion').touched">
+                    <span
+                        *ngIf="infoMinisterialForm.get('pergestion').errors?.required"
+                    >
+                        La gestión es requerido. (*)
+                    </span>
+                </small>
+            </div>
+
+            <div class="field col-12 ">
+                <label class="font-bold block" for="perobservacion">Observación</label>
+                <textarea
+                    class="my-2"
+                    inputId="textarea"
+                    rows="2" cols="30"
+                    formControlName="perobservacion"
+                    appendTo="body"
+                    pInputTextarea
+                ></textarea>
+            </div>
+
+            <div class="field col-12 ">
+                <label class="font-bold block" for="perestado">Estado</label>
+                <div class="flex align-items-center justify-content-center">
+                    <p-selectButton
+                        [options]="stateOptionsEstado"
+                        formControlName="perestado"
+                        optionLabel="label"
+                        optionValue="value"
+                    ></p-selectButton>
+                </div>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="ocultarInformacionMinisterial()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="enviarInformacionMinisterial()"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+<!-- Dialog Documento Admisión -->
+<p-dialog
+    [(visible)]="documentoAdmisionDialog"
+    header="Documentos de Admisión"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '35vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+>
+    <form [formGroup]="docAdmisionForm" novalidate>
+        <div class="grid p-fluid mt-3">
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perfoto">1.- FOTO 4x4, a color </label>
+                <div class="card">
+                <p-fileUpload
+                  #fileUploadperfoto
+                  mode="basic"
+                  chooseLabel="Elegir archivo"
+                  name="demo[]"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="application/pdf,image/*"
+                  maxFileSize="5000000"
+                  (onSelect)="onUploadperfoto($event)"
+                  [showUploadButton]="false"
+                  [showCancelButton]="false"
+                  cancelLabel="Cancelar"
+                  [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                  [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                  [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                  [invalidFileTypeMessageDetail]="'Solo se permiten archivos PDF y de imagen. Los tipos de archivo permitidos son: PDF, JPEG, PNG, etc.'"
+                  styleClass="mb-2"
+                >
+
+                </p-fileUpload>
+                <small class="p-error block" *ngIf="docAdmisionForm.get('perfoto').invalid && docAdmisionForm.get('perfoto').touched" >
+                  <span *ngIf="docAdmisionForm.get('perfoto').errors?.required">
+                    La fotografia 4x4 es requerido. (*)
+                  </span>
+                </small>
+                <div *ngIf="perfotoFile">
+                  <div class="card col-12">
+                    <button pButton icon="pi pi-trash" (click)="clearFilesperfoto()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                    <ng-container *ngIf="isImage(perfotoFile.type);">
+                        <div class="mb-2 justify-content-center align-items-center">
+                            <p-image
+                                [src]="fileurlperfoto"
+                                alt="Carta"
+                                width="100"
+                                height="100"
+                                [preview]="true"
+                                [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                            ></p-image>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="isPDF(perfotoFile.type)">
+                            <div class="pdf-container">
+                          <pdf-viewer
+                            [src]="perfotoFileUrl"
+                            [original-size]="false"
+                            [show-all]="true"
+                            [render-text]="true"
+                            [fit-to-page]="true"
+                            [zoom]="zoom"
+                            [zoom-scale]="'page-width'"
+                            [autoresize]="true"
+                            [show-borders]="true"
+                            style="width: 100%; height: 250px;"
+                          ></pdf-viewer>
+                        </div>
+                      </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perestado">2.- FOTOCOPIA Documento de Identidad</label>
+                <div class="card">
+                <p-fileUpload
+                  #fileUploadperfotoci
+                  mode="basic"
+                  chooseLabel="Elegir archivo"
+                  name="demo[]"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="application/pdf,image/*"
+                  maxFileSize="5000000"
+                  (onSelect)="onUploadperfotoci($event)"
+                  [showUploadButton]="false"
+                  [showCancelButton]="false"
+                  cancelLabel="Cancelar"
+                  [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                  [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                  [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                  [invalidFileTypeMessageDetail]="'Solo se permiten archivos PDF y de imagen. Los tipos de archivo permitidos son: PDF, JPEG, PNG, etc.'"
+                  styleClass="mb-2"
+                >
+
+                </p-fileUpload>
+                <small class="p-error block" *ngIf="docAdmisionForm.get('perfotoci').invalid && docAdmisionForm.get('perfotoci').touched" >
+                  <span *ngIf="docAdmisionForm.get('perfotoci').errors?.required">
+                    La documento de identidad es requerido. (*)
+                  </span>
+                </small>
+                <div *ngIf="perfotociFile">
+                  <div class="card col-12">
+                    <button pButton icon="pi pi-trash" (click)="clearFilesperfotoci()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                    <ng-container *ngIf="isImage(perfotociFile.type); else noImagenCarta">
+                        <div class="mb-2 justify-content-center align-items-center">
+                            <p-image
+                                [src]="fileurlperfotoci"
+                                alt="Carta"
+                                width="100"
+                                height="100"
+                                [preview]="true"
+                                [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                            ></p-image>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="isPDF(perfotociFile.type)">
+                        <div class="pdf-container">
+                          <pdf-viewer
+                            [src]="perfotociFileUrl"
+                            [original-size]="false"
+                            [show-all]="true"
+                            [render-text]="true"
+                            [fit-to-page]="true"
+                            [zoom]="zoom"
+                            [zoom-scale]="'page-width'"
+                            [autoresize]="true"
+                            [show-borders]="true"
+                            style="width: 100%; height: 250px;"
+                          ></pdf-viewer>
+                        </div>
+                      </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perestado">3.- FOTOCOPIA TITULO BACHILLER (01)</label>
+                <div class="card">
+                <p-fileUpload
+                  #fileUploadperfototitulo
+                  mode="basic"
+                  chooseLabel="Elegir archivo"
+                  name="demo[]"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="application/pdf,image/*"
+                  maxFileSize="5000000"
+                  (onSelect)="onUploadperfototitulo($event)"
+                  [showUploadButton]="false"
+                  [showCancelButton]="false"
+                  cancelLabel="Cancelar"
+                  [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                  [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                  [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                  [invalidFileTypeMessageDetail]="'Solo se permiten archivos PDF y de imagen. Los tipos de archivo permitidos son: PDF, JPEG, PNG, etc.'"
+                  styleClass="mb-2"
+                >
+
+                </p-fileUpload>
+                <small class="p-error block" *ngIf="docAdmisionForm.get('perfototitulo').invalid && docAdmisionForm.get('perfototitulo').touched" >
+                  <span *ngIf="docAdmisionForm.get('perfototitulo').errors?.required">
+                    La documento del titulo es requerido. (*)
+                  </span>
+                </small>
+                <div *ngIf="perfototituloFile">
+                  <div class="card col-12">
+                    <button pButton icon="pi pi-trash" (click)="clearFilesperfototitulo()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                    <ng-container *ngIf="isImage(perfototituloFile.type); else noImagenCarta">
+                        <div class="mb-2 justify-content-center align-items-center">
+                            <p-image
+                                [src]="fileurlperfototitulo"
+                                alt="Carta"
+                                width="100"
+                                height="100"
+                                [preview]="true"
+                                [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                            ></p-image>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="isPDF(perfototituloFile.type)">
+                        <div class="pdf-container">
+                          <pdf-viewer
+                            [src]="perfototituloFileUrl"
+                            [original-size]="false"
+                            [show-all]="true"
+                            [render-text]="true"
+                            [fit-to-page]="true"
+                            [zoom]="zoom"
+                            [zoom-scale]="'page-width'"
+                            [autoresize]="true"
+                            [show-borders]="true"
+                            style="width: 100%; height: 250px;"
+                          ></pdf-viewer>
+                        </div>
+                      </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perestado">4.- CARTA de RECOMENDACIÓN del PASTOR</label>
+                <div class="card">
+                <p-fileUpload
+                  #fileUploadpercartapastor
+                  mode="basic"
+                  chooseLabel="Elegir archivo"
+                  name="demo[]"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="application/pdf,image/*"
+                  maxFileSize="5000000"
+                  (onSelect)="onUploadpercartapastor($event)"
+                  [showUploadButton]="false"
+                  [showCancelButton]="false"
+                  cancelLabel="Cancelar"
+                  [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                  [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                  [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                  [invalidFileTypeMessageDetail]="'Solo se permiten archivos PDF y de imagen. Los tipos de archivo permitidos son: PDF, JPEG, PNG, etc.'"
+                  styleClass="mb-2"
+                >
+
+                </p-fileUpload>
+                <small class="p-error block" *ngIf="docAdmisionForm.get('percartapastor').invalid && docAdmisionForm.get('percartapastor').touched" >
+                  <span *ngIf="docAdmisionForm.get('percartapastor').errors?.required">
+                    La documento de la carta del pastor es requerido. (*)
+                  </span>
+                </small>
+                <div *ngIf="percartapastorFile">
+                  <div class="card col-12">
+                    <button pButton icon="pi pi-trash" (click)="clearFilespercartapastor()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                    <ng-container *ngIf="isImage(percartapastorFile.type); else noImagenCarta">
+                        <div class="mb-2 justify-content-center align-items-center">
+                            <p-image
+                                [src]="fileurlpercartapastor"
+                                alt="Carta"
+                                width="100"
+                                height="100"
+                                [preview]="true"
+                                [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                            ></p-image>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="isPDF(percartapastorFile.type)">
+                        <div class="pdf-container">
+                          <pdf-viewer
+                            [src]="percartapastorFileUrl"
+                            [original-size]="false"
+                            [show-all]="true"
+                            [render-text]="true"
+                            [fit-to-page]="true"
+                            [zoom]="zoom"
+                            [zoom-scale]="'page-width'"
+                            [autoresize]="true"
+                            [show-borders]="true"
+                            style="width: 100%; height: 250px;"
+                          ></pdf-viewer>
+                        </div>
+                      </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perobservacion">Observación</label>
+                <textarea
+                    class="my-2"
+                    inputId="textarea"
+                    rows="2" cols="30"
+                    formControlName="perobservacion"
+                    appendTo="body"
+                    pInputTextarea
+                ></textarea>
+            </div>
+
+            <div class="field col-12">
+                <label class="font-bold block" for="perestado">Estado</label>
+                <div class="flex align-items-center justify-content-center">
+                    <p-selectButton
+                        [options]="stateOptionsEstado"
+                        formControlName="perestado"
+                        optionLabel="label"
+                        optionValue="value"
+                    ></p-selectButton>
+                </div>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="ocultarDocumentoAdmision()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="enviarDocumentoAdmision()"
+        ></button>
+    </ng-template>
+</p-dialog>
+

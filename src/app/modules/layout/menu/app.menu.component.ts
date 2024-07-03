@@ -163,17 +163,50 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-users',
                         items: [
                             {
+                                label: 'Admisión',
+                                icon: 'pi pi-fw pi-file-import',
+                                routerLink: ['estudiante/admision'],
+                                roles: ['Administrador', 'Secretaria'],
+                                items: [
+                                    {
+                                        label: 'Gestionar Admisión',
+                                        icon: 'pi pi-fw pi-file-import',
+                                        routerLink: ['estudiante/admision'],
+                                        roles: ['Administrador', 'Secretaria']
+                                    },
+                                    {
+                                        label: 'Tipo Profesión',
+                                        icon: 'pi pi-fw pi-list',
+                                        routerLink: ['estudiante/admision/tipoProfesion'],
+                                        roles: ['Administrador', 'Secretaria']
+                                    },
+                                    {
+                                        label: 'Tipo Educación',
+                                        icon: 'pi pi-fw pi-list',
+                                        routerLink: ['estudiante/admision/tipoEducacion'],
+                                        roles: ['Administrador', 'Secretaria']
+                                    },
+                                    {
+                                        label: 'Tipo Cargo',
+                                        icon: 'pi pi-fw pi-list',
+                                        routerLink: ['estudiante/admision/tipoCargo'],
+                                        roles: ['Administrador', 'Secretaria']
+                                    }
+                                ]
+
+                            },
+                            {
                                 label: 'Gestionar Estudiantes',
                                 icon: 'pi pi-fw pi-folder-open',
                                 routerLink: ['estudiante/crud'],
                                 roles: ['Administrador', 'Secretaria']
+                            },
+                            {
+                                label: 'Reportes',
+                                icon: 'pi pi-fw pi-file-pdf',
+                                routerLink: ['estudiante/reporte'],
+                                roles: ['Administrador', 'Secretaria']
                             }
-                            // {
-                            //     label: 'Reportes Estudiantes',
-                            //     icon: 'pi pi-fw pi-file-pdf',
-                            //     routerLink: ['estudiante/reporte'],
-                            //     roles: ['Administrador', 'Secretaria']
-                            // }
                         ],
                         roles: ['Administrador', 'Secretaria']
                     },

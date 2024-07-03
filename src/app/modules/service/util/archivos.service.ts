@@ -25,7 +25,10 @@ export class ArchivosService {
     var hour = new Date().getHours();
     var minutes = new Date().getMinutes();
 
-    file.name = fileName+'_'+day.toString()+'_'+hour.toString()+'_'+minutes.toString()+'.pdf';
+    // file.name = fileName+'_'+day.toString()+'_'+hour.toString()+'_'+minutes.toString()+'.pdf';
+    const name = fileName.split('.');
+    console.log(name);
+    file.name = name[0];
     file.lastModifiedDate = new Date();
 
     const fileURL = URL.createObjectURL(file);
