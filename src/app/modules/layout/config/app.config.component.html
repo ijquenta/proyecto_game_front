@@ -4,7 +4,7 @@
 
 <p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'"
     styleClass="layout-config-sidebar w-20rem">
-    
+
     <div class="flex align-items-center gap-2 flex-wrap">
         <h5>Panel de usuario</h5>
         <div class="text-left" style="display: flex; flex-direction: column; align-items: center;">
@@ -36,6 +36,18 @@
 
     <hr>
     <h5>Ajustes de perfil</h5>
+        <div class="flex align-items-center">
+            <button
+                pButton
+                label="Ver datos personales"
+                icon="pi pi-user-edit"
+                class="p-button p-button-sm p-button-text"
+                (click)="mostrarModalModificarPerfil()"
+                pTooltip="Mostrar"
+                tooltipPosition="top"
+            >
+            </button>
+        </div>
     <hr>
 
 
@@ -84,6 +96,318 @@
         <p-confirmDialog rejectLabel="No" acceptLabel="Si"></p-confirmDialog>
 
     </div>
-
-
 </p-sidebar>
+
+
+
+
+<p-sidebar [(visible)]="showDialogPerfil" styleClass="w-30rem" position="left">
+    <ng-template pTemplate="content">
+        <p-card header="{{persona.pernomcompleto}}" subheader="Nombre Completo" [style]="{ width: '100%' }">
+            <ng-template pTemplate="header">
+                <div class="flex justify-content-center">
+                    <p-image
+                        src="{{apiUrl}}/{{persona.perfoto}}"
+                        alt="Image"
+                        width="150"
+                        height="150"
+                        [preview]="true"
+                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}">
+                    </p-image>
+                </div>
+            </ng-template>
+                <p>
+                    <strong>Tipo de documento:</strong> {{persona.tipodocnombre}} <br>
+                    <strong>Número de documento:</strong> {{persona.pernrodoc}} <br>
+                    <strong>Correo electrónico:</strong> {{persona.peremail}} <br>
+                    <strong>Fecha de nacimiento:</strong> {{persona.perfecnac}} <br>
+                    <strong>Género:</strong> {{persona.generonombre}} <br>
+                    <strong>Dirección:</strong> {{persona.perdirec}} <br>
+                    <strong>Telefono:</strong> {{persona.pertelefono}} <br>
+                    <strong>Celular:</strong> {{persona.percelular}} <br>
+                    <strong>Estado civil:</strong> {{persona.estadocivilnombre}} <br>
+                    <strong>Pais:</strong> {{persona.paisnombre}} <br>
+                    <strong>Ciudad:</strong> {{persona.ciudadnombre}}
+                </p>
+            <ng-template pTemplate="footer">
+                <div class="flex align-items-center justify-content-center">
+                    <button
+                        pButton
+                        label="Cerrar"
+                        icon="pi pi-arrow-left"
+                        (click)="showDialogPerfil = false"
+                        class="p-button p-button-text mb-3"
+                        pTooltip="Cerrar"
+                        tooltipPosition="bottom"
+                    ></button>
+                    <button
+                        pButton
+                        icon="pi pi-user-edit"
+                        label="Modificar datos"
+                        (click)="mostrarModificarPerfil()"
+                        class="p-button p-button-text mb-3"
+                        pTooltip="Modificar datos del perfil"
+                        tooltipPosition="bottom"
+                    ></button>
+                </div>
+            </ng-template>
+        </p-card>
+    </ng-template>
+</p-sidebar>
+
+<p-dialog
+    [(visible)]="showDialogPerfilModificar"
+    header="Perfil"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '70vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+>
+<form [formGroup]="personaForm  " novalidate>
+        <div class="grid p-fluid mt-3">
+            <div class="col-12">
+                <p-card header="Datos personales" subheader="Debera ingresar todos los requeridos (*)." [style]="{ width: '100%' }">
+                    <div class="grid p-fluid mt-3">
+                            <div class="field col-12 md:col-6 lg:col-4">
+                                <label for="apellidoPaterno">Apellido Paterno</label>
+                                <input
+                                    type="text"
+                                    id="apellidoPaterno"
+                                    pInputText
+                                    formControlName="perapepat"
+                                >
+                            </div>
+
+                            <div class="field col-12 md:col-6 lg:col-4">
+                                <label for="apellidoMaterno">Apellido Materno</label>
+                                <input
+                                    type="text"
+                                    id="apellidoMaterno"
+                                    pInputText
+                                    formControlName="perapemat"
+                                >
+                            </div>
+
+                            <div class="field col-12 md:col-6 lg:col-4">
+                                <label for="nombres">Nombres</label>
+                                <input
+                                    type="text"
+                                    id="nombres"
+                                    pInputText
+                                    formControlName="pernombres"
+                                >
+                            </div>
+
+                            <div class="field col-12 md:col-6 lg:col-4">
+                                <label for="tipoDocumento">Tipo Documento</label>
+                                <p-dropdown
+                                    id="tipoDocumento"
+                                    appendTo="body"
+                                    [options]="TipoDocumento"
+                                    formControlName="tipoDocumento"
+                                    optionLabel="tipodocnombre"
+                                ></p-dropdown>
+                            </div>
+
+                            <div class="field col-12 md:col-6 lg:col-4">
+                                <label for="numeroDocumento">Número Documento</label>
+                                    <input
+                                        type="text"
+                                        id="numeroDocumento"
+                                        pInputText
+                                        formControlName="pernrodoc"
+                                    >
+                                <small class="p-error block" *ngIf="personaForm.get('pernrodoc').invalid && personaForm.get('pernrodoc').dirty">
+                                    <span *ngIf="personaForm.get('pernrodoc').errors?.documentoExistente">Este número de documento ya existe.</span>
+                                </small>
+                            </div>
+
+                            <div class="field col-12 md:col-6 lg:col-4">
+                                <label for="fechaNacimiento">Fecha de nacimiento</label>
+                                <p-calendar
+                                    id="fechaNacimiento"
+                                    appendTo="body"
+                                    dateFormat="yy-mm-dd"
+                                    formControlName="perfecnac"
+                                ></p-calendar>
+                                <small class="p-error block" *ngIf="personaForm.get('perfecnac').invalid && personaForm.get('perfecnac').dirty">
+                                    <span *ngIf="personaForm.get('perfecnac').errors?.edadMinima">La fecha de nacimiento no es válida, la persona debe ser mayor de 15 años. </span>
+                                </small>
+                            </div>
+                        </div>
+                </p-card>
+                <hr>
+                <p-card header="Datos secundarios" subheader="Debera ingresar todos los requeridos (*)." [style]="{ width: '100%' }">
+                    <div class="grid p-fluid mt-3">
+                        <div class="field col-12 md:col-6 lg:col-2">
+                            <label for="percelular">Número de Celular</label>
+                            <p-inputMask
+                                mask="+999 99999999"
+                                formControlName="percelular"
+                                placeholder="+591 77777777"
+                            ></p-inputMask>
+                        </div>
+
+                        <div class="field col-12 md:col-6 lg:col-2">
+                            <label for="numeroTelefono">Número de Teléfono</label>
+                            <input
+                                type="text"
+                                id="numeroTelefono"
+                                pInputText
+                                formControlName="pertelefono">
+                        </div>
+
+                        <div class="field col-12 md:col-6 lg:col-4">
+                            <label for="correoElectronico">Correo Electrónico</label>
+                            <input
+                                type="text"
+                                id="correoElectronico"
+                                pInputText
+                                formControlName="peremail"
+                            >
+                            <small class="p-error block" *ngIf="personaForm.get('peremail').invalid && personaForm.get('peremail').dirty">
+                                <span *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es inválido. </span>
+                            </small>
+                        </div>
+
+                        <div class="field col-12 md:col-6 lg:col-4">
+                            <label for="tipoGenero">Tipo Género</label>
+                            <p-dropdown
+                                id="tipoGenero"
+                                [autoDisplayFirst]="false"
+                                appendTo="body"
+                                [options]="TipoGenero"
+                                formControlName="tipoGenero"
+                                optionLabel="generonombre"
+                            ></p-dropdown>
+                        </div>
+
+                        <div class="field col-12 md:col-6 lg:col-4">
+                            <label for="tipoPais">Pais</label>
+                            <p-dropdown
+                                id="tipoPais"
+                                [autoDisplayFirst]="false"
+                                (onChange)="onChangeTipoPais($event)"
+                                appendTo="body"
+                                [options]="TipoPais"
+                                formControlName="tipoPais"
+                                optionLabel="paisnombre"
+                                [filter]="true"
+                                filterBy="paisnombre"
+                            ></p-dropdown>
+                        </div>
+
+                        <div class="field col-12 md:col-6 lg:col-4">
+                            <label for="tipoCiudad">Ciudad</label>
+                            <p-dropdown
+                                id="tipoCiudad"
+                                [autoDisplayFirst]="false"
+                                appendTo="body"
+                                [options]="TipoCiudad"
+                                formControlName="tipoCiudad"
+                                optionLabel="ciudadnombre"
+                            ></p-dropdown>
+                        </div>
+
+                        <div class="field col-12 md:col-6 lg:col-4">
+                            <label for="tipoEstadoCivil">Estado Civil</label>
+                            <p-dropdown
+                                id="tipoEstadoCivil"
+                                [autoDisplayFirst]="false"
+                                appendTo="body"
+                                [options]="TipoEstadoCivil"
+                                formControlName="tipoEstadoCivil"
+                                optionLabel="estadocivilnombre"
+                            ></p-dropdown>
+                        </div>
+
+                        <div class="field col-12">
+                            <label for="textarea">Dirección de Domicilio</label>
+                                <textarea
+                                    inputId="textarea"
+                                    rows="2"
+                                    cols="30"
+                                    formControlName="perdirec"
+                                    appendTo="body"
+                                    pInputTextarea
+                                ></textarea>
+                        </div>
+                    </div>
+                </p-card>
+                <hr>
+                <p-card header="Foto de perfil" subheader="Debera seleccionar una imagen jpg, jpeg, png" [style]="{ width: '100%' }">
+                        <div class="col-12">
+                            <div class="field">
+                                <div class="flex justify-content-center">
+                                    <div class="flex justify-content-center">
+                                        <div *ngIf="personaForm.value.perfoto">
+                                            <p-image
+                                                src="{{apiUrl}}/{{personaForm.value.perfoto}}"
+                                                alt="Image"
+                                                width="150"
+                                                height="150"
+                                                [preview]="true"
+                                                [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
+                                            ></p-image>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    <div class="field col-12">
+                        <div class="card">
+                            <p-fileUpload
+                            #fileUploadperfoto
+                            mode="basic"
+                            chooseLabel="Elegir archivo"
+                            name="demo[]"
+                            url="https://www.primefaces.org/cdn/api/upload.php"
+                            accept="image/*"
+                            maxFileSize="5000000"
+                            (onSelect)="onUploadperfoto($event)"
+                            [showUploadButton]="false"
+                            [showCancelButton]="false"
+                            cancelLabel="Cancelar"
+                            [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                            [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                            [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                            [invalidFileTypeMessageDetail]="'Solo se permiten imagenes. Los tipos de archivo permitidos son: JPEG, PNG, etc.'"
+                            styleClass="mb-2"
+                            >
+                        </p-fileUpload>
+                        <small class="p-error block" *ngIf="personaForm.get('perfoto').invalid && personaForm.get('perfoto').touched" >
+                          <span *ngIf="personaForm.get('perfoto').errors?.required">
+                            La foto de perfil es requerido. (*)
+                          </span>
+                        </small>
+                        <div *ngIf="perfotoFile">
+                          <div class="card col-12">
+                            <button pButton icon="pi pi-trash" (click)="clearFilesperfoto()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                            <ng-container *ngIf="isImage(perfotoFile.type);">
+                                <div class="mb-2 justify-content-center align-items-center">
+                                    <p-image
+                                        [src]="fileurlperfoto"
+                                        alt="Carta"
+                                        width="150"
+                                        height="150"
+                                        [preview]="true"
+                                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
+                                    ></p-image>
+                                </div>
+                              </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </p-card>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [formNoValidate]="personaForm.valid" (click)="enviarFormulario()"></button>
+    </ng-template>
+</p-dialog>

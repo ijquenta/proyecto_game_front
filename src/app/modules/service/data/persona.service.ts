@@ -27,6 +27,17 @@ export class PersonaService {
                 private spinner: NgxSpinnerService,
                 private authService: AuthService) { }
 
+
+    modificiarPerfil(criterio: any){
+        return this.http.post(`${API_URL}/modificarPerfil`, criterio, { context: checktoken()})
+    }
+
+    mostrarPerfil(perid: number){
+        return this.http.get(`${API_URL}/mostrarDatosPersona/${perid}`, { context: checktoken()})
+    }
+
+    // Servicios Informacion Admision
+
     rptInformacionAdmision(perid: number) {
         this.usuario = this.authService.getDataUsuario();
         const criterio = {
