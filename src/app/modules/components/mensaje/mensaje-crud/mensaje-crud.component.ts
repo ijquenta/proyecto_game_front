@@ -103,7 +103,7 @@ export class MensajeCrudComponent implements OnInit {
         });
     }
     ListarPersonas() {
-        this.personaService.ListarPersona().subscribe((data: any) => {
+        this.personaService.getPersons().subscribe((data: any) => {
             this.Personas = data;
         });
     }
@@ -138,7 +138,7 @@ export class MensajeCrudComponent implements OnInit {
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
             // console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.gestionarPersona(this.personaRegistro).subscribe(
+            this.personaService.managePerson(this.personaRegistro).subscribe(
                 (data: any) => {
                     // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
@@ -163,7 +163,7 @@ export class MensajeCrudComponent implements OnInit {
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
             // console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.gestionarPersona(this.personaRegistro).subscribe(
+            this.personaService.managePerson(this.personaRegistro).subscribe(
                 (data: any) => {
                     // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
@@ -223,7 +223,7 @@ export class MensajeCrudComponent implements OnInit {
         // console.log("eliminarPersona: ", this.persona);
         this.personaRegistro = { ...this.persona };
         this.personaRegistro.tipo = 3;
-        this.personaService.gestionarPersona(this.personaRegistro).subscribe(
+        this.personaService.managePerson(this.personaRegistro).subscribe(
             (data: any) => {
                 // console.log("Gestionar Persona: ", data);
                 this.eliminarPersonaDialog = false;

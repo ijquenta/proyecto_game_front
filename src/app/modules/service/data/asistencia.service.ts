@@ -4,7 +4,7 @@ import { Product } from '../../api/product';
 import { API_URL } from 'src/environments/environment';
 import { Usuario } from '../../models/usuario';
 import { Rol } from '../../models/rol';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable({

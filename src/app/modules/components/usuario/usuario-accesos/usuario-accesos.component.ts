@@ -14,7 +14,7 @@ import { TipoIcono, TipoRol, TipoSubMenu, TipoMenu } from 'src/app/modules/model
 import { Menu } from 'src/app/modules/models/menu';
 import { SubMenu } from 'src/app/modules/models/submenu';
 // Serivices
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AccesoService } from 'src/app/modules/service/data/acceso.service';
@@ -151,7 +151,7 @@ export class UsuarioAccesosComponent implements OnInit {
     // List
     listAccesses() {
         this.spinner.show();
-        this.accesoService.getAccesses().subscribe({ 
+        this.accesoService.getAccesses().subscribe({
             next: (data: any) => {
             this.accesses = data;
             this.spinner.hide();
@@ -160,7 +160,7 @@ export class UsuarioAccesosComponent implements OnInit {
             error: (error) => {
             console.error('Error al listar accesos:', error);
             this.spinner.hide();
-            }, 
+            },
             complete: () => {
             // console.log('Listado de accesos completado.');
             this.spinner.hide();
@@ -344,7 +344,7 @@ export class UsuarioAccesosComponent implements OnInit {
     hideDialogAccess() {
         this.addAccessdialog = false;
     }
-   
+
 
     // Menu ------------------------------------------------------------------------------------------------------------------
     // Get Menus
@@ -400,7 +400,7 @@ export class UsuarioAccesosComponent implements OnInit {
             ,complete: () => {
             }
         })
-    }   
+    }
     // Update
     MenuUpdate(menu: Menu){
         // console.log("MenuUpdate: ", menu);
@@ -437,7 +437,7 @@ export class UsuarioAccesosComponent implements OnInit {
             }
         })
 
-        
+
     }
     // Hialog dialog menu
     hideDialogMenu(){
@@ -563,7 +563,7 @@ export class UsuarioAccesosComponent implements OnInit {
                 mennombre: item.mennombre
               } as SubMenu;
             });
-    
+
             this.spinner.hide();
             console.log("SubMenus: ", this.submenus);
           },
@@ -720,5 +720,5 @@ export class UsuarioAccesosComponent implements OnInit {
             }
         })
     }
-  
+
 }

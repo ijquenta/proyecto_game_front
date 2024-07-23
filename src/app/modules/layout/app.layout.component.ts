@@ -6,7 +6,7 @@ import { AppSidebarComponent } from './sidebar/app.sidebar.component';
 import { AppTopBarComponent } from './topbar/app.topbar.component';
 import { MessageService } from 'primeng/api';
 
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 @Component({
     selector: 'app-layout',
@@ -60,7 +60,7 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
             });
     }
     ngOnInit() {
-        this.authService.getPerfil().subscribe(() => {
+        this.authService.getProfile().subscribe(() => {
             // console.log('get profile')
         });
         // console.log("Get Perfil Unico: ")

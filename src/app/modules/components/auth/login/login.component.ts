@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'; // Importa la clase Component
 import { Router } from '@angular/router'; // Importa el servicio de enrutamiento de Angular
 import { Message } from 'primeng/api'; // Importa la interfaz Message de PrimeNG para representar mensajes
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms'; // Importa clases relacionadas con formularios reactivos de Angular
-import { AuthService } from 'src/app/services/auth.service'; // Importa el servicio AuthService desde el archivo auth.service
+import { AuthService } from 'src/app/modules/service/core/auth.service'; // Importa el servicio AuthService desde el archivo auth.service
 import { NgxSpinnerService } from 'ngx-spinner'; // Importa el servicio NgxSpinnerService para manejar spinners de carga
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service'; // Importa el servicio LayoutService desde el archivo app.layout.service
 import { RequestStatus } from 'src/app/modules/models/request-status.model'; // Importa la clase RequestStatus desde el archivo request-status.model

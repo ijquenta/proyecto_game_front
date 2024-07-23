@@ -45,11 +45,11 @@
                                 <span class="font-bold ml-2">{{ notaMateria.pernomcompleto }}</span>
                             </div>
                             <div *ngIf="notaMateria.perfoto != null" class="user-display">
-                                <p-avatar image="{{ apiUrl }}/{{ notaMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                <p-avatar image="{{ userProfilePhoto }}/{{ notaMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                 <span class="font-bold ml-2">{{ notaMateria.pernomcompleto }}</span>
                             </div>
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(notaMateria.curmatestado)" [severity]="obtenerSeverityEstado(notaMateria.curmatestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="getDescriptionStatus(notaMateria.curmatestado)" [severity]="getSeverityStatus(notaMateria.curmatestado)" [rounded]="true"></p-tag> </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -122,7 +122,7 @@
                                         <span class="font-bold ml-2">{{ nota.pernomcompleto }}</span>
                                     </div>
                                     <div *ngIf="nota.perfoto != null" class="user-display">
-                                        <p-avatar image="{{ apiUrl }}/{{ nota.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        <p-avatar image="{{ userProfilePhoto }}/{{ nota.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                         <span class="font-bold ml-2">{{ nota.pernomcompleto }}</span>
                                     </div>
                                 </td>

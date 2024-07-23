@@ -11,20 +11,24 @@ export class TokenService {
 
     constructor() { }
 
-    saveToken(token: string) { // Método para guardar el token en una cookie
+    // Método para guardar el token en una cookie
+    saveToken(token: string) {
         setCookie('token', token, { expires: 365, path: '/' });
     }
 
-    getToken() { // Método para obtener el token desde la cookie
+    // Método para obtener el token desde la cookie
+    getToken() {
         const token = getCookie('token');
         return token
     }
 
-    removeToken() { // Método para eliminar el token de la cookie
+    // Método para eliminar el token de la cookie
+    removeToken() {
         removeCookie('token');
     }
 
-    isValidToken() { // Método para verificar si el token es válido
+    // Método para verificar si el token es válido
+    isValidToken() {
         const token = this.getToken();
         if (!token) {
             return false;

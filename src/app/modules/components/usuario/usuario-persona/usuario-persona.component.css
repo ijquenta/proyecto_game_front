@@ -34,3 +34,20 @@
   color: #29c76f;
 }
 
+.speeddial-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 3rem 5rem 1rem;
+}
+
+@media screen and (max-width: 960px) {
+    .speeddial-container {
+        padding: 1rem;
+        justify-content: flex-start;
+    }
+
+    .speeddial-container p-speedDial {
+        padding: 1rem;
+    }
+}

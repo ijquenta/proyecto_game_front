@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // validaci
 import { AbstractControl, AsyncValidatorFn, ValidatorFn } from '@angular/forms'; // validaciones asincronas
 import { Observable, of } from 'rxjs';
 // --------- Importación servicios
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
 // --------- Importación modelos
 import { TipoMatricula } from 'src/app/modules/models/matricula';
@@ -55,7 +55,7 @@ export class MatriculaListarComponent implements OnInit {
 
         this.listarTipoMatricula(); // listar tipo de matriculas
 
-        this.getPerfilUsuario(); // obtener los valores del usuario logueado
+        this.getProfileUsuario(); // obtener los valores del usuario logueado
 
         this.asignacionValidacion(); // se asigna los parametros para la variable de validación
 
@@ -117,8 +117,8 @@ export class MatriculaListarComponent implements OnInit {
         };
     }
 
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }
@@ -279,7 +279,7 @@ export class MatriculaListarComponent implements OnInit {
         );
     }
 
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -290,7 +290,7 @@ export class MatriculaListarComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

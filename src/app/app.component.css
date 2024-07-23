@@ -36,20 +36,20 @@
 
 .user-display {
     display: flex;
-    align-items: center; /* Alinea los ítems verticalmente en el centro */
+    align-items: center;
 }
 .user-info-container {
     display: flex;
-    align-items: center; /* Alinea verticalmente los elementos del flex container */
-    margin-bottom: 20px; /* Espacio adicional al final del contenedor */
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .user-info-avatar {
-    margin-right: 20px; /* Espacio entre el avatar y los detalles del usuario */
+    margin-right: 20px;
 }
 
 .user-info-details {
-    flex-grow: 1; /* Permite que este div ocupe el espacio restante */
+    flex-grow: 1;
 }
 
 .file-input-wrapper {
@@ -84,7 +84,6 @@
     background-color: #004080;
   }
 
-  /* Opcional: Estilo para cuando el input tiene un archivo seleccionado */
   .file-input-wrapper input[type="file"]:not(:focus) + label {
     background-color: #28a745;
   }

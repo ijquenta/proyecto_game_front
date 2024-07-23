@@ -6,7 +6,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 // --------------- Modelo Usuario
 import { Usuario } from 'src/app/modules/models/usuario';
 // --------------- Importación de Autenticación
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 
@@ -41,7 +41,7 @@ export class ContabilidadGestionarComponent implements OnInit {
     loading2: boolean = false;
     errors: any;
     usuario: Usuario;
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
     // Datos para contabilidad
     ingresos!: any[];
     ingresos2: any[] = [];
@@ -81,7 +81,7 @@ export class ContabilidadGestionarComponent implements OnInit {
             { resdescripcion: '50% de valor Pr. Hugo Carrasco', resmonto: 0 },
             { resdescripcion: 'Diferencia de alumnanos Pr. Hugo Carrasco', resmonto: 0 },
         ];
-        this.getPerfilUsuario();
+        this.getProfileUsuario();
     }
     onRowEditInit(item: ResumenFinanciero) {
         this.clonedResumen[item.id] = { ...item };
@@ -151,9 +151,9 @@ export class ContabilidadGestionarComponent implements OnInit {
 
 
     // Obtener datos del perfil del usuario logeado
-    getPerfilUsuario() {
+    getProfileUsuario() {
         this.spinner.show();
-        this.authService.getPerfil().subscribe(usuario => {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
             this.spinner.hide();
         },

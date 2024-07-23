@@ -10,7 +10,7 @@ import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { InscripcionRegistro } from 'src/app/modules/models/inscripcion';
 @Component({

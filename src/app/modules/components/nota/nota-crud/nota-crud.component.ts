@@ -7,7 +7,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 import { NotaService } from 'src/app/modules/service/data/nota.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Nota } from 'src/app/modules/models/nota';
 import { Inscripcion } from 'src/app/modules/models/inscripcion';
 import { Usuario } from 'src/app/modules/models/usuario';
@@ -56,7 +56,7 @@ export class NotaCrudComponent implements OnInit {
     curnombre: any;
     matnombre: any;
     insid: any
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
     nota_recuperada: Nota[] = [];
     nota_recuperada_datos: any;
     notasImportadas: boolean = false;
@@ -207,7 +207,7 @@ export class NotaCrudComponent implements OnInit {
             'contains'
         );
     }
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -218,7 +218,7 @@ export class NotaCrudComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

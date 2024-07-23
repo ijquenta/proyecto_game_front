@@ -5,9 +5,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 // Services
-import { AuthService } from 'src/app/services/auth.service';
-import { TokenService } from 'src/app/services/token.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
+import { TokenService } from 'src/app/modules/service/core/token.service';
 import { Router } from '@angular/router';
+import { UsuarioService } from '../../service/data/usuario.service';
 //Models
 import { Usuario } from '../../models/usuario';
 import { environment } from 'src/environments/environment';
@@ -19,12 +20,15 @@ import { TipoCiudad, TipoDocumento, TipoEstadoCivil, TipoGenero, TipoPais } from
 import { FileUpload } from 'primeng/fileupload';
 @Component({
     selector: 'app-config',
-    templateUrl: './app.config.component.html'
+    templateUrl: './app.config.component.html',
+    styleUrls: ['../../../app.component.css']
 })
 export class AppConfigComponent {
+
+
     @ViewChild('fileUploadperfoto') fileUploadperfoto: FileUpload;
     usuario: any = {};
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
     @Input() minimal: boolean = false;
     scales: number[] = [12, 13, 14, 15, 16];
     isDarkTheme: boolean = false;
@@ -48,6 +52,9 @@ export class AppConfigComponent {
     fileurlperfoto: any;
     perfotoFile: File | null = null;
     perfotoFileUrl: string | null = null;
+    showDialogChangePassword: any;
+    userPasswordForm: FormGroup<any>;
+    userData: Usuario;
 
     constructor(public layoutService: LayoutService,
                 public menuService: MenuService,
@@ -58,7 +65,8 @@ export class AppConfigComponent {
                 private spinner: NgxSpinnerService,
                 private personaService: PersonaService,
                 private formBuilder: FormBuilder,
-                private cdr: ChangeDetectorRef
+                private cdr: ChangeDetectorRef,
+                private usuarioService: UsuarioService
                ) { }
 
     ngOnInit() {
@@ -67,10 +75,95 @@ export class AppConfigComponent {
         this.asignacionVariables();
         this.listarPersonas();
         this.llenarTipoCombo();
+
+        this.userPasswordForm = this.formBuilder.group({
+            usupassword: ['', [Validators.required, Validators.minLength(8), this.seguridadPassword]],
+            usupasswordconfirm: ['', [Validators.required]]
+        }, { validator: this.validardorPasswords });
+
+    }
+
+    showModalChangePassword() {
+        this.showDialogChangePassword = true;
+    }
+
+    hideDialogChangePassword(){
+        this.showDialogChangePassword = false;
+    }
+
+
+    changePassword() {
+        // Verify that the fields are correct
+        if (this.userPasswordForm.invalid) {
+            this.messageService.add({ severity: 'error', summary: 'Advertencia', detail: 'Por favor, verifica las contraseñas ingresadas.', life: 3000 });
+            return Object.values(this.userPasswordForm.controls).forEach(control => {
+                control.markAllAsTouched();
+                control.markAsDirty();
+            });
+        }
+        console.log("changePassword: ", this.userPasswordForm.value)
+
+        this.userData = new Usuario();
+        this.userData.usuname = this.usuario.usuname;
+        this.userData.usupassword = this.userPasswordForm.value.usupassword;
+        this.spinner.show();
+        this.usuarioService.changePassword(this.userData).subscribe({
+          next: (response) => {
+            console.log("changePassword response: ",response);
+            this.spinner.hide();
+
+            this.messageService.add(
+                {
+                    severity: 'success',
+                    summary: 'Contraseña',
+                    detail: 'Se cambió correctamente.',
+                    life: 3000
+                }
+            );
+          },
+          error: (err) => {
+            console.log(err);
+            this.spinner.hide();
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error. Contacta al soporte.',
+                life: 5000
+            });
+          },
+          complete: () => {
+            this.spinner.hide();
+            this.showDialogChangePassword = false;
+            // this.userPasswordForm.reset();
+          }
+        });
+    }
+
+    // Verifica que la contraseña: debe incluir mayúsculas, minúsculas y números
+    seguridadPassword(control: AbstractControl): { [key: string]: boolean } | null {
+        const value = control.value;
+        if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
+          return { seguridadPassword: true };
+        }
+        return null;
+      }
+
+    // Verifica si las contraseña y repetir la contraseña sean iguales
+    validardorPasswords(fg: FormGroup): { [key: string]: boolean } | null {
+        const password = fg.get('usupassword').value;
+        const confirmPassword = fg.get('usupasswordconfirm').value;
+        if (password && confirmPassword && password !== confirmPassword) {
+            return { mismatch: true };
+        }
+        return null;
+    }
+
+    mostrarModalCambiarContrasenia() {
+    throw new Error('Method not implemented.');
     }
 
     obtenerDatosUsuario() {
-        this.authService.getPerfil().subscribe(
+        this.authService.getProfile().subscribe(
             (result: any) => {
               this.usuario = result[0];
             },
@@ -106,7 +199,7 @@ export class AppConfigComponent {
     listarPersonas() {
         this.spinner.show();
         this.loading = true;
-        this.personaService.ListarPersona().subscribe(
+        this.personaService.getPersons().subscribe(
             (result: any) => {
                 this.personas = result;
                 this.personasDuplicated = this.personas;
@@ -114,7 +207,12 @@ export class AppConfigComponent {
                 this.spinner.hide();
             },
             (error: any) => {
-                this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el recuperar información del sistema.', life: 3000 });
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Ocurrió un error. Contacta al soporte.',
+                    life: 5000
+                });
                 this.loading = false;
                 this.spinner.hide();
             }

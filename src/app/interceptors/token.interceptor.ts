@@ -9,7 +9,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { TokenService } from '../services/token.service';
+import { TokenService } from '../modules/service/core/token.service';
 
 const CHECK_TOKEN =  new HttpContextToken<boolean>(() =>  false);
 
@@ -25,7 +25,6 @@ export class TokenInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // return next.handle(request);
     if(request.context.get(CHECK_TOKEN)){
         return this.addToken(request, next);
     }
@@ -40,7 +39,6 @@ export class TokenInterceptor implements HttpInterceptor {
         const authRequest = request.clone({
             headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
         });
-        // console.log("TokenIntereptor: ", authRequest);
         return next.handle(authRequest);
     }
     return next.handle(request);

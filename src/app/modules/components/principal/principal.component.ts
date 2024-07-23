@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Product } from '../../api/product';
-import { ProductService } from '../../service/examples/product.service';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Usuario } from '../../models/usuario';
 import { PrincipalService } from '../../service/data/principal.service';
 @Component({
@@ -95,7 +94,7 @@ export class PrincipalComponent implements OnInit, OnDestroy {
 
     listaEstudiantesMateria: any;
     listaEstudiantesNivel: any;
-    constructor(private productService: ProductService,
+    constructor(
                         public layoutService: LayoutService,
                         private spinner: NgxSpinnerService,
                         private principalService: PrincipalService,
@@ -119,7 +118,6 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         this.initChart11();
 
 
-        // this.productService.getProductsSmall().then(data => this.products = data);
 
         this.items = [
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },

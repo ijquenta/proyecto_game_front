@@ -1,6 +1,6 @@
 import { Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import { distinctUntilChanged, map, Subscription, tap } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../modules/service/core/auth.service';
 // import { Role } from '../model';
 
 @Directive({

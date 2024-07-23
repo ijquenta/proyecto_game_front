@@ -40,13 +40,13 @@
                         <td> <p-chip> <div class="p-2"> {{cursoMateria.matnombre}} </div> </p-chip> </td>
                         <td style="width:10%; min-width:10rem;">
                             <div *ngIf="cursoMateria.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
-                            <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ apiUrl }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
+                            <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
                         </td>
                         <td> <strong>Inicio:</strong> {{cursoMateria.curmatfecini}} <strong> <br> Fin:</strong> {{cursoMateria.curmatfecfin}} </td>
                         <td style="width:5%; min-width:7rem;"> <strong>{{cursoMateria.curmatcosto}} Bs.</strong> </td>
                         <td> <p-chip> <div class="p-2"> {{cursoMateria.curmatusureg}} <br> {{cursoMateria.curmatfecreg }} </div> </p-chip> </td>
                         <td> <p-chip> <div class="p-2"> <ng-container *ngIf="cursoMateria.curmatusumod; else noModificado"> {{ cursoMateria.curmatusumod }} <br> {{ cursoMateria.curmatfecmod }} </ng-container> <ng-template #noModificado> No se ha modificado </ng-template> </div> </p-chip> </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(cursoMateria.curmatestado)" [severity]="obtenerSeverityEstado(cursoMateria.curmatestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="getDescriptionStatus(cursoMateria.curmatestado)" [severity]="getSeverityStatus(cursoMateria.curmatestado)" [rounded]="true"></p-tag> </td>
                         <td> <div class="flex"> <button pButton pRipple icon="fa-solid fa-pencil" class="p-button-rounded p-button mr-2" (click)="editarCursoMateria(cursoMateria)" pTooltip="Editar"> </button> <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" (click)="desactivarCursoMateria(cursoMateria)" pTooltip="Desactivar "> </button> </div> </td>
                     </tr>
                 </ng-template>
@@ -83,12 +83,12 @@
                         <td> <p-chip> <div class="p-2"> {{cursoMateria.matnombre}} </div> </p-chip> </td>
                         <td>
                             <div *ngIf="cursoMateria.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
-                            <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ apiUrl }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
+                            <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
                         </td>
                         <td> <strong>Inicio:</strong> {{cursoMateria.curmatfecini}} <strong>Fin:</strong> {{cursoMateria.curmatfecfin}} </td>
                         <td> <p-chip> <div class="p-2"> {{cursoMateria.curmatusureg}} <br> {{cursoMateria.curmatfecreg }} </div> </p-chip> </td>
                         <td> <p-chip> <div class="p-2"> <ng-container *ngIf="cursoMateria.curmatusumod; else noModificado"> {{ cursoMateria.curmatusumod }} <br> {{ cursoMateria.curmatfecmod }} </ng-container> <ng-template #noModificado> No se ha modificado </ng-template> </div> </p-chip> </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(cursoMateria.curmatestado)" [severity]="obtenerSeverityEstado(cursoMateria.curmatestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="getDescriptionStatus(cursoMateria.curmatestado)" [severity]="getSeverityStatus(cursoMateria.curmatestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" (click)="activarCursoMateria(cursoMateria)" pTooltip="Activar curso materia"> </button>
@@ -130,7 +130,7 @@
                     <ng-template let-persona pTemplate="item">
                         <div class="flex align-items-center">
                             <div *ngIf="persona.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
-                            <div *ngIf="persona.perfoto != null" class="user-display"> <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
+                            <div *ngIf="persona.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
                         </div>
                     </ng-template>
                 </p-dropdown>

@@ -37,7 +37,7 @@
                             <td>{{texto.texnombre}}</td>
                             <td> {{texto.textipo}}</td>
                             <td> {{texto.texdocumento}} </td>
-                            <td> <p-tag [value]="obtenerDescripcionEstado(texto.texestado)" [severity]="obtenerSeverityEstado(texto.texestado)" [rounded]="true"></p-tag> </td>
+                            <td> <p-tag [value]="getDescriptionStatus(texto.texestado)" [severity]="getSeverityStatus(texto.texestado)" [rounded]="true"></p-tag> </td>
                             <ng-template #noRegistro>
                                 sin registrar
                             </ng-template>

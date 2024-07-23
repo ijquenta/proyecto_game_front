@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-// import { Product } from 'src/app/release/api/product';
 import { Usuarios } from 'src/app/modules/models/usuarios';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-// import { ProductService } from 'src/app/release/service/product.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
@@ -41,7 +39,6 @@ export class InscripcionListarComponent implements OnInit {
     listaUsuarios: Usuario[] = [];
 
     constructor(
-                // private productService: ProductService,
                 private messageService: MessageService,
                 private usuarioService: UsuarioService,
                 public reporte: ReporteService,) { }
@@ -56,7 +53,6 @@ export class InscripcionListarComponent implements OnInit {
                 // console.log("usuarios", this.listaUsuarios)
             }
         )
-        // this.productService.getProducts().then(data => this.products = data);
 
         this.cols = [
             { field: 'product', header: 'Product' },

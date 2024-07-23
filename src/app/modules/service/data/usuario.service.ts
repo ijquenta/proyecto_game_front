@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
 import { Rol } from '../../models/rol';
+import { Observable } from 'rxjs';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +13,7 @@ export class UsuarioService {
     constructor(private http: HttpClient) { }
 
     getUsuario(){
-        return this.http.get(`${API_URL}/listaUsuarios`);
+        return this.http.get(`${API_URL}/listaUsuarios`, { context: checktoken() });
     }
 
     getRoles(){
@@ -19,35 +21,49 @@ export class UsuarioService {
     }
 
     crearRol(criterio: any){
-        return this.http.post(`${API_URL}/crearRol`, criterio);
+        return this.http.post(`${API_URL}/crearRol`, criterio, { context: checktoken() });
     }
 
     modificarRol(criterio: any){
-        // console.log("Service Modificar Rol", criterio);
         let registroModRol = new Rol();
-        // console.log("datos service->", registroModRol);
         return this.http.post(`${API_URL}/modificarRol`, registroModRol);
     }
     eliminarRol(criterio: any){
-        // console.log("Service Eliminar Rol", criterio);
-        return this.http.post(`${API_URL}/eliminarRol`, criterio);
+        return this.http.post(`${API_URL}/eliminarRol`, criterio, { context: checktoken() });
     }
 
     listaUsuario(){
-        return this.http.get(`${API_URL}/listaUsuario`);
+        return this.http.get(`${API_URL}/listaUsuario`, { context: checktoken() });
     }
     gestionarUsuario(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarUsuario`, criterio);
+        return this.http.post(`${API_URL}/gestionarUsuario`, criterio, { context: checktoken() });
     }
+
     getTipoPersona(){
-        return this.http.get(`${API_URL}/tipoPersona`)
+        return this.http.get(`${API_URL}/tipoPersona`, { context: checktoken() })
     }
 
     gestionarUsuarioEstado(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarUsuarioEstado`, criterio);
+        return this.http.post(`${API_URL}/gestionarUsuarioEstado`, criterio, { context: checktoken() });
     }
 
     gestionarUsuarioPassword(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarUsuarioPassword`, criterio);
+        return this.http.post(`${API_URL}/gestionarUsuarioPassword`, criterio, { context: checktoken() });
+    }
+
+    buscarUsuario(criterio: any): Observable<any> {
+        return this.http.post<any>(`${API_URL}/buscarUsuario`, criterio, { context: checktoken() });
+    }
+
+    requestChangePassword(criterio: any) {
+        return this.http.post(`${API_URL}/requestChangePassword`, criterio, { context: checktoken() });
+    }
+
+    resetPassword(token: any, criterio: any){
+        return this.http.post(`${API_URL}/auth/resetPassword/${token}`, criterio, { context: checktoken() })
+    }
+
+    changePassword(criterio: any){
+        return this.http.post(`${API_URL}/changePassword`, criterio, { context: checktoken()});
     }
 }

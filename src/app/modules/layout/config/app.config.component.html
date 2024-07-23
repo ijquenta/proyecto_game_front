@@ -21,7 +21,7 @@
             <div *ngIf="usuario.perfoto != null" class="user-display">
                 <p-tag [style]="{ 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 70%)'}">
                     <div class="flex align-items-center gap-2">
-                        <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge"
+                        <p-avatar image="{{ userProfilePhoto }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge"
                             shape="circle"></p-avatar>
                         <h5>{{usuario.pernomcompleto}}</h5>
                     </div>
@@ -44,6 +44,17 @@
                 class="p-button p-button-sm p-button-text"
                 (click)="mostrarModalModificarPerfil()"
                 pTooltip="Mostrar"
+                tooltipPosition="top"
+            >
+            </button>
+
+            <button
+                pButton
+                label="Cambiar contraseña"
+                icon="pi pi-key"
+                class="p-button p-button-sm p-button-text"
+                (click)="showModalChangePassword()"
+                pTooltip="Cambiar"
                 tooltipPosition="top"
             >
             </button>
@@ -107,7 +118,7 @@
             <ng-template pTemplate="header">
                 <div class="flex justify-content-center">
                     <p-image
-                        src="{{apiUrl}}/{{persona.perfoto}}"
+                        src="{{userProfilePhoto}}/{{persona.perfoto}}"
                         alt="Image"
                         width="150"
                         height="150"
@@ -155,6 +166,8 @@
     </ng-template>
 </p-sidebar>
 
+
+<!-- Actualizar datos de usuario -->
 <p-dialog
     [(visible)]="showDialogPerfilModificar"
     header="Perfil"
@@ -345,7 +358,7 @@
                                     <div class="flex justify-content-center">
                                         <div *ngIf="personaForm.value.perfoto">
                                             <p-image
-                                                src="{{apiUrl}}/{{personaForm.value.perfoto}}"
+                                                src="{{userProfilePhoto}}/{{personaForm.value.perfoto}}"
                                                 alt="Image"
                                                 width="150"
                                                 height="150"
@@ -409,5 +422,56 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
         <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [formNoValidate]="personaForm.valid" (click)="enviarFormulario()"></button>
+    </ng-template>
+</p-dialog>
+<!-- Cambiar contraseña -->
+<p-dialog [(visible)]="showDialogChangePassword" header="Cambiar contraseña" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '35vw' }" [draggable]="false" [resizable]="false">
+    <p-card>
+        <ng-template pTemplate="content">
+            <div class="user-info-container">
+                <div class="user-info-details">
+                    <p><strong>1. </strong>La contraseña debe tener al menos 8 caracteres.</p>
+                    <p><strong>2. </strong>La contraseña debe incluir una mayúscula, una minúscula y un número.</p>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
+    <hr>
+        <form [formGroup]="userPasswordForm">
+            <div class="grid p-fluid">
+                <div class="field col-12 md:col-12">
+                    <span class="p-float-label">
+                        <p-password
+                            id="password"
+                            formControlName="usupassword"
+                            [toggleMask]="true"
+                            [feedback]="false"
+                            appendTo="body"
+                        ></p-password>
+                        <label for="password">Contraseña</label>
+                    </span>
+                    <small class="p-error block" *ngIf="userPasswordForm.get('usupassword').invalid && (userPasswordForm.get('usupassword').dirty || userPasswordForm.get('usupassword').touched)">
+                        <span *ngIf="userPasswordForm.get('usupassword').errors?.required"> La contraseña es obligatoria. <br> </span>
+                        <span *ngIf="userPasswordForm.get('usupassword').errors?.minlength"> La contraseña debe tener al menos 8 caracteres. <br> </span>
+                        <span *ngIf="userPasswordForm.get('usupassword').errors?.seguridadPassword "> La contraseña debe incluir mayúsculas, minúsculas y números. <br> </span>
+                    </small>
+                    <small class="p-success block" *ngIf="userPasswordForm.get('usupassword').valid && (userPasswordForm.get('usupassword').dirty || userPasswordForm.get('usupassword').touched)"> La contraseña es válida. </small>
+                </div>
+                <div class="field col-12 md:col-12">
+                    <span class="p-float-label">
+                        <p-password id="passwordhash" formControlName="usupasswordconfirm" [toggleMask]="true" [feedback]="false" appendTo="body"></p-password>
+                        <label for="passwordhash">Confirmar Contraseña</label>
+                    </span>
+                    <small class="p-error block" *ngIf="userPasswordForm.get('usupasswordconfirm').dirty">
+                        <span *ngIf="userPasswordForm.get('usupasswordconfirm').errors?.required"> Confirmar la contraseña es obligatorio. </span>
+                        <span *ngIf="userPasswordForm.errors?.['mismatch']"> Las contraseñas no coinciden. </span>
+                    </small>
+                    <small class="p-success block" *ngIf="userPasswordForm.get('usupasswordconfirm').valid && !userPasswordForm.errors?.['mismatch']"> La confirmación de la contraseña es válida. </small>
+                </div>
+            </div>
+        </form>
+    <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogChangePassword()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="changePassword()"></button>
     </ng-template>
 </p-dialog>

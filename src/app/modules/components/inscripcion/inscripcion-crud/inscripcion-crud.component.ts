@@ -15,7 +15,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { InscripcionService } from 'src/app/modules/service/data/inscripcion.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 // Importacion de modelos
 import { Usuarios } from 'src/app/modules/models/usuarios';
 import { TipoMatriculaEstudiante } from 'src/app/modules/models/inscripcion';
@@ -80,7 +80,7 @@ export class InscripcionCrudComponent implements OnInit {
      //----------------Variables para validación----------------//
     usuario: Usuario;
 
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
     obtenerInscritos: any;
     constructor(
         private messageService: MessageService,
@@ -106,7 +106,7 @@ export class InscripcionCrudComponent implements OnInit {
 
        this.asignacionValidacionesInscripcion(); // Método de asignación de validaciones
 
-       this.getPerfilUsuario(); // Método de getPerfil() de usuario logeado
+       this.getProfileUsuario(); // Método de getProfile() de usuario logeado
 
     }
 
@@ -140,8 +140,8 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     // Obtener datos del perfil del usuario logeado
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }
@@ -421,7 +421,7 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     // Funciones para obtener el color de la barra de estado
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -432,7 +432,7 @@ export class InscripcionCrudComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

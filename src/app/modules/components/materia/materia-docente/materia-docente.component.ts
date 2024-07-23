@@ -9,7 +9,7 @@ import { DatePipe } from '@angular/common';
 import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
 import { DocenteService } from 'src/app/modules/service/data/docente.service';
 import { CursoMateria } from 'src/app/modules/models/curso';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { InscripcionRegistro } from 'src/app/modules/models/inscripcion';
 @Component({

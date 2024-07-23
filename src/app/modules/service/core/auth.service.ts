@@ -1,67 +1,100 @@
-import { Injectable } from '@angular/core';
-import jwt_decode from "jwt-decode";
 
-export const idServicio: string = 'e239d100-a591-4d31-accd-142becbbf4cc';
+import { API_URL } from '../../../../environments/environment'; // Importa la constante API_URL desde el archivo environment en la carpeta environments
+import { Injectable } from '@angular/core'; // Importa el decorador Injectable desde Angular Core
+import { HttpClient } from '@angular/common/http'; // Importa el módulo HttpClient para realizar solicitudes HTTP
+import { environment } from 'src/environments/environment'; // Importa el objeto environment desde el archivo environment en la carpeta environments
+import { map, tap } from 'rxjs/operators'; // Importa operadores de rxjs para manipulación de datos asincrónicos
+import { TokenService } from 'src/app/modules/service/core/token.service' // Importa el servicio TokenService desde el archivo token.service
+import { ResponseLogin } from '../../models/auth.model'; // Importa la interfaz ResponseLogin desde el archivo auth.model en la carpeta models
+import { Usuario } from '../../models/usuario'; // Importa la interfaz Usuario desde el archivo usuario en la carpeta models
+import jwt_decode from "jwt-decode"; // Importa la función jwt_decode desde la librería jwt-decode
+import { BehaviorSubject, Observable } from 'rxjs'; // Importa BehaviorSubject y Observable desde rxjs para manejo de observables
+import { checktoken } from '../../../interceptors/token.interceptor'; // Importa la función checktoken desde el interceptor token.interceptor
+
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
+
 export class AuthService {
 
-  funcionesUsuario: any[] = [];
+    API_URL = environment.API_URL;
+    usuario$ = new BehaviorSubject<Usuario | null>(null);
+    isLoggedIn$: Observable<boolean> = this.usuario$.pipe(map(Boolean));
 
-  constructor() { }
+    constructor(private http: HttpClient, private tokenService: TokenService) { }
 
-  setConfiguracion(){
-    // en caso de dudas puede revisar el contenido del token obtenido en https://jwt.io/
-    let token: any = localStorage.getItem("token")
-    if (token){
-      let decode:any = jwt_decode(token)
-      let claims = decode['user_claims']
-      if (claims){       
-        let servicio: any[] = claims.filter((o: any)=> {return o.idServicio === idServicio})        
-
-        if(servicio.length === 0){
-          this.funcionesUsuario = [];          
-          return 1; // agregar ruteo de ser necesario
-        }
-        let funciones: any[] = [];
-        for(let i = 0; i < servicio[0]['funciones'].length; i++){
-          funciones.push(servicio[0]['funciones'][i])
-        }        
-        this.funcionesUsuario = funciones;
-        // console.log(funciones)
-      }
+    login(usuname: string, usupassword: string) {
+        return this.http.post<ResponseLogin>(`${this.API_URL}/login`, {
+            usuname, usupassword
+        }).pipe(tap((response) => {
+                this.tokenService.saveToken(response.auth_token);
+            })
+        );
     }
-    return 0// ajustar por un router link, cuando no existe token se redireccione a otro lado  
-  }
 
-  getIdUsuario(){
-    if (this.isAuthenticated()){
-      const token: any = this.getAuthenticatedToken();
-      let decode:any = (jwt_decode(token));
-      return decode['identity']['idUsuario'];  
+    register(name: string, email: string, password: string) {
+        return this.http.post(`${this.API_URL}/api/v1/auth/register`, {
+            name,
+            email,
+            password
+        })
     }
-    return []
-  }
 
-  getUsername(){
-    if (this.isAuthenticated()){
-      const token: any = this.getAuthenticatedToken();
-      let decode:any = (jwt_decode(token));
-      return decode['identity']['username'];  
+    isAvailable(email: string) {
+        return this.http.post(`${this.API_URL}/api/v1/auth/is-available`, {
+            email
+        })
     }
-    return []
-  }
 
-  getAuthenticatedToken() {
-    if (this.isAuthenticated()) {
-      return localStorage.getItem("token");
+    registerUser(criterio: any) {
+        return this.http.post(`${this.API_URL}/register`, criterio);
     }
-    return ''
-  }
 
-  isAuthenticated() {
-    const sesion = localStorage.getItem("token");
-    return !(sesion === null);
-  }
+    confirmEmail(tk: string): Observable<any> {
+        const url = `${this.API_URL}/confirm-email`;
+        const body = { token: tk };
+        return this.http.post<any>(url, body);
+    }
+
+
+    logout() {
+        this.tokenService.removeToken();
+    }
+
+    getProfile(): Observable<any> {
+        const token = this.tokenService.getToken();
+        let decode: any = (jwt_decode(token));
+
+        const criterio = {
+            usuid: decode.sub
+        };
+
+        return this.http.post(`${API_URL}/auth/perfil`, criterio, {
+            context: checktoken()
+        }).pipe(
+            tap(user => {
+                this.usuario$.next(user);
+            })
+        );
+    }
+
+    getProfileToken(tk: any): Observable<any> {
+        const token = tk;
+        let decode: any = (jwt_decode(token));
+        const criterio = {
+            usuid: decode.usuid
+        };
+
+        return this.http.post(`${API_URL}/auth/perfil`, criterio, {
+            context: checktoken()
+        }).pipe(
+            tap(user => {
+                this.usuario$.next(user);
+            })
+        );
+    }
+
+    getUserData() {
+        return this.usuario$.getValue();
+    }
 }

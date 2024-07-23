@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Product } from '../../api/product';
-import { ProductService } from '../../service/examples/product.service';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Usuario } from '../../models/usuario';
 import { PanelService } from '../../service/data/panel.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'; // Importa DynamicDialogRef
@@ -31,12 +30,12 @@ export class PanelComponent implements OnInit, OnDestroy {
     visible2: boolean = false;
 
 
-    constructor(private productService: ProductService,
-                        public layoutService: LayoutService,
-                        private spinner: NgxSpinnerService,
-                        private panelService: PanelService,
-                        private dialogService: DialogService,
-                        private authService: AuthService) {
+    constructor(
+                public layoutService: LayoutService,
+                private spinner: NgxSpinnerService,
+                private panelService: PanelService,
+                private dialogService: DialogService,
+                private authService: AuthService) {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
         });
     }

@@ -40,9 +40,10 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ImageModule } from 'primeng/image';
 import { SidebarModule } from 'primeng/sidebar';
 import { DividerModule } from 'primeng/divider';
-
+import { SpeedDialModule } from 'primeng/speeddial';
 @NgModule({
     imports: [
+        SpeedDialModule,
         DividerModule,
         SidebarModule,
         ImageModule,

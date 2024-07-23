@@ -2,13 +2,6 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './modules/layout/app.layout.module';
-import { ProductService } from './modules/service/examples/product.service';
-import { CountryService } from './modules/service/examples/country.service';
-import { CustomerService } from './modules/service/examples/customer.service';
-import { EventService } from './modules/service/examples/event.service';
-import { IconService } from './modules/service/examples/icon.service';
-import { NodeService } from './modules/service/examples/node.service';
-import { PhotoService } from './modules/service/examples/photo.service';
 import { SafePipe } from './modules/pipes/safe.pipe';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -21,7 +14,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CalendarModule} from 'primeng/calendar';
 import { TableModule} from 'primeng/table';
-import { DialogModule, Dialog} from 'primeng/dialog'
+import { DialogModule} from 'primeng/dialog'
 import { DialogService, DynamicDialogModule} from 'primeng/dynamicdialog';
 import { PrimeIcons } from 'primeng/api';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -55,9 +48,9 @@ import { ConfirmComponent } from './modules/components/auth/confirm/confirm.comp
 import { NoConfirmComponent } from './modules/components/auth/noConfirm/no-confirm.component';
 import { VerifiedComponent } from './modules/components/auth/verified/verified.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-// import { TreeTableModule } from 'primeng/treetable';
 import localeBo from '@angular/common/locales/es-BO';
 import { registerLocaleData } from '@angular/common';
+import { ResetPasswordComponent } from './modules/components/auth/resetPassword/reset-password.component';
 
 registerLocaleData(localeBo, 'es');
 @NgModule({
@@ -72,11 +65,11 @@ registerLocaleData(localeBo, 'es');
         ForgotPasswordComponent,
         ConfirmComponent,
         NoConfirmComponent,
-        VerifiedComponent
+        VerifiedComponent,
+        ResetPasswordComponent
     ],
     imports: [
         NgxExtendedPdfViewerModule,
-        // TreeTableModule,
         AppRoutingModule,
         AppLayoutModule,
         ReactiveFormsModule,
@@ -118,9 +111,7 @@ registerLocaleData(localeBo, 'es');
         ScrollPanelModule,
     ],
     providers: [
-        CountryService, CustomerService, EventService, IconService,
-        NodeService, PhotoService, ProductService, DialogService,
-        PrimeIcons, ConfirmationService, MessageService,
+        DialogService, PrimeIcons, ConfirmationService, MessageService,
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         { provide: LOCALE_ID, useValue: 'es'}
     ],

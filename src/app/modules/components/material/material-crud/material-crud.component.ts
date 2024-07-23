@@ -19,7 +19,7 @@ import { Texto } from 'src/app/modules/models/texto';
 
 import { Usuario } from 'src/app/modules/models/usuario';
 // --------------- Importación de Autenticación
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 // --------------- Importación para validaciones
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -108,7 +108,7 @@ export class MaterialCrudComponent implements OnInit {
         // this.LlenarTipoCombo();
         this.asignacionValidacionesTexto();
         // Obtener usuario
-        this.getPerfilUsuario();
+        this.getProfileUsuario();
 
         this.statuses = [
             { label: 'Activo', value: 0 },
@@ -116,8 +116,8 @@ export class MaterialCrudComponent implements OnInit {
         ];
     }
     // Obtener datos del perfil del usuario logeado
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }
@@ -283,7 +283,7 @@ export class MaterialCrudComponent implements OnInit {
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
             // console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.gestionarPersona(this.personaRegistro).subscribe(
+            this.personaService.managePerson(this.personaRegistro).subscribe(
                 (data: any) => {
                     // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
@@ -308,7 +308,7 @@ export class MaterialCrudComponent implements OnInit {
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
             // console.log("personaRegistro: ", this.personaRegistro);
-            this.personaService.gestionarPersona(this.personaRegistro).subscribe(
+            this.personaService.managePerson(this.personaRegistro).subscribe(
                 (data: any) => {
                     // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
@@ -361,7 +361,7 @@ export class MaterialCrudComponent implements OnInit {
         // console.log("eliminarPersona: ", this.persona);
         this.personaRegistro = { ...this.persona };
         this.personaRegistro.tipo = 3;
-        this.personaService.gestionarPersona(this.personaRegistro).subscribe(
+        this.personaService.managePerson(this.personaRegistro).subscribe(
             (data: any) => {
                 // console.log("Gestionar Persona: ", data);
                 this.eliminarPersonaDialog = false;
@@ -397,7 +397,7 @@ export class MaterialCrudComponent implements OnInit {
             'contains'
         );
     }
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -408,7 +408,7 @@ export class MaterialCrudComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

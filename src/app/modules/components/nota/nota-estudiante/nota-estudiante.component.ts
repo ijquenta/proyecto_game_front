@@ -7,7 +7,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 import { NotaService } from 'src/app/modules/service/data/nota.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Nota } from 'src/app/modules/models/nota';
 import { Inscripcion } from 'src/app/modules/models/inscripcion';
 import { Usuario } from 'src/app/modules/models/usuario';

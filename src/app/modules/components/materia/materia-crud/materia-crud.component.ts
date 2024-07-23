@@ -7,7 +7,7 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { DatePipe } from '@angular/common';
 import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
 // --------------- Importación de Autenticación
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 // --------------- Importación para validaciones
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -78,7 +78,7 @@ export class MateriaCrudComponent implements OnInit {
                 }
 
     ngOnInit() {
-        this.getPerfilUsuario();
+        this.getProfileUsuario();
         this.listarMaterias();
         this.tipoModulo = [ new TipoModulo(1, 'PRIMERO'), new TipoModulo(2, 'SEGUNDO'), new TipoModulo(3, 'TERCERO'), new TipoModulo(4, 'OTRO') ];
         this.tipoEstado = [ new TipoEstado(0, 'FINALIZADO'), new TipoEstado(1, 'VIGENTE'), new TipoEstado(2, 'OTRO') ];
@@ -152,8 +152,8 @@ export class MateriaCrudComponent implements OnInit {
     }
 
     // Obtener datos del perfil del usuario logeado
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }
@@ -307,7 +307,7 @@ export class MateriaCrudComponent implements OnInit {
         }
     }
 
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -318,7 +318,7 @@ export class MateriaCrudComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

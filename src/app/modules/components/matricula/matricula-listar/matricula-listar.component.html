@@ -102,7 +102,7 @@
                         <td>
                             {{matricula.tipmatrdescripcion}}
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="getDescriptionStatus(matricula.tipmatrestado)" [severity]="getSeverityStatus(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
 
                     </tr>
                 </ng-template>
@@ -196,7 +196,7 @@
                         <td>
                             {{matricula.tipmatrdescripcion}}
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(matricula.tipmatrestado)" [severity]="obtenerSeverityEstado(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
+                        <td> <p-tag [value]="getDescriptionStatus(matricula.tipmatrestado)" [severity]="getSeverityStatus(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"

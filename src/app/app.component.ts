@@ -14,4 +14,3 @@ export class AppComponent implements OnInit {
         this.primengConfig.ripple = true;
     }
 }
-// export class AppComponent {}

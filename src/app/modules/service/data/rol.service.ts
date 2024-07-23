@@ -1,22 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable()
 export class RolService {
 
     constructor(private http: HttpClient) { }
-    // Operation CRUD
-    gestionarRol(criterio: any){
-        return this.http.post(`${API_URL}/gestionarRol`, criterio);
+
+    getRoles(){
+        return this.http.get(`${API_URL}/getRoles`, { context: checktoken()});
     }
-    gestionarRolEstado(criterio: any){
-        return this.http.post(`${API_URL}/gestionarRolEstado`, criterio)
+
+    manageRole(criterio: any){
+        return this.http.post(`${API_URL}/manageRole`, criterio, { context: checktoken() });
     }
+
+    manageRoleStatus(criterio: any){
+        return this.http.post(`${API_URL}/manageRoleStatus`, criterio, { context: checktoken() });
+    }
+
     getTipoRol(){
         return this.http.get(`${API_URL}/tipoRol`);
-    }
-    getListarRoles(){
-        return this.http.get(`${API_URL}/listarRoles`);
     }
 }

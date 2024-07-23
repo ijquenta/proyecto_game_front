@@ -14,7 +14,7 @@ import { Persona, PersonaExpanded } from 'src/app/modules/models/persona';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento, TipoRol } from 'src/app/modules/models/diccionario';
 import { RequestStatus } from 'src/app/modules/models/request-status.model';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 @Component({
     selector: 'app-register',
@@ -115,7 +115,7 @@ export class RegisterComponent implements OnInit {
     fListarPersonas() {
         this.spinner.show();
         this.loading = true;
-        this.personaService.ListarPersona().subscribe(
+        this.personaService.getPersons().subscribe(
             (result: any) => {
                 this.elements = result;
                 this.personasDuplicated = this.elements;
@@ -123,7 +123,7 @@ export class RegisterComponent implements OnInit {
                 this.spinner.hide();
             },
             (error: any) => {
-                this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el recuperar información del sistema.', life: 3000 });
+
                 this.loading = false;
                 this.spinner.hide();
             }
@@ -284,7 +284,7 @@ export class RegisterComponent implements OnInit {
                     this.usuario.usuestado = 1;
                     this.spinner.show();
                     console.log("Usuario: ", this.usuario)
-                    this.authService.registrar(this.usuario).subscribe(
+                    this.authService.registerUser(this.usuario).subscribe(
                         (data: any) => {
                             this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El Usuario se registro correctamente en el sistema.', life: 5000 });
                             this.spinner.hide();

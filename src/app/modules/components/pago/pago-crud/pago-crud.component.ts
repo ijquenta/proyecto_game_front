@@ -18,7 +18,7 @@ import { CursoMateria } from 'src/app/modules/models/curso';
 // --------------- Modelo Usuario
 import { Usuario } from 'src/app/modules/models/usuario';
 // --------------- Importación de Autenticación
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 // --------------- Importación para validaciones
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -71,7 +71,7 @@ export class PagoCrudComponent implements OnInit {
   // Variable para archivos
   archivos: any = {};
   uploadedFiles: any[] = [];
-  apiUrl = environment.API_URL_FOTO_PERFIL;
+  userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
   constructor(
     private messageService: MessageService,
     private reporteService: ReporteService,
@@ -87,11 +87,11 @@ export class PagoCrudComponent implements OnInit {
         this.listarTipoPagoCombo(); // Método para obtener todos los tipo de pago
         this.listarCursosMaterias(); // Método para listar los cursos de las materias
         this.asignacionValidacionesPago(); // Método de asignación de validaciones
-        this.getPerfilUsuario(); // Método de getPerfil() de usuario logeado
+        this.getProfileUsuario(); // Método de getProfile() de usuario logeado
     }
     // Obtener datos del perfil del usuario logeado
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }

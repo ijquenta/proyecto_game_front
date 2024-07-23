@@ -53,7 +53,7 @@
                             <td> {{mattex.texdocumento}}</td>
                             <td> {{mattex.mattexusureg}} <br> {{mattex.mattexfecreg}} </td>
                             <td> {{mattex.mattexusumod}} <br> {{mattex.mattexfecmod}} </td>
-                            <td> <p-tag [value]="obtenerDescripcionEstado(mattex.mattexestado)" [severity]="obtenerSeverityEstado(mattex.mattexestado)" [rounded]="true"></p-tag> </td>
+                            <td> <p-tag [value]="getDescriptionStatus(mattex.mattexestado)" [severity]="getSeverityStatus(mattex.mattexestado)" [rounded]="true"></p-tag> </td>
                             <td>
                                 <button *ngIf="mattex.texdocumento" pButton="pButton" pRipple="pRipple" type="button"
                                 icon="pi pi-file-pdf" class="p-button-rounded p-button-danger m-1" pTooltip="Ver documento PDF"

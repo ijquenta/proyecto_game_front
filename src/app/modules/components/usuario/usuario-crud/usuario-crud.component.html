@@ -6,7 +6,6 @@
             <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
             <h3>Usuario</h3>
             <p>Administrar registros de usuarios</p>
-
             <p-tabView styleClass="tabview-custom">
                 <p-tabPanel>
                     <ng-template pTemplate="header">
@@ -74,7 +73,7 @@
                                     </div>
                                     <div *ngIf="usuario.perfoto != null" class="user-display">
                                         <p-avatar
-                                            image="{{ apiUrl }}/{{ usuario.perfoto }}"
+                                            image="{{ userProfilePhoto }}/{{ usuario.perfoto }}"
                                             styleClass="mr-2"
                                             size="xlarge"
                                             shape="circle"
@@ -124,7 +123,7 @@
                                     {{ usuario.usufecmod | date: 'd MMMM, y' }} <br>
                                     {{ usuario.usufecmod | date: 'h:mm:ss a' }}
                                 </td>
-                                <td> <p-tag [value]="obtenerDescripcionEstado(usuario.usuestado)" [severity]="obtenerSeverityEstado(usuario.usuestado)" [rounded]="true"></p-tag></td>
+                                <td> <p-tag [value]="getDescriptionStatus(usuario.usuestado)" [severity]="getSeverityStatus(usuario.usuestado)" [rounded]="true"></p-tag></td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -158,7 +157,7 @@
                                         <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                     </div>
                                     <div *ngIf="usuario.perfoto != null" class="user-display">
-                                        <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        <p-avatar image="{{ userProfilePhoto }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                     </div>
                                     <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
                                         <div class="font-bold text-xl">{{usuario.pernomcompleto}}</div>
@@ -196,7 +195,7 @@
                                             <span class="font-semibold"><strong>{{usuario.rolnombre}}</strong></span>
                                         </div>
                                         <div class="justify-content-between">
-                                            <p-tag [value]="obtenerDescripcionEstado(usuario.usuestado)" [severity]="obtenerSeverityEstado(usuario.usuestado)" [rounded]="true"></p-tag>
+                                            <p-tag [value]="getDescriptionStatus(usuario.usuestado)" [severity]="getSeverityStatus(usuario.usuestado)" [rounded]="true"></p-tag>
                                         </div>
                                     </div>
                                     <div class="flex flex-column align-items-center text-center mb-3">
@@ -204,7 +203,7 @@
                                             <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                         </div>
                                         <div *ngIf="usuario.perfoto != null" class="user-display">
-                                            <p-avatar image="{{ apiUrl }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                            <p-avatar image="{{ userProfilePhoto }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                         </div>
                                         <div class="text-xl font-bold">{{usuario.pernomcompleto}}</div>
                                         <hr>
@@ -232,8 +231,6 @@
                     </p-dataView>
                 </p-tabPanel>
             </p-tabView>
-
-
         </div>
     </div>
 </div>
@@ -249,7 +246,7 @@
                     <div class="user-info-avatar">
                          <div *ngIf="usuario?.perfoto">
                             <p-image
-                             src="{{apiUrl}}/{{usuario?.perfoto}}"
+                             src="{{userProfilePhoto}}/{{usuario?.perfoto}}"
                              alt="Image"
                              width="100"
                              height="100"
@@ -268,14 +265,14 @@
                            ></p-image>
                          </div>
 
-                        <!-- <div *ngIf="usuario?.perfoto"> <p-avatar [image]="apiUrl + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar> </div> -->
+                        <!-- <div *ngIf="usuario?.perfoto"> <p-avatar [image]="userProfilePhoto + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar> </div> -->
                         <!-- <div *ngIf="!usuario?.perfoto"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge" shape="circle"></p-avatar> </div> -->
                     </div>
                     <div class="user-info-details">
                         <p><strong>Nombre:</strong> {{ usuario?.pernomcompleto }}</p>
                         <p><strong>Número de documento:</strong> {{ usuario?.pernrodoc }}</p>
                         <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p>
-                        <p><strong>Estado:</strong> <p-tag [value]="obtenerDescripcionEstado(usuario?.usuestado)" [severity]="obtenerSeverityEstado(usuario?.usuestado)" [rounded]="true"></p-tag> </p>
+                        <p><strong>Estado:</strong> <p-tag [value]="getDescriptionStatus(usuario?.usuestado)" [severity]="getSeverityStatus(usuario?.usuestado)" [rounded]="true"></p-tag> </p>
                     </div>
                 </div>
             </ng-template>
@@ -314,7 +311,7 @@
                     <ng-template let-persona pTemplate="item">
                         <div class="flex align-items-center">
                             <div *ngIf="persona.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto }}</span> </div>
-                            <div *ngIf="persona.perfoto != null" class="user-display"> <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
+                            <div *ngIf="persona.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
                         </div>
                     </ng-template>
                 </p-dropdown>
@@ -366,13 +363,14 @@
     </ng-template>
 </p-dialog>
 
+<!-- Actualizar contraseña -->
 <p-dialog [(visible)]="usuarioCambiarPasswordDialog" header="Usuario" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
     <p-card>
         <!-- <ng-template pTemplate="title"> Información del usuario </ng-template> -->
         <ng-template pTemplate="content">
             <div class="user-info-container">
                 <div class="user-info-avatar">
-                    <div *ngIf="usuario?.perfoto"> <p-avatar [image]="apiUrl + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar> </div>
+                    <div *ngIf="usuario?.perfoto"> <p-avatar [image]="userProfilePhoto + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar> </div>
                     <div *ngIf="!usuario?.perfoto"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge" shape="circle"></p-avatar> </div>
                 </div>
                 <div class="user-info-details">
@@ -380,7 +378,7 @@
                     <p><strong>Número de documento:</strong> {{ usuario?.pernrodoc }}</p>
                     <p><strong>Nombre de usuario:</strong> <p-chip> <div class="p-2"> {{ usuario?.usuname }} </div> </p-chip> </p>
                     <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p>
-                    <p><strong>Estado:</strong> <p-tag [value]="obtenerDescripcionEstado(usuario?.usuestado)" [severity]="obtenerSeverityEstado(usuario?.usuestado)" [rounded]="true"></p-tag> </p>
+                    <p><strong>Estado:</strong> <p-tag [value]="getDescriptionStatus(usuario?.usuestado)" [severity]="getSeverityStatus(usuario?.usuestado)" [rounded]="true"></p-tag> </p>
                 </div>
             </div>
         </ng-template>
@@ -422,7 +420,6 @@
             <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
             <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="cambiarPasswordUsuario()"></button>
     </ng-template>
-
 </p-dialog>
 
 <p-dialog [(visible)]="desactivarUsuarioDialog" header="Confirmar" [modal]="true">

@@ -9,7 +9,7 @@ import * as FileSaver from 'file-saver';
 // Servicios
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { ArchivosService } from 'src/app/modules/service/util/archivos.service';
 
 // Modelos
@@ -34,7 +34,7 @@ export class UsuarioCrudComponent implements OnInit {
     // Variables
 
     // API
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     // Usuario
     usuario: Usuario;
@@ -463,7 +463,7 @@ export class UsuarioCrudComponent implements OnInit {
         );
     }
     // Obtiene el color del estado
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -474,7 +474,7 @@ export class UsuarioCrudComponent implements OnInit {
         }
     }
     // Obtiene la descripción del estado
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

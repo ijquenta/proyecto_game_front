@@ -13,21 +13,21 @@
 
 /* Transparent Overlay */
 .progress-spinner:before {
-  content: '';
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.33);
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.33);
 }
 .progress-spinner .pi-spinner {
     background-color: transparent;
 }
 .valid-field {
-  border-color: #29c76f;
+    border-color: #29c76f;
 }
 .p-success {
-  color: #29c76f;
+    color: #29c76f;
 }

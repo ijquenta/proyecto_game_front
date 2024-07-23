@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 // Service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 // Modelos
 import { tipoProfesion } from 'src/app/modules/models/persona';
 import { Usuario } from 'src/app/modules/models/usuario';
@@ -84,7 +84,7 @@ export class EstudianteAdmisionTipoProfesionComponent implements OnInit {
     }
 
     // Obtener Severity Estado
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -95,7 +95,7 @@ export class EstudianteAdmisionTipoProfesionComponent implements OnInit {
         }
     }
     // Obtener Descripción de estado
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

@@ -257,8 +257,8 @@
                 <td>
                     <div class="flex justify-content-center">
                         <p-tag
-                        [value]="obtenerDescripcionEstado(operation.opeestado)"
-                        [severity]="obtenerSeverityEstado(operation.opeestado)"
+                        [value]="getDescriptionStatus(operation.opeestado)"
+                        [severity]="getSeverityStatus(operation.opeestado)"
                         [rounded]="true"
                     ></p-tag>
                     </div>

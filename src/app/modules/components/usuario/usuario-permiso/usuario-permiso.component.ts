@@ -14,7 +14,7 @@ import { Operacion } from 'src/app/modules/models/operacion';
 
 // Services
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { PermisoService } from 'src/app/modules/service/data/permiso.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 import { OperacionService } from 'src/app/modules/service/data/operacion.service';
@@ -174,7 +174,7 @@ export class UsuarioPermisoComponent implements OnInit {
     }
     // Get Roles list
     ListarRoles() {
-        this.rolService.getListarRoles().subscribe((data: any) => {
+        this.rolService.getRoles().subscribe((data: any) => {
             this.roles = data;
         });
     }
@@ -520,7 +520,7 @@ export class UsuarioPermisoComponent implements OnInit {
         );
     }
     // Get Severity Status
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -531,7 +531,7 @@ export class UsuarioPermisoComponent implements OnInit {
         }
     }
     // Get Description Status
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

@@ -7,6 +7,7 @@ import { ForgotPasswordComponent } from './forgotPassword/forgot-password.compon
 import { ConfirmComponent } from './confirm/confirm.component';
 import { NoConfirmComponent } from './noConfirm/no-confirm.component';
 import { VerifiedComponent } from './verified/verified.component';
+import { ResetPasswordComponent } from './resetPassword/reset-password.component';
 
 const routes: Routes = [
     {
@@ -44,6 +45,11 @@ const routes: Routes = [
         component: VerifiedComponent,
         title: 'SGSA'
     },
+    {
+        path:'reset-password/:token',
+        component: ResetPasswordComponent,
+        title: 'SGSA'
+    }
     // {
     //   path: 'register',
     //   component: RegisterComponent,

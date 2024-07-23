@@ -21,14 +21,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioRolesComponent } from './usuario-roles.component';
-
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-// import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
-
-
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 @NgModule({
     imports: [
+        BreadcrumbModule,
         CommonModule,
         UsuarioRolesRoutingModule,
         TableModule,

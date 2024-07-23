@@ -18,7 +18,7 @@ import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 interface Column {
     field: string;
@@ -73,7 +73,7 @@ export class CursoCrudComponent implements OnInit {
     tipoEstadoSeleccionado: TipoEstado;
 
     loading: boolean = false;
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
     // -------------------------- Variables Cursos_Materias -------------------------- //
 
     //----------------Variables para validación----------------//
@@ -101,7 +101,7 @@ export class CursoCrudComponent implements OnInit {
         this.obtenerRoles();
         this.tipoEstado = [ new TipoEstado(0, 'FINALIZADO'), new TipoEstado(1, 'VIGENTE'), new TipoEstado(2, 'OTRO') ];
         this.asignacionValidacionesCurso(); // Método de asignación de validaciones
-        this.getPerfilUsuario(); // Método de getPerfil() de usuario logeado
+        this.getProfileUsuario(); // Método de getProfile() de usuario logeado
         this.colsTable = [
             { field: 'curmatid', header: 'ID' },
             { field: 'curnombre', header: 'Nombre de nivel' },
@@ -133,8 +133,8 @@ export class CursoCrudComponent implements OnInit {
         });
     }
     // Obtener datos del perfil del usuario logeado
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }
@@ -354,7 +354,7 @@ export class CursoCrudComponent implements OnInit {
         table.filterGlobal( (event.target as HTMLInputElement).value, 'contains' );
     }
 
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -365,7 +365,7 @@ export class CursoCrudComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

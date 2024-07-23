@@ -31,7 +31,7 @@
                                                 <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                             </div>
                                             <div *ngIf="persona.perfoto">
-                                                <p-avatar image="{{ apiUrl }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                                <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                                             </div>
                                             <div>{{persona.pernomcompleto}}</div>
                                             <div>{{persona.pernrodoc}}</div>
@@ -67,7 +67,7 @@
                     <p-card header="{{persona.pernomcompleto}}" styleClass="w-full" *ngIf="showDialogPersona">
                         <ng-template pTemplate="header">
                             <div class="flex justify-content-center">
-                                <p-image src="{{apiUrl}}/{{persona.perfoto}}"
+                                <p-image src="{{userProfilePhoto}}/{{persona.perfoto}}"
                                         alt="Image"
                                         width="100"
                                         height="100"
@@ -507,7 +507,7 @@
                                         <ng-container *ngIf="docadm.perfoto">
                                           <ng-container *ngIf="esImagen(docadm.perfoto); else noImagenFoto">
                                             <p-image
-                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.perfoto"
+                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.perfoto"
                                               alt="Foto 4x4"
                                               width="100"
                                               height="100"
@@ -534,7 +534,7 @@
                                         <ng-container *ngIf="docadm.perfotoci">
                                           <ng-container *ngIf="esImagen(docadm.perfotoci); else noImagenCi">
                                             <p-image
-                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.perfotoci"
+                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.perfotoci"
                                               alt="Documento de Identidad"
                                               width="100"
                                               height="100"
@@ -561,7 +561,7 @@
                                         <ng-container *ngIf="docadm.perfototitulo">
                                           <ng-container *ngIf="esImagen(docadm.perfototitulo); else noImagenTitulo">
                                             <p-image
-                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.perfototitulo"
+                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.perfototitulo"
                                               alt="Título"
                                               width="100"
                                               height="100"
@@ -587,7 +587,7 @@
                                         <ng-container *ngIf="docadm.percartapastor">
                                           <ng-container *ngIf="esImagen(docadm.percartapastor); else noImagenCarta">
                                             <p-image
-                                              [src]="apiUrlDocumentoAdmision + '/' + docadm.percartapastor"
+                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.percartapastor"
                                               alt="Carta"
                                               width="100"
                                               height="100"

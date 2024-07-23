@@ -11,7 +11,7 @@ import { switchMap } from 'rxjs/operators';
 import { FileUpload } from 'primeng/fileupload';
 import { Injectable } from '@angular/core';
 // --------- Importación servicios
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { MatriculaService } from 'src/app/modules/service/data/matricula.service';
 import { PagoService } from 'src/app/modules/service/data/pago.service';
 import { UploadService } from 'src/app/modules/service/data/upload.service';
@@ -50,7 +50,7 @@ export class MatriculaNuevoComponent implements OnInit {
         desactivarMatriculaDialog: boolean = false;
         matricula = new Matricula();
         loading: boolean = false;
-        apiUrl = environment.API_URL_FOTO_PERFIL;
+        userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
         tiposMatricula: TiposMatricula[] = [];
         tipoPersonaEstudiante: TipoPersonaEstudiante[] = [];
         pagoMatriculaDialog: boolean = false;
@@ -96,7 +96,7 @@ export class MatriculaNuevoComponent implements OnInit {
 
         this.listarMatricula();
 
-        this.getPerfilUsuario(); // obtener los valores del usuario logueado
+        this.getProfileUsuario(); // obtener los valores del usuario logueado
 
         this.asignacionValidacion(); // se asigna los parametros para la variable de validación
 
@@ -376,8 +376,8 @@ export class MatriculaNuevoComponent implements OnInit {
     }
 
     // Funcion para obtener datos del usuario logueado
-    getPerfilUsuario() {
-        this.authService.getPerfil().subscribe(usuario => {
+    getProfileUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
             this.usuario = usuario[0];
         });
     }
@@ -411,7 +411,7 @@ export class MatriculaNuevoComponent implements OnInit {
     }
 
     // Funciones para obtener el color del estado
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -422,7 +422,7 @@ export class MatriculaNuevoComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

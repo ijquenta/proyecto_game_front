@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 // Services
 import { MenuService } from "../menu/app.menu.service";
 import { LayoutService } from "../service/app.layout.service";
-import { AuthService } from 'src/app/services/auth.service';
-import { TokenService } from 'src/app/services/token.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
+import { TokenService } from 'src/app/modules/service/core/token.service';
 
 //Models
 import { Usuario } from '../../models/usuario';
@@ -22,7 +22,7 @@ export class AppTopBarComponent {
 
     // Inicializa usuario con un objeto vacío
     usuario = new Usuario();
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     items!: MenuItem[];
 
@@ -39,7 +39,7 @@ export class AppTopBarComponent {
 
     modelOption: any[] | undefined;
     ngOnInit() {
-        this.authService.getPerfil().subscribe(
+        this.authService.getProfile().subscribe(
             (result: any) => {
               this.usuario = result[0];
             //   console.log("result get perfil: ", this.usuario);

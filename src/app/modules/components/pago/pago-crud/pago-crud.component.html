@@ -46,7 +46,7 @@
                                         <span class="font-bold ml-2">{{ pagoMateria.pernomcompleto }}</span>
                                     </div>
                                     <div *ngIf="pagoMateria.perfoto != null" class="user-display">
-                                        <p-avatar image="{{ apiUrl }}/{{ pagoMateria.perfoto }}" styleClass="mr-2"
+                                        <p-avatar image="{{ userProfilePhoto }}/{{ pagoMateria.perfoto }}" styleClass="mr-2"
                                             size="xlarge" shape="circle"></p-avatar>
                                         <span class="font-bold ml-2">{{ pagoMateria.pernomcompleto }}
                                             </span>
@@ -111,7 +111,7 @@
                                             <span class="font-bold ml-2">{{ pago.pernomcompleto }}</span>
                                         </div>
                                         <div *ngIf="pago.perfoto != null" class="user-display">
-                                            <p-avatar image="{{ apiUrl }}/{{ pago.perfoto }}" styleClass="mr-2"
+                                            <p-avatar image="{{ userProfilePhoto }}/{{ pago.perfoto }}" styleClass="mr-2"
                                                 size="xlarge" shape="circle"></p-avatar>
                                             <span class="font-bold ml-2">{{ pago.pernomcompleto }}</span>
                                         </div>
@@ -180,7 +180,7 @@
                     <div class="user-info-container">
                         <div class="user-info-avatar">
                             <div *ngIf="pago?.perfoto">
-                                <p-avatar [image]="apiUrl + '/' + pago.perfoto" size="xlarge" shape="circle"></p-avatar>
+                                <p-avatar [image]="userProfilePhoto + '/' + pago.perfoto" size="xlarge" shape="circle"></p-avatar>
                             </div>
                             <div *ngIf="!pago?.perfoto">
                                 <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
@@ -192,8 +192,8 @@
                             <p><strong>Curso:</strong> {{this.pago.curnombre}}</p>
                             <p><strong>Materia:</strong> {{this.pago.matnombre}}</p>
                             <!-- <p><strong>Estado:</strong>
-                                <p-tag [value]="obtenerDescripcionEstado(pago?.pagestado)"
-                                    [severity]="obtenerSeverityEstado(pago?.pagestado)" [rounded]="true"></p-tag>
+                                <p-tag [value]="getDescriptionStatus(pago?.pagestado)"
+                                    [severity]="getSeverityStatus(pago?.pagestado)" [rounded]="true"></p-tag>
                             </p> -->
                         </div>
                     </div>

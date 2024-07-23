@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ArchivosService } from '../util/archivos.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Usuario } from 'src/app/modules/models/usuario';
 const httpOptions = {
     responseType: 'arraybuffer' as 'json'

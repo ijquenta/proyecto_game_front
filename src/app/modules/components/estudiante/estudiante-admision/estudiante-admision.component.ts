@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { FileUpload } from 'primeng/fileupload';
 
 interface UploadEvent {
@@ -36,8 +36,8 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
 
     estudianteForm: FormGroup;
 
-    apiUrl = environment.API_URL_FOTO_PERFIL;
-    apiUrlDocumentoAdmision = environment.API_URL_DOCUMENTO_ADMISION    ;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
+    userProfilePhotoDocumentoAdmision = environment.API_URL_DOCUMENTO_ADMISION    ;
 
     personasFiltradas: any[] | undefined;
 
@@ -249,7 +249,7 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     }
 
     obtenerPersonas() {
-        this.personaService.ListarPersona().subscribe((data: any) => {
+        this.personaService.getPersons().subscribe((data: any) => {
             this.Personas = data;
         });
     }

@@ -70,7 +70,7 @@
                                     }}</span>
                             </div>
                             <div *ngIf="inscripcion.perfoto != null" class="user-display">
-                                <p-avatar image="{{ apiUrl }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge"
+                                <p-avatar image="{{ userProfilePhoto }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge"
                                     shape="circle"></p-avatar>
                                 <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante
                                     }}</span>
@@ -93,8 +93,8 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(inscripcion.insestado)"
-                                [severity]="obtenerSeverityEstado(inscripcion.insestado)" [rounded]="true"></p-tag>
+                        <td> <p-tag [value]="getDescriptionStatus(inscripcion.insestado)"
+                                [severity]="getSeverityStatus(inscripcion.insestado)" [rounded]="true"></p-tag>
                         </td>
 
                     </tr>
@@ -149,7 +149,7 @@
                                     <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
                                 </div>
                                 <div *ngIf="docente.perfoto != null" class="user-display">
-                                    <p-avatar image="{{ apiUrl }}/{{ docente.perfoto }}" styleClass="mr-2"
+                                    <p-avatar image="{{ userProfilePhoto }}/{{ docente.perfoto }}" styleClass="mr-2"
                                         shape="circle"></p-avatar>
                                     <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
                                 </div>
@@ -259,7 +259,7 @@
                                     }}</span>
                             </div>
                             <div *ngIf="inscripcion.perfoto != null" class="user-display">
-                                <p-avatar image="{{ apiUrl }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge"
+                                <p-avatar image="{{ userProfilePhoto }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge"
                                     shape="circle"></p-avatar>
                                 <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante
                                     }}</span>
@@ -282,8 +282,8 @@
                                 </div>
                             </p-chip>
                         </td>
-                        <td> <p-tag [value]="obtenerDescripcionEstado(inscripcion.insestado)"
-                                [severity]="obtenerSeverityEstado(inscripcion.insestado)" [rounded]="true"></p-tag>
+                        <td> <p-tag [value]="getDescriptionStatus(inscripcion.insestado)"
+                                [severity]="getSeverityStatus(inscripcion.insestado)" [rounded]="true"></p-tag>
                         </td>
                         <td>
                             <div class="flex">
@@ -345,7 +345,7 @@
                                     <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
                                 </div>
                                 <div *ngIf="docente.perfoto != null" class="user-display">
-                                    <p-avatar image="{{ apiUrl }}/{{ docente.perfoto }}" styleClass="mr-2"
+                                    <p-avatar image="{{ userProfilePhoto }}/{{ docente.perfoto }}" styleClass="mr-2"
                                         shape="circle"></p-avatar>
                                     <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
                                 </div>
@@ -424,7 +424,7 @@
                 <div class="user-info-container">
                     <div class="user-info-avatar">
                         <div *ngIf="this.inscripcion?.perfoto">
-                            <p-avatar [image]="apiUrl + '/' + this.inscripcion.perfoto" size="xlarge" shape="circle"></p-avatar>
+                            <p-avatar [image]="userProfilePhoto + '/' + this.inscripcion.perfoto" size="xlarge" shape="circle"></p-avatar>
                         </div>
                         <div *ngIf="!this.inscripcion?.perfoto">
                             <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
@@ -440,8 +440,8 @@
                         <p><strong>Docente: </strong>{{this.inscripcion?.docente[0].pernombrecompletodocente}} </p>
                         <!-- <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p> -->
                         <p><strong>Estado de la inscripción:</strong>
-                            <p-tag [value]="obtenerDescripcionEstado(this.inscripcion?.insestado)"
-                                [severity]="obtenerSeverityEstado(this.inscripcion?.insestado)" [rounded]="true"></p-tag>
+                            <p-tag [value]="getDescriptionStatus(this.inscripcion?.insestado)"
+                                [severity]="getSeverityStatus(this.inscripcion?.insestado)" [rounded]="true"></p-tag>
                         </p>
                     </div>
                 </div>
@@ -502,7 +502,7 @@
                                 <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
                             </div>
                             <div *ngIf="tm.perfoto != null" class="user-display">
-                                <p-avatar image="{{ apiUrl }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
+                                <p-avatar image="{{ userProfilePhoto }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
                                     shape="circle"></p-avatar>
                                 <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
                             </div>

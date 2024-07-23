@@ -4,7 +4,7 @@ import { MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Table } from 'primeng/table';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Nota } from 'src/app/modules/models/nota';
 import { Inscripcion } from 'src/app/modules/models/inscripcion';
 import { Usuario } from 'src/app/modules/models/usuario';
@@ -71,7 +71,7 @@ export class MaterialAsignarComponent implements OnInit {
     nota3: any;
     notafinal: any;
     curmatid: any;
-    apiUrl = environment.API_URL_FOTO_PERFIL;
+    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
@@ -133,7 +133,7 @@ export class MaterialAsignarComponent implements OnInit {
     verDocumentoTexto(pagarchivo: any){
         this.materialService.getFileTexto(pagarchivo);
     }
-    obtenerSeverityEstado(estado: number): string {
+    getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'success';
@@ -144,7 +144,7 @@ export class MaterialAsignarComponent implements OnInit {
         }
     }
 
-    obtenerDescripcionEstado(estado: number): string {
+    getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
                 return 'Activo';

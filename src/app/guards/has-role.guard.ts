@@ -10,7 +10,7 @@ import {
 import { Router } from '@angular/router';
 
 import { map, Observable, tap } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../modules/service/core/auth.service';
 import { Role } from '../modules/models/roles.type';
 import { Rol } from '../modules/models/rol';
 
@@ -50,7 +50,7 @@ export class HasRoleGuard implements CanLoad, CanActivate {
 
         console.log("allowedRoles: ", allowedRoles);
 
-        this.usurol = this.authService.getDataUsuario();
+        this.usurol = this.authService.getUserData();
         console.log("rol_usuario: ", this.usurol[0].rolnombre)
         return this.authService.usuario$.pipe(
             map((user) => Boolean(allowedRoles.includes( this.usurol[0].rolnombre))),
@@ -66,7 +66,7 @@ export class HasRoleGuard implements CanLoad, CanActivate {
 export const hasRole = (allowedRoles: any[]) => {
   return () => {
     const authService = inject(AuthService);
-    const usurol = authService.getDataUsuario();
+    const usurol = authService.getUserData();
     const usu = usurol ? usurol[0].rolnombre : null;
     // console.log("rol_usuario: ", usu);
     return authService.usuario$.pipe(
