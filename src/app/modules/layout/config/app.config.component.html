@@ -11,9 +11,12 @@
             <div *ngIf="usuario.perfoto == null" class="user-display">
                 <p-tag [style]="{ 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 100%)'}">
                     <div class="flex align-items-center gap-2">
-                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2"
-                            size="large" shape="circle"></p-avatar>
-
+                        <p-avatar
+                            image="../../../../../assets/images/login/sin_foto_perfil.png"
+                            styleClass="mr-2"
+                            size="large"
+                            shape="circle"
+                        ></p-avatar>
                         <h5>{{usuario.pernomcompleto}}</h5>
                     </div>
                 </p-tag>
@@ -21,8 +24,12 @@
             <div *ngIf="usuario.perfoto != null" class="user-display">
                 <p-tag [style]="{ 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 70%)'}">
                     <div class="flex align-items-center gap-2">
-                        <p-avatar image="{{ userProfilePhoto }}/{{ usuario.perfoto }}" styleClass="mr-2" size="xlarge"
-                            shape="circle"></p-avatar>
+                        <p-avatar
+                            image="{{ userProfilePhoto }}/{{ usuario.perfoto }}"
+                            styleClass="mr-2"
+                            size="xlarge"
+                            shape="circle">
+                        </p-avatar>
                         <h5>{{usuario.pernomcompleto}}</h5>
                     </div>
                 </p-tag>
@@ -36,13 +43,13 @@
 
     <hr>
     <h5>Ajustes de perfil</h5>
-        <div class="flex align-items-center">
+        <div class="p-fluid">
             <button
                 pButton
-                label="Ver datos personales"
+                label="Datos personales"
                 icon="pi pi-user-edit"
                 class="p-button p-button-sm p-button-text"
-                (click)="mostrarModalModificarPerfil()"
+                (click)="showModalModifyProfile()"
                 pTooltip="Mostrar"
                 tooltipPosition="top"
             >
@@ -63,8 +70,8 @@
 
 
     <ng-container *ngIf="!minimal">
-        <p class="text-xm w-10">Selecciona el tema</p>
-        <h6><label for="model">{{ isDarkTheme ? 'Tema Oscuro' : 'Tema Claro' }}</label></h6>
+        <p class="text-xm w-10">Tema</p>
+        <h6><label for="model">{{ isDarkTheme ? 'Oscuro' : 'Claro' }}</label></h6>
 
 
         <div class="flex">
@@ -111,14 +118,14 @@
 
 
 
-
-<p-sidebar [(visible)]="showDialogPerfil" styleClass="w-30rem" position="left">
+<!-- Show dialog profile user -->
+<p-sidebar [(visible)]="showDialogProfile" styleClass="w-30rem" position="left">
     <ng-template pTemplate="content">
-        <p-card header="{{persona.pernomcompleto}}" subheader="Nombre Completo" [style]="{ width: '100%' }">
+        <p-card header="{{person.pernomcompleto}}" subheader="Nombre Completo" [style]="{ width: '100%' }">
             <ng-template pTemplate="header">
                 <div class="flex justify-content-center">
                     <p-image
-                        src="{{userProfilePhoto}}/{{persona.perfoto}}"
+                        src="{{userProfilePhoto}}/{{person.perfoto}}"
                         alt="Image"
                         width="150"
                         height="150"
@@ -128,17 +135,17 @@
                 </div>
             </ng-template>
                 <p>
-                    <strong>Tipo de documento:</strong> {{persona.tipodocnombre}} <br>
-                    <strong>Número de documento:</strong> {{persona.pernrodoc}} <br>
-                    <strong>Correo electrónico:</strong> {{persona.peremail}} <br>
-                    <strong>Fecha de nacimiento:</strong> {{persona.perfecnac}} <br>
-                    <strong>Género:</strong> {{persona.generonombre}} <br>
-                    <strong>Dirección:</strong> {{persona.perdirec}} <br>
-                    <strong>Telefono:</strong> {{persona.pertelefono}} <br>
-                    <strong>Celular:</strong> {{persona.percelular}} <br>
-                    <strong>Estado civil:</strong> {{persona.estadocivilnombre}} <br>
-                    <strong>Pais:</strong> {{persona.paisnombre}} <br>
-                    <strong>Ciudad:</strong> {{persona.ciudadnombre}}
+                    <strong>Tipo de documento:</strong> {{person.tipodocnombre}} <br>
+                    <strong>Número de documento:</strong> {{person.pernrodoc}} <br>
+                    <strong>Correo electrónico:</strong> {{person.peremail}} <br>
+                    <strong>Fecha de nacimiento:</strong> {{person.perfecnac}} <br>
+                    <strong>Género:</strong> {{person.generonombre}} <br>
+                    <strong>Dirección:</strong> {{person.perdirec}} <br>
+                    <strong>Telefono:</strong> {{person.pertelefono}} <br>
+                    <strong>Celular:</strong> {{person.percelular}} <br>
+                    <strong>Estado civil:</strong> {{person.estadocivilnombre}} <br>
+                    <strong>Pais:</strong> {{person.paisnombre}} <br>
+                    <strong>Ciudad:</strong> {{person.ciudadnombre}}
                 </p>
             <ng-template pTemplate="footer">
                 <div class="flex align-items-center justify-content-center">
@@ -146,7 +153,7 @@
                         pButton
                         label="Cerrar"
                         icon="pi pi-arrow-left"
-                        (click)="showDialogPerfil = false"
+                        (click)="showDialogProfile = false"
                         class="p-button p-button-text mb-3"
                         pTooltip="Cerrar"
                         tooltipPosition="bottom"
@@ -155,9 +162,9 @@
                         pButton
                         icon="pi pi-user-edit"
                         label="Modificar datos"
-                        (click)="mostrarModificarPerfil()"
+                        (click)="showModifyProfile()"
                         class="p-button p-button-text mb-3"
-                        pTooltip="Modificar datos del perfil"
+                        pTooltip="Modificar datos"
                         tooltipPosition="bottom"
                     ></button>
                 </div>
@@ -166,10 +173,9 @@
     </ng-template>
 </p-sidebar>
 
-
-<!-- Actualizar datos de usuario -->
+<!-- Update data user -->
 <p-dialog
-    [(visible)]="showDialogPerfilModificar"
+    [(visible)]="showDialogProfileUpdate"
     header="Perfil"
     [modal]="true"
     class="p-fluid"
@@ -179,7 +185,7 @@
     [resizable]="false"
     [maximizable]="true"
 >
-<form [formGroup]="personaForm  " novalidate>
+<form [formGroup]="personForm" novalidate>
         <div class="grid p-fluid mt-3">
             <div class="col-12">
                 <p-card header="Datos personales" subheader="Debera ingresar todos los requeridos (*)." [style]="{ width: '100%' }">
@@ -233,8 +239,8 @@
                                         pInputText
                                         formControlName="pernrodoc"
                                     >
-                                <small class="p-error block" *ngIf="personaForm.get('pernrodoc').invalid && personaForm.get('pernrodoc').dirty">
-                                    <span *ngIf="personaForm.get('pernrodoc').errors?.documentoExistente">Este número de documento ya existe.</span>
+                                <small class="p-error block" *ngIf="personForm.get('pernrodoc').invalid && personForm.get('pernrodoc').dirty">
+                                    <span *ngIf="personForm.get('pernrodoc').errors?.documentoExistente">Este número de documento ya existe.</span>
                                 </small>
                             </div>
 
@@ -246,8 +252,8 @@
                                     dateFormat="yy-mm-dd"
                                     formControlName="perfecnac"
                                 ></p-calendar>
-                                <small class="p-error block" *ngIf="personaForm.get('perfecnac').invalid && personaForm.get('perfecnac').dirty">
-                                    <span *ngIf="personaForm.get('perfecnac').errors?.edadMinima">La fecha de nacimiento no es válida, la persona debe ser mayor de 15 años. </span>
+                                <small class="p-error block" *ngIf="personForm.get('perfecnac').invalid && personForm.get('perfecnac').dirty">
+                                    <span *ngIf="personForm.get('perfecnac').errors?.edadMinima">La fecha de nacimiento no es válida, la persona debe ser mayor de 15 años. </span>
                                 </small>
                             </div>
                         </div>
@@ -281,8 +287,8 @@
                                 pInputText
                                 formControlName="peremail"
                             >
-                            <small class="p-error block" *ngIf="personaForm.get('peremail').invalid && personaForm.get('peremail').dirty">
-                                <span *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es inválido. </span>
+                            <small class="p-error block" *ngIf="personForm.get('peremail').invalid && personForm.get('peremail').dirty">
+                                <span *ngIf="personForm.get('peremail').errors?.pattern">El formato del correo electrónico es inválido. </span>
                             </small>
                         </div>
 
@@ -356,9 +362,9 @@
                             <div class="field">
                                 <div class="flex justify-content-center">
                                     <div class="flex justify-content-center">
-                                        <div *ngIf="personaForm.value.perfoto">
+                                        <div *ngIf="personForm.value.perfoto">
                                             <p-image
-                                                src="{{userProfilePhoto}}/{{personaForm.value.perfoto}}"
+                                                src="{{userProfilePhoto}}/{{personForm.value.perfoto}}"
                                                 alt="Image"
                                                 width="150"
                                                 height="150"
@@ -372,15 +378,15 @@
                         </div>
                     <div class="field col-12">
                         <div class="card">
-                            <p-fileUpload
-                            #fileUploadperfoto
+                        <p-fileUpload
+                            #fileUploadProfilePhoto
                             mode="basic"
                             chooseLabel="Elegir archivo"
                             name="demo[]"
                             url="https://www.primefaces.org/cdn/api/upload.php"
                             accept="image/*"
                             maxFileSize="5000000"
-                            (onSelect)="onUploadperfoto($event)"
+                            (onSelect)="onUpload($event)"
                             [showUploadButton]="false"
                             [showCancelButton]="false"
                             cancelLabel="Cancelar"
@@ -391,41 +397,51 @@
                             styleClass="mb-2"
                             >
                         </p-fileUpload>
-                        <small class="p-error block" *ngIf="personaForm.get('perfoto').invalid && personaForm.get('perfoto').touched" >
-                          <span *ngIf="personaForm.get('perfoto').errors?.required">
-                            La foto de perfil es requerido. (*)
-                          </span>
+                        <small class="p-error block" *ngIf="personForm.get('perfoto').invalid && personForm.get('perfoto').touched" >
+                            <span *ngIf="personForm.get('perfoto').errors?.required">
+                                La foto de perfil es requerido. (*)
+                            </span>
                         </small>
                         <div *ngIf="perfotoFile">
-                          <div class="card col-12">
-                            <button pButton icon="pi pi-trash" (click)="clearFilesperfoto()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
-                            <ng-container *ngIf="isImage(perfotoFile.type);">
-                                <div class="mb-2 justify-content-center align-items-center">
-                                    <p-image
-                                        [src]="fileurlperfoto"
-                                        alt="Carta"
-                                        width="150"
-                                        height="150"
-                                        [preview]="true"
-                                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
-                                    ></p-image>
-                                </div>
-                              </ng-container>
-                          </div>
+                            <div class="card col-12">
+                                <button pButton icon="pi pi-trash" (click)="clearFilesperfoto()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                                <ng-container *ngIf="isImage(perfotoFile.type);">
+                                    <div class="mb-2 justify-content-center align-items-center">
+                                        <p-image
+                                            [src]="fileurlperfoto"
+                                            alt="Carta"
+                                            width="150"
+                                            height="150"
+                                            [preview]="true"
+                                            [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
+                                        ></p-image>
+                                    </div>
+                                </ng-container>
+                            </div>
                         </div>
-                      </div>
+                        </div>
                     </div>
                 </p-card>
             </div>
         </div>
-    </form>
+</form>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [formNoValidate]="personaForm.valid" (click)="enviarFormulario()"></button>
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [formNoValidate]="personForm.valid" (click)="sendForm()"></button>
     </ng-template>
 </p-dialog>
-<!-- Cambiar contraseña -->
-<p-dialog [(visible)]="showDialogChangePassword" header="Cambiar contraseña" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '35vw' }" [draggable]="false" [resizable]="false">
+
+<!-- Change password -->
+<p-dialog
+    [(visible)]="showDialogChangePassword"
+    header="Cambiar contraseña"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '35vw' }"
+    [draggable]="false"
+    [resizable]="false"
+>
     <p-card>
         <ng-template pTemplate="content">
             <div class="user-info-container">
@@ -453,7 +469,7 @@
                     <small class="p-error block" *ngIf="userPasswordForm.get('usupassword').invalid && (userPasswordForm.get('usupassword').dirty || userPasswordForm.get('usupassword').touched)">
                         <span *ngIf="userPasswordForm.get('usupassword').errors?.required"> La contraseña es obligatoria. <br> </span>
                         <span *ngIf="userPasswordForm.get('usupassword').errors?.minlength"> La contraseña debe tener al menos 8 caracteres. <br> </span>
-                        <span *ngIf="userPasswordForm.get('usupassword').errors?.seguridadPassword "> La contraseña debe incluir mayúsculas, minúsculas y números. <br> </span>
+                        <span *ngIf="userPasswordForm.get('usupassword').errors?.passwordSecurity "> La contraseña debe incluir mayúsculas, minúsculas y números. <br> </span>
                     </small>
                     <small class="p-success block" *ngIf="userPasswordForm.get('usupassword').valid && (userPasswordForm.get('usupassword').dirty || userPasswordForm.get('usupassword').touched)"> La contraseña es válida. </small>
                 </div>

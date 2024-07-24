@@ -38,7 +38,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.usuario = new Usuario();
-        this.obtenerDatosUsuarioToken();
+        this.getUserDataToken();
         this.asignacionValidacionUsuario();
         this.resetPasswordBool = true;
         this.messageSuccessBool = false;
@@ -50,7 +50,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         }
     }
 
-    obtenerDatosUsuarioToken() {
+    getUserDataToken() {
         this.routeSub = this.route.params.subscribe((params) => {
             this.token = params['token'];
             this.spinner.show();

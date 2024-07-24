@@ -103,7 +103,7 @@ export class UsuarioCrudComponent implements OnInit {
 
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
-        this.obtenerDatosUsuario();
+        this.getUserData();
         this.listarUsuarios();
         this.listarPersonaCombo();
 
@@ -442,7 +442,7 @@ export class UsuarioCrudComponent implements OnInit {
 
     // Usuario
     // obtiene los datos del usuario logeado
-    obtenerDatosUsuario() {
+    getUserData() {
         this.authService.usuario$.subscribe((user => {
             if (user) {
                 if (Array.isArray(user) && user.length > 0) {

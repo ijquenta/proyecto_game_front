@@ -73,7 +73,7 @@ export class NotaCrudComponent implements OnInit {
 
     ngOnInit(): void {
         this.verMateriaClicked = true;
-        this.obtenerDatosUsuario();
+        this.getUserData();
         this.listarCursosMaterias();
 
         this.notaEjemplo.pernomcompleto = "Apellido Paterno Apellido Materno Nombres";
@@ -94,7 +94,7 @@ export class NotaCrudComponent implements OnInit {
         this.notaService.rptNotaCursoMateria(criterio)
     }
 
-    obtenerDatosUsuario(){
+    getUserData(){
         this.authService.usuario$.subscribe((user => {
             if (user && Array.isArray(user) && user.length > 0) {
                 this.usuario = user[0];

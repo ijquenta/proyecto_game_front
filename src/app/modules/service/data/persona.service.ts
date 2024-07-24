@@ -21,19 +21,30 @@ const httpOptions = {
 export class PersonaService {
 
     usuario: any;
-    constructor(private http: HttpClient,
-                private tokenService: TokenService,
-                private archivos: ArchivosService,
-                private spinner: NgxSpinnerService,
-                private authService: AuthService) { }
+    constructor(private http: HttpClient, private tokenService: TokenService, private archivos: ArchivosService, private spinner: NgxSpinnerService, private authService: AuthService) { }
 
+    // Person services
 
-    modificiarPerfil(criterio: any){
-        return this.http.post(`${API_URL}/modificarPerfil`, criterio, { context: checktoken()})
+    getPersons(): Observable<any> {
+        return this.http.get(`${API_URL}/listarPersona`, { context: checktoken() });
     }
 
-    mostrarPerfil(perid: number){
-        return this.http.get(`${API_URL}/mostrarDatosPersona/${perid}`, { context: checktoken()})
+    managePerson(criterio: any){
+        return this.http.post(`${API_URL}/managePerson`, criterio, { context: checktoken() });
+    }
+
+    deletePerson(criterio: any){
+        return this.http.post(`${API_URL}/deletePerson`, criterio, { context: checktoken()});
+    }
+
+    // Profile services
+
+    updateProfile(criterio: any){
+        return this.http.post(`${API_URL}/updateProfile`, criterio, { context: checktoken()})
+    }
+
+    showPersonData(perid: number){
+        return this.http.get(`${API_URL}/showPersonData/${perid}`, { context: checktoken()})
     }
 
     // Servicios Informacion Admision
@@ -89,7 +100,6 @@ export class PersonaService {
 
     // Servicios Informacion Ministerial
 
-
     listarInformacionMinisterial(perid: number){
         return this.http.get(`${API_URL}/informacionMinisterial/${perid}`, { context: checktoken()})
     }
@@ -103,7 +113,7 @@ export class PersonaService {
     }
 
 
-    // Servicios Documento
+    // Servicios Documento Admisión
 
     listarDocumentoAdmision(perid: number){
         return this.http.get(`${API_URL}/documentoAdmision/${perid}`, { context: checktoken()})
@@ -189,24 +199,7 @@ export class PersonaService {
         return this.http.delete(`${API_URL}/tipoCargo/${carid}`, { context: checktoken()})
     }
 
-
-
-    // Person's Services
-    getPersons(): Observable<any> {
-        return this.http.get(`${API_URL}/listarPersona`, { context: checktoken() });
-    }
-
-    managePerson(criterio: any){
-        return this.http.post(`${API_URL}/managePerson`, criterio, { context: checktoken() });
-    }
-
-    deletePerson(criterio: any){
-        return this.http.post(`${API_URL}/eliminarPersona`, criterio, { context: checktoken()});
-    }
-
-
-
-
+    // Otros servicios
 
     actualizarDatosPersonales(criterio: any){
         return this.http.post(`${API_URL}/actualizarDatosPersonales`, criterio);
@@ -238,23 +231,23 @@ export class PersonaService {
     }
 
     getTipoDocumento(){
-      return this.http.get(`${API_URL}/tipoDocumento`)
+        return this.http.get(`${API_URL}/tipoDocumento`)
     }
 
     getTipoEstadoCivil(){
-      return this.http.get(`${API_URL}/tipoEstadoCivil`)
+        return this.http.get(`${API_URL}/tipoEstadoCivil`)
     }
 
     getTipoGenero(){
-      return this.http.get(`${API_URL}/tipoGenero`)
+        return this.http.get(`${API_URL}/tipoGenero`)
     }
 
     getTipoPais(){
-      return this.http.get(`${API_URL}/tipoPais`)
+        return this.http.get(`${API_URL}/tipoPais`)
     }
 
     getTipoCiudad(){
-      return this.http.get(`${API_URL}/tipoCiudad`)
+        return this.http.get(`${API_URL}/tipoCiudad`)
     }
 
 

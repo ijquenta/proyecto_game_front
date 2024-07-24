@@ -60,6 +60,10 @@ export class UsuarioPersonaComponent implements OnInit {
     // Gets a reference to the FileUpload in the template
     @ViewChild('fileUpload') fileUpload: FileUpload;
 
+    // Reference to component upload file
+    @ViewChild('fileUploadProfilePhoto') fileUploadProfilePhoto: FileUpload;
+
+
     // Person expanded
     personExpanded: PersonaExpanded;
     personExpandedElement: PersonaExpanded[];
@@ -166,6 +170,12 @@ export class UsuarioPersonaComponent implements OnInit {
         { field: 'perestado', header: 'Estado' },
     ];
 
+    fileurlperfoto: any;
+    perfotoFile: File | null = null;
+    perfotoFileUrl: string | null = null;
+
+
+
     constructor(
         private usuarioService: UsuarioService,
         private messageService: MessageService,
@@ -174,7 +184,8 @@ export class UsuarioPersonaComponent implements OnInit {
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private cdr: ChangeDetectorRef
     )
     {
 
@@ -320,7 +331,7 @@ export class UsuarioPersonaComponent implements OnInit {
 
     // Function Person
 
-    // Get: List person data
+    // List person data
     listPersons() {
         this.loading = true;
         this.personaService.getPersons().subscribe({
@@ -337,7 +348,7 @@ export class UsuarioPersonaComponent implements OnInit {
         });
     }
 
-    // Get: Get list persons with PersonExpended
+    // Get list persons with PersonExpended
     getPersonsExpended() {
         this.spinner.show();
         this.loading = true;
@@ -363,7 +374,7 @@ export class UsuarioPersonaComponent implements OnInit {
         });
     }
 
-    // Get: Organize person data for table
+    // Organize person data for table
     organizePersonData(data: any): PersonaExpanded {
         const person = new PersonaExpanded();
         person.tipo = data.tipo;
@@ -406,7 +417,7 @@ export class UsuarioPersonaComponent implements OnInit {
         return person;
     }
 
-    // Post: Create new person
+    // Create new person
     createPerson() {
         this.person = new Persona();
         this.personForm.reset();
@@ -415,7 +426,7 @@ export class UsuarioPersonaComponent implements OnInit {
         this.personOptionDialog = true;
     }
 
-    // Post: Update person data personExpanded
+    // Update person data personExpanded
     updatePerson(data: PersonaExpanded) {
         this.fillTypeCombos();
         this.personExpanded = { ...data };
@@ -452,165 +463,109 @@ export class UsuarioPersonaComponent implements OnInit {
         controlDocumentNumber.updateValueAndValidity();
     }
 
-    // Function: Send data to the form to create or update person
+    // Send data to the form to create or update person
     sendForm() {
-         // Check validations
-        if(this.personForm.invalid){
-            this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Verifica la información ingresada.',
-                    life: 3000
-                }
-            );
-            return Object.values(this.personForm.controls).forEach(
-                control=>{
-                    control.markAllAsTouched();
-                    control.markAsDirty();
-                }
-            )
+        this.personForm.patchValue({
+            perfoto: this.fileurlperfoto || null,
+        });
+
+        if (this.personForm.invalid) {
+            this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+            Object.values(this.personForm.controls).forEach(control => {
+                control.markAllAsTouched();
+                control.markAsDirty();
+            });
+            return;
         }
-        // Create person -> personOptionDialog = true
+
+        console.log("personForm: ", this.personForm.value);
+        console.log("perfotoFile: ", this.perfotoFile)
+
+        const formData: FormData = new FormData();
+
+        formData.append('perfoto', this.perfotoFile || null);
+        formData.append('pernomcompleto', (this.personForm.value.perapepat + ' ' + this.personForm.value.perapemat + ' ' + this.personForm.value.pernombres) || null);
+        formData.append('pernombres', this.personForm.value.pernombres || null);
+        formData.append('perapepat', this.personForm.value.perapepat || null);
+        formData.append('perapemat', this.personForm.value.perapemat || null);
+        formData.append('pertipodoc', this.personForm.value.tipoDocumento?.tipodocid || null);
+        formData.append('pernrodoc', this.personForm.value.pernrodoc || null);
+        formData.append('perfecnac', this.personForm.value.perfecnac || null);
+        formData.append('pergenero', this.personForm.value.tipoGenero?.generoid || null);
+        formData.append('perestcivil', this.personForm.value.tipoEstadoCivil?.estadocivilid || null);
+        formData.append('perpais', this.personForm.value.tipoPais?.paisid || null);
+        formData.append('perciudad', this.personForm.value.tipoCiudad?.ciudadid || null);
+        formData.append('perdirec', this.personForm.value.perdirec || null);
+        formData.append('peremail', this.personForm.value.peremail || null);
+        formData.append('percelular', this.personForm.value.percelular || null);
+        formData.append('pertelefono', this.personForm.value.pertelefono || null);
+        formData.append('perobservacion', this.personForm.value.perobservacion || null);
+        formData.append('perestado', this.personForm.value.perestado || 0)
+
         if (this.personOptionDialog) {
-                this.personData = new Persona();
-                this.personData.tipo = 1;
-                this.personData.perid = null;
-                this.personData.perusureg = this.usuario.usuname;
-                this.personData.perapepat = this.personForm.value.perapepat;
-                this.personData.perapemat = this.personForm.value.perapemat;
-                this.personData.pernombres = this.personForm.value.pernombres;
-                this.personData.pernrodoc = this.personForm.value.pernrodoc;
-                this.personData.perfecnac = this.personForm.value.perfecnac;
-                this.personData.percelular = this.personForm.value.percelular;
-                this.personData.pertelefono = this.personForm.value.pertelefono;
-                this.personData.peremail = this.personForm.value.peremail;
-                this.personData.perdirec = this.personForm.value.perdirec;
-                this.personData.perestcivil = this.personForm.value.tipoEstadoCivil.estadocivilid;
-                this.personData.estadocivilnombre = this.personForm.value.tipoEstadoCivil.estadocivilnombre;
-                this.personData.pertipodoc = this.personForm.value.tipoDocumento.tipodocid;
-                this.personData.tipodocnombre = this.personForm.value.tipoDocumento.tipodocid;
-                this.personData.pergenero = this.personForm.value.tipoGenero.generoid;
-                this.personData.generonombre = this.personForm.value.tipoGenero.generonombre;
-                this.personData.perpais = this.personForm.value.tipoPais.paisid;
-                this.personData.paisnombre = this.personForm.value.tipoPais.paisnombre;
-                this.personData.perciudad = this.personForm.value.tipoCiudad.ciudadid;
-                this.personData.ciudadnombre = this.personForm.value.tipoCiudad.ciudadnombre;
-                this.personData.perobservacion = this.personForm.value.perobservacion;
-                this.personData.perfoto = this.fileName;
-                this.personData.perestado = this.personForm.value.perestado;
-
-                if(!this.fileName){
-                    this.personData.perfoto = null;
-                }
-
-                this.loading = true;
-                this.personaService.managePerson(this.personData).subscribe({
-                    next: (response: any) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Persona',
-                            detail: 'Se registró correctamente.',
-                            life: 3000
-                        });
-                    },
-                    error: (error: any) => {
-                        console.error("Error: ", error['message']);
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Problema',
-                            detail: 'Ocurrío un error en el registro de persona.',
-                            life: 3000
-                        });
-                    },
-                    complete: () => {
-                        this.loading = false;
-                        this.personCreateDialog = false;
-                        this.personOptionDialog = false;
-                        this.getPersonsExpended();
-                    }
-                });
+            // Create
+            formData.append('tipo', '1')
+            formData.append('perusureg', this.usuario.usuname);
+        } else {
+            // Update
+            formData.append('tipo', '2')
+            formData.append('perid', this.personForm.value.perid);
+            formData.append('perusumod', this.usuario.usuname);
         }
-        // Update person -> personOptionDialog = false
-        if (!this.personOptionDialog){
-            if (!this.files?.currentFiles && this.personForm.valid) {
+
+        this.loading = true;
+        this.spinner.show();
+        console.log("managePerson", formData)
+        this.personaService.managePerson(formData).subscribe({
+            next: (data: any) => {
                 this.messageService.add({
-                    severity: 'info',
-                    summary: 'Imagen',
-                    detail: 'No selecciono ninguna imagen.',
+                    severity: 'success',
+                    summary: 'Persona',
+                    detail: this.personOptionDialog ? 'Se creó correctamente.' : 'Se actualizó correctamente.',
                     life: 3000
                 });
-                this.fileUploadType = 4;
-                this.imageName = '';
-            }
 
-            if (this.files?.currentFiles && this.personForm.valid) {
-                this.uploadFiles(this.files.currentFiles);
-                this.fileUploadType = 2;
-                this.imageName = this.fileName;
-            }
-
-            this.personData = new Persona();
-            this.personData.tipo = this.fileUploadType;
-            this.personData.perid = this.personForm.value.perid;
-            this.personData.perusumod = this.usuario.usuname;
-            this.personData.perapepat = this.personForm.value.perapepat;
-            this.personData.perapemat = this.personForm.value.perapemat;
-            this.personData.pernombres = this.personForm.value.pernombres;
-            this.personData.pernrodoc = this.personForm.value.pernrodoc;
-            this.personData.perfecnac = this.personForm.value.perfecnac;
-            this.personData.percelular = this.personForm.value.percelular;
-            this.personData.pertelefono = this.personForm.value.pertelefono;
-            this.personData.peremail = this.personForm.value.peremail;
-            this.personData.perdirec = this.personForm.value.perdirec;
-            this.personData.perfoto = this.fileName;
-            this.personData.perestcivil = this.personForm.value.tipoEstadoCivil.estadocivilid;
-            this.personData.estadocivilnombre = this.personForm.value.tipoEstadoCivil.estadocivilnombre;
-            this.personData.pertipodoc = this.personForm.value.tipoDocumento.tipodocid;
-            this.personData.tipodocnombre = this.personForm.value.tipoDocumento.tipodocid;
-            this.personData.pergenero = this.personForm.value.tipoGenero.generoid;
-            this.personData.generonombre = this.personForm.value.tipoGenero.generonombre;
-            this.personData.perpais = this.personForm.value.tipoPais.paisid;
-            this.personData.paisnombre = this.personForm.value.tipoPais.paisnombre;
-            this.personData.perciudad = this.personForm.value.tipoCiudad.ciudadid;
-            this.personData.ciudadnombre = this.personForm.value.tipoCiudad.ciudadnombre;
-            this.personData.perobservacion = this.personForm.value.perobservacion;
-            this.personData.perestado = this.personForm.value.perestado;
-            this.loading = true;
-
-            if(!this.fileName){
-                this.personData.perfoto = null;
-            }
-
-            this.loading = true;
-                this.personaService.managePerson(this.personData).subscribe({
-                    next: (response: any) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Persona',
-                            detail: 'Se registró correctamente.',
-                            life: 3000
-                        });
-                    },
-                    error: (error: any) => {
-                        console.error("Error: ", error['message']);
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Problema',
-                            detail: 'Ocurrío un error en el registro de persona.',
-                            life: 3000
-                        });
-                    },
-                    complete: () => {
-                        this.loading = false;
-                        this.personCreateDialog = false;
-                        this.personOptionDialog = false;
-                        this.getPersonsExpended();
-                    }
+                this.fileUploadProfilePhoto.clear();
+                this.personForm.reset();
+                this.perfotoFile = null;
+            },
+            error: (error: any) => {
+                console.error("Error: ", error.message);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema',
+                    detail: 'Ocurrió un error en el registro, verifique los campos ingresados.',
+                    life: 3000
                 });
+                this.spinner.hide();
+                this.loading = false;
+            },
+            complete: () => {
+                this.loading = false;
+                this.personCreateDialog = false;
+                this.personOptionDialog = false;
+                this.getPersonsExpended();
+            }
+        });
+    }
+
+    // Clear file upload
+    clearFilesperfoto() {
+        if (this.fileUploadProfilePhoto) {
+          this.fileUploadProfilePhoto.clear();
+          this.perfotoFile = null;
+          this.perfotoFileUrl = null;
+        } else {
+          console.error('fileUpload is not initialized');
         }
     }
 
-    // Delete: person with profile photo or not
+    // Is file image?
+    isImage(fileType: string): boolean {
+        return fileType.startsWith('image/');
+    }
+
+    // Person with profile photo or not
     async deletePerson() {
         this.person = new Persona();
         this.person.tipo = 1;
@@ -772,136 +727,17 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     // File
-    // Upload files: Generate unique file name
-    generateUniqueFilename(originalName: string): string {
-        const timestamp = new Date().getTime();
-        const extension = originalName.split('.').pop(); // Get filename extension
-        return `${timestamp}.${extension}`;
-    }
-
-    // Function asyncrone onUpload
-    async onUpload(event: any) {
-
-        const currentPhoto = this.personForm.value.perfoto;
-
-        if (!currentPhoto) {
-
-            this.files = event;
-            const success = await this.uploadFiles(this.files.files);
-
-            if (!success) {
-                this.messageService.add({
-                        severity: 'error',
-                        summary: 'Imagen',
-                        detail: 'No se registró la imagen en el sistema.',
-                        life: 3000
-                    }
-                );
-            } else {
-                this.messageService.add({
-                        severity: 'success',
-                        summary: 'Imagen',
-                        detail: 'Se registró existosamente en el sistema.',
-                        life: 3000
-                    }
-                );
-
-                this.listPersons();
-                this.personForm.patchValue({ perfoto: this.fileName });
-            }
-            return;
-        }
-
-        this.files = event;
-        const deleteSuccess = await this.uploadService.deleteProfilePhoto(currentPhoto);
-
-        if (!deleteSuccess) {
-            this.messageService.add({
-                    severity: 'warn',
-                    summary: 'Subir Imagen',
-                    detail: 'No se pudo eliminar la imagen actual.',
-                    life: 3000
-                }
-            );
-
-            const newuploadSuccess = await this.uploadFiles(this.files.currentFiles);
-
-            if (!newuploadSuccess) {
-                this.messageService.add({
-                        severity: 'error',
-                        summary: 'Subir Imagen',
-                        detail: 'no se registró en el sistema.',
-                        life: 3000
-                    }
-                );
-            } else {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Subir Imagen',
-                    detail: 'Se registró existosamente',
-                    life: 3000
-                });
-
-                this.listPersons();
-                this.personForm.patchValue({ perfoto: this.fileName });
-            }
-            return;
-        }
-
-        const uploadSuccess = await this.uploadFiles(this.files.currentFiles);
-        if (!uploadSuccess) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Imagen',
-                detail: 'no se registró en el sistema.',
-                life: 3000
-            });
-        } else {
-            this.messageService.add({
-                severity: 'info',
-                summary: 'Imagen',
-                detail: 'Se registró existosamente',
-                life: 3000
-            });
-
-            this.listPersons();
-            this.personForm.patchValue({ perfoto: this.fileName });
-        }
-    }
-
     // Upload files
-    uploadFiles(currentFiles: File[]): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            if (!currentFiles || currentFiles.length === 0) {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Imagen',
-                    detail: 'No se seleccionó ninguna imagen.',
-                    life: 3000
-                });
-                resolve(false);
-            }
-            const formData = new FormData();
-            for (let i = 0; i < currentFiles.length; i++) {
-                const file: File = currentFiles[i];
-                this.fileName = this.generateUniqueFilename(file.name);
-                formData.append('files[]', file, this.fileName);
-            }
-            this.spinner.show();
-            this.uploadService.uploadProfilePhoto(formData).subscribe({
-                next: (data: any) => {
-                    this.spinner.hide();
-                    resolve(true);
-                },
-                error: (error) => {
-                    console.error('Error en la carga:', error);
-                    this.spinner.hide();
-                    resolve(false);
-                },
-                complete: () => {
-                }
-            });
-        });
+    onUpload(event: any) {
+        this.perfotoFile = event.files[0];
+        this.perfotoFileUrl = URL.createObjectURL(this.perfotoFile);
+        this.cdr.detectChanges();
+        this.fileURLperfoto(this.perfotoFile);
+    }
+
+    fileURLperfoto(file: File): string {
+        this.fileurlperfoto =  URL.createObjectURL(file);
+        return this.fileurlperfoto;
     }
 
     // Complementary
@@ -937,7 +773,8 @@ export class UsuarioPersonaComponent implements OnInit {
         );
     }
 
-    // File PDF
+    // File rpt
+
     // Export PDF file
     exportPdf() {
         import('jspdf').then(jsPDF => {
@@ -996,7 +833,7 @@ export class UsuarioPersonaComponent implements OnInit {
                     startY: 100,
                 });
                 let PDF_EXTENSION = '.pdf';
-                const fileName = 'rpt-persona'+'-'+new Date().getTime()+PDF_EXTENSION;
+                const fileName = 'rpt-excel-lista-persona'+'-'+new Date().getTime()+PDF_EXTENSION;
                 doc.save(fileName); // Save the PDF file with the new name
             });
         });
@@ -1064,6 +901,6 @@ export class UsuarioPersonaComponent implements OnInit {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
         const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-        FileSaver.saveAs(data, fileName + 'rpt-persona-' + new Date().getTime() + EXCEL_EXTENSION);
+        FileSaver.saveAs(data, fileName + 'rpt-pdf-lista-persona-' + new Date().getTime() + EXCEL_EXTENSION);
     }
 }

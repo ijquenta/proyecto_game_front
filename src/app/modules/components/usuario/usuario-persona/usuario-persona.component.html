@@ -1,3 +1,4 @@
+<!-- Person table -->
 <div class="grid">
     <p-toast></p-toast>
     <div class="col-12">
@@ -260,13 +261,14 @@
     </div>
 </div>
 
+<!-- Person dialog for create or update -->
 <p-dialog
     [(visible)]="personCreateDialog"
     header="Persona"
     [modal]="true"
     class="p-fluid"
     [breakpoints]="{ '960px': '75vw' }"
-    [style]="{ width: '50vw' }"
+    [style]="{ width: '70vw' }"
     [draggable]="false"
     [resizable]="false"
     [maximizable]="true"
@@ -274,14 +276,15 @@
 <form [formGroup]="personForm" novalidate>
         <div class="grid p-fluid mt-3">
             <div class="col-12">
+
+                <!-- Section primary data -->
                 <p-card header="Datos personales" subheader="Debera ingresar todos los requeridos (*)." [style]="{ width: '100%' }">
-                    <div class="col-12">
-                        <div class="field">
+                    <div class="grid p-fluid">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="apellidoPaterno">Apellido Paterno</label>
                             <input
                                 type="text"
                                 id="apellidoPaterno"
-                                class="my-2"
                                 pInputText
                                 formControlName="perapepat"
                                 [ngClass]="{ 'ng-dirty': this.personForm.get('perapepat').touched, 'valid-field': this.personForm.get('perapepat').valid}"
@@ -292,16 +295,15 @@
                             <small class="p-success block" *ngIf="personForm.get('perapepat')?.valid"> El apellido es valido. </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="apellidoMaterno">Apellido Materno</label>
-                            <input type="text" class="my-2" id="apellidoMaterno" pInputText formControlName="perapemat">
+                            <input type="text" id="apellidoMaterno" pInputText formControlName="perapemat">
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="nombres">Nombres</label>
                             <input
                                 type="text"
-                                class="my-2"
                                 id="nombres"
                                 pInputText
                                 formControlName="pernombres"
@@ -313,10 +315,9 @@
                             <small class="p-success block" *ngIf="personForm.get('pernombres')?.valid"> El/los nombre(s) es valido. </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="tipoDocumento">Tipo Documento</label>
                             <p-dropdown
-                                class="my-2"
                                 id="tipoDocumento"
                                 [autoDisplayFirst]="false"
                                 appendTo="body"
@@ -333,11 +334,10 @@
                             </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="numeroDocumento">Número Documento</label>
                             <input
                                 type="text"
-                                class="my-2"
                                 id="numeroDocumento"
                                 pInputText
                                 formControlName="pernrodoc"
@@ -349,11 +349,11 @@
                             <small class="p-success block" *ngIf="personForm.get('pernrodoc')?.valid"> El número de documento es válido. </small>
                         </div>
 
-                        <div class="field">
-                            <label for="fechaNacimiento">Fecha de nacimiento</label>
+                        <div class="field col-12 md:col-6 lg:col-4">
+                            <label for="fechaNacimiento">Fecha de nacimiento (yyyy-mm-dd)</label>
                             <p-calendar
                                 id="fechaNacimiento"
-                                class="my-2"
+                                placeholder="yyyy-mm-dd"
                                 appendTo="body"
                                 dateFormat="yy-mm-dd"
                                 formControlName="perfecnac"
@@ -367,20 +367,11 @@
                         </div>
                     </div>
                 </p-card>
-
+                <hr>
+                <!-- Section secundary data -->
                 <p-card header="Datos secundarios" subheader="Debera ingresar todos los requeridos (*)." [style]="{ width: '100%' }">
-                    <div class="col-12">
-                        <div class="field">
-                            <!-- <label for="numeroCelular">Número de Celular</label>
-                            <input
-                                type="text"
-                                class="my-2"
-                                id="numeroCelular"
-                                pInputText
-                                formControlName="percelular"
-                                [ngClass]="{ 'ng-dirty': this.personForm.get('percelular').touched, 'valid-field': this.personForm.get('percelular').valid}"
-                            > -->
-
+                    <div class="grid p-fluid">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <span class="font-bold block mb-2">Número de Celular</span>
                             <p-inputMask mask="+999 99999999" formControlName="percelular" placeholder="+591 77777777"></p-inputMask>
 
@@ -390,15 +381,14 @@
                             <small class="p-success block" *ngIf="personForm.get('percelular')?.valid"> El número de celular es valido. </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="numeroTelefono">Número de Teléfono</label>
-                            <input class="my-2" type="text" id="numeroTelefono" pInputText formControlName="pertelefono">
+                            <input type="text" id="numeroTelefono" pInputText formControlName="pertelefono">
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="correoElectronico">Correo Electrónico</label>
                             <input
-                                class="my-2"
                                 type="text"
                                 id="correoElectronico"
                                 pInputText
@@ -412,10 +402,9 @@
                             <small class="p-success block" *ngIf="personForm.get('peremail')?.valid"> El correo electrónico es válido.</small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="tipoGenero">Tipo Género</label>
                             <p-dropdown
-                                class="my-2"
                                 id="tipoGenero"
                                 [autoDisplayFirst]="false"
                                 appendTo="body"
@@ -430,10 +419,9 @@
                             </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="tipoPais">Pais</label>
                             <p-dropdown
-                                class="my-2"
                                 id="tipoPais"
                                 [autoDisplayFirst]="false"
                                 (onChange)="onChangeTipoPais($event)"
@@ -451,10 +439,9 @@
                             </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="tipoCiudad">Ciudad</label>
                             <p-dropdown
-                                class="my-2"
                                 id="tipoCiudad"
                                 [autoDisplayFirst]="false"
                                 appendTo="body"
@@ -469,18 +456,18 @@
                             </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-4">
                             <label for="tipoEstadoCivil">Estado Civil</label>
-                            <p-dropdown class="my-2" id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body" [options]="TipoEstadoCivil" formControlName="tipoEstadoCivil" optionLabel="estadocivilnombre" [ngClass]="{ 'valid-field': this.personForm.get('tipoEstadoCivil').valid}"></p-dropdown>
+                            <p-dropdown id="tipoEstadoCivil" [autoDisplayFirst]="false" appendTo="body" [options]="TipoEstadoCivil" formControlName="tipoEstadoCivil" optionLabel="estadocivilnombre" [ngClass]="{ 'valid-field': this.personForm.get('tipoEstadoCivil').valid}"></p-dropdown>
                             <small class="p-success block" *ngIf="personForm.get('tipoEstadoCivil').valid"> El estado civil es valido. </small>
                             <small class="p-error block" *ngIf="personForm.get('tipoEstadoCivil').invalid && personForm.get('tipoEstadoCivil').touched">
                                 <span *ngIf="personForm.get('tipoEstadoCivil').errors?.required">El estado civil es requerido.</span> (*)
                             </small>
                         </div>
 
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-8">
                             <label for="textarea">Dirección de Domicilio</label>
-                                <textarea class="my-2" inputId="textarea" rows="2" cols="30" formControlName="perdirec" appendTo="body" pInputTextarea [ngClass]="{ 'ng-dirty': this.personForm.get('perdirec').touched, 'valid-field': this.personForm.get('perdirec').valid}"></textarea>
+                                <textarea inputId="textarea" rows="2" cols="30" formControlName="perdirec" appendTo="body" pInputTextarea [ngClass]="{ 'ng-dirty': this.personForm.get('perdirec').touched, 'valid-field': this.personForm.get('perdirec').valid}"></textarea>
                             <small class="p-error block" *ngIf="personForm.get('perdirec').invalid && personForm.get('perdirec').dirty">
                                 <span *ngIf="personForm.get('perdirec').errors?.required">La dirección de domicilio es requerido.</span> (*)
                             </small>
@@ -488,13 +475,13 @@
                         </div>
                     </div>
                 </p-card>
-
+                <hr>
+                <!-- Section status -->
                 <p-card header="Estado" subheader="Esta sección representa el estado del registro" [style]="{ width: '100%' }">
-                    <div class="col-12">
-                        <div class="field">
+                    <div class="grid p-fluid">
+                        <div class="field col-12 md:col-6 lg:col-6">
                             <label for="textarea">Observación</label>
                                 <textarea
-                                    class="my-2"
                                     inputId="textarea"
                                     rows="2" cols="30"
                                     formControlName="perobservacion"
@@ -502,8 +489,7 @@
                                     pInputTextarea
                                 ></textarea>
                         </div>
-
-                        <div class="field">
+                        <div class="field col-12 md:col-6 lg:col-6">
                             <label for="">Estado</label>
                             <div class="flex align-items-center justify-content-center">
                                 <p-selectButton [options]="stateOptionsEstado" formControlName="perestado" optionLabel="label" optionValue="value"></p-selectButton>
@@ -511,25 +497,50 @@
                         </div>
                     </div>
                 </p-card>
+                <hr>
+                <!--  Section profile photo-->
                 <p-card header="Foto de perfil" subheader="Debera seleccionar una imagen jpg, jpeg, png" [style]="{ width: '100%' }">
-                    <div class="col-12">
-                        <div class="field col-12" *ngIf="personForm.valid">
-                            <p-fileUpload mode="basic" chooseLabel="Seleccinar Imagen" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="3000000" (onSelect)="onUpload($event)" [auto]="true"></p-fileUpload>
-                        </div>
-                        <div class="field">
-                            <div class="flex justify-content-center">
-
-                                <div class="flex justify-content-center">
-                                    <div *ngIf="personForm.value.perfoto">
+                    <div class="field col-12">
+                        <div class="card">
+                        <p-fileUpload
+                            #fileUploadProfilePhoto
+                            mode="basic"
+                            chooseLabel="Elegir archivo"
+                            name="demo[]"
+                            url="https://www.primefaces.org/cdn/api/upload.php"
+                            accept="image/*"
+                            maxFileSize="5000000"
+                            (onSelect)="onUpload($event)"
+                            [showUploadButton]="false"
+                            [showCancelButton]="false"
+                            cancelLabel="Cancelar"
+                            [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                            [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                            [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                            [invalidFileTypeMessageDetail]="'Solo se permiten imagenes. Los tipos de archivo permitidos son: JPEG, PNG, etc.'"
+                            styleClass="mb-2"
+                            >
+                        </p-fileUpload>
+                        <small class="p-error block" *ngIf="personForm.get('perfoto').invalid && personForm.get('perfoto').touched" >
+                            <span *ngIf="personForm.get('perfoto').errors?.required">
+                                La foto de perfil es requerido. (*)
+                            </span>
+                        </small>
+                        <div *ngIf="perfotoFile">
+                            <div class="card col-12">
+                                <button pButton icon="pi pi-trash" (click)="clearFilesperfoto()" class="mb-2 p-button-sm p-button-danger p-button-text"></button>
+                                <ng-container *ngIf="isImage(perfotoFile.type);">
+                                    <div class="mb-2 justify-content-center align-items-center">
                                         <p-image
-                                            src="{{userProfilePhoto}}/{{personForm.value.perfoto}}"
-                                            alt="Image"
+                                            [src]="fileurlperfoto"
+                                            alt="Carta"
                                             width="150"
                                             height="150"
                                             [preview]="true"
                                             [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
                                         ></p-image>
-                                </div>
+                                    </div>
+                                </ng-container>
                             </div>
                         </div>
                         </div>
@@ -540,10 +551,11 @@
 </form>
 <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [formNoValidate]="personForm.valid" (click)="sendForm()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendForm()"></button>
 </ng-template>
 </p-dialog>
 
+<!-- Person dialog for delete -->
 <p-dialog [(visible)]="personDeleteDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> <span *ngIf="personExpanded">Esta seguro de eliminar a la persona: <b> {{personExpanded.pernomcompleto}}</b>?</span> </div>
     <ng-template pTemplate="footer">
@@ -552,6 +564,7 @@
     </ng-template>
 </p-dialog>
 
+<!-- Others dialogs -->
 <p-dialog [(visible)]="personActivateDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-check" style="font-size: 2rem"></i>
@@ -563,6 +576,7 @@
     </ng-template>
 </p-dialog>
 
+<!-- View person data -->
 <p-sidebar [(visible)]="personShowDialog" styleClass="w-30rem" position="right">
     <ng-template pTemplate="header">Datos personales</ng-template>
     <ng-template pTemplate="content">
