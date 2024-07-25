@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable()
 export class PermisoService {
@@ -25,7 +26,7 @@ export class PermisoService {
     }
 
     listarPermiso(){
-        return this.http.get(`${API_URL}/listarPermiso`);
+        return this.http.get(`${API_URL}/listarPermiso`, { context: checktoken()});
     }
 
     listarPermisoRol(){
@@ -33,11 +34,11 @@ export class PermisoService {
     }
 
     getPermisos(){
-        return this.http.get(`${API_URL}/getPermisos`)
+        return this.http.get(`${API_URL}/getPermisos`, { context: checktoken()})
     }
 
     getRoles(){
-        return this.http.get(`${API_URL}/getRoles`)
+        return this.http.get(`${API_URL}/getRoles`, { context: checktoken()})
     }
 
     getOperaciones(){

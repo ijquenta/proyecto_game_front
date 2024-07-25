@@ -31,6 +31,7 @@ interface Column {
     providers: [MessageService],
     styleUrls: ['./usuario-permiso.component.css']
 })
+
 export class UsuarioPermisoComponent implements OnInit {
 
     // modal
@@ -182,7 +183,7 @@ export class UsuarioPermisoComponent implements OnInit {
     getDataRoles() {
         this.permisoService.getRoles().subscribe({
             next: (data) => {
-                this.roles = data as any[];
+                this.roles = data['data'];
             },
             error: (error) => {
                 console.error('Error al listar roles', error);

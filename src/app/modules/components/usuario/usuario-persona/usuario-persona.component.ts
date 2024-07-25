@@ -245,6 +245,7 @@ export class UsuarioPersonaComponent implements OnInit {
             { field: 'perestado', header: 'Estado' },
         ];
     }
+
     ngOnInit() {
         this.getPersonsExpended();
         this.fillTypeCombos();
@@ -833,7 +834,7 @@ export class UsuarioPersonaComponent implements OnInit {
                     startY: 100,
                 });
                 let PDF_EXTENSION = '.pdf';
-                const fileName = 'rpt-excel-lista-persona'+'-'+new Date().getTime()+PDF_EXTENSION;
+                const fileName = 'rpt-pdf-lista-persona-' + new Date().getTime()+PDF_EXTENSION;
                 doc.save(fileName); // Save the PDF file with the new name
             });
         });
@@ -891,7 +892,7 @@ export class UsuarioPersonaComponent implements OnInit {
             };
 
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, '');
+            this.saveAsExcelFile(excelBuffer, 'rpt-excel-lista-persona-');
         });
     }
 
@@ -901,6 +902,6 @@ export class UsuarioPersonaComponent implements OnInit {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
         const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-        FileSaver.saveAs(data, fileName + 'rpt-pdf-lista-persona-' + new Date().getTime() + EXCEL_EXTENSION);
+        FileSaver.saveAs(data, fileName + new Date().getTime() + EXCEL_EXTENSION);
     }
 }

@@ -22,6 +22,10 @@ import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 
+interface ColumsTable {
+    field: string;
+    header: string;
+}
 
 @Component({
     templateUrl: './usuario-crud.component.html',
@@ -44,8 +48,8 @@ export class UsuarioCrudComponent implements OnInit {
     datosUsuario: Usuario;
     usuarioRegistro: Usuario;
     usuarioDialog: boolean = false;
-    desactivarUsuarioDialog: boolean = false;
-    activarUsuarioDialog: boolean = false;
+    deactivateUserDialog: boolean = false;
+    activateUserDialog: boolean = false;
     usuarioCambiarPasswordDialog: boolean = false;
     filteredUsuarios: any[] = [];
 
@@ -78,16 +82,54 @@ export class UsuarioCrudComponent implements OnInit {
     home: MenuItem | undefined;
     stateOptionsEstado: any;
 
+    colsColumsTable!: ColumsTable[];
 
+    selectedColumns: { field: string; header: string; }[] = [
+        { field: 'tipodocnombre', header: 'Tipo de Documento' },
+        { field: 'pernrodoc', header: 'Número de Documento' },
+        { field: 'pernomcompleto', header: 'Nombre Completo' },
+        { field: 'pernombres', header: 'Nombres' },
+        { field: 'perapepat', header: 'Apellido Paterno' },
+        { field: 'perapemat', header: 'Apellido Materno' },
+        { field: 'perfecnac', header: 'Fecha de Nacimiento' },
+        { field: 'generonombre', header: 'Género' },
+        { field: 'usuconfirmado', header: 'Confirmación email'},
+        { field: 'perestado', header: 'Estado' },
+    ];
 
-    constructor( private messageService: MessageService,
-                 private usuarioService: UsuarioService,
-                 private authService: AuthService,
-                 private reporte: ReporteService,
-                 private formBuilder: FormBuilder,
-                 private spinner: NgxSpinnerService,
-                 private archivoService: ArchivosService
-                ) {}
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
+    ];
+
+    statusConfirmEmail = [
+        { label: 'Confirmado', value: 1 },
+        { label: 'No Confirmado', value: 0 }
+    ];
+
+    rolOptions = [];
+
+    constructor( private messageService: MessageService, private usuarioService: UsuarioService, private authService: AuthService, private reporte: ReporteService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private archivoService: ArchivosService)
+    {
+        this.colsColumsTable = [
+            { field: 'usuname', header: 'Nombre de usuario' },
+            { field: 'usuemail', header: 'Correo electrónico' },
+            { field: 'rolnombre', header: 'Rol de usuario' },
+            { field: 'usudescripcion', header: 'Observación'},
+            { field: 'usuusureg', header: 'Registrado' },
+            { field: 'usuusumod', header: 'Modificado' },
+            { field: 'usuestado', header: 'Estado' },
+        ];
+
+        this.selectedColumns = [
+            { field: 'usuname', header: 'Nombre de usuario' },
+            { field: 'usuemail', header: 'Correo electrónico' },
+            { field: 'rolnombre', header: 'Rol de usuario' },
+            { field: 'usudescripcion', header: 'Observación'},
+            { field: 'usuconfirmado', header: 'Confirmación' },
+            { field: 'usuestado', header: 'Estado' },
+        ];
+    }
 
     ngOnInit() {
 
@@ -109,7 +151,7 @@ export class UsuarioCrudComponent implements OnInit {
 
         this.usuarioForm = this.formBuilder.group({
             usuid: [''],
-            usuname: [ '', [Validators.required, Validators.minLength(5), Validators.maxLength(20), this.noEspacios], [this.validarNombreUsuarioExistente()]],
+            usuname: [ '', [Validators.required, Validators.minLength(5), Validators.maxLength(20), this.validateNotSpaces], [this.validateExistingUserName()]],
             tipoPersona: ['', Validators.required],
             tipoRol: ['', Validators.required],
             usuemail: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
@@ -118,9 +160,9 @@ export class UsuarioCrudComponent implements OnInit {
         });
 
         this.usuarioPwdForm = this.formBuilder.group({
-            usupassword: ['', [Validators.required, Validators.minLength(8), this.seguridadPassword]],
+            usupassword: ['', [Validators.required, Validators.minLength(8), this.securityPassword]],
             usupassword2: ['', [Validators.required]]
-        }, { validator: this.validardorPasswords });
+        }, { validator: this.validatorPasswords });
 
         this.colsTable = [
             { field: 'usuid', header: 'ID' },
@@ -129,17 +171,29 @@ export class UsuarioCrudComponent implements OnInit {
             { field: 'pernrodoc', header: 'Nro. doc.' },
             { field: 'usuemail', header: 'Email' },
             { field: 'rolnombre', header: 'Rol' },
-            { field: 'usuestado', header: 'Estado' },
+
             { field: 'usudescripcion', header: 'Descripcion' },
             { field: 'usuusureg', header: 'Registro' },
-            { field: 'usufecreg', header: 'Fecha' },
+            // { field: 'usufecreg', header: 'Fecha' },
             { field: 'usuusumod', header: 'Modificación' },
-            { field: 'usufecmod', header: 'Fecha' }
+            // { field: 'usufecmod', header: 'Fecha' }
+            { field: 'usuestado', header: 'Estado' },
         ];
 
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
-    }
 
+        this.usuarioService.getRoles().subscribe(
+            (result: any) => {
+                this.rolOptions = result.map((rol: any) => ({
+                    label: rol.rolnombre,
+                    value: rol.rolnombre
+                }));
+            },
+            (error) => {
+                console.error('Error al obtener los roles:', error);
+            }
+        );
+    }
 
     //  Funciones
     // Lista a los usuarios
@@ -149,7 +203,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.listaUsuario().subscribe(
             (result: any) => {
                 this.usuarios = result;
-                console.log("usuarios: ", this.usuarios)
+                console.log("lista de usarios: ", this.usuarios)
                 this.usuariosDuplicado = this.usuarios;
                 this.filteredUsuarios = this.usuarios;
                 this.loading = false;
@@ -162,6 +216,7 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
+
     // Lista los roles para el combo de opciones
     listarRolCombo() {
         this.usuarioService.getRoles().subscribe(
@@ -169,6 +224,11 @@ export class UsuarioCrudComponent implements OnInit {
                 this.tipoRol = result;
                 if(this.datosUsuario?.rolid == 2){
                     this.tipoRol = this.tipoRol.filter(usuario => usuario.rolid !== 1);
+
+                    this.rolOptions = result.map((rol: any) => ({
+                        label: rol.rolnombre, // o el nombre que prefieras mostrar
+                        value: rol.rolnombre  // o el valor que prefieras usar
+                    }));
                 }
             },
             (error) => {
@@ -176,6 +236,7 @@ export class UsuarioCrudComponent implements OnInit {
             }
         );
     }
+
     // lista las personas para el combo de opciones
     listarPersonaCombo(){
         this.usuarioService.getTipoPersona().subscribe(
@@ -184,20 +245,23 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
+
     // filtra los usuarios por su nombre completo
     filtarUsuarios(){
         this.filteredUsuarios = this.usuarios.filter(usuario => usuario.pernomcompleto.toLowerCase().includes(this.searchText.toLowerCase()));
     }
+
     // Abre el modal para nueva persona
-    nuevaPersona() {
+    createUser() {
         this.usuario = new Usuario();
         this.usuarioRegistro = new Usuario();
         this.usuarioDialog = true;
         this.optionDialog = true;
         this.usuarioForm.reset();
     }
+
     // Edita los datos del usuario
-    editarUsuario(data: Usuario){
+    updateUser(data: Usuario){
         this.usuario = { ...data };
         this.usuarioDialog = true;
         this.optionDialog = false;
@@ -217,12 +281,13 @@ export class UsuarioCrudComponent implements OnInit {
         usunameControl.clearAsyncValidators();
 
         if (this.originalUsername) {
-            usunameControl.setAsyncValidators([this.validarUsernameSiCambia.bind(this)]);
+            usunameControl.setAsyncValidators([this.validateUsernameIfChange.bind(this)]);
         }
         usunameControl.updateValueAndValidity();
     }
+
     // Enviar información para editar/crear usurario
-    enviarFormulario(){
+    sendForm(){
         if (this.optionDialog) {
             if(this.usuarioForm.invalid){
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
@@ -295,19 +360,20 @@ export class UsuarioCrudComponent implements OnInit {
             )
         }
     }
+
     // Abre modal para desactivar usuario
-    confirmarDesactivar(data: Usuario){
-        this.desactivarUsuarioDialog = true;
+    confirmDeactivate(data: Usuario){
+        this.deactivateUserDialog = true;
         this.usuario = { ...data };
     }
     // Abre modal para activar usuario
-    confirmarActivar(data: any) {
+    confirmActivate(data: any) {
         this.usuario = { ...data };
         console.log(this.usuario);
-        this.activarUsuarioDialog = true;
+        this.activateUserDialog = true;
     }
     // Abre modal para cambiar contraseña
-    confirmarCambiarPassword(data: Usuario){
+    confirmChangePassword(data: Usuario){
         this.usuarioPwdForm.patchValue(
             {
                 usupassword: null,
@@ -317,8 +383,9 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioCambiarPasswordDialog = true;
         this.usuario = { ...data };
     }
+
     // Edita contraseña
-    cambiarPasswordUsuario(){
+    changeUserPassword(){
         if(this.usuarioPwdForm.invalid){
             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
             return Object.values(this.usuarioPwdForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
@@ -339,8 +406,9 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
+
     // Desactiva usuario
-    desactivarUsuario() {
+    deactivateUser() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
         this.usuarioRegistro.tipo = 2;
@@ -349,7 +417,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.gestionarUsuarioEstado(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Desactivado.', life: 3000});
-                this.desactivarUsuarioDialog = false;
+                this.deactivateUserDialog = false;
                 this.listarUsuarios();
             },
             (error) => {
@@ -358,8 +426,9 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
+
     // Activa usuario
-    activarUsuario() {
+    activateUser() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
         this.usuarioRegistro.tipo = 3;
@@ -368,7 +437,7 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.gestionarUsuarioEstado(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Activado.', life: 3000});
-                this.activarUsuarioDialog = false;
+                this.activateUserDialog = false;
                 this.listarUsuarios();
             },
             (error) => {
@@ -377,8 +446,9 @@ export class UsuarioCrudComponent implements OnInit {
             }
         )
     }
+
     // oculta model de editar/crear usuario
-    ocultarDialog(){
+    hideDialog(){
         this.usuarioDialog = false;
         this.usuarioCambiarPasswordDialog = false;
         this.usuarioPwdForm.reset();
@@ -388,15 +458,15 @@ export class UsuarioCrudComponent implements OnInit {
 
     // Funciones para validaciones
     // Verifica que la contraseña: debe incluir mayúsculas, minúsculas y números
-    seguridadPassword(control: AbstractControl): { [key: string]: boolean } | null {
+    securityPassword(control: AbstractControl): { [key: string]: boolean } | null {
       const value = control.value;
       if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
-        return { seguridadPassword: true };
+        return { securityPassword: true };
       }
       return null;
     }
     // Verifica si las contraseña y repetir la contraseña sean iguales
-    validardorPasswords(fg: FormGroup): { [key: string]: boolean } | null {
+    validatorPasswords(fg: FormGroup): { [key: string]: boolean } | null {
         const password = fg.get('usupassword').value;
         const confirmPassword = fg.get('usupassword2').value;
         if (password && confirmPassword && password !== confirmPassword) {
@@ -405,7 +475,7 @@ export class UsuarioCrudComponent implements OnInit {
         return null;
     }
     // Verifica que el texto no tenga espacios
-    noEspacios(control: AbstractControl) {
+    validateNotSpaces(control: AbstractControl) {
         const valor = control.value;
         if (valor?.includes(' ')) {
           return { espaciosNoPermitidos: true };
@@ -413,7 +483,7 @@ export class UsuarioCrudComponent implements OnInit {
         return null;
     }
     // Verifica que el texto inicie con una letra
-    inicioCorrecto(control: AbstractControl) {
+    validateCorrectStart(control: AbstractControl) {
         const valor = control.value;
         if (valor && !valor.match(/^[a-zA-Z]/)) {
           return { inicioInvalido: true };
@@ -421,7 +491,7 @@ export class UsuarioCrudComponent implements OnInit {
         return null;
     }
     // Verifica si exite el nombre
-    validarNombreUsuarioExistente(): AsyncValidatorFn {
+    validateExistingUserName(): AsyncValidatorFn {
         return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
             const nombreUsuario = control.value;
             if (!nombreUsuario) {
@@ -432,11 +502,11 @@ export class UsuarioCrudComponent implements OnInit {
         }
     }
     // Verifica si el nombre de usuario cambia o no para realizar la busqueda si existiera
-    validarUsernameSiCambia(control: AbstractControl) {
+    validateUsernameIfChange(control: AbstractControl) {
         if (control.value === this.originalUsername) {
             return of(null);
         } else {
-            return this.validarNombreUsuarioExistente()(control);
+            return this.validateExistingUserName()(control);
         }
     }
 
@@ -484,6 +554,29 @@ export class UsuarioCrudComponent implements OnInit {
                 return 'Ninguno';
         }
     }
+
+    getSeverityConfirmEmail(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'info';
+            case 0:
+                return 'warn';
+            default:
+                return 'danger';
+        }
+    }
+    // Obtiene la descripción del estado
+    getDescriptionConfirmEmail(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Confirmado';
+            case 0:
+                return 'No Confirmado';
+            default:
+                return 'No Confirmado';
+        }
+    }
+
 
     // Fucniones para exportar en documentos PDF y/o Excel
     // Exporta en PDF
@@ -540,11 +633,12 @@ export class UsuarioCrudComponent implements OnInit {
                       styles: { fontSize: 8, cellPadding: 3 },
                     startY: 100, }); // Posición inicial de la tabla
                 let PDF_EXTENSION = '.pdf';
-                const nombreArchivo = 'rptPdf'+'_'+new Date().getTime()+PDF_EXTENSION;
+                const nombreArchivo = 'rpt-pdf-lista-usuario-' + new Date().getTime()+PDF_EXTENSION;
                 doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
             });
         });
     }
+
     // Export Excel
     exportExcel() {
         import('xlsx').then((xlsx) => {
@@ -589,7 +683,7 @@ export class UsuarioCrudComponent implements OnInit {
 
             const workbook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, 'rptExcel_usuario');
+            this.saveAsExcelFile(excelBuffer, 'rpt-excel-lista-usuario-');
         });
 
     }
@@ -598,6 +692,6 @@ export class UsuarioCrudComponent implements OnInit {
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
         const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-        FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + EXCEL_EXTENSION);
+        FileSaver.saveAs(data, fileName + new Date().getTime() + EXCEL_EXTENSION);
     }
 }

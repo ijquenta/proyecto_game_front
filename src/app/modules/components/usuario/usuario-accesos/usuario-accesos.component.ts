@@ -37,7 +37,7 @@ export class UsuarioAccesosComponent implements OnInit {
     access: Acceso;
     deleteAccessDialog: boolean = false;
     addAccessdialog: boolean = false;
-    roles: any[];
+    roles: any[] = [];
     // submenus: any[];
     activeIndex: number = 0;
     scrollableTabs: any[];
@@ -155,7 +155,7 @@ export class UsuarioAccesosComponent implements OnInit {
             next: (data: any) => {
             this.accesses = data;
             this.spinner.hide();
-            // console.log('list accesses: ', this.accesses);
+            console.log('list accesses: ', this.accesses);
             },
             error: (error) => {
             console.error('Error al listar accesos:', error);
@@ -187,17 +187,21 @@ export class UsuarioAccesosComponent implements OnInit {
         this.addAccessdialog = true;
         this.accessForm.reset();
     }
-    // Get Roles
     getDataRoles() {
         this.permisoService.getRoles().subscribe(
-            (data) => {
-                this.roles = data as any[];
-            },
-            (error) => {
-                console.error('Error al listar roles', error);
+          (data: any) => {
+            console.log('Roles obtenidos:', data);  // Log para verificar los datos recibidos
+            if (Array.isArray(data["data"])) {
+              this.roles = data["data"];
+            } else {
+              console.error('La respuesta no es un array:', data);
             }
+          },
+          (error) => {
+            console.error('Error al listar roles:', error);
+          }
         );
-    }
+      }
     // Get Operation by Id
     getOperacionPorId(submenId: number) {
         return this.submenus.find(submenu => submenu?.submenid === submenId);
@@ -316,24 +320,16 @@ export class UsuarioAccesosComponent implements OnInit {
             }
         );
     }
-    // Get Acesses Order by rolid
+
     getAccessesByRolId(rolId: number) {
         if (this.accesses) {
-            // Filtra los accesos por rolId
-            let filteredAccesses = this.accesses.filter(access => access.rolid === rolId);
-
-            // Ordena los accesos por mennombre
-            // filteredAccesses.sort((a, b) => {
-            //     const submenA = this.getOperacionPorId(a.submenid)?.submennombre || '';
-            //     const submenB = this.getOperacionPorId(b.submenid)?.submennombre || '';
-            //     return submenA.localeCompare(submenB);
-            // });
-
-            return filteredAccesses;
+          return this.accesses.filter(access => access.rolid === rolId);
         } else {
-            return [];
+          return [];
         }
-    }
+      }
+    // Get Acesses Order by rolid
+
     // Option dialog delete
     handleClickAccess(access: any) {
         // console.log('handleClickAccess!', access);

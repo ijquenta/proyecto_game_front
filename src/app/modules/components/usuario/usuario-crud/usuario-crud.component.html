@@ -2,7 +2,6 @@
     <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
-            <!-- <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Usuarios</span> </div> <hr> -->
             <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
             <h3>Usuario</h3>
             <p>Administrar registros de usuarios</p>
@@ -13,6 +12,7 @@
                     </ng-template>
                     <p-table
                         #dt2
+                        [columns]="selectedColumns"
                         [value]="usuarios"
                         [loading]="loading"
                         [rows]="10"
@@ -35,9 +35,19 @@
                         <ng-template pTemplate="caption">
                             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                                 <div class="flex">
-                                    <button pButton pRipple label="Nuevo" icon="pi pi-user-plus" class="p-button-primary mr-2" (click)="nuevaPersona()" pTooltip="Registrar usuario" tooltipPosition="top"></button>
-                                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="top"></button>
-                                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="top"></button>
+                                    <button pButton pRipple label="Nuevo" icon="pi pi-user-plus" class="p-button-primary mr-2" (click)="createUser()" pTooltip="Crear nuevo usuario" tooltipPosition="top"></button>
+                                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="Reporte XLS" tooltipPosition="top"></button>
+                                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="Reporte PDF" tooltipPosition="top"></button>
+                                </div>
+                                <div class="flex mt-1 justify-content-center">
+                                    <p-multiSelect
+                                        [options]="colsColumsTable"
+                                        [(ngModel)]="selectedColumns"
+                                        optionLabel="header"
+                                        selectedItemsLabel="{0} columnas selecionadas"
+                                        [style]="{'min-width': '200px'}"
+                                        placeholder="Elige la/s columna/s">
+                                    </p-multiSelect>
                                 </div>
                                 <span class="block mt-2 md:mt-0 p-input-icon-left">
                                     <i class="pi pi-search"></i>
@@ -45,21 +55,78 @@
                                 </span>
                             </div>
                         </ng-template>
-                        <ng-template pTemplate="header">
+                        <ng-template pTemplate="header" let-columns>
                             <tr>
-                                <th pSortableColumn="pernomcompleto">Persona<p-sortIcon field="pernomcompleto"></p-sortIcon></th>
                                 <th></th>
-                                <th pSortableColumn="usuname">Usuario<p-sortIcon field="usuname"></p-sortIcon></th>
-                                <th pSortableColumn="rolnombre">Rol<p-sortIcon field="rolnombre"></p-sortIcon></th>
-                                <th>Correo electrónico</th>
-                                <th>Observación</th>
-                                <th pSortableColumn="usufecreg"> Registrado <p-sortIcon field="usufecreg"></p-sortIcon></th>
-                                <th pSortableColumn="usufecmod"> Modificado <p-sortIcon field="usufecmod"></p-sortIcon></th>
-                                <th> Estado </th>
+                                <th></th>
+                                <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+                                    {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th> </th>
+                                <th> </th>
+                                <th *ngFor="let col of columns">
+                                    <ng-container [ngSwitch]="col.field">
+                                        <ng-container *ngSwitchCase="'rolnombre'">
+                                            <p-columnFilter field="rolnombre" matchMode="equals" [showMenu]="false">
+                                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                    <p-dropdown
+                                                        appendTo="body"
+                                                        [ngModel]="value"
+                                                        [options]="rolOptions"
+                                                        (onChange)="filter($event.value)"
+                                                        placeholder="Elegir"
+                                                        [showClear]="true"
+                                                        [filter]="true"
+                                                        filterBy="value"
+                                                    ></p-dropdown>
+                                                </ng-template>
+                                            </p-columnFilter>
+                                        </ng-container>
+                                        <ng-container ng-container *ngSwitchCase="'usuestado'">
+                                            <p-columnFilter field="usuestado" matchMode="equals" [showMenu]="false">
+                                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                    <p-dropdown
+                                                        [ngModel]="value"
+                                                        [options]="statusOptions"
+                                                        (onChange)="filter($event.value)"
+                                                        placeholder="Elegir"
+                                                        [showClear]="true"
+                                                    >
+                                                        <ng-template let-option pTemplate="item">
+                                                            <p-tag [value]="getDescriptionStatus(option.value)" [severity]="getSeverityStatus(option.value)"></p-tag>
+                                                        </ng-template>
+                                                    </p-dropdown>
+                                                </ng-template>
+                                            </p-columnFilter>
+                                        </ng-container>
+                                        <ng-container ng-container *ngSwitchCase="'usuconfirmado'">
+                                            <p-columnFilter field="usuconfirmado" matchMode="equals" [showMenu]="false">
+                                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                    <p-dropdown
+                                                        [ngModel]="value"
+                                                        [options]="statusConfirmEmail"
+                                                        (onChange)="filter($event.value)"
+                                                        placeholder="Elegir"
+                                                        [showClear]="true"
+                                                    >
+                                                        <ng-template let-option pTemplate="item">
+                                                            <p-tag [value]="getDescriptionConfirmEmail(option.value)" [severity]="getSeverityConfirmEmail(option.value)"></p-tag>
+                                                        </ng-template>
+                                                    </p-dropdown>
+                                                </ng-template>
+                                            </p-columnFilter>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            <p-columnFilter type="text" field="{{col.field}}"></p-columnFilter>
+                                        </ng-container>
+                                    </ng-container>
+                                </th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-usuario let-rowIndex="rowIndex" let-rowgroup="rowgroup"
-                            let-rowspan="rowspan">
+                            let-rowspan="rowspan" let-columns="columns">
                             <tr>
                                 <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
                                     <div *ngIf="usuario.perfoto == null" class="user-display">
@@ -84,47 +151,53 @@
                                 <td>
                                     <div class="flex">
                                         <div *ngIf="datosUsuario?.rolid == 1" class="flex">
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="editarUsuario(usuario)"></button>
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="updateUser(usuario)"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmChangePassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDeactivate(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmActivate(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
                                         </div>
                                         <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="editarUsuario(usuario)"></button>
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="updateUser(usuario)"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmChangePassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDeactivate(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmActivate(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
                                         </div>
                                     </div>
                                 </td>
 
-                                <td>
-                                    <p-chip>
-                                        <div class="p-2"> {{usuario.usuname}} </div>
-                                    </p-chip>
+                                <td *ngFor="let col of columns">
+                                    <ng-container [ngSwitch]="col.field">
+                                        <ng-container *ngSwitchCase="'usuname'">
+                                            <p-chip>
+                                                <div class="p-2"> {{usuario.usuname}} </div>
+                                            </p-chip>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'usuconfirmado'">
+                                            <p-tag [value]="getDescriptionConfirmEmail(usuario[col.field])" [severity]="getSeverityConfirmEmail(usuario[col.field])" [rounded]="true"></p-tag>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'usuestado'">
+                                            <p-tag [value]="getDescriptionStatus(usuario[col.field])" [severity]="getSeverityStatus(usuario[col.field])" [rounded]="true"></p-tag>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'usuusureg'">
+                                            <div pTooltip="{{ usuario.usufecreg | date: 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom">
+                                                <p-chip>
+                                                    <div class="p-2"> {{usuario.usuusureg}} </div>
+                                                </p-chip>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'usuusumod'">
+                                            <div pTooltip="{{ usuario.usufecmod | date: 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom">
+                                                <p-chip>
+                                                    <div class="p-2"> {{usuario.usuusumod}} </div>
+                                                </p-chip>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            {{usuario[col.field]}}
+                                        </ng-container>
+                                    </ng-container>
                                 </td>
-
-                                <td>
-                                    {{usuario.rolnombre}}
-                                </td>
-                                <td>
-                                    {{usuario.usuemail}}
-                                </td>
-                                <td>
-                                    {{usuario.usudescripcion}}
-                                </td>
-                                <td>
-                                    {{ usuario.usuusureg }} <br>
-                                    {{ usuario.usufecreg | date: 'd MMMM, y' }} <br>
-                                    {{ usuario.usufecreg | date: 'h:mm:ss a' }}
-                                </td>
-                                <td>
-                                    {{ usuario.usuusumod}} <br>
-                                    {{ usuario.usufecmod | date: 'd MMMM, y' }} <br>
-                                    {{ usuario.usufecmod | date: 'h:mm:ss a' }}
-                                </td>
-                                <td> <p-tag [value]="getDescriptionStatus(usuario.usuestado)" [severity]="getSeverityStatus(usuario.usuestado)" [rounded]="true"></p-tag></td>
-                            </tr>
+                                    </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
                             <tr>
@@ -140,7 +213,7 @@
                     <p-dataView #dv [value]="filteredUsuarios" [paginator]="true" [rows]="12" filterBy="pernomcompleto" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid" [emptyMessage]="'No se encontraron registros de usuarios.'" [loadingIcon]="'pi pi-spin pi-spinner'">
                         <ng-template pTemplate="header">
                             <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
-                                <button pButton pRipple label="Nuevo" icon="pi pi-user-plus" class="p-button-primary mr-2" (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"></button>
+                                <button pButton pRipple label="Nuevo" icon="pi pi-user-plus" class="p-button-primary mr-2" (click)="createUser()" pTooltip="Registrar usuario nuevo"></button>
                                 <div class="flex">
                                     <span class="p-input-icon-left">
                                         <i class="pi pi-search"></i>
@@ -171,16 +244,16 @@
                                     </div>
                                     <div class="flex">
                                         <div *ngIf="datosUsuario?.rolid == 1" class="flex">
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="editarUsuario(usuario)"></button>
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="updateUser(usuario)"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmChangePassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDeactivate(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmActivate(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
                                         </div>
                                         <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="editarUsuario(usuario)"></button>
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
-                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="updateUser(usuario)"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmChangePassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDeactivate(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
+                                            <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmActivate(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -213,16 +286,16 @@
                                     </div>
                                     <div class="flex justify-content-center">
                                             <div *ngIf="datosUsuario?.rolid == 1" class="flex">
-                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="editarUsuario(usuario)"></button>
-                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="top"></button>
-                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
-                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
+                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="updateUser(usuario)"></button>
+                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmChangePassword(usuario)" pTooltip="Cambiar contraseña" tooltipPosition="top"></button>
+                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDeactivate(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
+                                                <button *ngIf="usuario.usuname != 'admin' && usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmActivate(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
                                             </div>
                                             <div *ngIf="datosUsuario?.rolid == 2 && usuario?.rolid != 1" class="flex">
-                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="editarUsuario(usuario)"></button>
-                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmarCambiarPassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="top"></button>
-                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmarDesactivar(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
-                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmarActivar(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
+                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar usuario" tooltipPosition="top" (click)="updateUser(usuario)"></button>
+                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-warning mr-2" (click)="confirmChangePassword(usuario)" pTooltip="Cambiar contraseña"  tooltipPosition="top"></button>
+                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDeactivate(usuario)" pTooltip="Desactivar Usuario" tooltipPosition="top"></button>
+                                                <button *ngIf="usuario.usuname != datosUsuario.usuname && usuario.usuestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success mr-2" (click)="confirmActivate(usuario)" pTooltip="Activar Usuario" tooltipPosition="top"></button>
                                             </div>
                                     </div>
                                 </div>
@@ -237,24 +310,24 @@
 
 
 
-<p-dialog [(visible)]="usuarioDialog" header="Usuario" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
+<p-dialog [(visible)]="usuarioDialog" header="Usuario" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="false" >
 
     <div *ngIf="!optionDialog">
         <p-card>
             <ng-template pTemplate="content">
                 <div class="user-info-container">
                     <div class="user-info-avatar">
-                         <div *ngIf="usuario?.perfoto">
+                        <div *ngIf="usuario?.perfoto">
                             <p-image
-                             src="{{userProfilePhoto}}/{{usuario?.perfoto}}"
-                             alt="Image"
-                             width="100"
-                             height="100"
-                             [preview]="true"
-                             [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
+                                src="{{userProfilePhoto}}/{{usuario?.perfoto}}"
+                                alt="Image"
+                                width="100"
+                                height="100"
+                                [preview]="true"
+                                [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
                             ></p-image>
-                         </div>
-                         <div *ngIf="!usuario?.perfoto">
+                        </div>
+                        <div *ngIf="!usuario?.perfoto">
                             <p-image
                             src="./../../../../assets/images/login/sin_foto_perfil.png"
                             alt="Image"
@@ -262,11 +335,8 @@
                             height="100"
                             [preview]="true"
                             [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
-                           ></p-image>
-                         </div>
-
-                        <!-- <div *ngIf="usuario?.perfoto"> <p-avatar [image]="userProfilePhoto + '/' + usuario.perfoto" size="xlarge" shape="circle"></p-avatar> </div> -->
-                        <!-- <div *ngIf="!usuario?.perfoto"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge" shape="circle"></p-avatar> </div> -->
+                            ></p-image>
+                        </div>
                     </div>
                     <div class="user-info-details">
                         <p><strong>Nombre:</strong> {{ usuario?.pernomcompleto }}</p>
@@ -358,13 +428,13 @@
         </div>
     </form>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="enviarFormulario()"></button>
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="sendForm()"></button>
     </ng-template>
 </p-dialog>
 
 <!-- Actualizar contraseña -->
-<p-dialog [(visible)]="usuarioCambiarPasswordDialog" header="Usuario" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
+<p-dialog [(visible)]="usuarioCambiarPasswordDialog" header="Usuario" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true" >
     <p-card>
         <!-- <ng-template pTemplate="title"> Información del usuario </ng-template> -->
         <ng-template pTemplate="content">
@@ -399,7 +469,7 @@
                     <small class="p-error block" *ngIf="usuarioPwdForm.get('usupassword').invalid && (usuarioPwdForm.get('usupassword').dirty || usuarioPwdForm.get('usupassword').touched)">
                         <span *ngIf="usuarioPwdForm.get('usupassword').errors?.required"> La contraseña es obligatoria. <br> </span>
                         <span *ngIf="usuarioPwdForm.get('usupassword').errors?.minlength"> La contraseña debe tener al menos 8 caracteres. <br> </span>
-                        <span *ngIf="usuarioPwdForm.get('usupassword').errors?.seguridadPassword "> La contraseña debe incluir mayúsculas, minúsculas y números. <br> </span>
+                        <span *ngIf="usuarioPwdForm.get('usupassword').errors?.securityPassword "> La contraseña debe incluir mayúsculas, minúsculas y números. <br> </span>
                     </small>
                     <small class="p-success block" *ngIf="usuarioPwdForm.get('usupassword').valid && (usuarioPwdForm.get('usupassword').dirty || usuarioPwdForm.get('usupassword').touched)"> La contraseña es válida. </small>
                 </div>
@@ -417,30 +487,30 @@
             </div>
         </form>
     <ng-template pTemplate="footer">
-            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
-            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="cambiarPasswordUsuario()"></button>
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="changeUserPassword()"></button>
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="desactivarUsuarioDialog" header="Confirmar" [modal]="true">
+<p-dialog [(visible)]="deactivateUserDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         <span *ngIf="usuario">Esta seguro de desactivar este registro <b>{{usuario.usuname}}</b>?</span>
     </div>
     <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="desactivarUsuarioDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="desactivarUsuario()"></button>
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deactivateUserDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="deactivateUser()"></button>
     </ng-template>
 </p-dialog>
 
 
-<p-dialog [(visible)]="activarUsuarioDialog" header="Confirmar" [modal]="true">
+<p-dialog [(visible)]="activateUserDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center">
         <i class="pi pi-check" style="font-size: 2rem"></i>
         <span *ngIf="usuario">Esta seguro de activar a este usuario: <b> {{usuario.usuname}}</b>?</span>
     </div>
     <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="activarUsuarioDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="activarUsuario()"></button>
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="activateUserDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="activateUser()"></button>
     </ng-template>
 </p-dialog>

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable()
 export class AccesoService {
@@ -8,7 +9,7 @@ export class AccesoService {
     constructor(private http: HttpClient) { }
 
     getAccesses(){
-        return this.http.get(`${API_URL}/getAccesses`)
+        return this.http.get(`${API_URL}/getAccesses`, { context: checktoken()})
     }
 
     getSubMenus(){
@@ -50,7 +51,7 @@ export class AccesoService {
     }
 
     getRoles(){
-        return this.http.get(`${API_URL}/getRoles`)
+        return this.http.get(`${API_URL}/getRoles`, { context: checktoken()})
     }
 
     getOperaciones(){

@@ -26,7 +26,7 @@ export class PersonaService {
     // Person services
 
     getPersons(): Observable<any> {
-        return this.http.get(`${API_URL}/listarPersona`, { context: checktoken() });
+        return this.http.get(`${API_URL}/getPersons`, { context: checktoken() });
     }
 
     managePerson(criterio: any){
