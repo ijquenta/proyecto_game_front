@@ -24,8 +24,38 @@ import { UsuarioRolesComponent } from './usuario-roles.component';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+
+import { FileUploadModule } from 'primeng/fileupload';
+import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { AutoCompleteModule } from "primeng/autocomplete";
+import { ChipsModule } from "primeng/chips";
+import { InputMaskModule } from "primeng/inputmask";
+import { CascadeSelectModule } from "primeng/cascadeselect";
+import { MultiSelectModule } from "primeng/multiselect";
+import { PasswordModule } from 'primeng/password';
+import { DataViewModule } from 'primeng/dataview';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
+import { ImageModule } from 'primeng/image';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TabViewModule } from 'primeng/tabview';
+
 @NgModule({
     imports: [
+        AutoCompleteModule,
+        ChipsModule,
+        InputMaskModule,
+        CascadeSelectModule,
+        MultiSelectModule,
+        PasswordModule,
+        DataViewModule,
+        SplitButtonModule,
+        AvatarModule,
+        AvatarGroupModule,
+        ImageModule,
+        TabViewModule,
+        SelectButtonModule,
         BreadcrumbModule,
         CommonModule,
         UsuarioRolesRoutingModule,

@@ -8,6 +8,7 @@
             <hr>
             <p-table
                 #dt
+                [columns]="selectedColumns"
                 [value]="roles"
                 [rows]="20"
                 [paginator]="true"
@@ -21,6 +22,9 @@
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
                 [rowHover]="true"
+                [loading]="loading"
+                selectionMode="multiple"
+                sortMode="single"
             >
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -34,6 +38,18 @@
                             pTooltip="Registrar"
                             tooltipPosition="top"
                         ></button>
+
+                        <div class="flex mt-1 justify-content-center">
+                            <p-multiSelect
+                                [options]="colsColumsTable"
+                                [(ngModel)]="selectedColumns"
+                                optionLabel="header"
+                                selectedItemsLabel="{0} columnas selecionadas"
+                                [style]="{'min-width': '200px'}"
+                                placeholder="Elige la/s columna/s">
+                            </p-multiSelect>
+                        </div>
+
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por nombre completo, número de documento y genero" tooltipPosition="top" />
@@ -43,27 +59,88 @@
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th></th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Registrado</th>
-                        <th>Modificado</th>
-                        <th>Estado</th>
+                        <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+                            {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th> </th>
+                        <th *ngFor="let col of columns">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container ng-container *ngSwitchCase="'rolestado'">
+                                    <p-columnFilter field="rolestado" matchMode="equals" [showMenu]="false">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown
+                                                [ngModel]="value"
+                                                [options]="statusOptions"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Elegir"
+                                                [showClear]="true"
+                                            >
+                                                <ng-template let-option pTemplate="item">
+                                                    <p-tag [value]="getDescriptionStatus(option.value)" [severity]="getSeverityStatus(option.value)"></p-tag>
+                                                </ng-template>
+                                            </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                                <ng-container ng-container *ngSwitchCase="'rolfecreg'">
+                                </ng-container>
+                                <ng-container ng-container *ngSwitchCase="'rolfecmod'">
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <p-columnFilter type="text" field="{{col.field}}"></p-columnFilter>
+                                </ng-container>
+                            </ng-container>
+                        </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-role>
+                <ng-template pTemplate="body" let-role let-columns="columns">
                     <tr>
                         <td>
                             <div class="flex justify-content-center">
                                 <button *ngIf="role.rolestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="updateRole(role)" pTooltip="Editar" tooltipPosition="top"></button>
                                 <button *ngIf="role.rolestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="deactivateRole(role)" pTooltip="Desactivar" tooltipPosition="top"></button>
                                 <button *ngIf="role.rolestado == 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" (click)="activateRole(role)" pTooltip="Activar" tooltipPosition="top"></button>
+                                <button *ngIf="role.rolestado == 0" pButton pRipple icon="fa-solid fa-trash" class="p-button-rounded p-button-danger mr-2" (click)="deleteRole(role)" pTooltip="Eliminar" tooltipPosition="top"></button>
                             </div>
                         </td>
-                        <td>{{role.rolnombre}}</td>
-                        <td>{{role.roldescripcion}}</td>
-                        <td> <p-chip> <div class="p-2"> {{ role.rolusureg }} <br> {{ role.rolfecreg | date:'d MMMM, y h:mm:ss a'}} </div> </p-chip> </td>
-                        <td> <p-chip> <div class="p-2"> {{ role.rolusumod }} <br> {{ role.rolfecmod | date:'d MMMM, y h:mm:ss a'}} </div> </p-chip> </td>
-                        <td> <p-tag [value]="getDescription(role.rolestado)" [severity]="getSeverity(role.rolestado)" [rounded]="true"></p-tag> </td>
+                        <td *ngFor="let col of columns">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container *ngSwitchCase="'rolestado'">
+                                    <p-tag [value]="getDescriptionStatus(role[col.field])" [severity]="getSeverityStatus(role[col.field])" [rounded]="true"></p-tag>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'rolusureg'">
+                                    <!-- <div pTooltip="{{ role.rolfecreg | date: 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom"> -->
+                                    <div>
+                                        <p-chip>
+                                            <div class="p-2"> {{role.rolusureg}} </div>
+                                        </p-chip>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'rolusumod'">
+                                    <!-- <div pTooltip="{{ role.rolfecmod | date: 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom"> -->
+                                    <div>
+                                        <p-chip>
+                                            <div class="p-2"> {{role.rolusumod}} </div>
+                                        </p-chip>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'rolfecreg'">
+                                        <p-chip>
+                                            <div class="p-2"> {{role.rolfecreg | date: 'd MMMM, y h:mm:ss a'}} </div>
+                                        </p-chip>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'rolfecmod'">
+                                    <p-chip>
+                                        <div class="p-2"> {{role.rolfecmod | date: 'd MMMM, y h:mm:ss a'}} </div>
+                                    </p-chip>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    {{role[col.field]}}
+                                </ng-container>
+                            </ng-container>
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -124,5 +201,17 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="No" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
         <button pButton pRipple label="Si" icon="pi pi-check" class="p-button-text" (click)="confirmActivateDeactivate()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="deleteRoleDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Estas seguro de eliminar el rol?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteRoleDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="sendDeleteRole()"></button>
     </ng-template>
 </p-dialog>

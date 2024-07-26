@@ -560,7 +560,7 @@ export class UsuarioCrudComponent implements OnInit {
             case 1:
                 return 'info';
             case 0:
-                return 'warn';
+                return 'danger';
             default:
                 return 'danger';
         }

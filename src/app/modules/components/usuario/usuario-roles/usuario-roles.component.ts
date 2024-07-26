@@ -16,6 +16,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { getSeverityStatus, getDescriptionStatus } from '../../../utils/severityDescriptionStatus';
 import { Table } from 'primeng/table';
 
+interface ColumsTable {
+    field: string;
+    header: string;
+}
+
 @Component({
     templateUrl: './usuario-roles.component.html',
     providers: [MessageService],
@@ -46,7 +51,23 @@ export class UsuarioRolesComponent implements OnInit {
     rowsPerPageOptions = [5, 10, 20];
     items: MenuItem[] | undefined;
     home: MenuItem | undefined;
+    deleteRoleDialog: boolean;
 
+
+    colsColumsTable!: ColumsTable[];
+
+    selectedColumns: { field: string; header: string}[]  = [
+        { field: 'rolnombre', header: 'Nombre' },
+        { field: 'roldescripcion', header: 'Descripción' },
+        { field: 'rolusureg', header: 'Registrado' },
+        { field: 'rolusumod', header: 'Modificado' },
+        { field: 'rolestado', header: 'Estado' },
+    ];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 }
+    ];
 
     constructor(
         private messageService: MessageService,
@@ -63,6 +84,26 @@ export class UsuarioRolesComponent implements OnInit {
 
         this.items = [{ label: 'Roles'}, { label: 'Gestionar Roles', routerLink:''},];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+        this.colsColumsTable = [
+            { field: 'rolnombre', header: 'Nombre' },
+            { field: 'roldescripcion', header: 'Descripción' },
+            { field: 'rolusureg', header: 'Registrado' },
+            { field: 'rolusumod', header: 'Modificado' },
+            { field: 'rolestado', header: 'Estado' }
+        ];
+
+        this.selectedColumns = [
+            { field: 'rolnombre', header: 'Nombre' },
+            { field: 'roldescripcion', header: 'Descripción' },
+            { field: 'rolusureg', header: 'Registrado' },
+            { field: 'rolfecreg', header: 'Fecha registrado'},
+            { field: 'rolusumod', header: 'Modificado' },
+            { field: 'rolfecmod', header: 'Fecha modificado'},
+            { field: 'rolestado', header: 'Estado' }
+        ];
+
+
     }
 
     ngOnInit() {
@@ -262,6 +303,31 @@ export class UsuarioRolesComponent implements OnInit {
         });
     }
 
+    // Delete
+    deleteRole(role: Rol){
+        console.log("Role: ", role)
+        this.role = {...role};
+        this.deleteRoleDialog = true;
+    }
+    // Send Delete Role
+    sendDeleteRole(){
+        this.loading = true;
+        this.rolService.deleteRole(this.role.rolid).subscribe({
+            next: (data) => {
+                this.messageService.add({ severity: 'success', summary: 'Rol', detail: 'Eliminado correctamente.', life: 3000 });
+                this.deleteRoleDialog = false;
+                this.loading = false;
+                this.getDataRoles();
+            },
+            error: (error) => {
+                console.error('Error when listing deleteMenu', error);
+                this.loading = false;
+            }
+            ,complete: () => {
+            }
+        })
+    }
+
     // others
 
     hideDialog() {
@@ -286,4 +352,28 @@ export class UsuarioRolesComponent implements OnInit {
             'contains'
         );
     }
+
+    // Obtiene el color del estado
+    getSeverityStatus(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+    // Obtiene la descripción del estado
+    getDescriptionStatus(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
+        }
+    }
+
 }

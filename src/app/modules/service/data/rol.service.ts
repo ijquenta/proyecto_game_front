@@ -23,4 +23,8 @@ export class RolService {
     getTipoRol(){
         return this.http.get(`${API_URL}/tipoRol`);
     }
+
+    deleteRole(rolid: number) {
+        return this.http.delete(`${API_URL}/deleteRole/${rolid}`, { context: checktoken() });
+    }
 }
