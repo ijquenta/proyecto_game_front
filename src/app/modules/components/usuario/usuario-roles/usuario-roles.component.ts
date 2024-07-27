@@ -53,7 +53,7 @@ export class UsuarioRolesComponent implements OnInit {
     home: MenuItem | undefined;
     deleteRoleDialog: boolean;
 
-
+    // Columns selected
     colsColumsTable!: ColumsTable[];
 
     selectedColumns: { field: string; header: string}[]  = [
@@ -64,6 +64,7 @@ export class UsuarioRolesComponent implements OnInit {
         { field: 'rolestado', header: 'Estado' },
     ];
 
+    // Options status
     statusOptions = [
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 }
@@ -88,8 +89,9 @@ export class UsuarioRolesComponent implements OnInit {
         this.colsColumsTable = [
             { field: 'rolnombre', header: 'Nombre' },
             { field: 'roldescripcion', header: 'Descripción' },
-            { field: 'rolusureg', header: 'Registrado' },
+            { field: 'rolfecreg', header: 'Fecha registrado'},
             { field: 'rolusumod', header: 'Modificado' },
+            { field: 'rolfecmod', header: 'Fecha modificado'},
             { field: 'rolestado', header: 'Estado' }
         ];
 
@@ -97,13 +99,9 @@ export class UsuarioRolesComponent implements OnInit {
             { field: 'rolnombre', header: 'Nombre' },
             { field: 'roldescripcion', header: 'Descripción' },
             { field: 'rolusureg', header: 'Registrado' },
-            { field: 'rolfecreg', header: 'Fecha registrado'},
             { field: 'rolusumod', header: 'Modificado' },
-            { field: 'rolfecmod', header: 'Fecha modificado'},
             { field: 'rolestado', header: 'Estado' }
         ];
-
-
     }
 
     ngOnInit() {
@@ -112,7 +110,6 @@ export class UsuarioRolesComponent implements OnInit {
     }
 
     // get user, roles
-
     getDataUser(){
         this.spinner.show();
         this.authService.getProfile().subscribe({
@@ -152,7 +149,7 @@ export class UsuarioRolesComponent implements OnInit {
         this.rolForm.reset();
     }
 
-    registerRole(){
+    createRole(){
         if(this.rolForm.invalid){
             this.messageService.add({
                 severity: 'warn',
