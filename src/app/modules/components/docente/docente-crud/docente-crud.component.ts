@@ -278,7 +278,7 @@ export class DocenteCrudComponent implements OnInit {
         this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
         this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
         // console.log("personaRegistro: ", this.personaRegistro);
-        this.personaService.registrarPersona(this.personaRegistro).subscribe(
+        this.personaService.createPersonForm(this.personaRegistro).subscribe(
             (data : any) =>{
                 // console.log("Registrar Persona: ", data);
                 this.usuario = new Usuario();

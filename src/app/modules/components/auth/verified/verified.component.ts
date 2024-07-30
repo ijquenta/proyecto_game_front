@@ -9,14 +9,14 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'app-verified',
     templateUrl: './verified.component.html',
-    styleUrls:['./verified.component.css']
+    styleUrls: ['./verified.component.css']
 })
-export class    VerifiedComponent implements OnInit {
+export class VerifiedComponent implements OnInit {
 
-    token: string;
+    token: string | undefined;
     messages: Message[] | undefined;  // Variable de estados
     status: RequestStatus = 'init'; // Variable de estados
-    statusCofirm: boolean = false;
+    statusConfirm: string | null = null; // Inicialmente null para mostrar los mensajes apropiados
 
     constructor(
         private authService: AuthService,
@@ -24,14 +24,9 @@ export class    VerifiedComponent implements OnInit {
         private route: ActivatedRoute
     ) { }
 
-
     ngOnInit(): void {
-
         this.route.queryParams.subscribe(params => {
-            const token = params['token'];
-            if (token) {
-                this.confirmEmail(token);
-            }
+            this.token = params['token'];
         });
     }
 
@@ -40,16 +35,23 @@ export class    VerifiedComponent implements OnInit {
         this.authService.confirmEmail(token).subscribe({
             next: (response: any) => {
                 this.spinner.hide();
-                this.statusCofirm = true;
+                if (response.status === 'success') {
+                    this.statusConfirm = 'success';
+                }
             },
             error: (error: any) => {
                 console.error('Error al confirmar el correo electrónico:', error);
                 this.spinner.hide();
-                this.statusCofirm = false;
+                if (error.error.status === 'already_confirmed') {
+                    this.statusConfirm = 'already_confirmed';
+                } else {
+                    this.statusConfirm = 'error';
+                }
             },
             complete: () => {
                 this.spinner.hide();
             }
-        })
+        });
     }
+
 }

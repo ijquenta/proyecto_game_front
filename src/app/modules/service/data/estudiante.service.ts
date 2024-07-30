@@ -24,9 +24,9 @@ export class EstudianteService {
     }
 
 
-    registrarPersona(criterio: any){
+    createPersonForm(criterio: any){
         // console.log("Datos a registarPersona: ", criterio);
-        return this.http.post(`${API_URL}/registrarPersona`, criterio);
+        return this.http.post(`${API_URL}/createPersonForm`, criterio);
     }
 
     getUsuario(){

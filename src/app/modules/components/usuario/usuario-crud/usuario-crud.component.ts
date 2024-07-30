@@ -300,7 +300,6 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
             this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
             this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
-            this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
             this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
             this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
@@ -337,7 +336,6 @@ export class UsuarioCrudComponent implements OnInit {
             this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
             this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
             this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
-            this.usuarioRegistro.usuimagen = null;
             this.usuarioRegistro.usuestado = 1;
             this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
             this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;

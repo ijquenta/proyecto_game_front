@@ -1,32 +1,77 @@
-<div *ngIf="statusCofirm">
-    <div class="p-grid bg-bluegray-900 text-gray-100 p-3">
-        <div class="p-col-12 p-md-3 font-bold mb-2">!Hola, Bienvenido! 👋</div>
-        <div class="p-col-12 p-md-9">
-            <span class="line-height-3">Se confirmo correctamente su cuenta. ✅</span>
-        </div>
-    </div>
+<div *ngIf="statusConfirm === null">
     <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
-        <div class="flex flex-column align-items-center justify-content-center">
-            <div style="border-radius: 56px; padding: 0.3rem; background-image: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%), linear-gradient(0deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%); ">
-                <div class="w-full surface-card" style="border-radius:53px">
-                    <div class="px-2 py-8 md:px-3 lg:px-3">
-                        <div class="text-700 text-center">
-                            <div class="text-900 font-bold text-2xl mb-3">¡Bienvenido! a
-
-                                <div class="font-bold text-xl text-900 d-flex align-items-center justify-content-center">
-                                    <span><strong>SSGA</strong>Bolivia</span>
-                                    <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia" class="topbar-flag ml-2" width="30" height="20" style="display: inline;">
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="flex justify-content-center">
-                                <button pButton pRipple label="Ingresar a mi cuenta" icon="pi pi-user" class="p-button-success p-button-rounded white-space-nowrap mr-2" [routerLink]="['/login']"></button>
+        <div class="surface-card p-4 shadow-2 border-round w-50rem">
+            <div class="w-full surface-card">
+                <div class="p-grid bg-bluegray-900 text-gray-100 p-3 border-round">
+                    <div class="p-col-12 p-md-3 font-bold mb-2">Hola, Bienvenido 👋</div>
+                    <div class="p-col-12 p-md-9">
+                        <span class="line-height-3">Confirma tu correo electrónico:</span>
+                    </div>
+                </div>
+                <div class="px-2 py-3 md:px-3 lg:px-3">
+                    <div class="text-700 text-center">
+                        <div class="text-900 text-base mb-5">
+                            <span class="line-height-3">Gracias por registrarte en SSGA Bolivia.</span>
+                            <div class="text-sm">
+                                <span>Para completar tu registro, haz clic en el siguiente botón:</span>
                             </div>
                         </div>
+                        <div class="flex justify-content-center">
+                            <button
+                                pButton
+                                pRipple
+                                label="Confirmar mi cuenta"
+                                icon="pi pi-check-circle"
+                                class="p-button-success"
+                                (click)="confirmEmail(token)"
+                            ></button>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-900 text-base mb-5 text-center">
+                    <span class="line-height-3">Si tienes alguna pregunta adicional o necesitas ayuda, no dudes en ponerte en contacto con nosotros.</span>
+                    <div class="text-sm">
+                        <span>Puedes hacerlo a través de <a href="mailto:soporte.ibci.bolivia@gmail.com">soporte.ibci.bolivia@gmail.com</a></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+<div *ngIf="statusConfirm === 'success'">
+    <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+        <div class="surface-card p-4 shadow-2 border-round w-50rem">
+            <div class="text-center">
+                <h3 class="text-blue-700 font-bold mb-3">Cuenta Activada</h3>
+                <p class="text-900">¡Tu cuenta ha sido activada exitosamente! Puedes iniciar sesión.</p>
+                <button pButton pRipple label="Volver" icon="pi pi-angle-left" class="p-button-danger p-button white-space-nowrap mr-2" [routerLink]="['/login']"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="statusConfirm === 'already_confirmed'">
+    <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+        <div class="surface-card p-4 shadow-2 border-round w-50rem">
+            <div class="text-center">
+                <h3 class="text-blue-700 font-bold mb-3">Cuenta ya Activada</h3>
+                <p class="text-900">Tu cuenta ya ha sido activada anteriormente. Puedes iniciar sesión.</p>
+                <button pButton pRipple label="Volver" icon="pi pi-angle-left" class="p-button-danger p-button white-space-nowrap mr-2" [routerLink]="['/login']"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="statusConfirm === 'error'">
+    <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+        <div class="surface-card p-4 shadow-2 border-round w-50rem">
+            <div class="text-center">
+                <h3 class="text-red-700 font-bold mb-3">Error de Confirmación</h3>
+                <p class="text-900">Hubo un problema al confirmar tu cuenta. Por favor, intenta nuevamente o contacta con soporte.</p>
+                <button pButton pRipple label="Volver" icon="pi pi-angle-left" class="p-button-danger p-button white-space-nowrap mr-2" [routerLink]="['/login']"></button>
+            </div>
+        </div>
+    </div>
 </div>

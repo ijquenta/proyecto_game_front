@@ -11,8 +11,10 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { PanelRoutingModule } from './panel-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
     imports: [
+        ToastModule,
         DialogModule,
         CommonModule,
         FormsModule,

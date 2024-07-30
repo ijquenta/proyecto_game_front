@@ -25,8 +25,8 @@ export class PersonaService {
 
     // Person services
 
-    getPersons(): Observable<any> {
-        return this.http.get(`${API_URL}/getPersons`, { context: checktoken() });
+    getPersons() {
+        return this.http.get(`${API_URL}/getPersons`);
     }
 
     managePerson(criterio: any){
@@ -35,6 +35,10 @@ export class PersonaService {
 
     deletePerson(criterio: any){
         return this.http.post(`${API_URL}/deletePerson`, criterio, { context: checktoken()});
+    }
+
+    deletePersonForm(perid: number){
+        return this.http.delete(`${API_URL}/deletePersonForm/${perid}`);
     }
 
     // Profile services
@@ -205,8 +209,8 @@ export class PersonaService {
         return this.http.post(`${API_URL}/actualizarDatosPersonales`, criterio);
     }
 
-    registrarPersona(criterio: any){
-        return this.http.post(`${API_URL}/registrarPersona`, criterio);
+    createPersonForm(criterio: any){
+        return this.http.post(`${API_URL}/createPersonForm`, criterio);
     }
 
     getUsuario(){

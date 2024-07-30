@@ -20,7 +20,7 @@ import { AuthService } from 'src/app/modules/service/core/auth.service';
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css'],
-    /*  styles: [`
+    styles: [`
       :host ::ng-deep .pi-eye,
       :host ::ng-deep .pi-eye-slash {
         transform: scale(1.6);
@@ -28,7 +28,6 @@ import { AuthService } from 'src/app/modules/service/core/auth.service';
         color: var(--primary-color) !important;
       }
     `],
-    */
     providers: [MessageService, ConfirmationService],
 
 })
@@ -36,9 +35,9 @@ export class RegisterComponent implements OnInit {
 
     Personas: Persona[] = [];
     persona: Persona;
-    personaRegistro: Persona;
+    personData: Persona;
 
-    usuario: Usuario;
+    userData: Usuario;
     usuarioRegistro: Usuario;
 
     TipoPais: TipoPais[] = [];
@@ -66,8 +65,8 @@ export class RegisterComponent implements OnInit {
     personaDialog: boolean = false;
     optionDialog: boolean = false;
 
-    personaBool: boolean = false;
-    usuarioBool: boolean = false;
+    personBool: boolean = false;
+    userBool: boolean = false;
 
     messages: Message[] | undefined;
     valCheck: string[] = ['remember'];
@@ -79,7 +78,7 @@ export class RegisterComponent implements OnInit {
     loading: boolean = false;
 
     personaForm: FormGroup;
-    usuarioForm: FormGroup;
+    userForm: FormGroup;
     personasDuplicated: PersonaExpanded[] = [];
     elements: PersonaExpanded[];
 
@@ -88,7 +87,6 @@ export class RegisterComponent implements OnInit {
     constructor(
         public layoutService: LayoutService,
         private personaService: PersonaService,
-        private usuarioService: UsuarioService,
         private messageService: MessageService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
@@ -97,22 +95,22 @@ export class RegisterComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.fListarPersonas(); // Se recupera las personas para verificar si existe el usuario
+        this.getPersons(); // Se recupera las personas para verificar si existe el usuario
 
-        this.personaBool = true;
+        this.personBool = true;
 
-        this.asignacionValidacionPersona();
+        this.assignValidationPerson();
 
-        this.asignacionValidacionUsuario();
+        this.assignValidationUser();
 
-        this.usuario = new Usuario();
+        this.userData = new Usuario();
 
-        this.llenarTipoCombo();
+        this.fillComboType();
 
-        this.nuevaPersona();
+        this.createPerson();
     }
 
-    fListarPersonas() {
+    getPersons() {
         this.spinner.show();
         this.loading = true;
         this.personaService.getPersons().subscribe(
@@ -130,19 +128,21 @@ export class RegisterComponent implements OnInit {
         );
     }
 
-    asignacionValidacionPersona() {
+    // Asignar validaciones del modelo persona
+    assignValidationPerson() {
         this.personaForm = this.formBuilder.group({
             perapepat: [''],
             perapemat: [''],
             pernombres: ['', [Validators.required]],
             tipoDocumento: ['', [Validators.required]],
-            pernrodoc: ['', [Validators.required], [this.validarDocumentoExistente()]],
+            pernrodoc: ['', [Validators.required], [this.ValidateExistingDocument()]],
             peremail: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]]
         });
     }
 
-    asignacionValidacionUsuario() {
-        this.usuarioForm = this.formBuilder.group({
+    // Asignar validaciones del modelo usuario
+    assignValidationUser() {
+        this.userForm = this.formBuilder.group({
             usuname: ['', [Validators.required]],
             usuemail: ['', [Validators.required]],
             tipoRol: ['', [Validators.required]],
@@ -151,6 +151,7 @@ export class RegisterComponent implements OnInit {
         }, { validator: this.passwordMatchValidator });
     }
 
+    // Validación de contraseña control de caracteres
     passwordStrength(control: AbstractControl): { [key: string]: boolean } | null {
         const value = control.value;
         if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
@@ -159,6 +160,7 @@ export class RegisterComponent implements OnInit {
         return null;
     }
 
+    // Validación de contraseña control de contraseñas iguales usupassword y usupasswordconfirm
     passwordMatchValidator(fg: FormGroup): { [key: string]: boolean } | null {
         const password = fg.get('usupassword').value;
         const confirmPassword = fg.get('usupasswordhash').value;
@@ -168,11 +170,10 @@ export class RegisterComponent implements OnInit {
         return null;
     }
 
-    validarDocumentoExistente(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un número de documento ya existe
-        this.fListarPersonas();// Se llama al método para obtener la lista de personas
+    ValidateExistingDocument(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un número de documento ya existe
+        this.getPersons();// Se llama al método para obtener la lista de personas
         return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
             const numeroDocumento = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
-            // console.log("numeroDocumento", numeroDocumento)
             if (!numeroDocumento) {// Si el número de documento está vacío, no se realiza ninguna validación
                 return of(null); // Se devuelve un observable que emite null
             }
@@ -181,45 +182,46 @@ export class RegisterComponent implements OnInit {
         };
     }
 
-    nuevaPersona() {
+    createPerson() {
         this.persona = new Persona();
         this.TipoDocumentoSeleccionado = new TipoDocumento(1, "Ninguno");
         this.personaDialog = true;
         this.loading = true;
     }
 
-    llenarTipoCombo() {
+    fillComboType() {
         this.spinner.show();
-        this.personaService.getTipoDocumento().subscribe(
-            (data: any) => {
+        this.personaService.getTipoDocumento().subscribe({
+            next: (data: any) => {
                 this.TipoDocumento = data;
                 this.spinner.hide();
             },
-            (error: any) => {
+            error: (error: any) => {
                 console.log("Error: ", error);
                 this.spinner.hide();
                 this.messageService.add({ severity: 'error', summary: '', detail: 'No se pudo obtener datos de tipo de documentos ', life: 3000 });
             }
-        );
+        });
         this.spinner.show();
-        this.personaService.getRoles().subscribe((data: any) => {
+        this.personaService.getRoles().subscribe({
+            next: (data: any) => {
             this.TipoRol = data.filter((rol: any) => rol.rolnombre === 'Estudiante' || rol.rolnombre === 'Docente' || rol.rolnombre === 'Invitado');
             this.spinner.hide();
-        },
-            (error: any) => {
+            },
+            error: (error: any) => {
                 console.log("Error: ", error);
                 this.spinner.hide();
                 this.messageService.add({ severity: 'error', summary: '', detail: 'No se pudo obtener datos de tipo de rol ', life: 3000 });
             }
-        );
+        });
     }
 
-    volverDatosPersona() {
-        this.personaBool = true;
-        this.usuarioBool = false;
+    returnPersonData() {
+        this.personBool = true;
+        this.userBool = false;
     }
 
-    enviarFormulario() {
+    sendForm() {
 
         if (this.personaForm.invalid) {
             this.messageService.add({ severity: 'error', summary: 'Campos incompletos', detail: 'Por favor, debe llenar todos los campos requeridos.', life: 7000 });
@@ -229,9 +231,9 @@ export class RegisterComponent implements OnInit {
             })
         }
         if (this.personaForm.valid) {
-            this.personaBool = false;
-            this.usuarioBool = true;
-            this.usuarioForm.patchValue({
+            this.personBool = false;
+            this.userBool = true;
+            this.userForm.patchValue({
                 usuname: this.personaForm.value.pernrodoc,
                 usuemail: this.personaForm.value.peremail
             })
@@ -239,70 +241,125 @@ export class RegisterComponent implements OnInit {
     }
 
     doRegister() {
-
-        if (this.usuarioForm.invalid) {
-            this.messageService.add({ severity: 'error', summary: 'Campos incompletos', detail: 'Por favor, debe llenar todos los campos requeridos.', life: 3000 });
-            return Object.values(this.usuarioForm.controls).forEach(control => {
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
+        // Verificar si el formulario de usuario es inválido
+        if (this.userForm.invalid) {
+            this.showErrorMessage('Campos incompletos', 'Por favor, debe llenar todos los campos requeridos.');
+            this.markAllFieldsAsTouchedAndDirty(this.userForm);
+            return;
         }
 
-        if (this.usuarioForm.valid) {
-            this.personaBool = false;
-            this.usuarioBool = false;
-        }
-
-        if (this.usuarioForm.valid && this.personaForm.valid) {
-            this.personaRegistro = { ...this.persona };
-            this.personaRegistro.perapepat = this.personaForm.value.perapepat;
-            this.personaRegistro.perapemat = this.personaForm.value.perapemat;
-            this.personaRegistro.pernombres = this.personaForm.value.pernombres;
-            this.personaRegistro.pernrodoc = this.personaForm.value.pernrodoc;
-            this.personaRegistro.peremail = this.personaForm.value.peremail;
-            this.personaRegistro.pertipodoc = this.personaForm.value.tipoDocumento.tipodocid;
-            this.personaRegistro.perid = null;
-            this.personaRegistro.perfoto = null;
-            this.personaRegistro.perusureg = 'Sistema';
-            this.personaRegistro.perestcivil = null;
-            this.personaRegistro.pergenero = null;
-            this.personaRegistro.perpais = null;
-            this.personaRegistro.perciudad = null;
+        // Si ambos formularios son válidos, proceder con el registro
+        if (this.userForm.valid && this.personaForm.valid) {
+            this.preparePersonData();
             this.spinner.show();
-            this.personaService.registrarPersona(this.personaRegistro).subscribe(
-                (data: any) => {
-                    this.usuario = new Usuario();
-                    this.usuario.perid = data['valor'];
-                    this.usuario.usuname = this.usuarioForm.value.usuname;
-                    this.usuario.usuemail = this.usuarioForm.value.usuemail;
-                    this.usuario.rolid = this.usuarioForm.value.tipoRol.rolid;
-                    this.usuario.usupassword = this.usuarioForm.value.usupassword;
-                    this.usuario.usupasswordhash = this.usuarioForm.value.usupasswordhash;
-                    this.usuario.tipo = 1;
-                    this.usuario.usuusureg = 'Sistema';
-                    this.usuario.usudescripcion = 'Registro mediante formulario registrarse';
-                    this.usuario.usuestado = 1;
-                    this.spinner.show();
-                    console.log("Usuario: ", this.usuario)
-                    this.authService.registerUser(this.usuario).subscribe(
-                        (data: any) => {
-                            this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'El Usuario se registro correctamente en el sistema.', life: 5000 });
-                            this.spinner.hide();
-                            // this.status = 'success';
-                            // aqui hay que mandar el email con el mensaje, el correo, y el asunto
-                            this.router.navigate(['/no-confirm']);
-                        },
-                        (error: any) => {
-                            console.log("Error: ", error);
-                            this.spinner.hide();
-                            this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en el registro de usuario nuevo, porfavor comunicarse con soporte.', life: 3000 });
-                        });
+
+            // Registrar persona
+            this.personaService.createPersonForm(this.personData).subscribe({
+                next: (data: any) => {
+                    this.prepareUserData(data['perid']);
+                    this.registerUser();
                 },
-                (error: any) => {
-                    console.log("Error: ", error);
-                    this.spinner.hide();
-                    this.messageService.add({ severity: 'error', summary: 'El usuario ya existe!', detail: 'Ocurrio un error en el registro de usuario nuevo, intente con otro usuario.', life: 3000 });
-                });
+                error: (error: any) => {
+                    this.handleError(error, 'Ocurrió un error en el registro de la persona.');
+
+                }
+            });
         }
     }
+
+    // Función auxiliar para mostrar mensajes de error
+    private showErrorMessage(summary: string, detail: string) {
+        this.messageService.add({ severity: 'error', summary: summary, detail: detail, life: 3000 });
+    }
+
+    // Función auxiliar para marcar todos los campos como tocados y sucios
+    private markAllFieldsAsTouchedAndDirty(form: FormGroup) {
+        Object.values(form.controls).forEach(control => {
+            control.markAllAsTouched();
+            control.markAsDirty();
+        });
+    }
+
+    // Función auxiliar para preparar los datos de la persona
+    private preparePersonData() {
+        this.personData = {
+            ...this.persona,
+            perapepat: this.personaForm.value.perapepat,
+            perapemat: this.personaForm.value.perapemat,
+            pernombres: this.personaForm.value.pernombres,
+            pernrodoc: this.personaForm.value.pernrodoc,
+            peremail: this.personaForm.value.peremail,
+            pertipodoc: this.personaForm.value.tipoDocumento.tipodocid,
+            perid: null,
+            perfoto: null,
+            perusureg: 'Register',
+            perestcivil: null,
+            pergenero: null,
+            perpais: null,
+            perciudad: null,
+            perobservacion: 'Registro mediante formulario'
+        };
+    }
+
+    // Función auxiliar para preparar los datos del usuario
+    private prepareUserData(perid: number) {
+        this.userData = {
+            perid: perid,
+            usuname: this.userForm.value.usuname,
+            usuemail: this.userForm.value.usuemail,
+            rolid: this.userForm.value.tipoRol.rolid,
+            usupassword: this.userForm.value.usupassword,
+            usupasswordhash: this.userForm.value.usupasswordhash,
+            tipo: 1,
+            usuusureg: 'Register',
+            usudescripcion: 'Registro mediante formulario',
+            usuestado: 1,
+            usuid: null,
+            usuusumod: null,
+            usufecmod: null,
+            usufecreg: null,
+            perfoto: null,
+            pernomcompleto: null,
+            pernrodoc: null,
+            rolnombre: null
+        };
+    }
+
+    // Función auxiliar para registrar al usuario
+    private registerUser() {
+        this.authService.registerUser(this.userData).subscribe({
+            next: () => {
+                this.showSuccessMessage('Registro Correcto!', 'El Usuario se registró correctamente en el sistema.');
+                this.spinner.hide();
+                this.router.navigate(['/no-confirm']);
+            },
+            error: (error: any) => {
+                this.handleError(error, 'Ocurrió un error en el registro de usuario nuevo, por favor comuníquese con soporte.');
+                // this.deletePersonNotUser(this.userData.perid);
+                this.spinner.hide();
+            }
+        });
+    }
+
+    // Función auxiliar para mostrar mensajes de éxito
+    private showSuccessMessage(summary: string, detail: string) {
+        this.messageService.add({ severity: 'success', summary: summary, detail: detail, life: 5000 });
+    }
+
+    // Función auxiliar para manejar errores
+    private handleError(error: any, defaultMessage: string) {
+        console.error('Error: ', error);
+        this.spinner.hide();
+        this.showErrorMessage('Algo salió mal!', defaultMessage);
+    }
+
+    deletePersonNotUser(perid: number){
+        this.personaService.deletePersonForm(perid).subscribe({
+            next: () => {
+            },
+            error: (error: any) => {
+            }
+        });
+    }
+
 }

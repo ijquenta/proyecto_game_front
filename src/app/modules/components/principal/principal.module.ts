@@ -10,9 +10,10 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { PrincipalRoutingModule } from './principal-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
+import { ToastModule } from 'primeng/toast';
 @NgModule({
     imports: [
+        ToastModule,
         CommonModule,
         FormsModule,
         ChartModule,

@@ -50,10 +50,8 @@ export class AuthService {
         return this.http.post(`${this.API_URL}/register`, criterio);
     }
 
-    confirmEmail(tk: string): Observable<any> {
-        const url = `${this.API_URL}/confirm-email`;
-        const body = { token: tk };
-        return this.http.post<any>(url, body);
+    confirmEmail(token: string): Observable<any> {
+        return this.http.post(`${this.API_URL}/confirm-email`, { token });
     }
 
 

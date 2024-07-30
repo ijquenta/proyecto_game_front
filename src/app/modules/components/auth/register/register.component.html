@@ -1,219 +1,121 @@
 <p-toast></p-toast>
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
-    <div class="flex flex-column align-items-center justify-content-center">
-        <div style="border-radius: 56px; padding: 0.3rem; background-image: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%), linear-gradient(0deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-            <div class="w-full surface-card py-6 px-5 sm:px-8" style="border-radius:53px">
-                <div class="text-center mb-5">
-                    <div class="font-bold text-xl text-center">
-                        <div class="text-center">
-                            <div class="font-bold text-xl text-900 d-flex align-items-center justify-content-center">
-                                <span><strong>SSGA</strong>Bolivia</span>
-                                <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia"
-                                    class="topbar-flag ml-2" width="30" height="20" style="display: inline;">
-                            </div>
-                        </div>
-                        <span class="text-900" *ngIf="!personaBool && !usuarioBool">Registrarse </span> <br>
-                        <span class="text-900" *ngIf="personaBool && !usuarioBool"> Registrar </span> <span class="text-primary-600" *ngIf="personaBool && !usuarioBool">  datos personales</span>
-                        <span class="text-900" *ngIf="usuarioBool && !personaBool"> Registrar </span><span class="text-primary-600" *ngIf="usuarioBool && !personaBool"> datos de usuario</span>
-                    </div>
-                </div>
-                <div>
-                    <!-- <div *ngIf="status === 'success'">
-                        <p-messages [(value)]="messages" [enableService]="false" [closable]="false"></p-messages>
-                        <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                            <button pButton pRipple label="Ingresar a su cuenta" class="w-full p-3 text-xl" [routerLink]="['/login']"> </button>
-                        </div>
-                    </div> -->
-                        <div *ngIf="personaBool && !usuarioBool">
-                            <form [formGroup]="personaForm" class="p-fluid">
-                                <div class="field">
-                                    <label for="apellidoPaterno" class="block text-900 text-xl font-medium mb-2">Apellido
-                                        Paterno</label>
-                                    <input type="text" id="apellidoPaterno" pInputText formControlName="perapepat"
-                                        placeholder="Ingrese su apellido paterno" class="w-full md:w-30rem mb-2">
-                                </div>
-
-                               <div class="field">
-                                <label for="apellidoMaterno" class="block text-900 text-xl font-medium mb-2">Apellido
-                                    Materno</label>
-                                <input type="text" id="apellidoMaterno" pInputText formControlName="perapemat"
-                                    class="w-full md:w-30rem mb-2" placeholder="Ingrese su apellido materno">
-                               </div>
-
-                                <div class="field">
-                                    <label for="nombres" class="block text-900 text-xl font-medium mb-2">Nombres</label>
-                                <input type="text" id="nombres" pInputText formControlName="pernombres"
-                                    class="w-full md:w-30rem mb-2" placeholder="Ingrese su nombre">
-                                </div>
-
-                                <div class="field">
-                                    <label for="tipoDocumento" class="block text-900 text-xl font-medium">Tipo
-                                        Documento</label>
-                                    <p-dropdown id="tipoDocumento" [autoDisplayFirst]="false" [options]="TipoDocumento" [emptyFilterMessage]="'No se encontraron tipos de documentos registradas.'"
-                                        formControlName="tipoDocumento" styleClass="w-full md:w-30rem mb-3"
-                                        optionLabel="tipodocnombre"
-                                        placeholder="Seleccione un tipo de documento"></p-dropdown>
-                                </div>
-
-                                <div class="field">
-                                    <label for="numeroDocumento" class="block text-900 text-xl font-medium mb-2">Número
-                                        Documento</label>
-                                    <input type="text" id="numeroDocumento" pInputText formControlName="pernrodoc"  [ngClass]="{ 'ng-dirty': this.personaForm.get('pernrodoc').touched, 'valid-field': this.personaForm.get('pernrodoc').valid}"
-                                        class="w-full md:w-30rem" placeholder="Ingrese su número de documento">
-                                        <ul class="p-error block list-none"
-                                            *ngIf="personaForm.get('pernrodoc').invalid && personaForm.get('pernrodoc').dirty">
-                                            <li *ngIf="personaForm.get('pernrodoc').errors?.required">El número de documento es requerido.
-                                                (*)</li>
-                                            <li *ngIf="personaForm.get('pernrodoc').errors?.documentoExistente">Este número de documento
-                                                ya existe.</li>
-                                        </ul>
-                                        <ul class="p-success block" *ngIf="personaForm.get('pernrodoc')?.valid"> El número de documento
-                                            es válido. </ul>
-                                </div>
-
-                                <div class="field">
-                                    <label for="correoElectronico" class="block text-900 text-xl font-medium mb-2">Correo
-                                        Electrónico</label>
-                                    <input type="text" id="correoElectronico" pInputText formControlName="peremail"
-                                        class="w-full md:w-30rem" placeholder="Ingrese su correo electrónico" [ngClass]="{ 'ng-dirty': this.personaForm.get('peremail').touched, 'valid-field': this.personaForm.get('peremail').valid}">
-                                    <ul class="p-error block list-none"
-                                        *ngIf="personaForm.get('peremail').invalid && personaForm.get('peremail').dirty">
-                                        <li *ngIf="personaForm.get('peremail').errors?.required">El correo electrónico es requerido.
-                                            (*)</li>
-                                        <li *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es
-                                            inválido. </li>
-                                    </ul>
-                                    <ul class="p-success block list-none" *ngIf="personaForm.get('peremail')?.valid"> El correo electrónico es
-                                        válido.</ul>
-                                </div>
-                                <hr>
-                                <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                                    <p-button
-                                            label="Cancelar"
-                                            icon="pi pi-times"
-                                            styleClass="p-button-primary w-10rem"
-                                            [routerLink]="['/login']"
-                                    ></p-button>
-                                    <p-button
-                                            label="Siguiente"
-                                            icon="pi pi-angle-right"
-                                            styleClass="p-button-warning w-10rem"
-                                            (click)="enviarFormulario()"
-                                    ></p-button>
-                                </div>
-                            </form>
-                        </div>
-                        <div *ngIf="usuarioBool && !personaBool">
-                            <form [formGroup]="usuarioForm" class="p-fluid">
-                                <div class="field">
-                                    <label for="name1" class="block text-900 text-xl font-medium">Nombre de Usuario</label>
-                                    <input
-                                            id="name1"
-                                            type="text"
-                                            placeholder="Ingrese su nombre de usuario"
-                                            pInputText
-                                            class="w-full md:w-30rem"
-                                            formControlName="usuname"
-                                    >
-                                </div>
-
-                                <div class="field">
-                                    <label for="email1" class="block text-900 text-xl font-medium">Correo Electrónico</label>
-
-                                    <input
-                                            id="email1"
-                                            type="text"
-                                            placeholder="Ingrese un correo electronico"
-                                            pInputText
-                                            formControlName="usuemail"
-                                            class="w-full md:w-30rem"
-                                            [disabled]="true"
-                                    >
-                                </div>
-
-                                <div class="field">
-                                    <label for="tipoRol" class="block text-900 text-xl font-medium">Tipo de Rol</label>
-                                    <p-dropdown
-                                            [options]="TipoRol"
-                                            formControlName="tipoRol"
-                                            optionLabel="rolnombre"
-                                            [emptyFilterMessage]="'No se encontraron roles disponibles.'"
-                                            placeholder="Seleccionar rol"
-                                            styleClass="w-full md:w-30rem"
-                                    ></p-dropdown>
-                                </div>
-
-                                <div class="field">
-                                    <label for="password1" class="block text-900 font-medium text-xl">Contraseña</label>
-                                    <p-password
-                                            id="password2"
-                                            formControlName="usupassword"
-                                            placeholder="Ingrese una contraseña"
-                                            [toggleMask]="true"
-                                            [feedback]="false"
-                                            inputStyleClass="w-full p-3 md:w-30rem"
-                                    > </p-password>
-
-                                    <ul class="p-error block list-none" *ngIf="usuarioForm.get('usupassword').invalid && (usuarioForm.get('usupassword').dirty || usuarioForm.get('usupassword').touched)">
-                                        <li *ngIf="usuarioForm.get('usupassword').errors?.required">
-                                            La contraseña es obligatoria. <br>
-                                        </li>
-                                        <li *ngIf="usuarioForm.get('usupassword').errors?.minlength">
-                                            Debe tener al menos 8 caracteres. <br>
-                                        </li>
-                                        <li *ngIf="usuarioForm.get('usupassword').errors?.passwordStrength">
-                                            Debe incluir mayúsculas, minúsculas y números. <br>
-                                        </li>
-                                    </ul>
-                                    <ul class="p-success block list-none"
-                                        *ngIf="usuarioForm.get('usupassword').valid && (usuarioForm.get('usupassword').dirty || usuarioForm.get('usupassword').touched)">
-                                        La contraseña es válida.
-                                    </ul>
-                                </div>
-
-                                <div class="field">
-                                    <label for="password1" class="block text-900 font-medium text-xl">Confirmar Contraseña</label>
-                                    <p-password
-                                            id="password1"
-                                            formControlName="usupasswordhash"
-                                            [feedback]="false"
-                                            placeholder="Ingrese una contraseña"
-                                            [toggleMask]="true"
-                                            inputStyleClass="w-full p-3 md:w-30rem"
-                                    ></p-password>
-                                    <ul class="p-error block list-none" *ngIf="usuarioForm.get('usupasswordhash').dirty">
-                                        <li *ngIf="usuarioForm.get('usupasswordhash').errors?.required">
-                                            Confirmar la contraseña es obligatorio.
-                                        </li>
-                                        <li *ngIf="usuarioForm.errors?.['mismatch']">
-                                            Las contraseñas no coinciden.
-                                        </li>
-                                    </ul>
-                                    <ul class="p-success block list-none"
-                                        *ngIf="usuarioForm.get('usupasswordhash').valid && !usuarioForm.errors?.['mismatch']">
-                                        La confirmación de la contraseña es válida.
-                                    </ul>
-                                </div>
-
-                                <hr>
-
-                                <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                                    <p-button
-                                            label="Atras"
-                                            icon="pi pi-angle-left"
-                                            styleClass="p-button-primary w-10rem"
-                                            (click)="volverDatosPersona()"
-                                    ></p-button>
-                                    <p-button
-                                            label="Registrar"
-                                            icon="fa-solid fa-right-to-bracket"
-                                            styleClass="p-button-success w-10rem"
-                                            (click)="doRegister()"
-                                    ></p-button>
-                                </div>
-                            </form>
-                    </div>
-                </div>
+    <div class="surface-card p-4 shadow-2 border-round w-30rem">
+        <div class="text-center mb-5">
+            <div class="flex align-items-center justify-content-center">
+                <span class="font-bold text-xl">SSGA Bolivia</span>
+                <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia" class="ml-2" width="30" height="20">
             </div>
+            <span class="block text-600 font-medium text-lg mt-5">
+                <span *ngIf="!personBool && !userBool">Registrarse</span>
+                <span *ngIf="personBool && !userBool">Registrar <span class="text-primary">datos personales</span></span>
+                <span *ngIf="userBool && !personBool">Registrar <span class="text-primary">datos de usuario</span></span>
+            </span>
+        </div>
+
+        <div *ngIf="personBool && !userBool">
+            <form [formGroup]="personaForm" class="p-fluid">
+                <div class="field mb-4">
+                    <label for="apellidoPaterno" class="block text-900 font-medium mb-2">Apellido Paterno</label>
+                    <input type="text" id="apellidoPaterno" pInputText formControlName="perapepat" placeholder="Ingrese su apellido paterno" class="w-full">
+                </div>
+                <div class="field mb-4">
+                    <label for="apellidoMaterno" class="block text-900 font-medium mb-2">Apellido Materno</label>
+                    <input type="text" id="apellidoMaterno" pInputText formControlName="perapemat" placeholder="Ingrese su apellido materno" class="w-full">
+                </div>
+                <div class="field mb-4">
+                    <label for="nombres" class="block text-900 font-medium mb-2">Nombres</label>
+                    <input type="text" id="nombres" pInputText formControlName="pernombres" placeholder="Ingrese su nombre" class="w-full">
+                </div>
+                <div class="field mb-4">
+                    <label for="tipoDocumento" class="block text-900 font-medium mb-2">Tipo Documento</label>
+                    <p-dropdown id="tipoDocumento" [options]="TipoDocumento" formControlName="tipoDocumento" optionLabel="tipodocnombre" placeholder="Seleccione un tipo de documento" class="w-full"></p-dropdown>
+                </div>
+                <div class="field mb-4">
+                    <label for="numeroDocumento" class="block text-900 font-medium mb-2">Número Documento</label>
+                    <input type="text" id="numeroDocumento" pInputText formControlName="pernrodoc" placeholder="Ingrese su número de documento" class="w-full" [ngClass]="{ 'ng-dirty': personaForm.get('pernrodoc').dirty, 'valid-field': personaForm.get('pernrodoc').valid }">
+                    <ul class="p-error block list-none" *ngIf="personaForm.get('pernrodoc').invalid && personaForm.get('pernrodoc').dirty">
+                        <li *ngIf="personaForm.get('pernrodoc').errors?.required">El número de documento es requerido. (*)</li>
+                        <li *ngIf="personaForm.get('pernrodoc').errors?.documentoExistente">Este número de documento ya existe.</li>
+                    </ul>
+                    <ul class="p-success block list-none" *ngIf="personaForm.get('pernrodoc').valid && personaForm.get('pernrodoc').dirty">El número de documento es válido.</ul>
+                </div>
+                <div class="field mb-4">
+                    <label for="correoElectronico" class="block text-900 font-medium mb-2">Correo Electrónico</label>
+                    <input type="text" id="correoElectronico" pInputText formControlName="peremail" placeholder="Ingrese su correo electrónico" class="w-full" [ngClass]="{ 'ng-dirty': personaForm.get('peremail').dirty, 'valid-field': personaForm.get('peremail').valid }">
+                    <ul class="p-error block list-none" *ngIf="personaForm.get('peremail').invalid && personaForm.get('peremail').dirty">
+                        <li *ngIf="personaForm.get('peremail').errors?.required">El correo electrónico es requerido. (*)</li>
+                        <li *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es inválido.</li>
+                    </ul>
+                    <ul class="p-success block list-none" *ngIf="personaForm.get('peremail').valid && personaForm.get('peremail').dirty">El correo electrónico es válido.</ul>
+                </div>
+                <div class="w-full flex flex-column align-items-center justify-content-between mb-4 gap-4">
+                    <p-button
+                        label="Siguiente"
+                        icon="pi pi-angle-right"
+                        styleClass="p-button p-button-primary w-full mt-2"
+                        (click)="sendForm()"
+                    ></p-button>
+                </div>
+                <div class="text-center w-full">
+                    <span class="font-medium no-underline">¿Ya tienes una cuenta? </span>
+                    <p-button
+                        label="Iniciar sesión"
+                        styleClass="p-button-text p-button-success w-full mt-2"
+                        [routerLink]="['/login']">
+                    </p-button>
+                </div>
+            </form>
+        </div>
+
+        <div *ngIf="userBool && !personBool" class="col-12">
+            <form [formGroup]="userForm" class="p-fluid w-full">
+                <div class="field mb-4">
+                    <label for="name1" class="block text-900 font-medium mb-2">Nombre de Usuario</label>
+                    <input id="name1" type="text" placeholder="Ingrese su nombre de usuario" pInputText class="w-full" formControlName="usuname">
+                </div>
+                <div class="field mb-4">
+                    <label for="email1" class="block text-900 font-medium mb-2">Correo Electrónico</label>
+                    <input id="email1" type="text" placeholder="Ingrese un correo electrónico" pInputText class="w-full" formControlName="usuemail" [disabled]="true">
+                </div>
+                <div class="field mb-4">
+                    <label for="tipoRol" class="block text-900 font-medium mb-2">Tipo de Rol</label>
+                    <p-dropdown id="tipoRol" [options]="TipoRol" formControlName="tipoRol" optionLabel="rolnombre" placeholder="Seleccionar rol" class="w-full"></p-dropdown>
+                </div>
+                <div class="field mb-4">
+                    <label for="password1" class="block text-900 font-medium mb-2">Contraseña</label>
+                    <p-password id="password1" formControlName="usupassword" placeholder="Ingrese una contraseña" toggleMask="true" feedback="false" inputStyleClass="w-full p-3"></p-password>
+                    <ul class="p-error block list-none" *ngIf="userForm.get('usupassword').invalid && userForm.get('usupassword').dirty">
+                        <li *ngIf="userForm.get('usupassword').errors?.required">La contraseña es obligatoria.</li>
+                        <li *ngIf="userForm.get('usupassword').errors?.minlength">Debe tener al menos 8 caracteres.</li>
+                        <li *ngIf="userForm.get('usupassword').errors?.passwordStrength">Debe incluir mayúsculas, minúsculas y números.</li>
+                    </ul>
+                    <ul class="p-success block list-none" *ngIf="userForm.get('usupassword').valid && userForm.get('usupassword').dirty">La contraseña es válida.</ul>
+                </div>
+                <div class="field mb-4">
+                    <label for="password2" class="block text-900 font-medium mb-2">Confirmar Contraseña</label>
+                    <p-password id="password2" formControlName="usupasswordhash" placeholder="Ingrese nuevamente la contraseña" toggleMask="true" feedback="false" inputStyleClass="w-full p-3"></p-password>
+                    <ul class="p-error block list-none" *ngIf="userForm.get('usupasswordhash').dirty">
+                        <li *ngIf="userForm.get('usupasswordhash').errors?.required">Confirmar la contraseña es obligatorio.</li>
+                        <li *ngIf="userForm.errors?.['mismatch']">Las contraseñas no coinciden.</li>
+                    </ul>
+                    <ul class="p-success block list-none" *ngIf="userForm.get('usupasswordhash').valid && !userForm.errors?.['mismatch']">La confirmación de la contraseña es válida.</ul>
+                </div>
+                <div class="w-full flex-column align-items-center justify-content-between mb-4 gap-4">
+                    <p-button
+                        label="Registrar"
+                        icon="pi pi-check"
+                        styleClass="w-full p-button-success mb-2"
+                        (click)="doRegister()">
+                    </p-button>
+                    <p-button
+                        label="Volver"
+                        icon="pi pi-angle-left"
+                        styleClass="p-button-outlined p-button-warning w-full"
+                        (click)="returnPersonData()">
+                    </p-button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
