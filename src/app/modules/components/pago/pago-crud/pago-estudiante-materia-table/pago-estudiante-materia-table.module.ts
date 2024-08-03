@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PagoCrudRoutingModule } from './pago-crud-routing.module';
-import { PagoEstudianteMateriaTableRoutingModule } from './pago-estudiante-materia-table/pago-estudiante-materia-table-routing.module';
-import { PagoCrudComponent } from './pago-crud.component';
+import { PagoCrudRoutingModule } from '../pago-crud-routing.module';
+import { PagoCrudComponent } from '../pago-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -17,7 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
-import { UsuarioService } from '../../../service/data/usuario.service';
+import { UsuarioService } from '../../../../service/data/usuario.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
@@ -35,19 +34,14 @@ import { AvatarModule } from 'primeng/avatar';
 import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
 import { CardModule } from 'primeng/card';
 import { NgxSpinnerModule } from 'ngx-spinner';
-// import { PagoDialogComponent } from './pago-estudiante-materia-table/pago-dialog/pago-dialog.component';
-import { PagoEstudianteMateriaTableComponent } from './pago-estudiante-materia-table/pago-estudiante-materia-table.component';
+import { PagoDialogComponent } from './pago-dialog/pago-dialog.component';
+import { PagoEstudianteMateriaTableComponent } from './pago-estudiante-materia-table.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { EstudianteMateriaComponent } from './estudiante-materia/estudiante-materia.component';
-import { FormPagoComponent } from './estudiante-materia/form-pago/form-pago.component';
-import { PanelModule } from 'primeng/panel';
 @NgModule({
     imports: [
-        PanelModule,
         BreadcrumbModule,
         CommonModule,
         PagoCrudRoutingModule,
-        PagoEstudianteMateriaTableRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -77,7 +71,7 @@ import { PanelModule } from 'primeng/panel';
         CardModule,
         NgxSpinnerModule
     ],
-    declarations: [PagoCrudComponent, PagoEstudianteMateriaTableComponent, EstudianteMateriaComponent, FormPagoComponent],
+    declarations: [],
     providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService]
 })
-export class PagoCrudModule { }
+export class PagoEstudianteMateriaTableModule { }

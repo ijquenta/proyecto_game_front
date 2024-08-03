@@ -1,0 +1,164 @@
+<!-- Diálogo para la lista de pagos de estudiantes -->
+
+<p-dialog
+    [(visible)]="verPagosEstudianteClicked"
+    header="Lista de Estudiantes"
+    [modal]="true"
+    [breakpoints]="{ '960px': '75vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+    appendTo="body"
+    (onHide)="ocultarDialog()"
+>
+    <!-- Tabla de pagos -->
+
+<div class="grid">
+    <p-toast></p-toast>
+    <div class="col-12">
+        <div class="card">
+                <h3>Materia</h3>
+                <p>Administrar registros de pagos de los estudiantes</p>
+                <ng-container>
+                <p-table
+                    #dt1
+                    [value]="listarPagoEstudianteMateria"
+                    responsiveLayout="stack"
+                    [loading]="loading2"
+                    [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
+                    [rows]="5"
+                    [paginator]="true"
+                    styleClass="p-datatable-striped p-datatable-sm"
+                    [globalFilterFields]="['pernomcompleto']"
+                    rowGroupMode="rowspan"
+                    groupRowsBy="curnombre"
+                    [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+                >
+                    <!-- Encabezado de la tabla -->
+                    <ng-template pTemplate="caption">
+                        <div class="flex justify-between items-center mb-2 p-2">
+                            <!-- Curso -->
+                            <div class="text-left">
+                                <span class="text-blue font-semibold">Curso: </span>
+                                <span class="text-primary-600">{{ curnombre }}</span>
+                            </div>
+                            <!-- Materia -->
+                            <div class="text-right ml-2">
+                                <span class="text-blue font-semibold">Materia: </span>
+                                <span class="text-primary-600">{{ matnombre }}</span>
+                            </div>
+                        </div>
+                        <!-- Filtro de búsqueda -->
+                        <div class="flex justify-end">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                            </span>
+                        </div>
+                    </ng-template>
+
+
+                    <!-- Encabezados de columnas -->
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th>Código</th>
+                            <th>Estudiante</th>
+                            <th>Descripción</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </ng-template>
+
+                    <!-- Filas de datos -->
+                    <ng-template pTemplate="body" let-pago>
+                        <tr>
+                            <td>
+                                <div class="flex">
+                                    <!-- Botón para crear un nuevo pago -->
+                                    <button
+                                        *ngIf="!pago.pagid"
+                                        pButton
+                                        pRipple
+                                        icon="fa-solid fa-money-bill-1-wave"
+                                        class="p-button-rounded p-button-success mr-2"
+                                        pTooltip="Crear Nuevo Pago"
+                                        tooltipPosition="top"
+                                        (click)="nuevoPago(pago)"
+                                    ></button>
+                                    <!-- Botón para editar un pago -->
+                                    <button
+                                        *ngIf="pago.pagid"
+                                        pButton
+                                        pRipple
+                                        icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-primary mr-2"
+                                        pTooltip="Editar"
+                                        tooltipPosition="top"
+                                        (click)="actualizarPago(pago)"
+                                    ></button>
+                                    <!-- Botón para ver el respaldo del pago -->
+                                    <button
+                                        *ngIf="pago.pagid"
+                                        pButton
+                                        pRipple
+                                        icon="pi pi-file-pdf"
+                                        class="p-button-rounded p-button-danger mr-2"
+                                        pTooltip="Ver Respaldo"
+                                        tooltipPosition="top"
+                                        (click)="verArchivoPago(pago.pagarchivo)"
+                                    ></button>
+                                </div>
+                            </td>
+                            <td *ngIf="pago.pagid != null">{{ pago.pagid }}</td>
+                            <td *ngIf="pago.pagid == null"></td>
+                            <td>
+                                <div *ngIf="pago.perfoto == null" class="user-display">
+                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ pago.pernomcompleto }}</span>
+                                </div>
+                                <div *ngIf="pago.perfoto != null" class="user-display">
+                                    <p-avatar image="{{ userProfilePhoto }}/{{ pago.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ pago.pernomcompleto }}</span>
+                                    <span class="mt-2">{{ pago.pernrodoc }}</span>
+                                </div>
+                            </td>
+                            <td><p-chip *ngIf="pago.pagdescripcion"><div class="p-1">{{pago.pagdescripcion}}</div></p-chip></td>
+                            <td><p-chip *ngIf="pago.pagfecha"><div class="p-1">{{pago.pagfecha}}</div></p-chip></td>
+                            <td><p-chip *ngIf="pago.pagmonto"><div class="p-1">{{pago.pagmonto}} Bs.</div></p-chip></td>
+                            <td>
+                                <p-tag
+                                    [rounded]="true"
+                                    [severity]="getSeverityColor(pago.pagtipo)"
+                                    *ngIf="pago.pagtipo"
+                                >
+                                    {{ getText(pago.pagtipo) }}
+                                </p-tag>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <!-- Mensaje cuando no hay datos -->
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7">No se encontraron estudiantes inscritos en esta materia.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </ng-container>
+        </div>
+    </div>
+</div>
+</p-dialog>
+
+<!-- Diálogo para registro y edición de pagos -->
+<!-- <app-pago-dialog
+    [pago]="pago"
+    [usuario]="usuario"
+    [tipoPago]="tipoPago"
+    [visible]="pagoRegistroDialog"
+    (onGuardar)="handleGuardarPago($event)"
+    (onCancelar)="ocultarDialog()"
+></app-pago-dialog> -->

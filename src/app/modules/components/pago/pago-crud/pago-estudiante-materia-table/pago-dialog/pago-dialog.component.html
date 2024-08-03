@@ -1,0 +1,98 @@
+<p-dialog
+    [(visible)]="visible"
+    header="Pago"
+    [modal]="true"
+    class="p-fluid"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '60vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"
+    (onHide)="hidePagoDialog()"
+>
+    <form [formGroup]="pagoForm">
+        <div class="grid p-fluid mt-3">
+            <!-- Descripción del pago -->
+            <div class="field col-12 md:col-9">
+                <span class="p-float-label">
+                    <input type="text" id="pagdescripcion" pInputText formControlName="pagdescripcion"
+                           [ngClass]="{ 'ng-dirty': pagoForm.get('pagdescripcion')?.touched, 'valid-field': pagoForm.get('pagdescripcion')?.valid }">
+                    <label for="pagdescripcion">Descripción del pago</label>
+                </span>
+                <small class="p-error block" *ngIf="pagoForm.get('pagdescripcion')?.invalid && pagoForm.get('pagdescripcion')?.dirty">
+                    <span *ngIf="pagoForm.get('pagdescripcion')?.errors?.required">La descripción del pago es requerida.</span>
+                </small>
+                <small class="p-success block" *ngIf="pagoForm.get('pagdescripcion')?.valid">
+                    La descripción del pago es válida.
+                </small>
+            </div>
+
+            <!-- Fecha del pago -->
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <p-calendar id="pagfecha" dateFormat="dd/mm/yy" appendTo="body" formControlName="pagfecha"
+                        [ngClass]="{ 'ng-dirty': pagoForm.get('pagfecha')?.touched, 'valid-field': pagoForm.get('pagfecha')?.valid }">
+                    </p-calendar>
+                    <label for="pagfecha">Fecha del pago</label>
+                </span>
+                <small class="p-error block" *ngIf="pagoForm.get('pagfecha')?.invalid && pagoForm.get('pagfecha')?.dirty">
+                    <span *ngIf="pagoForm.get('pagfecha')?.errors?.required">La fecha del pago es requerida.</span>
+                </small>
+                <small class="p-success block" *ngIf="pagoForm.get('pagfecha')?.valid">
+                    La fecha del pago es válida.
+                </small>
+            </div>
+
+            <!-- Monto del pago -->
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block mb-2" for="monto">Monto del pago</label>
+                <p-inputNumber formControlName="pagmonto" appendTo="body" [showButtons]="true" buttonLayout="horizontal"
+                    inputId="horizontal" spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger"
+                    incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO"
+                    [ngClass]="{ 'valid-field': pagoForm.get('pagmonto')?.valid }">
+                </p-inputNumber>
+                <small class="p-error block" *ngIf="pagoForm.get('pagmonto')?.invalid && pagoForm.get('pagmonto')?.dirty">
+                    <span *ngIf="pagoForm.get('pagmonto')?.errors?.required">El monto del pago es requerido.</span>
+                    <span *ngIf="pagoForm.get('pagmonto')?.errors?.min">El monto debe ser mayor o igual a cero.</span>
+                </small>
+                <small class="p-success block" *ngIf="pagoForm.get('pagmonto')?.valid">
+                    El monto del pago es válido.
+                </small>
+            </div>
+
+            <!-- Tipo de pago -->
+            <div class="field col-12 md:col-6">
+                <label class="font-bold block mb-2" for="tipoPago">Tipo de Pago</label>
+                <p-dropdown id="tipoPago" [autoDisplayFirst]="false" appendTo="body" [options]="tipoPago"
+                    formControlName="tipoPago" optionLabel="tpagnombre" placeholder="Seleccionar tipo de pago"
+                    [emptyMessage]="'No se encontraron tipos de pagos.'">
+                </p-dropdown>
+                <small class="p-success block" *ngIf="pagoForm.get('tipoPago')?.valid">
+                    El tipo de pago es válido.
+                </small>
+                <small class="p-error block" *ngIf="pagoForm.get('tipoPago')?.invalid && pagoForm.get('tipoPago')?.touched">
+                    <span *ngIf="pagoForm.get('tipoPago')?.errors?.required">El tipo de pago es requerido.</span>
+                </small>
+            </div>
+
+            <!-- Carga de archivos -->
+            <!-- Esta sección está comentada, pero puedes activarla si necesitas cargar archivos -->
+            <!-- <div class="field col-12">
+                <p-fileUpload #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]"
+                    url="https://www.primefaces.org/cdn/api/upload.php" accept="application/pdf" maxFileSize="5000000"
+                    (onSelect)="onUpload($event)" [showUploadButton]="false" [showCancelButton]="false"
+                    cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
+                    [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'"
+                    [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
+                    [invalidFileTypeMessageDetail]="'Solo se permiten archivos PDF.'">
+                </p-fileUpload>
+            </div> -->
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="cancelar()"></button>
+        <button *ngIf="!pago.pagid" pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarPago()"></button>
+    </ng-template>
+</p-dialog>

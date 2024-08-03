@@ -45,11 +45,12 @@
                     <input type="text" id="correoElectronico" pInputText formControlName="peremail" placeholder="Ingrese su correo electrónico" class="w-full" [ngClass]="{ 'ng-dirty': personaForm.get('peremail').dirty, 'valid-field': personaForm.get('peremail').valid }">
                     <ul class="p-error block list-none" *ngIf="personaForm.get('peremail').invalid && personaForm.get('peremail').dirty">
                         <li *ngIf="personaForm.get('peremail').errors?.required">El correo electrónico es requerido. (*)</li>
-                        <li *ngIf="personaForm.get('peremail').errors?.pattern">El formato del correo electrónico es inválido.</li>
+                        <li *ngIf="personaForm.get('peremail').errors?.pattern">El formato el correo electrónico es inválido.</li>
+                        <li *ngIf="personaForm.get('peremail').errors?.emailExistente">Este correo electrónico ya se encuentra registrado.</li>
                     </ul>
                     <ul class="p-success block list-none" *ngIf="personaForm.get('peremail').valid && personaForm.get('peremail').dirty">El correo electrónico es válido.</ul>
                 </div>
-                <div class="w-full flex flex-column align-items-center justify-content-between mb-4 gap-4">
+                <div class="w-full flex-column align-items-center justify-content-between mb-4 gap-4">
                     <p-button
                         label="Siguiente"
                         icon="pi pi-angle-right"
@@ -72,7 +73,10 @@
             <form [formGroup]="userForm" class="p-fluid w-full">
                 <div class="field mb-4">
                     <label for="name1" class="block text-900 font-medium mb-2">Nombre de Usuario</label>
-                    <input id="name1" type="text" placeholder="Ingrese su nombre de usuario" pInputText class="w-full" formControlName="usuname">
+                    <input id="name1" type="text" placeholder="Ingrese su nombre de usuario" pInputText class="w-full" formControlName="usuname" [ngClass]="{ 'ng-dirty': userForm.get('usuname').dirty, 'valid-field': userForm.get('usuname').valid }">
+                    <ul class="p-error block list-none" *ngIf="userForm.get('usuname').invalid && userForm.get('usuname').dirty">
+                        <li *ngIf="userForm.get('usuname').errors?.userNameExistente">El nombre de usuario ya existe.</li>
+                    </ul>
                 </div>
                 <div class="field mb-4">
                     <label for="email1" class="block text-900 font-medium mb-2">Correo Electrónico</label>
@@ -111,7 +115,7 @@
                     <p-button
                         label="Volver"
                         icon="pi pi-angle-left"
-                        styleClass="p-button-outlined p-button-warning w-full"
+                        styleClass="p-button-text p-button-primary w-full"
                         (click)="returnPersonData()">
                     </p-button>
                 </div>

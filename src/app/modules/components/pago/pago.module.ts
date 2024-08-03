@@ -4,7 +4,7 @@ import { PagoRoutingModule } from './pago-routing.module';
 
 @NgModule({
     declarations: [
-  ],
+    ],
     imports: [
         CommonModule,
         PagoRoutingModule

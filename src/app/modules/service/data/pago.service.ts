@@ -1,31 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Product } from '../../api/product';
 import { API_URL } from 'src/environments/environment';
-import { Usuario } from '../../models/usuario';
-import { Rol } from '../../models/rol';
 import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { ArchivosService } from '../util/archivos.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
+
 const httpOptions = {
     responseType: 'arraybuffer' as 'json'
 };
+
 @Injectable({
     providedIn: 'root',
 })
+
 export class PagoService {
     usuario: any;
-    constructor(private http: HttpClient,
-                private tokenService: TokenService,
-                private archivos: ArchivosService,
-                private spinner: NgxSpinnerService,
-                private authService: AuthService) { }
+    constructor(private http: HttpClient, private tokenService: TokenService, private archivos: ArchivosService, private spinner: NgxSpinnerService, private authService: AuthService) { }
 
 
     listarPago(){
-        return this.http.get(`${API_URL}/listarPago`)
+        return this.http.get(`${API_URL}/listarPago`, { context: checktoken() });
     }
 
     listarPagoCurso(){

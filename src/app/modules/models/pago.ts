@@ -21,6 +21,7 @@ export class Pago {
     pagarchivo: any;
     archivobol: any;
     perfoto:any;
+    pagestado: any;
 }
 
 

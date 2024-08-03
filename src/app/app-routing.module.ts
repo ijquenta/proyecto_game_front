@@ -7,6 +7,8 @@ import { IsLoggedInGuard } from './guards/is-logged-in.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { RedirectGuard } from './guards/redirect.guard';
 import { HasRoleGuard } from './guards/has-role.guard';
+import { PagoEstudianteMateriaTableComponent } from './modules/components/pago/pago-crud/pago-estudiante-materia-table/pago-estudiante-materia-table.component';
+import { EstudianteMateriaComponent } from './modules/components/pago/pago-crud/estudiante-materia/estudiante-materia.component';
 
 const routes: Routes = [
   { path: '', loadChildren: () => import('./modules/components/auth/auth.module').then((m) => m.AuthModule), canActivate: [ RedirectGuard ] },
@@ -32,6 +34,10 @@ const routes: Routes = [
                     { path: 'curso', loadChildren: () => import('./modules/components/curso/curso.module').then(m => m.CursoModule), canActivate: [ AuthGuard ]},
                     { path: 'mensaje', loadChildren: () => import('./modules/components/mensaje/mensaje.module').then(m => m.MensajeModule), canActivate: [ AuthGuard ]},
                     { path: 'contabilidad', loadChildren:() => import('./modules/components/contabilidad/contabilidad.module').then(m => m.ContabilidadModule), canActivate: [AuthGuard]},
+                    // { path: 'estudiante-materia', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule), canActivate: [ AuthGuard ] },
+                    { path: 'pago/estudiante-materia', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    { path: 'pago/estudiante-materia/form', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    { path: 'pago/estudiante-materia/form/:id', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
                     { path: 'notfound', component: NotfoundComponent },
                     { path: '**', redirectTo: 'notfound' }
                 ],
@@ -40,11 +46,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    initialNavigation: 'enabledBlocking'
-})],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 
 export class AppRoutingModule {
 }
+
+// RouterModule.forRoot([routes])

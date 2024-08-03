@@ -16,6 +16,10 @@ export class UsuarioService {
         return this.http.get(`${API_URL}/listaUsuarios`, { context: checktoken() });
     }
 
+    getUsers(){
+        return this.http.get(`${API_URL}/getUsers`);
+    }
+
     getRoles(){
         return this.http.get(`${API_URL}/tipoRol`);
     }
@@ -41,6 +45,10 @@ export class UsuarioService {
 
     getTipoPersona(){
         return this.http.get(`${API_URL}/tipoPersona`, { context: checktoken() })
+    }
+
+    getTipoPersonaDocente(){
+        return this.http.get(`${API_URL}/tipoPersonaDocente`, { context: checktoken() })
     }
 
     gestionarUsuarioEstado(criterio: any) {

@@ -149,7 +149,7 @@
 }
 
 .p-text-secondary {
-    color: #708da9
+    color: #708de1
 }
 
 .pi {
@@ -314,7 +314,7 @@
     --red-900: #66161e;
     --primary-50: #f8f6fe;
     --primary-100: #ddd6fc;
-    --primary-200: #c2b5fa;
+    --primary   -200: #c2b5fa;
     --primary-300: #a895f8;
     --primary-400: #8d74f5;
     --primary-500: #7254f3;
@@ -448,7 +448,8 @@ p-calendar.ng-dirty.ng-invalid>.p-calendar>.p-inputtext {
 }
 
 .p-datepicker:not(.p-datepicker-inline) {
-    background: linear-gradient(90deg, #7254f3 0%, #9554f3 100%);
+    /* background: linear-gradient(90deg, #7254f3 0%, #9554f3 100%); */
+    background: #282936;
     border: 0 none;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1)
 }
@@ -5646,27 +5647,27 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 
 .p-tooltip .p-tooltip-text {
-    background: #7254f3;
-    color: #fff;
+    background: #999999;
+    color: #ffff;
     padding: .75rem .75rem;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
     border-radius: 6px
 }
 
 .p-tooltip.p-tooltip-right .p-tooltip-arrow {
-    border-right-color: #7254f3
+    border-right-color: #999999
 }
 
 .p-tooltip.p-tooltip-left .p-tooltip-arrow {
-    border-left-color: #7254f3
+    border-left-color: #999999
 }
 
 .p-tooltip.p-tooltip-top .p-tooltip-arrow {
-    border-top-color: #7254f3
+    border-top-color: #999999
 }
 
 .p-tooltip.p-tooltip-bottom .p-tooltip-arrow {
-    border-bottom-color: #7254f3
+    border-bottom-color: #999999
 }
 
 .p-fileupload .p-fileupload-buttonbar {

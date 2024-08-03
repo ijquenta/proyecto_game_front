@@ -1,0 +1,163 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <!-- <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb> -->
+            <h3>Pago</h3>
+            <p>Administrar registros de pagos</p>
+            <div class="container">
+                <h2>{{ isEditMode ? "Editar Pago" : "Crear Pago" }}</h2>
+                <form [formGroup]="pagoForm" (ngSubmit)="guardarPago()">
+                    <div class="p-fluid grid">
+                        <!-- Campo de descripción del pago -->
+                        <div class="field col-12">
+                            <label for="pagdescripcion"
+                                >Descripción del pago</label
+                            >
+                            <input
+                                pInputText
+                                id="pagdescripcion"
+                                formControlName="pagdescripcion"
+                            />
+                            <div
+                                *ngIf="
+                                    pagoForm.get('pagdescripcion')?.invalid &&
+                                    pagoForm.get('pagdescripcion')?.touched
+                                "
+                            >
+                                <small
+                                    *ngIf="
+                                        pagoForm.get('pagdescripcion')?.errors
+                                            ?.required
+                                    "
+                                    class="p-error"
+                                    >La descripción del pago es
+                                    requerida.</small
+                                >
+                            </div>
+                        </div>
+                        <!-- Campo de fecha del pago -->
+                        <div class="field col-12 md:col-6">
+                            <label for="pagfecha">Fecha del pago</label>
+                            <p-calendar
+                                id="pagfecha"
+                                dateFormat="dd/mm/yy"
+                                formControlName="pagfecha"
+                                showIcon
+                            ></p-calendar>
+                            <div
+                                *ngIf="
+                                    pagoForm.get('pagfecha')?.invalid &&
+                                    pagoForm.get('pagfecha')?.touched
+                                "
+                            >
+                                <small
+                                    *ngIf="
+                                        pagoForm.get('pagfecha')?.errors
+                                            ?.required
+                                    "
+                                    class="p-error"
+                                    >La fecha del pago es requerida.</small
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Campo de monto del pago -->
+                        <div class="field col-12 md:col-6">
+                            <label for="pagmonto">Monto</label>
+                            <p-inputNumber
+                            id="pagmonto"
+                            formControlName="pagmonto"
+                            mode="currency"
+                            currency="BOB"
+                            locale="es-BO"
+                        ></p-inputNumber>
+
+                            <div
+                                *ngIf="
+                                    pagoForm.get('pagmonto')?.invalid &&
+                                    pagoForm.get('pagmonto')?.touched
+                                "
+                            >
+                                <small
+                                    *ngIf="
+                                        pagoForm.get('pagmonto')?.errors
+                                            ?.required
+                                    "
+                                    class="p-error"
+                                    >El monto es requerido.</small
+                                >
+                                <small
+                                    *ngIf="
+                                        pagoForm.get('pagmonto')?.errors?.min
+                                    "
+                                    class="p-error"
+                                    >El monto debe ser mayor o igual a 0.</small
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Campo de tipo de pago -->
+                        <div class="field col-12 md:col-6">
+                            <label for="tipoPago">Tipo de Pago</label>
+                            <p-dropdown
+                                id="tipoPago"
+                                [options]="tipoPago"
+                                formControlName="tipoPago"
+                                optionLabel="tpagdescripcion"
+                            ></p-dropdown>
+                            <div
+                                *ngIf="
+                                    pagoForm.get('tipoPago')?.invalid &&
+                                    pagoForm.get('tipoPago')?.touched
+                                "
+                            >
+                                <small
+                                    *ngIf="
+                                        pagoForm.get('tipoPago')?.errors
+                                            ?.required
+                                    "
+                                    class="p-error"
+                                    >El tipo de pago es requerido.</small
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Campo de carga de archivos -->
+                        <div class="field col-12">
+                            <p-fileUpload
+                                #fileUpload
+                                name="myfile[]"
+                                (onSelect)="onUpload($event)"
+                                mode="advanced"
+                                multiple="true"
+                                chooseLabel="Seleccionar Archivos"
+                            ></p-fileUpload>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="field col-12 text-center">
+                            <button
+                                pButton
+                                pRipple
+                                type="submit"
+                                [label]="isEditMode ? 'Actualizar' : 'Guardar'"
+                                icon="pi pi-save"
+
+                                class="p-button p-button-success"
+                            ></button>
+                            <button
+                                pButton
+                                pRipple
+                                type="button"
+                                label="Cancelar"
+                                icon="pi pi-times"
+                                (click)="cancelar()"
+                                class="p-button p-button-secondary ml-2"
+                            ></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

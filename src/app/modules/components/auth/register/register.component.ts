@@ -37,6 +37,8 @@ export class RegisterComponent implements OnInit {
     persona: Persona;
     personData: Persona;
 
+
+    users: Usuario[] = [];
     userData: Usuario;
     usuarioRegistro: Usuario;
 
@@ -91,11 +93,14 @@ export class RegisterComponent implements OnInit {
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
         private router: Router,
-        private authService: AuthService
+        private authService: AuthService,
+        private usuarioService: UsuarioService
     ) { }
 
     ngOnInit() {
         this.getPersons(); // Se recupera las personas para verificar si existe el usuario
+
+        this.getUsers();// Se llama al método para obtener la lista de usuarios
 
         this.personBool = true;
 
@@ -116,6 +121,7 @@ export class RegisterComponent implements OnInit {
         this.personaService.getPersons().subscribe(
             (result: any) => {
                 this.elements = result;
+                this.Personas = result;
                 this.personasDuplicated = this.elements;
                 this.loading = false;
                 this.spinner.hide();
@@ -128,6 +134,22 @@ export class RegisterComponent implements OnInit {
         );
     }
 
+    getUsers(){
+        this.spinner.show();
+        this.loading = true;
+        this.usuarioService.getUsers().subscribe({
+            next: (result: any) => {
+                this.loading = false;
+                this.spinner.hide();
+                this.users = result;
+            },
+            error: (error: any) => {
+                this.loading = false;
+                this.spinner.hide();
+            }
+        });
+    }
+
     // Asignar validaciones del modelo persona
     assignValidationPerson() {
         this.personaForm = this.formBuilder.group({
@@ -136,14 +158,14 @@ export class RegisterComponent implements OnInit {
             pernombres: ['', [Validators.required]],
             tipoDocumento: ['', [Validators.required]],
             pernrodoc: ['', [Validators.required], [this.ValidateExistingDocument()]],
-            peremail: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]]
+            peremail: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)], [this.ValidateExistingEmail()]]
         });
     }
 
     // Asignar validaciones del modelo usuario
     assignValidationUser() {
         this.userForm = this.formBuilder.group({
-            usuname: ['', [Validators.required]],
+            usuname: ['', [Validators.required], [this.ValidateExistingUserName()]],
             usuemail: ['', [Validators.required]],
             tipoRol: ['', [Validators.required]],
             usupassword: ['', [Validators.required, Validators.minLength(8), this.passwordStrength]],
@@ -171,7 +193,7 @@ export class RegisterComponent implements OnInit {
     }
 
     ValidateExistingDocument(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un número de documento ya existe
-        this.getPersons();// Se llama al método para obtener la lista de personas
+        // this.getPersons();// Se llama al método para obtener la lista de personas
         return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
             const numeroDocumento = control.value; // Se obtiene el valor del control de formulario, que representa el número de documento ingresado por el usuario
             if (!numeroDocumento) {// Si el número de documento está vacío, no se realiza ninguna validación
@@ -179,6 +201,30 @@ export class RegisterComponent implements OnInit {
             }
             const existe = this.personasDuplicated.some(persona => persona.pernrodoc === numeroDocumento);// Se verifica si algún elemento en la lista de personas tiene el mismo número de documento
             return of(existe ? { documentoExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
+        };
+    }
+
+    ValidateExistingEmail(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un email ya existe
+        // this.getPersons();// Se llama al método para obtener la lista de personas
+        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
+            const email = control.value; // Se obtiene el valor del control de formulario, que representa el email ingresado por el usuario
+            if (!email) {// Si el email está vacío, no se realiza ninguna validación
+                return of(null); // Se devuelve un observable que emite null
+            }
+            const existe = this.Personas.some(persona => persona.peremail === email);// Se verifica si algún elemento en la lista de personas tiene el mismo email
+            return of(existe ? { emailExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
+        };
+    }
+
+    ValidateExistingUserName(): AsyncValidatorFn { // Método para crear un validador asíncrono para verificar si un nombre de usuario ya existe
+
+        return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {         // Se retorna una función que actúa como validador asíncrono
+            const userName = control.value; // Se obtiene el valor del control de formulario, que representa el nombre de usuario ingresado por el usuario
+            if (!userName) {// Si el nombre de usuario está vacío, no se realiza ninguna validación
+                return of(null); // Se devuelve un observable que emite null
+            }
+            const existe = this.users.some(usuario => usuario.usuname === userName);// Se verifica si algún elemento en la lista de usuarios tiene el mismo nombre de usuario
+            return of(existe ? { userNameExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
         };
     }
 

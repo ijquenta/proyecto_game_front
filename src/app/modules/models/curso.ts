@@ -12,6 +12,7 @@ export class CursoMateria {
 	perapepat?: string | null = null;
 	perapemat?: string | null = null;
     pernomcompleto?: string | null = null;
+    pernrodoc?: any;
 	periddocente?: number = 0;
 	curmatfecini?: any;
 	curmatfecfin?: any;
@@ -24,48 +25,9 @@ export class CursoMateria {
     curmatidrol?: number = 0;
     curmatidroldes?: string | null = null;
     perfoto?: any;
-    pernrodoc?: any;
     tipo?: any;
     curmatcosto?: any;
+
+    num_estudiantes?: any;
+    num_pagos?: any;
 }
-
-
-
-
-
-// export class CursoCombo {
-//     curid: number = 0;
-//     curnombre: string = '';
-// }
-
-// export interface CursoMateria {
-//     curmatid?: number;
-//     curso?: Curso;
-//     materia?: Materia;
-//     persona?: Persona;
-//     curmatfecini?: string | null;
-//     curmatfecfin?: string | null;
-//     curmatestado?: string | null;
-//     curmatusureg?: string | null;
-//     curmatfecreg?: string | null;
-//     curmatusumod?: string | null;
-//     curmatfecmod?: string | null;
-// }
-// interface Curso {
-//     curid: number;
-//     curnombre: string | null;
-// }
-// interface Materia {
-//     matid: number;
-//     matnombre: string | null;
-// }
-// interface Persona {
-//     periddocente: number;
-//     pernombres: string | null;
-//     perapepat: string | null;
-//     perapemat: string | null;
-// }
-// export class CursoCombo {
-//     curid: number;
-//     curnombre: string;
-// }

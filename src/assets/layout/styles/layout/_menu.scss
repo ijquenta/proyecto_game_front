@@ -9,6 +9,7 @@
     left: 2rem;
     transition: transform $transitionDuration, left $transitionDuration;
     background-color: var(--surface-overlay);
+    // background-color: var(--primary-color);
     border-radius: $borderRadius;
     padding: 0.5rem 1.5rem;
     box-shadow: 0px 3px 5px rgba(0, 0, 0, .02), 0px 0px 2px rgba(0, 0, 0, .05), 0px 1px 4px rgba(0, 0, 0, .08);
@@ -25,6 +26,7 @@
             text-transform: uppercase;
             font-weight: 700;
             color: var(--surface-900);
+            // color: var(--surface-0);
             margin: .75rem 0;
         }
 
@@ -62,9 +64,11 @@
             position: relative;
             outline: 0 none;
             color: var(--text-color);
+            // color: var(--surface-0);
             cursor: pointer;
             padding: .75rem 1rem;
             border-radius: $borderRadius;
+
             transition: background-color $transitionDuration, box-shadow $transitionDuration;
 
             .layout-menuitem-icon {
@@ -75,15 +79,19 @@
                 font-size: 75%;
                 margin-left: auto;
                 transition: transform $transitionDuration;
+
             }
 
             &.active-route {
                 font-weight: 700;
                 color: var(--primary-color);
+                // color: var(--surface-0);
+                // background-color: #999999;
             }
 
             &:hover {
                 background-color: var(--surface-hover);
+                // background-color: #999999;
             }
 
             &:focus {
