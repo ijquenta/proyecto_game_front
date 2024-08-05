@@ -31,3 +31,19 @@ export class CursoMateria {
     num_estudiantes?: any;
     num_pagos?: any;
 }
+
+export class Curso {
+    curid?: number = 0;
+    curnombre?: string | null = null;
+    curestadodescripcion?: string | null = null;
+    curnivel?: number = 0;
+    curfchini?: Date | null = null;
+    curfchfin?: Date | null = null;
+    curusureg?: string | null = null;
+    curfecreg?: Date | null = null;
+    curusumod?: string | null = null;
+    curfecmod?: Date | null = null;
+    curestado?: number = 0;
+    curdesnivel?: string | null = null;
+    curdescripcion?: string | null = null;
+}

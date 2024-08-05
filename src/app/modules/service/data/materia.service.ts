@@ -2,8 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
 import { Rol } from '../../models/rol';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
+
 export class MateriaService {
 
     constructor(private http: HttpClient) { }
@@ -38,5 +42,9 @@ export class MateriaService {
     }
     gestionarMateriaEstado(criterio: any){
         return this.http.post(`${API_URL}/gestionarMateriaEstado`, criterio)
+    }
+
+    getMateriaById(matid: Number){
+        return this.http.get(`${API_URL}/getMateriaById/${matid}`, { context: checktoken() });
     }
 }

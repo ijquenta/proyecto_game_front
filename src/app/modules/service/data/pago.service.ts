@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_URL } from 'src/environments/environment';
+import { API_URL, API_URL_PAGO_ARCHIVO } from 'src/environments/environment';
 import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { ArchivosService } from '../util/archivos.service';
@@ -37,11 +37,11 @@ export class PagoService {
     }
 
     listarPagoEstudiantesMateria(data) {
-        return this.http.post(`${API_URL}/listarPagoEstudiantesMateria`, data);
+        return this.http.post(`${API_URL}/listarPagoEstudiantesMateria`, data , { context: checktoken()});
     }
 
     gestionarPago(data) {
-        return this.http.post(`${API_URL}/gestionarPago`, data);
+        return this.http.post(`${API_URL}/gestionarPago`, data, { context: checktoken() });
     }
 
     insertarPago(data) {
@@ -86,5 +86,25 @@ export class PagoService {
             this.archivos.showToast();
             }
         );
+    }
+
+    getPagoById(pagid: Number){
+        return this.http.get(`${API_URL}/getPagoById/${pagid}`, { context: checktoken() });
+    }
+
+    getPagoArchivo(filename: string) {
+        this.spinner.show();
+        this.http.get(`${API_URL_PAGO_ARCHIVO}/${filename}`, httpOptions)
+        .subscribe({
+            next: (data: any) => {
+                this.spinner.hide();
+                this.archivos.generateReportPDF(data, filename);
+            },
+            error: (error) => {
+                this.spinner.hide();
+                console.error(error);
+                this.archivos.showToast();
+            }
+        });
     }
 }

@@ -39,6 +39,8 @@ import { PagoDialogComponent } from '../pago-estudiante-materia-table/pago-dialo
 import { PagoEstudianteMateriaTableComponent } from '../pago-estudiante-materia-table/pago-estudiante-materia-table.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EstudianteMateriaComponent } from './estudiante-materia.component';
+import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { MateriaService } from 'src/app/modules/service/data/materia.service';
 @NgModule({
     imports: [
         BreadcrumbModule,
@@ -75,6 +77,6 @@ import { EstudianteMateriaComponent } from './estudiante-materia.component';
         NgxSpinnerModule
     ],
     declarations: [],
-    providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService]
+    providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService, CursoService, MateriaService]
 })
 export class EstudianteMateriaModule { }

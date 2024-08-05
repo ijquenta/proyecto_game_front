@@ -1,48 +1,70 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MenuItem, MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
-import { Pago, TipoPago } from 'src/app/modules/models/pago';
-import { Usuario } from 'src/app/modules/models/usuario';
-import { PagoService } from 'src/app/modules/service/data/pago.service';
-import { DataService } from 'src/app/modules/service/data/data.service';
+import { Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 
-@Component({
-  selector: 'app-estudiante-materia',
-  templateUrl: './estudiante-materia.component.html',
-  styleUrls: ['./estudiante-materia.component.css']
-})
-export class EstudianteMateriaComponent implements OnInit {
-  idEstudiante: number;
-  nombreMateria: string;
+import { MenuItem, MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
 
-    // Properties
-    tipoPago: TipoPago[] = [];
-    pagoForm: FormGroup;
-    archivos: File[] = [];
-    uploadedFiles: File[] = [];
-    pagoData: Pago = new Pago();
+import { Pago, TipoPago } from 'src/app/modules/models/pago';
+import { Curso } from 'src/app/modules/models/curso';
+import { Materia } from 'src/app/modules/models/materia';
+
+import { PagoService } from 'src/app/modules/service/data/pago.service';
+import { MateriaService } from 'src/app/modules/service/data/materia.service';
+import { CursoService } from 'src/app/modules/service/data/curso.service';
+
+import { environment } from 'src/environments/environment';
+
+
+interface ColumsTable {
+    field: string;
+    header: string;
+}
+
+interface TipoPagoOption {
+    label: any;
+    value: any;
+}
+
+@Component({
+    selector: 'app-estudiante-materia',
+    templateUrl: './estudiante-materia.component.html',
+    styleUrls: ['./estudiante-materia.component.css']
+})
+
+export class EstudianteMateriaComponent implements OnInit {
+
     pago: Pago = new Pago();
-    pagoRegistroDialog: boolean = false;
-    errors: any;
-    curid: any;
-    matid: any;
+    listarPagoEstudianteMateria: Pago[] = [];
+    tipoPago: TipoPago[] = [];
+    curso: Curso = new Curso();
+    materia: Materia = new Materia();
+    curnombre: string;
+    matnombre: string;
+    curid: Number | 0;
+    matid: Number | 0;
+
     items: MenuItem[];
     home: MenuItem | undefined;
 
+    errors: any;
+    loading: boolean;
 
-    listarPagoEstudianteMateria: Pago[] = [];
-    usuario: any = {};
-    verPagosEstudianteClicked: boolean;
-    loading2: boolean;
-    userProfilePhoto: string;
-    curnombre: string;
-    matnombre: string;
+    userProfilePhoto: string = environment.API_URL_PROFILE_PHOTO;
+    userProfilePhotoEmpty = "../../../../../assets/images/login/sin_foto_perfil.png";
+    apiUrlPagoArchivo: string = environment.API_URL_PAGO_ARCHIVO;
 
+    selectedColumns: { field: string; header: string; }[];
+    colsColumsTable!: ColumsTable[];
 
-    // Map for pago types
+    tipoPagoOptions: TipoPagoOption[] = [];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
+        { label: 'Ninguno', value: null}
+    ];
+
     private tipoPagoMap: { [key: number]: { color: string, text: string } } = {
         1: { color: 'info', text: 'Ninguno' },
         2: { color: 'success', text: 'Efectivo' },
@@ -51,13 +73,16 @@ export class EstudianteMateriaComponent implements OnInit {
         5: { color: 'danger', text: 'Otro' },
     };
 
+    showArchivoImagen: boolean;
+    pagarchivo: any;
+
     constructor(
         private messageService: MessageService,
-        private formBuilder: FormBuilder,
         private pagoService: PagoService,
         private route: ActivatedRoute,
-        private dataService: DataService,
         private router: Router,
+        private cursoService: CursoService,
+        private materiaService: MateriaService
     ) {
 
         this.items = [
@@ -65,44 +90,71 @@ export class EstudianteMateriaComponent implements OnInit {
             { label: 'Gestionar Pagos', routerLink:'/principal/pago/todos' },
             { label: 'Materia', routerLink:''},
         ];
-
         this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+        this.colsColumsTable = [
+            { field: 'pernomcompleto', header: 'Estudiante'},
+            { field: 'pagfecha', header: 'Fecha'},
+            { field: 'pagmonto', header: 'Monto'},
+            { field: 'pagtipo', header: 'Tipo'},
+            { field: 'pagdescripcion', header: 'Descripción'},
+            { field: 'pagusureg', header: 'Usuario Registrado'},
+            { field: 'pagusumod', header: 'Usuario Modificado'},
+            { field: 'pagestado', header: 'Estado'}
+        ];
+
+        this.selectedColumns = [
+            { field: 'pernomcompleto', header: 'Estudiante'},
+            { field: 'pagfecha', header: 'Fecha'},
+            { field: 'pagmonto', header: 'Monto'},
+            { field: 'pagtipo', header: 'Tipo'},
+            { field: 'pagdescripcion', header: 'Descripción'},
+            { field: 'pagestado', header: 'Estado'}
+        ];
     }
 
     /**
      * Método de inicialización del componente.
      * Configura el formulario y obtiene los tipos de pago.
      */
-
     ngOnInit(): void {
-        this.initf();
-        this.initializeForm();
+        this.initData();
         this.listarTipoPagoCombo();
     }
 
-    initf(){
-        this.dataService.currentData.subscribe(data => {
-
-            console.log("data rec:", data)
-            if (data) {
-              this.listarPagoEstudianteMateria = data.listarPagoEstudianteMateria;
-              this.usuario = data.usuario;
-              this.verPagosEstudianteClicked = data.verPagosEstudianteClicked;
-              this.loading2 = data.loading2;
-              this.userProfilePhoto = data.userProfilePhoto;
-              this.curnombre = data.curnombre;
-              this.matnombre = data.matnombre;
-            }
-          });
-        }
-
     /**
-     * Inicializa el formulario de pagos.
+     * Recuperar datos necesarios para el componente
      */
-    private initializeForm(): void {
-        this.pagoForm = this.formBuilder.group({
-            // Define your form controls and validators here
+    initData(){
+        // Recuperar curid y matid desde los parametros de la ruta
+        this.route.queryParams.subscribe(params => {
+            this.curid = Number(params['curid']) || 0;
+            this.matid = Number(params['matid']) || 0;
         });
+        // Obtener los datos de curid
+        this.cursoService.getCursoById(this.curid).subscribe({
+            next: (result: Curso) => {
+                this.curso = result['data'];
+                this.curnombre = this.curso.curnombre;
+            },
+            error: (error: any) => {
+                console.log("Error al obtener los datos del pago:", error);
+                this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron cargar los datos del pago' });
+            }
+        });
+        // Obtener los datos de matid
+        this.materiaService.getMateriaById(this.matid).subscribe({
+            next: (result: Materia) => {
+                this.materia = result['data'];
+                this.matnombre = this.materia.matnombre;
+            },
+            error: (error: any) => {
+                console.log("Error al obtener los datos del pago:", error);
+                this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron cargar los datos del pago' });
+            }
+        });
+        // Obtener los estudiantes de la materia y curso seleccionados.
+        this.listarMateriasPorCurso({ curid: this.curid, matid: this.matid });
     }
 
     /**
@@ -112,6 +164,10 @@ export class EstudianteMateriaComponent implements OnInit {
         this.pagoService.getTipoPago().subscribe({
             next: (result: TipoPago[]) => {
                 this.tipoPago = result;
+                this.tipoPagoOptions = result.map((tp: any) => ({
+                    label: tp.tpagnombre,
+                    value: tp.tpagid,
+                }));
             },
             error: (error: any) => {
                 console.log("Error al obtener los tipos de pago:", error);
@@ -121,17 +177,42 @@ export class EstudianteMateriaComponent implements OnInit {
     }
 
     /**
+     * Obtiene la lista de pagos y estudiantes por curso.
+     * @param data Datos del curso.
+     */
+    listarMateriasPorCurso(data: any): void {
+        this.loading = true;
+        this.pagoService.listarPagoEstudiantesMateria(data).subscribe({
+            next: (result: Pago[]) => {
+                this.listarPagoEstudianteMateria = result;
+                this.loading = false;
+                this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Información obtenida.', life: 1000 });
+            },
+            error: (error: any) => {
+                this.errors = error;
+                this.loading = false;
+                console.log("Error al listar pagos y estudiantes:", error);
+                this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'Ha ocurrido un error' });
+            }
+        });
+    }
+
+    /**
      * Abre el diálogo para crear un nuevo pago.
      * @param data Datos del pago.
      */
-    nuevoPago(data: any): void {
-        console.log("Crear pago:", data);
+    crearPago(data: any): void {
+        // Asignar en datos a la variable pago.
         this.pago = { ...data };
-        this.pagoRegistroDialog = true;
-        // this.router.navigate(['/pago/form']);
-
-        this.router.navigate(['/principal/pago/form']);
-
+        // Convertir a número los valores de curid y matid
+        const curid = Number(this.pago.curid);
+        const matid = Number(this.pago.matid);
+        const pagid = Number(this.pago.pagid);
+        const insid = Number(this.pago.insid);
+        // Redirigir a la ruta del formulario de pago.
+        this.router.navigate(['/principal/pago/form'], {
+            queryParams: { insid, curid, matid, pagid }
+        });
     }
 
     /**
@@ -139,9 +220,17 @@ export class EstudianteMateriaComponent implements OnInit {
      * @param data Datos del pago a actualizar.
      */
     actualizarPago(data: Pago): void {
-        console.log("Actualizar pago:", data);
+        // Asignar en datos a la variable pago
         this.pago = { ...data };
-        this.pagoRegistroDialog = true;
+        // Convertir a número de valores de curid, matid y pagid
+        const curid = Number(this.pago.curid);
+        const matid = Number(this.pago.matid);
+        const pagid = Number(this.pago.pagid);
+        const insid = Number(this.pago.insid);
+        // Redirigir a la ruta del formulario de pago
+        this.router.navigate(['/principal/pago/form'], {
+            queryParams: { insid, curid, matid, pagid }
+        });
     }
 
     /**
@@ -172,67 +261,99 @@ export class EstudianteMateriaComponent implements OnInit {
     }
 
     /**
-     * Maneja el evento de guardar un pago.
-     * @param pago Datos del pago a guardar.
+     *
+     * @param filename nombre del archivo
+     * @returns retorna si el archivo es una imagen o no.
      */
-    handleGuardarPago(pago: any): void {
-        this.pagoService.gestionarPago(pago).subscribe({
-            next: () => {
-                this.pagoRegistroDialog = false;
-                this.messageService.add({ severity: 'info', summary: 'Exitoso', detail: 'Pago registrado correctamente.', life: 1000 });
-                this.listarMateriasPorCurso({ curid: this.curid, matid: this.matid }); // Actualiza la lista después de guardar
-            },
-            error: (error: any) => {
-                this.errors = error;
-                console.log("Error al guardar el pago:", error);
-                this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'Ha ocurrido un error' });
-            }
-        });
+    isImagen(filename: string): boolean {
+        const ext = filename.split('.').pop().toLowerCase();
+        return ['jpg', 'jpeg', 'png', 'gif'].includes(ext);
     }
 
     /**
-     * Obtiene la lista de pagos y estudiantes por curso.
-     * @param data Datos del curso.
+     *
+     * @param filename nombre del archivo
+     * @returns retorna si el archivo es un pdf o no.
      */
-    listarMateriasPorCurso(data: any): void {
-        this.loading2 = true;
-        this.pagoService.listarPagoEstudiantesMateria(data).subscribe({
-            next: (result: Pago[]) => {
-                this.listarPagoEstudianteMateria = result;
-                console.log("Lista de pagos y estudiantes por materia:", this.listarPagoEstudianteMateria);
-                this.loading2 = false;
-                this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Información obtenida.', life: 1000 });
-            },
-            error: (error: any) => {
-                this.errors = error;
-                this.loading2 = false;
-                console.log("Error al listar pagos y estudiantes:", error);
-                this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'Ha ocurrido un error' });
-            }
-        });
+    isPdf(filename: string): boolean {
+        const ext = filename.split('.').pop().toLowerCase();
+        return ext === 'pdf';
     }
 
-    /**
-     * Registra un nuevo pago si el formulario es válido.
-     * @param event Evento del formulario.
-     */
-    registrarPago(event: any): void {
-        if (this.pagoForm.valid) {
-            this.handleGuardarPago(this.pagoForm.value);
-        } else {
-            this.messageService.add({ severity: 'warn', summary: 'Formulario inválido', detail: 'Por favor, complete todos los campos requeridos.' });
+    /** Mostrar el archivo de pago */
+    mostrarPagoArchivo(filename: string){
+        if(this.isImagen(filename)){
+
+        }
+        if(this.isPdf(filename)){
+            this.pagoService.getPagoArchivo(filename);
         }
     }
 
     /**
-     * Oculta el diálogo de registro de pago y reinicia el formulario.
-     */
-    ocultarDialog(): void {
-        console.log('Dialog ocultado');
-        this.pagoRegistroDialog = false;
-        // this.verPagosEstudianteClicked = false;
-        this.pagoForm.reset();
-        this.pago = new Pago();
+    * Obtiene la descripción del estado
+    * @param estado
+    * @returns texto del estado
+    */
+    getDescriptionStatus(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
+        }
     }
+
+    /**
+     * Obtene el color del estado
+     * @param estado
+     * @returns el color
+     */
+    getSeverityStatus(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+
+    getDescriptionTipoPago(tipoPagoid: number): string {
+        const tipoPago = this.tipoPago.find(tp => tp.tpagid === tipoPagoid);
+        return tipoPago ? tipoPago.tpagnombre : 'Ninguno';
+    }
+
+    /**
+     *
+     * @param pagarchivo Mostrar el archivo imagen de pago
+     */
+    mostrarPagoArchivoImagen(pagarchivo: any){
+        this.showArchivoImagen = true;
+        this.pagarchivo = pagarchivo;
+    }
+
+    /**
+     * Calcula el monto total de estudiantes por materia.
+     * @param matid ID de la materia.
+     * @returns Total de estudiantes.
+     */
+    calcularMontoTotal(matid: number): number {
+        if (!this.listarPagoEstudianteMateria || !Array.isArray(this.listarPagoEstudianteMateria)) {
+            return 0;
+        }
+
+        return this.listarPagoEstudianteMateria
+            .filter(estudianteInscrito => estudianteInscrito.matid === matid)
+            .reduce(
+                (total, estudianteInscrito) =>
+                    total + parseFloat(estudianteInscrito.pagmonto || '0'),
+                0
+            );
+    }
+
 }
 

@@ -13,8 +13,10 @@ import { FormPagoComponent } from './pago-crud/estudiante-materia/form-pago/form
         // { path: 'todos/estudiante-materia', component: EstudianteMateriaComponent },
         { path: 'estudiante-materia', component: EstudianteMateriaComponent },
 
+        { path: 'estudiante-materia/form', component: FormPagoComponent },
+
         { path: 'form', component: FormPagoComponent },
-        { path: 'form/:id', component: FormPagoComponent },
+        // { path: 'form/:id', component: FormPagoComponent },
 
         { path: 'notfound', component: NotfoundComponent },
         { path: '**', redirectTo: 'notfound' }

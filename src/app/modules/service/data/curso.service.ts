@@ -1,8 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { API_URL } from 'src/environments/environment';
 
-@Injectable()
+@Injectable(
+    {
+        providedIn: 'root'
+    }
+)
 export class CursoService {
 
     constructor(private http: HttpClient) { }
@@ -30,5 +35,9 @@ export class CursoService {
 
     gestonarCursoMateriaEstado(criterio: any) {
         return this.http.post(`${API_URL}/gestionarCursoMateriaEstado`, criterio);
+    }
+
+    getCursoById(curid: Number){
+        return this.http.get(`${API_URL}/getCursoById/${curid}`, { context: checktoken() });
     }
 }

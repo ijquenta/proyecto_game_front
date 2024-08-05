@@ -41,8 +41,24 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EstudianteMateriaComponent } from './estudiante-materia/estudiante-materia.component';
 import { FormPagoComponent } from './estudiante-materia/form-pago/form-pago.component';
 import { PanelModule } from 'primeng/panel';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { ImageModule } from 'primeng/image';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { AnimateOnScrollModule } from 'primeng/animateonscroll';
+import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { MateriaService } from 'src/app/modules/service/data/materia.service';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
 @NgModule({
     imports: [
+        SelectButtonModule,
+        OverlayPanelModule,
+        AnimateOnScrollModule,
+        ProgressBarModule,
+        ImageModule,
+        PdfViewerModule,
+        NgxExtendedPdfViewerModule,
         PanelModule,
         BreadcrumbModule,
         CommonModule,
@@ -78,6 +94,6 @@ import { PanelModule } from 'primeng/panel';
         NgxSpinnerModule
     ],
     declarations: [PagoCrudComponent, PagoEstudianteMateriaTableComponent, EstudianteMateriaComponent, FormPagoComponent],
-    providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService]
+    providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService, CursoService, MateriaService]
 })
 export class PagoCrudModule { }
