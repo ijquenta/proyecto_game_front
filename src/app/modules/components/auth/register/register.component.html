@@ -62,8 +62,11 @@
                     <span class="font-medium no-underline">¿Ya tienes una cuenta? </span>
                     <p-button
                         label="Iniciar sesión"
-                        styleClass="p-button-text p-button-success w-full mt-2"
-                        [routerLink]="['/login']">
+                        styleClass="w-full mt-2"
+                        [routerLink]="['/login']"
+                        [text]="true"
+                        severity="success"
+                    >
                     </p-button>
                 </div>
             </form>
@@ -115,7 +118,8 @@
                     <p-button
                         label="Volver"
                         icon="pi pi-angle-left"
-                        styleClass="p-button-text p-button-primary w-full"
+                        styleClass="w-full"
+                        [text]="true"
                         (click)="returnPersonData()">
                     </p-button>
                 </div>
