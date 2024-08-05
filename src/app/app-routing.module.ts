@@ -7,7 +7,6 @@ import { IsLoggedInGuard } from './guards/is-logged-in.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { RedirectGuard } from './guards/redirect.guard';
 import { HasRoleGuard } from './guards/has-role.guard';
-import { PagoEstudianteMateriaTableComponent } from './modules/components/pago/pago-crud/pago-estudiante-materia-table/pago-estudiante-materia-table.component';
 import { EstudianteMateriaComponent } from './modules/components/pago/pago-crud/estudiante-materia/estudiante-materia.component';
 import { FormPagoComponent } from './modules/components/pago/pago-crud/estudiante-materia/form-pago/form-pago.component';
 
