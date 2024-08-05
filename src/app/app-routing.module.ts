@@ -9,6 +9,7 @@ import { RedirectGuard } from './guards/redirect.guard';
 import { HasRoleGuard } from './guards/has-role.guard';
 import { PagoEstudianteMateriaTableComponent } from './modules/components/pago/pago-crud/pago-estudiante-materia-table/pago-estudiante-materia-table.component';
 import { EstudianteMateriaComponent } from './modules/components/pago/pago-crud/estudiante-materia/estudiante-materia.component';
+import { FormPagoComponent } from './modules/components/pago/pago-crud/estudiante-materia/form-pago/form-pago.component';
 
 const routes: Routes = [
   { path: '', loadChildren: () => import('./modules/components/auth/auth.module').then((m) => m.AuthModule), canActivate: [ RedirectGuard ] },
@@ -35,9 +36,13 @@ const routes: Routes = [
                     { path: 'mensaje', loadChildren: () => import('./modules/components/mensaje/mensaje.module').then(m => m.MensajeModule), canActivate: [ AuthGuard ]},
                     { path: 'contabilidad', loadChildren:() => import('./modules/components/contabilidad/contabilidad.module').then(m => m.ContabilidadModule), canActivate: [AuthGuard]},
                     // { path: 'estudiante-materia', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule), canActivate: [ AuthGuard ] },
-                    { path: 'pago/estudiante-materia', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
-                    { path: 'pago/estudiante-materia/form', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
-                    { path: 'pago/estudiante-materia/form/:id', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    // { path: 'pago/estudiante-materia', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    { path: 'pago', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    { path: 'estudiante-materia', component: EstudianteMateriaComponent },
+                    { path: 'estudiante-materia/form', component: FormPagoComponent },
+
+                    // { path: 'pago/estudiante-materia/form', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
+                    // { path: 'pago/estudiante-materia/form/:id', loadChildren: () => import('./modules/components/pago/pago.module').then(m => m.PagoModule) },
                     { path: 'notfound', component: NotfoundComponent },
                     { path: '**', redirectTo: 'notfound' }
                 ],
