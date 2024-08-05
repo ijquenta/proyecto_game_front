@@ -37,7 +37,7 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     estudianteForm: FormGroup;
 
     userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
-    userProfilePhotoDocumentoAdmision = environment.API_URL_DOCUMENTO_ADMISION    ;
+    userProfilePhotoDocumentoAdmision = environment.API_URL_DOCUMENTO_ADMISION;
 
     personasFiltradas: any[] | undefined;
 
@@ -274,11 +274,11 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         for(let i = 0; i < (this.Personas as any[]).length; i++){
             let persona = this.Personas[i];
             if(
-               persona.pernrodoc.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
-               persona.perapepat.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
-               persona.perapemat.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
-               persona.pernombres.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
-               persona.pernomcompleto.toLowerCase().indexOf(consulta.toLowerCase()) == 0
+                persona.pernrodoc?.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
+                persona.perapepat?.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
+                persona.perapemat?.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
+                persona.pernombres?.toLowerCase().indexOf(consulta.toLowerCase()) == 0 ||
+                persona.pernomcompleto?.toLowerCase().indexOf(consulta.toLowerCase()) == 0
             ){
                 filtrado.push(persona);
             }
@@ -288,7 +288,9 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     }
 
     seleccionarPersona(event: any){
-        this.persona = event;
+        this.persona = event.value;
+
+        console.log("persona seleced", this.persona)
         this.showDialogPersona = true;
         this.showDialogPersonaInformacionPersonal = true;
         this.showDialogPersonaInformacionAcademica = true;
