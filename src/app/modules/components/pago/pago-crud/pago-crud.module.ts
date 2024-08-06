@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PagoCrudRoutingModule } from './pago-crud-routing.module';
-import { PagoEstudianteMateriaTableRoutingModule } from './pago-estudiante-materia-table/pago-estudiante-materia-table-routing.module';
 import { PagoCrudComponent } from './pago-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -35,8 +34,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
 import { CardModule } from 'primeng/card';
 import { NgxSpinnerModule } from 'ngx-spinner';
-// import { PagoDialogComponent } from './pago-estudiante-materia-table/pago-dialog/pago-dialog.component';
-import { PagoEstudianteMateriaTableComponent } from './pago-estudiante-materia-table/pago-estudiante-materia-table.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { EstudianteMateriaComponent } from './estudiante-materia/estudiante-materia.component';
 import { FormPagoComponent } from './estudiante-materia/form-pago/form-pago.component';
@@ -63,7 +60,6 @@ import { SelectButtonModule } from 'primeng/selectbutton';
         BreadcrumbModule,
         CommonModule,
         PagoCrudRoutingModule,
-        PagoEstudianteMateriaTableRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -93,7 +89,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
         CardModule,
         NgxSpinnerModule
     ],
-    declarations: [PagoCrudComponent, PagoEstudianteMateriaTableComponent, EstudianteMateriaComponent, FormPagoComponent],
+    declarations: [PagoCrudComponent, EstudianteMateriaComponent, FormPagoComponent],
     providers: [UsuarioService, ReporteService, NotaService, PersonaService, UploadService, CursoService, MateriaService]
 })
 export class PagoCrudModule { }
