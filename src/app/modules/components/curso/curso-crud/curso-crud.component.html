@@ -139,12 +139,12 @@
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'curmatusureg'">
-                            <div pTooltip="{{ cursoMateria.curmatusureg | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom">
+                            <div pTooltip="{{ cursoMateria.curmatfecreg | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="top">
                                 <p-chip> <div class="p-2"> {{ cursoMateria.curmatusureg }} </div> </p-chip>
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'curmatusumod'">
-                            <div pTooltip="{{ cursoMateria.curmatusumod | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom">
+                            <div pTooltip="{{ cursoMateria.curmatfecmod | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="top">
                                 <p-chip> <div class="p-2"> {{ cursoMateria.curmatusumod }} </div> </p-chip>
                             </div>
                         </ng-container>
@@ -159,13 +159,14 @@
     </p-table>
 </p-card>
 
-<p-sidebar [(visible)]="cursoMateriaDialog" styleClass="w-30rem" position="right" blockScroll="true">
+<p-sidebar [(visible)]="cursoMateriaDialog" styleClass="w-30rem" position="left" blockScroll="true">
     <ng-template pTemplate="header">Curso</ng-template>
     <ng-template pTemplate="content">
             <form [formGroup]="cursoForm">
                 <div class="grid p-fluid mt-3">
                     <div class="col-12">
-                        <label class="font-bold block mb-2" for="status">Elegir Curso</label>
+                        <label
+                         for="status">Elegir Curso</label>
                         <p-dropdown inputId="ddTipoCurso" (onChange)="onSelectCurso($event)" appendTo="body" [options]="tipoCurso" formControlName="tipoCurso" optionLabel="curnombre" [filter]="true" filterBy="curnombre" [emptyFilterMessage]="'No se encontraron cursos.'" placeholder="Seleccionar Curso" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoCurso').valid}" styleClass="mb-2"> </p-dropdown>
                         <small class="p-success block" *ngIf="cursoForm.get('tipoCurso').valid"> El tipo de curso es valido. </small>
                         <small class="p-error block" *ngIf="cursoForm.get('tipoCurso').invalid && cursoForm.get('tipoCurso').touched"> <span *ngIf="cursoForm.get('tipoCurso').errors?.required">El tipo de curso es requerido.</span> (*)</small>

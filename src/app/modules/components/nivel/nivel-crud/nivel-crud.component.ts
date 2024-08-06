@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { Nivel } from 'src/app/modules/models/nivel';
@@ -30,6 +30,11 @@ interface Column {
 interface ExportColumn {
     title: string;
     dataKey: string;
+}
+
+interface ColumsTable {
+    field: string;
+    header: string;
 }
 
 @Component({
@@ -71,17 +76,65 @@ export class NivelCrudComponent implements OnInit {
     exportColumns!: ExportColumn[];
 
     originalNivelNombre: any;
+
+    items: MenuItem[];
+    home: MenuItem | undefined;
+
+    selectedColumns: { field: string; header: string }[];
+    colsColumsTable!: ColumsTable[];
+
+    tipoModuloOptions: any[] = [];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
+    ];
+
     constructor(
-                private messageService: MessageService,
-                public reporte: ReporteService,
-                public nivelService: NivelService,
-                private authService: AuthService,
-                private spinner: NgxSpinnerService,
-                private formBuilder: FormBuilder,)
-                {
-                    this.tipoModuloSeleccionado = new TipoModulo(0,"");
-                    this.tipoNivelEstadoSeleccionado = new TipoNivelEstado(0,"");
-                }
+        private messageService: MessageService,
+        public reporte: ReporteService,
+        public nivelService: NivelService,
+        private authService: AuthService,
+        private spinner: NgxSpinnerService,
+        private formBuilder: FormBuilder
+    ) {
+        this.tipoModuloSeleccionado = new TipoModulo(0,"");
+        this.tipoNivelEstadoSeleccionado = new TipoNivelEstado(0,"");
+        this.items = [
+            { label: 'Nivel' },
+            { label: 'Gestionar Niveles', routerLink: '' },
+        ];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+        this.colsColumsTable = [
+            { field: 'curnombre', header: 'Curso' },
+            { field: 'curnivel', header: 'Módulo' },
+            { field: 'curfchini', header: 'Fecha Ini (Año/Mes/Dia)' },
+            { field: 'curfchfin', header: 'Fecha Fin (Año/Mes/Dia)' },
+            { field: 'curdescripcion', header: 'Descripción'},
+            { field: 'curusureg', header: 'Usuario Registrado' },
+            { field: 'curusumod', header: 'Usuario Modificado' },
+            { field: 'curestado', header: 'Estado' },
+        ];
+        this.selectedColumns = [
+            { field: 'curnombre', header: 'Curso' },
+            { field: 'curnivel', header: 'Módulo' },
+            { field: 'curfchini', header: 'Fecha Ini (Año/Mes/Dia)' },
+            { field: 'curfchfin', header: 'Fecha Fin (Año/Mes/Dia)' },
+            { field: 'curdescripcion', header: 'Descripción'},
+            { field: 'curestado', header: 'Estado' },
+        ];
+
+        this.tipoModuloOptions = [
+            { label: 'PRIMERO', value: 1 },
+            { label: 'SEGUNDO', value: 2 },
+            { label: 'TERCERO', value: 3 },
+            { label: 'CUARTO', value: 4 },
+            { label: 'OTRO', value: 5 },
+        ];
+
+
+    }
 
     ngOnInit() {
         this.getProfileUsuario();
@@ -142,9 +195,7 @@ export class NivelCrudComponent implements OnInit {
             nf_id: [''],
             nf_curnombre: [
                 '',
-                [Validators.required,
-                 Validators.minLength(5),
-                ],
+                [Validators.required, Validators.minLength(5), ],
                 [this.validarNombreNivelExistente()] // Asynchronous validators
             ],
             nf_curdescripcion: ['', [Validators.required]],
@@ -177,8 +228,6 @@ export class NivelCrudComponent implements OnInit {
             (result: any) => {
                 this.listaNiveles = result;
                 this.listaNivelesDuplicated = result;
-                this.listaNivelesInactivos = this.listaNiveles.filter(nivel => nivel.curestado === 0);
-                this.listaNiveles = this.listaNiveles.filter(nivel => nivel.curestado === 1);
                 this.loading = false;
                 this.spinner.hide();
             },
@@ -187,15 +236,11 @@ export class NivelCrudComponent implements OnInit {
                 this.loading = false;
                 this.spinner.hide();
             }
-
         )
     }
 
     abrirNuevo() {
         this.nivelForm.reset();
-        // this.nivel = {};
-        // this.tipoModuloSeleccionado = new TipoModulo(0,"");
-        // this.tipoNivelEstadoSeleccionado = new TipoNivelEstado(0,"");
         this.nivelDialog = true;
         this.opcionNivel = true;
     }
@@ -229,11 +274,9 @@ export class NivelCrudComponent implements OnInit {
     }
 
     confirmarEliminar() {
-        // console.log("confirmarEliminar: ", this.nivel)
         const criterio = {
             curid: this.nivel.curid
         }
-        // console.log("criterio: ", criterio)
         this.nivelService.eliminarNivel(criterio).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Nivel Eliminado', life: 3000 });
@@ -248,7 +291,6 @@ export class NivelCrudComponent implements OnInit {
         );
     }
     confirmarActivarDesactivar() {
-        // console.log("confirmarActivarDesactivar: ", this.nivel)
         this.nivel.curusumod = this.usuario.usuname;
         this.nivelService.gestionarNivelEstado(this.nivel).subscribe(
             (result: any) => {
@@ -266,11 +308,8 @@ export class NivelCrudComponent implements OnInit {
         );
     }
 
-    curfechaini: any
-    curfechafin: any
     setData(){
         this.originalNivelNombre = this.nivel.curnombre;
-
         this.nivelForm.reset();
         this.nivelForm.patchValue({
             nf_id: this.nivel.curid,
@@ -308,7 +347,6 @@ export class NivelCrudComponent implements OnInit {
         this.nivel.curestadodescripcion = "";
         this.nivel.curusureg = this.usuario.usuname;
         this.nivel.curusumod = this.usuario.usuname;
-        // console.log("Obtener Body: ", this.nivel);
         const body = {...this.nivel}
         return body;
     }
@@ -344,7 +382,6 @@ export class NivelCrudComponent implements OnInit {
         }
         this.obtenerBody();
         if (this.opcionNivel) {
-            // console.log("Add nivel: ", this.nivel);
             this.nivelService.insertarNivel(this.nivel).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Agregado', life: 3000 });
@@ -360,7 +397,6 @@ export class NivelCrudComponent implements OnInit {
         }
         else{
             this.nivel.curid = this.nivelForm.value.nf_id;
-            // console.log("Mod nivel: ", this.nivel);
             this.nivelService.modificarNivel(this.nivel).subscribe(
                 (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Nivel Modificado', life: 3000 });

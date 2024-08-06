@@ -1,95 +1,120 @@
-<div class="grid">
-    <p-toast></p-toast>
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span
-                    class="text-primary-600"> Niveles </span> </div>
-            <hr>
-            <p-table #dt1 [loading]="loading" [value]="listaNiveles" responsiveLayout="scroll" [rows]="10"
-                [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
-                [globalFilterFields]="['curnombre', 'curdescripcion', 'curdesnivel']">
+<p-toast></p-toast>
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" ></p-breadcrumb>
+    <h3>Nivel</h3>
+    <p>Administrar registros de niveles:</p>
+            <p-table
+                #dt1
+                [loading]="loading"
+                [value]="listaNiveles"
+                [globalFilterFields]="['curnombre', 'curdescripcion', 'curdesnivel']"
+                responsiveLayout="stack"
+                [rows]="20"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]"
+                sortMode="single"
+                [columns]="selectedColumns"
+                [rowHover]="true"
+                dataKey="id"
+                [breakpoint]="'960px'"
+                [tableStyle]="{ 'min-width': '50rem' }"
+                styleClass="p-datatable-striped p-datatable-sm"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+                rowGroupMode="subheader"
+                >
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <div>
-                            <button pButton pRipple label="Nuevo nivel" icon="pi pi-plus" class="p-button-primary mr-2"
-                                (click)="abrirNuevo()" pTooltip="Crear nuevo nivel"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
-                                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
-                                class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                            <button pButton pRipple label="Nuevo" icon="pi pi-plus-circle" class="p-button-primary mr-2" (click)="abrirNuevo()" pTooltip="Crear nuevo nivel" tooltipPosition="top"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="Reporte XLS" tooltipPosition="top"></button>
+                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="Reporte PDF" tooltipPosition="top"></button>
+                        </div>
+                        <div class="flex mt-1 justify-content-center">
+                            <p-multiSelect [options]="colsColumsTable" [(ngModel)]="selectedColumns" optionLabel="header" selectedItemsLabel="{0} columnas selecionadas" [style]="{ 'min-width': '200px' }" placeholder="Elige la/s columna/s" > </p-multiSelect>
                         </div>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de nivel, descripción y módulo"
-                                tooltipPosition="left" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por nombre de nivel, descripción y módulo" tooltipPosition="top" />
                         </span>
                     </div>
                 </ng-template>
-                <ng-template pTemplate="header">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th> # </th>
+                        <th> Acciones </th>
+                        <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container *ngSwitchDefault> {{ col.header }} <p-sortIcon field="{{ col.field }}"></p-sortIcon> </ng-container>
+                            </ng-container>
+                        </th>
+                    </tr>
                     <tr>
                         <th></th>
-                        <th style="width:22%; min-width:15rem;" pSortableColumn="curnombre">Nombre del nivel <p-sortIcon field="curnombre"></p-sortIcon>
+                        <th></th>
+                        <th *ngFor="let col of columns">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container *ngSwitchCase="'curnivel'">
+                                    <p-columnFilter field="curnivel" matchMode="equals" [showMenu]="false">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown appendTo="body" [ngModel]="value" [options]="tipoModuloOptions" (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true" [filter]="true" filterBy="value">
+                                            </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                                <ng-container ng-container *ngSwitchCase="'curestado'" >
+                                    <p-columnFilter field="curestado" matchMode="equals" [showMenu]="false" >
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback" >
+                                            <p-dropdown [ngModel]="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true">
+                                                <ng-template let-option pTemplate="item" >
+                                                    <p-tag [value]="getDescriptionStatus(option.value)" [severity]=" getSeverityStatus(option.value)"></p-tag>
+                                                </ng-template>
+                                            </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <p-columnFilter type="text" field="{{ col.field }}" ></p-columnFilter>
+                                </ng-container>
+                            </ng-container>
                         </th>
-                        <th style="width:22%; min-width:15rem;">Descripción</th>
-                        <th style="width:10%; min-width:10rem;" pSortableColumn="curnivel">Módulo <p-sortIcon field="curnivel"></p-sortIcon></th>
-                        <th pSortableColumn="curfchini">Fec. Ini. <p-sortIcon field="curfecini"></p-sortIcon></th>
-                        <th pSortableColumn="curfchfin">Fec. Fin <p-sortIcon field="curfecfin"></p-sortIcon></th>
-                        <th>Fec. creación</th>
-                        <th>Fec. modificación</th>
-                        <th>Estado</th>
-
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-nivel>
+                <ng-template pTemplate="body" let-nivel let-rowIndex="rowIndex" let-columns="columns">
                     <tr>
+                        <td> {{ rowIndex + 1 }} </td>
                         <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="editarNivel(nivel)" pTooltip="Editar nivel" tooltipPosition="left"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" (click)="desactivarNivel(nivel)" pTooltip="Desactivar nivel" tooltipPosition="left"></button>
+                            <div class="flex text-center">
+                                <button *ngIf="nivel.curestado != 0" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-outlined p-button-primary mr-2" (click)="editarNivel(nivel)" pTooltip="Editar nivel" tooltipPosition="top"></button>
+                                <button *ngIf="nivel.curestado != 0" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-outlined p-button-danger mr-2" (click)="desactivarNivel(nivel)" pTooltip="Desactivar nivel" tooltipPosition="top"></button>
+                                <button *ngIf="nivel.curestado === 0" pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-success p-button-outlined mr-2" (click)="activarNivel(nivel)" pTooltip="Activar nivel" tooltipPosition="top"></button>
                             </div>
                         </td>
-
-                        <td  style="width:30%; min-width:20rem;">
-                            {{nivel.curnombre}}
-                        </td>
-                        <td style="width:25%; min-width:18rem;">
-                            {{nivel.curdescripcion}}
-                        </td>
-                        <td>
-                            <p-tag [severity]="getSeverity(nivel.curdesnivel)" [rounded]="true" [rounded]="true">
-                                {{nivel.curdesnivel}}
-                            </p-tag>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <strong> {{ nivel.curfchini }} </strong>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <strong> {{ nivel.curfchfin }} </strong>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2"> {{nivel.curusureg}} <br> {{nivel.curfecreg }} </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    {{ nivel.curusumod }} <br> {{ nivel.curfecmod }}
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td> <p-tag [value]="getDescriptionStatus(nivel.curestado)"
-                                [severity]="getSeverityStatus(nivel.curestado)" [rounded]="true"></p-tag> </td>
-
+                        <td *ngFor="let col of columns">
+                                    <ng-container [ngSwitch]="col.field">
+                                        <ng-container *ngSwitchCase="'curestado'">
+                                            <div class="text-center">
+                                                <p-tag [value]="getDescriptionStatus(nivel[col.field])" [severity]="getSeverityStatus(nivel[col.field])" [rounded]="true"></p-tag>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'curusureg'">
+                                            <p-chip  pTooltip="{{ nivel.curfecreg | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="top"> <div class="p-2"> {{ nivel.curusureg }} </div> </p-chip>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'curusumod'">
+                                            <p-chip pTooltip="{{ nivel.curfecmod | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="top"> <div class="p-2"> {{ nivel.curusumod }} </div> </p-chip>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'curnivel'">
+                                            <div class="text-center">
+                                                <p-tag [severity]="getSeverity(nivel.curdesnivel)" [rounded]="true" [rounded]="true">
+                                                    {{nivel.curdesnivel}}
+                                                </p-tag>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            {{ nivel[col.field] }}
+                                        </ng-container>
+                                    </ng-container>
+                                </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -98,197 +123,74 @@
                     </tr>
                 </ng-template>
             </p-table>
-        </div>
-    </div>
+    </p-card>
 
-
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar Niveles</span> <span
-                    class="text-primary-600"> Desactivados </span> </div>
-            <hr>
-            <p-table #dt2 [loading]="loading" [value]="listaNivelesInactivos" responsiveLayout="scroll" [rows]="10"
-                [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
-                [globalFilterFields]="['curnombre', 'curdescripcion', 'curdesnivel']">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de nivel, descripción y módulo"
-                                tooltipPosition="right" />
-                        </span>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th></th>
-                        <th pSortableColumn="curnombre">Nombre del nivel <p-sortIcon field="curnombre"></p-sortIcon>
-                        </th>
-                        <th>Descripción</th>
-                        <th pSortableColumn="curnivel">Módulo <p-sortIcon field="curnivel"></p-sortIcon></th>
-                        <th pSortableColumn="curfchini">Fec. Ini. <p-sortIcon field="curfecini"></p-sortIcon></th>
-                        <th pSortableColumn="curfchfin">Fec. Fin. <p-sortIcon field="curfecfin"></p-sortIcon></th>
-                        <th>Fec. Creación</th>
-                        <th>Fec. Modificación</th>
-                        <th>Estado</th>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-nivel>
-                    <tr>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="fa-solid fa-eye" class="p-button-rounded p-button-warning mr-2" (click)="activarNivel(nivel)" pTooltip="Activar nivel" tooltipPosition="left"></button>
-                            </div>
-                        </td>
-                        <td style="width:22%; min-width:10rem;">
-                            {{nivel.curnombre}}
-                        </td>
-                        <td>
-                            {{nivel.curdescripcion}}
-                        </td>
-                        <td style="width:4%; min-width:10rem;">
-                            <p-tag [severity]="getSeverity(nivel.curdesnivel)" [rounded]="true" [rounded]="true">
-                                {{nivel.curdesnivel}}
-                            </p-tag>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <strong> {{ nivel.curfchini }} </strong>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <strong> {{ nivel.curfchfin }} </strong>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2"> {{nivel.curusureg}} <br> {{nivel.curfecreg }} </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    {{ nivel.curusumod }} <br> {{ nivel.curfecmod }}
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td> <p-tag [value]="getDescriptionStatus(nivel.curestado)"
-                                [severity]="getSeverityStatus(nivel.curestado)" [rounded]="true"></p-tag> </td>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
-</div>
-
-
-<p-dialog [(visible)]="nivelDialog" header="Nivel" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true">
+<p-sidebar [(visible)]="nivelDialog" styleClass="w-30rem" position="left" blockScroll="true">
+    <ng-template pTemplate="header"><label class="font-bold block mb-2" for="curnombre">Nivel</label></ng-template>
     <form [formGroup]="nivelForm" novalidate>
-        <div class="grid">
-                <div class="field col-12">
-                    <label for="curnombre">Nombre del Nivel</label>
-                    <input type="text" pInputText id="curnombre" formControlName="nf_curnombre"
-                        [ngClass]="{ 'ng-dirty': this.nivelForm.get('nf_curnombre').touched, 'valid-field': this.nivelForm.get('nf_curnombre').valid}" />
-                    <small class="p-error block"
-                        *ngIf="nivelForm.get('nf_curnombre').invalid && nivelForm.get('nf_curnombre').dirty">
-                        <span *ngIf="nivelForm.get('nf_curnombre').errors?.required">El nombre del nivel es requerido. (*)</span>
-
-                        <span *ngIf="nivelForm.get('nf_curnombre').errors?.nombreNivelExiste">
-                            Este nombre del nivel ya existe.
-                        </span>
-
-                        <span *ngIf="nivelForm.get('nf_curnombre').errors?.minlength">
-                            El nombre del nivel debe tener al menos 5 caracteres.
-                        </span>
-                    </small>
-                    <small class="p-success block" *ngIf="nivelForm.get('nf_curnombre')?.valid"> El nombre del nivel es valido. </small>
-
-                </div>
-                <div class="field col-12">
-                    <label for="descripcion">Descripción del Nivel</label>
-                    <textarea id="descripcion" pInputTextarea formControlName="nf_curdescripcion" required rows="1"
-                        cols="20"
-                        [ngClass]="{ 'ng-dirty': this.nivelForm.get('nf_curdescripcion').touched, 'valid-field': this.nivelForm.get('nf_curdescripcion').valid}"></textarea>
-                    <small class="p-error block"
-                        *ngIf="nivelForm.get('nf_curdescripcion').invalid && nivelForm.get('nf_curdescripcion').dirty">
-                        <span *ngIf="nivelForm.get('nf_curdescripcion').errors?.required">La descripción del nivel es
-                            requerido.</span>
-                        (*)
-                    </small>
-                    <small class="p-success block" *ngIf="nivelForm.get('nf_curdescripcion')?.valid"> La descripción del
-                        nivel es valido. </small>
-
-                </div>
-                <div class="field col-12">
-                    <label for="status">Elegir Nivel</label>
-                    <p-dropdown inputId="ddTipoModulo" appendTo="body" [options]="tipoModulo"
-                        formControlName="nf_tipoModulo" optionLabel="desTipoModulo" placeholder="Seleccionar Modulo">
-                        <ng-template let-tipoModulo pTemplate="item">
-                            <div class="flex align-items-center">
-                                <p-tag [rounded]="true" [severity]="getSeverity(tipoModulo.desTipoModulo)">
-                                    {{ tipoModulo.desTipoModulo }}
-                                </p-tag>
-                            </div>
-                        </ng-template>
-                    </p-dropdown>
-                    <small class="p-success block" *ngIf="nivelForm.get('nf_tipoModulo').valid">
-                        El tipo de módulo es válido.
-                    </small>
-                    <small class="p-error block"
-                        *ngIf="nivelForm.get('nf_tipoModulo').invalid && nivelForm.get('nf_tipoModulo').touched">
-                        <span *ngIf="nivelForm.get('nf_tipoModulo').errors?.required">El tipo de módulo es
-                            requerido.</span>
-                        (*)
-                    </small>
-                </div>
-                <div class="field col-12">
-                    <label for="status">Fecha de Inicio</label>
-                    <p-calendar inputId="fecini" appendTo="body" dateFormat="dd/mm/yy" formControlName="nf_curfchini"
-                        [showIcon]="true" [locale]="es"
-                        [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchini').touched, 'valid-field': nivelForm.get('nf_curfchini').valid }"></p-calendar>
-                    <small class="p-error block"
-                        *ngIf="nivelForm.get('nf_curfchini').invalid && nivelForm.get('nf_curfchini').dirty">
-                        <span *ngIf="nivelForm.get('nf_curfchini').errors?.required">La fecha de comienzo es
-                            requerida. (*)</span>
-                    </small>
-                    <small class="p-success block" *ngIf="nivelForm.get('nf_curfchini')?.valid"> La fecha de
-                        comienzo es válida. </small>
-                </div>
-                <div class="field col-12">
-                    <label for="fecfin">Fecha de Conclusión</label>
-                    <p-calendar inputId="fecfin" appendTo="body" dateFormat="dd/mm/yy" formControlName="nf_curfchfin"
-                        [showIcon]="true" [locale]="es"
-                        [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchfin').touched, 'valid-field': nivelForm.get('nf_curfchfin').valid }"></p-calendar>
-                    <small class="p-error block"
-                        *ngIf="nivelForm.get('nf_curfchfin').invalid && nivelForm.get('nf_curfchfin').dirty">
-                        <span *ngIf="nivelForm.get('nf_curfchfin').errors?.required">La fecha de conclusión
-                            es requerida. (*)</span>
-                    </small>
-                    <small class="p-success block" *ngIf="nivelForm.get('nf_curfchfin')?.valid"> La fecha de
-                        conclusión es válida. </small>
-                </div>
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <label class="font-bold block text-base mb-2" for="curnombre">Nombre</label>
+                <input type="text" pInputText id="curnombre" formControlName="nf_curnombre" [ngClass]="{ 'ng-dirty': this.nivelForm.get('nf_curnombre').touched, 'valid-field': this.nivelForm.get('nf_curnombre').valid}" class="mb-1" placeholder="Ingresar nombre"/>
+                <small class="p-error block" *ngIf="nivelForm.get('nf_curnombre').invalid && nivelForm.get('nf_curnombre').dirty">
+                    <span *ngIf="nivelForm.get('nf_curnombre').errors?.required">El nombre del nivel es requerido. (*)</span>
+                    <span *ngIf="nivelForm.get('nf_curnombre').errors?.nombreNivelExiste"> Este nombre del nivel ya existe. </span>
+                    <span *ngIf="nivelForm.get('nf_curnombre').errors?.minlength"> El nombre del nivel debe tener al menos 5 caracteres. </span>
+                </small>
+                <small class="p-success block" *ngIf="nivelForm.get('nf_curnombre')?.valid"> El nombre del nivel es valido. </small>
+            </div>
+            <div class="col-12">
+                <label class="font-bold block mb-2" for="descripcion">Descripción</label>
+                <textarea id="descripcion" pInputTextarea formControlName="nf_curdescripcion" required rows="2" cols="20" [ngClass]="{ 'ng-dirty': this.nivelForm.get('nf_curdescripcion').touched, 'valid-field': this.nivelForm.get('nf_curdescripcion').valid}" class="mb-1" placeholder="Ingresar descripción"></textarea>
+                <small class="p-error block" *ngIf="nivelForm.get('nf_curdescripcion').invalid && nivelForm.get('nf_curdescripcion').dirty">
+                    <span *ngIf="nivelForm.get('nf_curdescripcion').errors?.required">La descripción del nivel es requerido. (*)</span>
+                </small>
+                <small class="p-success block" *ngIf="nivelForm.get('nf_curdescripcion')?.valid"> La descripción del nivel es valido. </small>
+            </div>
+            <div class="col-12">
+                <label class="font-bold block mb-2" for="status">Elegir Módulo</label>
+                <p-dropdown inputId="ddTipoModulo" appendTo="body" [options]="tipoModulo" formControlName="nf_tipoModulo" optionLabel="desTipoModulo" placeholder="Seleccionar módulo" styleClass="mb-2">
+                    <ng-template let-tipoModulo pTemplate="item">
+                        <div class="flex align-items-center">
+                            <p-tag [rounded]="true" [severity]="getSeverity(tipoModulo.desTipoModulo)">
+                                {{ tipoModulo.desTipoModulo }}
+                            </p-tag>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <small class="p-success block" *ngIf="nivelForm.get('nf_tipoModulo').valid">
+                    El tipo de módulo es válido.
+                </small>
+                <small class="p-error block" *ngIf="nivelForm.get('nf_tipoModulo').invalid && nivelForm.get('nf_tipoModulo').touched">
+                    <span *ngIf="nivelForm.get('nf_tipoModulo').errors?.required">El tipo de módulo es requerido. (*)</span>
+                </small>
+            </div>
+            <div class="col-12">
+                <label class="font-bold block mb-2" for="status">Fecha de Inicio</label>
+                <p-calendar inputId="fecini" appendTo="body" dateFormat="yy-mm-dd" formControlName="nf_curfchini" [showIcon]="true" [locale]="es" [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchini').touched, 'valid-field': nivelForm.get('nf_curfchini').valid }" styleClass="mb-2" placeholder="Seleccionar fecha de inicio"></p-calendar>
+                <small class="p-error block"
+                    *ngIf="nivelForm.get('nf_curfchini').invalid && nivelForm.get('nf_curfchini').dirty">
+                    <span *ngIf="nivelForm.get('nf_curfchini').errors?.required">La fecha de comienzo es requerida. (*)</span>
+                </small>
+                <small class="p-success block" *ngIf="nivelForm.get('nf_curfchini')?.valid"> La fecha de comienzo es válida. </small>
+            </div>
+            <div class="col-12">
+                <label class="font-bold block mb-2" for="fecfin">Fecha de Conclusión</label>
+                <p-calendar inputId="fecfin" appendTo="body" dateFormat="yy-mm-dd" formControlName="nf_curfchfin" [showIcon]="true" [locale]="es" [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchfin').touched, 'valid-field': nivelForm.get('nf_curfchfin').valid }" styleClass="mb-2" placeholder="Seleccionar fecha de fin"></p-calendar>
+                <small class="p-error block" *ngIf="nivelForm.get('nf_curfchfin').invalid && nivelForm.get('nf_curfchfin').dirty">
+                    <span *ngIf="nivelForm.get('nf_curfchfin').errors?.required">La fecha de conclusión es requerida. (*)</span>
+                </small>
+                <small class="p-success block" *ngIf="nivelForm.get('nf_curfchfin')?.valid"> La fecha de conclusión es válida. </small>
+            </div>
         </div>
     </form>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-            (click)="ocultarDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-            (click)="guardarNivel()"></button>
+        <div class="text-right">
+            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" class="p-button-text" (click)="guardarNivel()"></button>
+        </div>
     </ng-template>
-</p-dialog>
+</p-sidebar>
 
 <p-dialog [(visible)]="desactivarNivelDialog" header="Confirmar" [modal]="true">
     <div class="flex align-items-center justify-content-center">
