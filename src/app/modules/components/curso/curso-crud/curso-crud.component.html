@@ -1,169 +1,252 @@
-<div class="grid">
-    <p-toast></p-toast>
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar</span> <span class="text-primary-600"> Curso Materia</span> </div>
-            <hr>
-            <p-table #dt [loading]="loading" [value]="listaCursosMaterias" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']" rowGroupMode="rowspan" groupRowsBy="curnombre" sortField="curnombre" sortMode="single">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <div>
-                            <button pButton pRipple label="Nueva Curso Materia" icon="pi pi-plus" class="p-button-primary mr-2" pTooltip="Crear un curso y materia nuevo" tooltipPosition="bottom" (click)="abrirNuevo()"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
-                        </div>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
-                        </span>
+<p-toast></p-toast>
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" ></p-breadcrumb>
+    <h3>Curso</h3>
+    <p>Administrar registros de asignación materias a cursos:</p>
+    <p-table
+        #dt
+        [loading]="loading"
+        [value]="listaCursosMaterias"
+        responsiveLayout="stack"
+        [rows]="20"
+        [paginator]="true"
+        [rowsPerPageOptions]="[10,20,30]"
+        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
+        groupRowsBy="curnombre"
+        sortField="curnombre"
+        sortMode="single"
+        [columns]="selectedColumns"
+        [rowHover]="true"
+        dataKey="id"
+        [breakpoint]="'960px'"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        styleClass="p-datatable-striped p-datatable-sm"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+        rowGroupMode="subheader"
+    >
+        <!-- Encabezado de la tabla -->
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                <div>
+                    <button pButton pRipple label="Nuevo" icon="pi pi-plus-circle" class="p-button-primary mr-2" pTooltip="Crear curso materia" tooltipPosition="top" (click)="abrirNuevo()"></button>
+                    <button pButton pRipple type="button" icon="pi pi-file-excel" class="p-button-success mr-2" pTooltip="Reporte XLS" tooltipPosition="top" (click)="exportExcel()"></button>
+                    <button pButton pRipple type="button" icon="pi pi-file-pdf" class="p-button-danger mr-2" pTooltip="Reporte PDF" tooltipPosition="top" (click)="exportPdf()"></button>
+                </div>
+                <div class="flex mt-1 justify-content-center">
+                    <p-multiSelect [options]="colsColumsTable" [(ngModel)]="selectedColumns" optionLabel="header" selectedItemsLabel="{0} columnas selecionadas" [style]="{ 'min-width': '200px' }" placeholder="Elige la/s columna/s" > </p-multiSelect>
+                </div>
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                </span>
+            </div>
+        </ng-template>
+        <!-- Encabezado de columnas -->
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th> # </th>
+                <th> Acciones </th>
+                <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchDefault> {{ col.header }} <p-sortIcon field="{{ col.field }}"></p-sortIcon> </ng-container>
+                    </ng-container>
+                </th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchCase="'pernomcompleto'">
+                            <p-columnFilter field="pernomcompleto" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown appendTo="body" [ngModel]="value" [options]="personOptions" (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true" [filter]="true" filterBy="value">
+                                        <ng-template let-persona pTemplate="item" >
+                                            <div class="flex align-items-center" >
+                                                <div *ngIf="persona.perfoto == null" class="user-display">
+                                                    <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" size="large" shape="circle" ></p-avatar>
+                                                    <span class="font-bold ml-2">{{persona.value}}</span>
+                                                </div>
+                                                <div *ngIf="persona.perfoto != null" class="user-display" >
+                                                    <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mb-2" size="large" shape="circle" ></p-avatar>
+                                                    <div> <span class="font-bold mb-2 p-2">{{ persona.value }} </span> <br/> <span class="ml-2">{{ persona.pernrodoc }}</span> </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <ng-container ng-container *ngSwitchCase="'curmatestado'" >
+                            <p-columnFilter field="curmatestado" matchMode="equals" [showMenu]="false" >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback" >
+                                    <p-dropdown [ngModel]="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true">
+                                        <ng-template let-option pTemplate="item" >
+                                            <p-tag [value]="getDescriptionStatus(option.value)" [severity]=" getSeverityStatus(option.value)"></p-tag>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <p-columnFilter type="text" field="{{ col.field }}" ></p-columnFilter>
+                        </ng-container>
+                    </ng-container>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="groupheader" let-cursoMateria>
+            <tr pRowGroupHeader>
+                <td colspan="9">
+                    <div class="flex text-center text-base mt-4">
+                        <p class="font-bold text-blue">Curso:</p>
+                        <p class="text-primary-500 ml-2">
+                            {{ cursoMateria.curnombre }}
+                        </p>
                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon> </th>
-                        <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon> </th>
-                        <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon> </th>
-                        <th pSortableColumn="curmatfecini">Duración  <p-sortIcon field="curmatfecini"></p-sortIcon></th>
-                        <th pSortableColumn="curmatcosto">Costo <p-sortIcon field="curmatcosto"></p-sortIcon></th>
-                        <th pSortableColumn="curmatfecreg">Creación <p-sortIcon field="curmatfecreg"></p-sortIcon></th>
-                        <th pSortableColumn="curmatfecmod">Modificación <p-sortIcon field="curmatfecmod"></p-sortIcon></th>
-                        <th>Estado</th>
-                        <th>Opciones</th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-cursoMateria let-rowIndex="rowIndex" let-rowgroup="rowgroup"
-                    let-rowspan="rowspan">
-                    <tr>
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> <p-chip> <div class="p-2"> {{cursoMateria.curnombre}} </div> </p-chip> </td>
-                        <td> <p-chip> <div class="p-2"> {{cursoMateria.matnombre}} </div> </p-chip> </td>
-                        <td style="width:10%; min-width:10rem;">
-                            <div *ngIf="cursoMateria.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
-                            <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
-                        </td>
-                        <td> <strong>Inicio:</strong> {{cursoMateria.curmatfecini}} <strong> <br> Fin:</strong> {{cursoMateria.curmatfecfin}} </td>
-                        <td style="width:5%; min-width:7rem;"> <strong>{{cursoMateria.curmatcosto}} Bs.</strong> </td>
-                        <td> <p-chip> <div class="p-2"> {{cursoMateria.curmatusureg}} <br> {{cursoMateria.curmatfecreg }} </div> </p-chip> </td>
-                        <td> <p-chip> <div class="p-2"> <ng-container *ngIf="cursoMateria.curmatusumod; else noModificado"> {{ cursoMateria.curmatusumod }} <br> {{ cursoMateria.curmatfecmod }} </ng-container> <ng-template #noModificado> No se ha modificado </ng-template> </div> </p-chip> </td>
-                        <td> <p-tag [value]="getDescriptionStatus(cursoMateria.curmatestado)" [severity]="getSeverityStatus(cursoMateria.curmatestado)" [rounded]="true"></p-tag> </td>
-                        <td> <div class="flex"> <button pButton pRipple icon="fa-solid fa-pencil" class="p-button-rounded p-button mr-2" (click)="editarCursoMateria(cursoMateria)" pTooltip="Editar"> </button> <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" (click)="desactivarCursoMateria(cursoMateria)" pTooltip="Desactivar "> </button> </div> </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage"> <tr> <td colspan="9">No se encontró ningún registro.</td> </tr> </ng-template>
-            </p-table>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <div class="font-bold text-3xl text-center"> <span class="text-900">Administrar Curso Materia</span> <span class="text-primary-600"> Desactivados</span> </div>
-            <hr>
-            <p-table #dt2 [loading]="loading" [value]="listaCursosMateriasNoActivo" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']" rowGroupMode="rowspan" groupRowsBy="curnombre" sortField="curnombre" sortMode="single">
-
-                <ng-template pTemplate="caption"> <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"> <span class="block mt-2 md:mt-0 p-input-icon-left"> <i class="pi pi-search"></i> <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> </span> </div> </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th pSortableColumn="curnombre"> Nombre del Curso <p-sortIcon field="curnombre"></p-sortIcon> </th>
-                        <th pSortableColumn="matnombre"> Nombre de la Materia <p-sortIcon field="matnombre"></p-sortIcon> </th>
-                        <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon> </th>
-                        <th pSortableColumn="curmatfecini">Duración  <p-sortIcon field="curmatfecini"></p-sortIcon></th>
-                        <th pSortableColumn="curmatfecreg">Creación <p-sortIcon field="curmatfecreg"></p-sortIcon></th>
-                        <th pSortableColumn="curmatfecmod">Modificación <p-sortIcon field="curmatfecmod"></p-sortIcon></th>
-                        <th>Estado</th>
-                        <th>Opciones</th>
-                        <th> </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-cursoMateria let-rowIndex="rowIndex" let-rowgroup="rowgroup"
-                    let-rowspan="rowspan">
-                    <tr>
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan"> <p-chip> <div class="p-2"> {{cursoMateria.curnombre}} </div> </p-chip> </td>
-                        <td> <p-chip> <div class="p-2"> {{cursoMateria.matnombre}} </div> </p-chip> </td>
-                        <td>
-                            <div *ngIf="cursoMateria.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
-                            <div *ngIf="cursoMateria.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ cursoMateria.pernomcompleto }}</span> </div>
-                        </td>
-                        <td> <strong>Inicio:</strong> {{cursoMateria.curmatfecini}} <strong>Fin:</strong> {{cursoMateria.curmatfecfin}} </td>
-                        <td> <p-chip> <div class="p-2"> {{cursoMateria.curmatusureg}} <br> {{cursoMateria.curmatfecreg }} </div> </p-chip> </td>
-                        <td> <p-chip> <div class="p-2"> <ng-container *ngIf="cursoMateria.curmatusumod; else noModificado"> {{ cursoMateria.curmatusumod }} <br> {{ cursoMateria.curmatfecmod }} </ng-container> <ng-template #noModificado> No se ha modificado </ng-template> </div> </p-chip> </td>
-                        <td> <p-tag [value]="getDescriptionStatus(cursoMateria.curmatestado)" [severity]="getSeverityStatus(cursoMateria.curmatestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" (click)="activarCursoMateria(cursoMateria)" pTooltip="Activar curso materia"> </button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-cursoMateria let-rowIndex="rowIndex" let-columns="columns">
+            <tr>
+                <td> {{ rowIndex + 1 }} </td>
+                <td>
+                    <div class="flex text-center">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-outlined mr-2" (click)="editarCursoMateria(cursoMateria)" pTooltip="Editar" tooltipPosition="top"> </button>
+                        <button pButton pRipple icon="pi pi-eye-slash" class="p-button-rounded p-button-outlined p-button-danger" (click)="desactivarCursoMateria(cursoMateria)" pTooltip="Desactivar" tooltipPosition="top"> </button>
+                    </div>
+                </td>
+                <td *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchCase="'pernomcompleto'">
+                            <div class="user-display flex">
+                                <div *ngIf="!cursoMateria.perfoto">
+                                    <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                </div>
+                                <div *ngIf="cursoMateria.perfoto">
+                                    <p-avatar image="{{ userProfilePhoto }}/{{ cursoMateria.perfoto }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                </div>
+                                <div>
+                                    <span class="font-bold">{{ cursoMateria.pernomcompleto }}</span> <br />
+                                    <div class="mt-2"> <span> {{ cursoMateria.pernrodoc }}</span></div>
+                                </div>
                             </div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage"> <tr> <td colspan="9">No se encontró ningún registro.</td> </tr> </ng-template>
-            </p-table>
-        </div>
-    </div>
-</div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'curmatestado'">
+                            <div class="text-center">
+                                <p-tag [value]="getDescriptionStatus(cursoMateria[col.field])" [severity]="getSeverityStatus(cursoMateria[col.field])" [rounded]="true"></p-tag>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'curmatusureg'">
+                            <div pTooltip="{{ cursoMateria.curmatusureg | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom">
+                                <p-chip> <div class="p-2"> {{ cursoMateria.curmatusureg }} </div> </p-chip>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'curmatusumod'">
+                            <div pTooltip="{{ cursoMateria.curmatusumod | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="bottom">
+                                <p-chip> <div class="p-2"> {{ cursoMateria.curmatusumod }} </div> </p-chip>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{ cursoMateria[col.field] }}
+                        </ng-container>
+                    </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage"> <tr> <td colspan="9">No se encontró ningún registro.</td> </tr> </ng-template>
+    </p-table>
+</p-card>
 
-
-<p-dialog [(visible)]="cursoMateriaDialog" header="Curso-Materia" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true">
-    <form [formGroup]="cursoForm">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block mb-2" for="status">Elegir Curso</label>
-                <p-dropdown inputId="ddTipoCurso" (onChange)="onSelectCurso($event)" appendTo="body" [options]="tipoCurso" formControlName="tipoCurso" optionLabel="curnombre" [filter]="true" filterBy="curnombre" [emptyFilterMessage]="'No se encontraron cursos.'" placeholder="Seleccionar Curso" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoCurso').valid}"> </p-dropdown>
-                <small class="p-success block" *ngIf="cursoForm.get('tipoCurso').valid"> El tipo de curso es valido. </small>
-                <small class="p-error block" *ngIf="cursoForm.get('tipoCurso').invalid && cursoForm.get('tipoCurso').touched"> <span *ngIf="cursoForm.get('tipoCurso').errors?.required">El tipo de curso es requerido.</span> (*)</small>
-            </div>
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block mb-2" for="status">Elegir Materia</label>
-                <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoMateria" [emptyFilterMessage]="'No se encontraron materias para este curso.'" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoMateria').valid}" formControlName="tipoMateria" [filter]="true" filterBy="matnombre" optionLabel="matnombre" placeholder="Seleccionar Materia"> </p-dropdown>
-                <small class="p-success block" *ngIf="cursoForm.get('tipoMateria').valid"> El tipo de materia es valido. </small>
-                <small class="p-error block" *ngIf="cursoForm.get('tipoMateria').invalid && cursoForm.get('tipoMateria').touched"> <span *ngIf="cursoForm.get('tipoMateria').errors?.required">El tipo de materia es requerido.</span> (*) </small>
-            </div>
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block mb-2" for="status">Elegir Rol</label>
-                <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true" filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoRol').valid}" [emptyFilterMessage]="'No se encontraron roles.'" optionLabel="rolnombre" placeholder="Seleccionar Rol"> </p-dropdown>
-                <small class="p-success block" *ngIf="cursoForm.get('tipoRol').valid"> El tipo de rol es valido. </small>
-                <small class="p-error block" *ngIf="cursoForm.get('tipoRol').invalid && cursoForm.get('tipoRol').touched"> <span *ngIf="cursoForm.get('tipoRol').errors?.required">El tipo de rol es requerido.</span> (*) </small>
-            </div>
-            <div class="field col-12 md:col-6">
-                <label for="status">Elegir Docente</label>
-                <p-dropdown inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona" formControlName="tipoPersona" optionLabel="pernomcompleto" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoPersona').valid}" [emptyFilterMessage]="'No se encontraron personas.'" placeholder="Seleccionar Docente">
-                    <ng-template let-persona pTemplate="item">
-                        <div class="flex align-items-center">
-                            <div *ngIf="persona.perfoto == null" class="user-display"> <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
-                            <div *ngIf="persona.perfoto != null" class="user-display"> <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar> <span class="font-bold ml-2">{{ persona.pernomcompleto + ' - ' + persona.pernrodoc }}</span> </div>
-                        </div>
-                    </ng-template>
-                </p-dropdown>
-                <small class="p-success block" *ngIf="cursoForm.get('tipoPersona').valid"> El tipo de persona es valido. </small>
-                <small class="p-error block" *ngIf="cursoForm.get('tipoPersona').invalid && cursoForm.get('tipoPersona').touched"> <span *ngIf="cursoForm.get('tipoPersona').errors?.required">El tipo de persona es requerido.</span> (*) </small>
-            </div>
-
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block mb-2" for="monto">Costo</label>
-                <p-inputNumber placeholder="Ingrese el costo del curso" formControlName="curmatcosto" appendTo="body" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO" [ngClass]="{ 'valid-field': this.cursoForm.get('curmatcosto').valid}" ></p-inputNumber>
-                <small class="p-error block" *ngIf="cursoForm.get('curmatcosto').invalid && cursoForm.get('curmatcosto').dirty"> <span *ngIf="cursoForm.get('curmatcosto').errors?.required">El costo es requerido.</span> <span *ngIf="cursoForm.get('curmatcosto').errors?.min"> El costo debe ser mayor o igual a cero.</span> (*) </small>
-                <small class="p-success block" *ngIf="cursoForm.get('curmatcosto')?.valid"> El costo es valido. </small>
-            </div>
-        </div>
-        <hr>
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label"> <p-calendar inputId="fecini" appendTo="body" formControlName="curmatfecini" [showIcon]="true" dateFormat="dd/mm/yy" [ngClass]="{ 'ng-dirty': cursoForm.get('curmatfecini').touched, 'valid-field': cursoForm.get('curmatfecini').valid }"></p-calendar> <label class="font-bold block mb-2" for="fecIni">Elegir Fecha Inicio</label> </span>
-                <small class="p-error block" *ngIf="cursoForm.get('curmatfecini').invalid && cursoForm.get('curmatfecini').dirty"> <span *ngIf="cursoForm.get('curmatfecini').errors?.required">La fecha de inicio del curso es requerida. (*)</span> </small>
-                <small class="p-success block" *ngIf="cursoForm.get('curmatfecini')?.valid"> La fecha de inicio del curso es válida. </small>
-            </div>
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label"> <p-calendar inputId="fecfin" appendTo="body" formControlName="curmatfecfin" dateFormat="dd/mm/yy" [ngClass]="{ 'ng-dirty': cursoForm.get('curmatfecfin').touched, 'valid-field': cursoForm.get('curmatfecfin').valid }" [showIcon]="true"></p-calendar> <label class="font-bold block mb-2" for="fecFin">Elegir Fecha Fin</label> </span>
-                <small class="p-error block" *ngIf="cursoForm.get('curmatfecfin').invalid && cursoForm.get('curmatfecfin').dirty"> <span *ngIf="cursoForm.get('curmatfecfin').errors?.required">La fecha fin del curso es requerida. (*)</span> </small>
-                <small class="p-success block" *ngIf="cursoForm.get('curmatfecfin')?.valid"> La fecha fin del curso es válida. </small>
-            </div>
-        </div>
-    </form>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarCursoMateria()"></button>
+<p-sidebar [(visible)]="cursoMateriaDialog" styleClass="w-30rem" position="right" blockScroll="true">
+    <ng-template pTemplate="header">Curso</ng-template>
+    <ng-template pTemplate="content">
+            <form [formGroup]="cursoForm">
+                <div class="grid p-fluid mt-3">
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="status">Elegir Curso</label>
+                        <p-dropdown inputId="ddTipoCurso" (onChange)="onSelectCurso($event)" appendTo="body" [options]="tipoCurso" formControlName="tipoCurso" optionLabel="curnombre" [filter]="true" filterBy="curnombre" [emptyFilterMessage]="'No se encontraron cursos.'" placeholder="Seleccionar Curso" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoCurso').valid}" styleClass="mb-2"> </p-dropdown>
+                        <small class="p-success block" *ngIf="cursoForm.get('tipoCurso').valid"> El tipo de curso es valido. </small>
+                        <small class="p-error block" *ngIf="cursoForm.get('tipoCurso').invalid && cursoForm.get('tipoCurso').touched"> <span *ngIf="cursoForm.get('tipoCurso').errors?.required">El tipo de curso es requerido.</span> (*)</small>
+                    </div>
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="status">Elegir Materia</label>
+                        <p-dropdown inputId="ddTipoMateria" appendTo="body" [options]="tipoMateria" [emptyFilterMessage]="'No se encontraron materias para este curso.'" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoMateria').valid}" formControlName="tipoMateria" [filter]="true" filterBy="matnombre" optionLabel="matnombre" placeholder="Seleccionar Materia" styleClass="mb-2"> </p-dropdown>
+                        <small class="p-success block" *ngIf="cursoForm.get('tipoMateria').valid"> El tipo de materia es valido. </small>
+                        <small class="p-error block" *ngIf="cursoForm.get('tipoMateria').invalid && cursoForm.get('tipoMateria').touched"> <span *ngIf="cursoForm.get('tipoMateria').errors?.required">El tipo de materia es requerido.</span> (*) </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="status">Elegir Rol</label>
+                        <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true" filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoRol').valid}" [emptyFilterMessage]="'No se encontraron roles.'" optionLabel="rolnombre" placeholder="Seleccionar Rol" styleClass="mb-2"> </p-dropdown>
+                        <small class="p-success block" *ngIf="cursoForm.get('tipoRol').valid"> El tipo de rol es valido. </small>
+                        <small class="p-error block" *ngIf="cursoForm.get('tipoRol').invalid && cursoForm.get('tipoRol').touched"> <span *ngIf="cursoForm.get('tipoRol').errors?.required">El tipo de rol es requerido.</span> (*) </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="status">Elegir Docente</label>
+                        <p-dropdown  (onChange)="onSelectPersona($event)" appendTo="body" [options]="tipoPersona" formControlName="tipoPersona" optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true" [ngClass]="{ 'valid-field': this.cursoForm.get('tipoPersona').valid}" [emptyFilterMessage]="'No se encontraron personas.'" placeholder="Seleccionar Docente" styleClass="mb-2">
+                            <ng-template pTemplate="selectedItem" let-persona>
+                                <div class="flex align-items-center gap-2" *ngIf="persona">
+                                    <div class="user-display flex">
+                                        <div *ngIf="!persona.perfoto">
+                                            <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                        </div>
+                                        <div *ngIf="persona.perfoto">
+                                            <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold mb-2">{{ persona.pernomcompleto }}</span> <br/> <span>{{ persona.pernrodoc }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template let-persona pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div *ngIf="!persona.perfoto">
+                                        <p-avatar image="{{ userProfilePhotoEmpty }}" shape="circle" size="large" ></p-avatar>
+                                    </div>
+                                    <div *ngIf="persona.perfoto">
+                                        <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" shape="circle" size="large" styleClass="mb-2" ></p-avatar>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold mb-2">{{ persona.pernomcompleto }}</span> <br/> <span class="mt-2">{{ persona.pernrodoc }}</span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <small class="p-success block" *ngIf="cursoForm.get('tipoPersona').valid"> El tipo de persona es valido. </small>
+                        <small class="p-error block" *ngIf="cursoForm.get('tipoPersona').invalid && cursoForm.get('tipoPersona').touched"> <span *ngIf="cursoForm.get('tipoPersona').errors?.required">El tipo de persona es requerido.</span> (*) </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="monto">Costo</label>
+                        <p-inputNumber placeholder="Ingrese el costo del curso" formControlName="curmatcosto" appendTo="body" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO" [ngClass]="{ 'valid-field': this.cursoForm.get('curmatcosto').valid}" styleClass="mb-2"></p-inputNumber>
+                        <small class="p-error block" *ngIf="cursoForm.get('curmatcosto').invalid && cursoForm.get('curmatcosto').dirty"> <span *ngIf="cursoForm.get('curmatcosto').errors?.required">El costo es requerido.</span> <span *ngIf="cursoForm.get('curmatcosto').errors?.min"> El costo debe ser mayor o igual a cero.</span> (*) </small>
+                        <small class="p-success block" *ngIf="cursoForm.get('curmatcosto')?.valid"> El costo es valido. </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="fecIni">Elegir Fecha Inicio</label>
+                        <p-calendar inputId="fecini" appendTo="body" formControlName="curmatfecini" [showIcon]="true" dateFormat="yy-mm-dd" [ngClass]="{ 'ng-dirty': cursoForm.get('curmatfecini').touched, 'valid-field': cursoForm.get('curmatfecini').valid}" placeholder="Seleccionar fecha" styleClass="mb-2"></p-calendar>
+                        <small class="p-error block" *ngIf="cursoForm.get('curmatfecini').invalid && cursoForm.get('curmatfecini').dirty"> <span *ngIf="cursoForm.get('curmatfecini').errors?.required">La fecha de inicio del curso es requerida. (*)</span> </small>
+                        <small class="p-success block" *ngIf="cursoForm.get('curmatfecini')?.valid"> La fecha de inicio del curso es válida. </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="font-bold block mb-2" for="fecFin">Elegir Fecha Fin</label>
+                        <p-calendar inputId="fecfin" appendTo="body" formControlName="curmatfecfin" dateFormat="yy-mm-dd" [ngClass]="{ 'ng-dirty': cursoForm.get('curmatfecfin').touched, 'valid-field': cursoForm.get('curmatfecfin').valid }" [showIcon]="true" placeholder="Seleccionar fecha" styleClass="mb-2"></p-calendar>
+                        <small class="p-error block" *ngIf="cursoForm.get('curmatfecfin').invalid && cursoForm.get('curmatfecfin').dirty">
+                            <span *ngIf="cursoForm.get('curmatfecfin').errors?.required">La fecha fin del curso es requerida. (*)</span>
+                        </small>
+                        <small class="p-success block" *ngIf="cursoForm.get('curmatfecfin')?.valid"> La fecha fin del curso es válida. </small>
+                    </div>
+                </div>
+            </form>
     </ng-template>
-</p-dialog>
+    <ng-template pTemplate="footer">
+    <div class="text-right">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="ocultarDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-save" class="p-button-text" (click)="guardarCursoMateria()"></button>
+    </div>
+    </ng-template>
+</p-sidebar>
 
 <p-dialog [(visible)]="eliminarCursoMateriaDialog" header="Mensaje de Confirmación" [modal]="true" [style]="{width:'30%'}">
     <div class="flex align-items-center justify-content-center">

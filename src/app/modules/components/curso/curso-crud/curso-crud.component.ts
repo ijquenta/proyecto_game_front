@@ -1,6 +1,6 @@
 // Importaciones
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -29,6 +29,11 @@ interface Column {
 interface ExportColumn {
     title: string;
     dataKey: string;
+}
+
+interface ColumsTable {
+    field: string;
+    header: string;
 }
 
 @Component({
@@ -84,18 +89,62 @@ export class CursoCrudComponent implements OnInit {
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
     //->
+
+
+    userProfilePhotoEmpty = '../../../../../assets/images/login/sin_foto_perfil.png';
+    errors: any;
+    items: MenuItem[];
+    home: MenuItem | undefined;
+
+    selectedColumns: { field: string; header: string }[];
+    colsColumsTable!: ColumsTable[];
+    personOptions: TipoPersona2[] = [];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
+    ];
+
     constructor(
-                private messageService: MessageService,
-                private cursoService: CursoService,
-                public reporte: ReporteService,
-                public diccionarioService: DiccionarioService,
-                private usuarioServicie: UsuarioService,
-                private authService: AuthService, // auth para recuperar los datos del usuario logueado
-                private formBuilder: FormBuilder, // formBuilder para utilzar las validaciones del react form valid
-                private spinner: NgxSpinnerService
-                ) { }
+        private messageService: MessageService,
+        private cursoService: CursoService,
+        public reporte: ReporteService,
+        public diccionarioService: DiccionarioService,
+        private usuarioServicie: UsuarioService,
+        private authService: AuthService,
+        private formBuilder: FormBuilder,
+        private spinner: NgxSpinnerService,
+        private usuarioService: UsuarioService
+    ) {
+        this.items = [
+            { label: 'Curso' },
+            { label: 'Gestionar Curso', routerLink: '' },
+        ];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+        this.colsColumsTable = [
+            { field: 'curnombre', header: 'Curso' },
+            { field: 'matnombre', header: 'Materia' },
+            { field: 'pernomcompleto', header: 'Docente' },
+            { field: 'curmatfecini', header: 'Fecha Inicio (Año/Mes/Dia)' },
+            { field: 'curmatfecfin', header: 'Fecha Fin (Año/Mes/Dia)' },
+            { field: 'curmatcosto', header: 'Costo (Bs)' },
+            { field: 'curnivel', header: 'Nivel'},
+            { field: 'curmatusureg', header: 'Usuario Registrado' },
+            { field: 'curmatusumod', header: 'Usuario Modificado' },
+            { field: 'curmatestado', header: 'Estado' },
+        ];
+        this.selectedColumns = [
+            { field: 'matnombre', header: 'Materia' },
+            { field: 'pernomcompleto', header: 'Docente' },
+            { field: 'curmatfecini', header: 'Fecha Inicio (Año/Mes/Dia)' },
+            { field: 'curmatfecfin', header: 'Fecha Fin (Año/Mes/Dia)' },
+            { field: 'curmatcosto', header: 'Costo (Bs)' },
+            { field: 'curmatestado', header: 'Estado' }
+        ];
+    }
 
     ngOnInit() {
+        this.getAllPersonCombo();
         this.listarCursoMateria();
         this.listarCursoCombo();
         this.obtenerRoles();
@@ -166,9 +215,8 @@ export class CursoCrudComponent implements OnInit {
         this.cursoService.listarCursoMateria().subscribe(
             (result: any) => {
                 this.listaCursosMaterias = result;
+                console.log("datos curso: ", this.listaCursosMaterias);
                 this.listaCursosMateriasDuplicated = result;
-                this.listaCursosMateriasNoActivo = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 0);
-                this.listaCursosMaterias = this.listaCursosMaterias.filter( cursomateria => cursomateria.curmatestado === 1);
                 this.loading = false;
                 this.spinner.hide();
             },
@@ -247,7 +295,6 @@ export class CursoCrudComponent implements OnInit {
         this.cursoMateria.curmatestadodescripcion="";
         this.cursoMateria.curmatusureg = this.usuario.usuname;
         this.cursoMateria.curmatusumod = this.usuario.usuname;
-        console.log("Datos: ", this.cursoMateria)
         const body = { ...this.cursoMateria }
         return body;
     }
@@ -374,6 +421,20 @@ export class CursoCrudComponent implements OnInit {
             default:
                 return 'Ninguno';
         }
+    }
+
+    /**
+     * Obtener la lista de las personas para el combo de opciones.
+     */
+    getAllPersonCombo() {
+        this.usuarioService.getTipoPersonaDocente().subscribe((result: any) => {
+            this.personOptions = result.map((persona: any) => ({
+                label: persona.pernomcompleto,
+                value: persona.pernomcompleto,
+                pernrodoc: persona.pernrodoc,
+                perfoto: persona.perfoto,
+            }));
+        });
     }
 
     // ------------------------------ Funciones Curso Materia -----------------------------
