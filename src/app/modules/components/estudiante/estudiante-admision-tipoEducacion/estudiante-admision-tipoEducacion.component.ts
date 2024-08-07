@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 // Service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
@@ -25,7 +25,8 @@ export class EstudianteAdmisionTipoEducacionComponent implements OnInit {
     tipoEducacionDialog: boolean = false;
     optionDialogTipoEducacion: boolean = false;
     eliminarTipoEducacionDialog: boolean = false;
-
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
     stateOptionsEstado: any[] = [
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 }
@@ -38,7 +39,8 @@ export class EstudianteAdmisionTipoEducacionComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private formBuilder: FormBuilder,
     ) {
-
+        this.items = [{label: 'Estudiantes'} ,{ label: 'Admisión'}, { label: 'Tipo Educación', routerLink:''},];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
     }
 
     ngOnInit() {
@@ -69,18 +71,15 @@ export class EstudianteAdmisionTipoEducacionComponent implements OnInit {
 
     modificarTipoEducacion(data: any){
         this.tipoEducacionForm.reset();
-        // this.lista();
         this.tipoEducacionDialog = true;
         this.optionDialogTipoEducacion = false;
         this.tipoEducacion = {...data};
-        console.log("antes modificar: ", this.tipoEducacion)
         this.tipoEducacionForm.patchValue({
             eduid: this.tipoEducacion.eduid,
             edunombre: this.tipoEducacion.edunombre,
             eduobservacion: this.tipoEducacion.eduobservacion,
             eduestado: this.tipoEducacion.eduestado
         });
-        console.log("modificar: ", this.tipoEducacionForm.value)
     }
 
     // Obtener Severity Estado
@@ -227,14 +226,16 @@ export class EstudianteAdmisionTipoEducacionComponent implements OnInit {
     }
 
     listarTipoEducacion(){
+        this.spinner.show();
         this.personaService.listarTipoEducacion().subscribe(
             (data: any) => {
+                this.spinner.hide();
                 this.TipoEducacion = Array.isArray(data["data"]) ? data["data"] : [];
-                console.log("Tipo Educación: ", this.TipoEducacion)
             },
             (error: any) => {
                 console.error("Error: ", error['message']);
                 this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
+                this.spinner.hide();
             }
         );
     }

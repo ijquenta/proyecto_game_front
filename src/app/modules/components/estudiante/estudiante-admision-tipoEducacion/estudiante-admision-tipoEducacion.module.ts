@@ -20,9 +20,11 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 
 import { EstudianteAdmisionTipoEducacionRoutingModule } from './estudiante-admision-tipoEducacion-routing.module';
 import { EstudianteAdmisionTipoEducacionComponent } from './estudiante-admision-tipoEducacion.component';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 @NgModule({
     imports: [
+        BreadcrumbModule,
         SelectButtonModule,
         SplitterModule,
         CommonModule,

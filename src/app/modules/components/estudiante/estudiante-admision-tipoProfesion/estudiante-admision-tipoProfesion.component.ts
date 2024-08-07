@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 // Service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
@@ -26,6 +26,9 @@ export class EstudianteAdmisionTipoProfesionComponent implements OnInit {
     optionDialogTipoProfesion: boolean = false;
     eliminarTipoProfesionDialog: boolean = false;
 
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
+
     stateOptionsEstado: any[] = [
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 }
@@ -38,7 +41,8 @@ export class EstudianteAdmisionTipoProfesionComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private formBuilder: FormBuilder,
     ) {
-
+        this.items = [{label: 'Estudiantes'} ,{ label: 'Admisión'}, { label: 'Tipo Profesión', routerLink:''},];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
     }
 
     ngOnInit() {
@@ -227,16 +231,18 @@ export class EstudianteAdmisionTipoProfesionComponent implements OnInit {
     }
 
     listarTipoProfesion(){
-        this.personaService.listarTipoProfesion().subscribe(
-            (data: any) => {
+        this.spinner.show();
+        this.personaService.listarTipoProfesion().subscribe({
+            next: (data: any) => {
                 this.TipoProfesion = Array.isArray(data["data"]) ? data["data"] : [];
-                console.log("Tipo Profesión: ", this.TipoProfesion)
+                this.spinner.hide();
             },
-            (error: any) => {
+            error: (error: any) => {
+                this.spinner.hide();
                 console.error("Error: ", error['message']);
                 this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
             }
-        );
+        });
     }
 
     ocultarTipoProfesion(){

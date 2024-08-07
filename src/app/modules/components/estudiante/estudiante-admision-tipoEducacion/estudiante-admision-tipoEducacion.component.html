@@ -1,10 +1,8 @@
 <p-toast></p-toast>
-<div class="grid">
-    <div class="col-12">
-        <div class="card">
-            <div class="flex grid">
-                <div class="col-12 md:col-6 lg:col-12">
                     <p-card>
+                        <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+                        <h3>Tipo Educación</h3>
+                        <p>Administrar registros de eduación</p>
                         <p-table
                             #dt2
                             [value]="TipoEducacion"
@@ -21,10 +19,10 @@
                                             pButton
                                             pRipple
                                             icon="pi pi-plus"
-                                            label="Nuevo Tipo Educación"
-                                            class="p-button-rounded p-button-primary mr-2"
+                                            label="Nuevo"
+                                            class="p-button-outlined p-button-rounded p-button-primary mr-2"
                                             (click)="adicionarTipoEducacion()"
-                                            pTooltip="Adicionar"
+                                            pTooltip="Adicionar Tipo Educación"
                                             tooltipPosition="right"
                                         ></button>
                                     </div>
@@ -47,7 +45,7 @@
                                             <button pButton
                                                     pRipple
                                                     icon="pi pi-pencil"
-                                                    class="p-button-rounded p-button-info mr-2"
+                                                    class="p-button-rounded p-button-outlined p-button-primary mr-2"
                                                     (click)="modificarTipoEducacion(tipedu)"
                                                     pTooltip="Modificar"
                                                     tooltipPosition="top"
@@ -56,7 +54,7 @@
                                                 pButton
                                                 pRipple
                                                 icon="pi pi-trash"
-                                                class="p-button-rounded p-button-danger mr-2"
+                                                class="p-button-rounded p-button-outlined p-button-danger mr-2"
                                                 (click)="confirmarEliminarTipoEducacion(tipedu)"
                                                 pTooltip="Eliminar"
                                                 tooltipPosition="top"
@@ -101,11 +99,6 @@
                             </ng-template>
                         </p-table>
                     </p-card>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <p-dialog

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 // Service
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
@@ -26,6 +26,9 @@ export class EstudianteAdmisionTipoCargoComponent implements OnInit {
     optionDialogTipoCargo: boolean = false;
     eliminarTipoCargoDialog: boolean = false;
 
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
+
     stateOptionsEstado: any[] = [
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 }
@@ -38,7 +41,8 @@ export class EstudianteAdmisionTipoCargoComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private formBuilder: FormBuilder,
     ) {
-
+        this.items = [{label: 'Estudiantes'} ,{ label: 'Admisión'}, { label: 'Tipo Cargo', routerLink:''},];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
     }
 
     ngOnInit() {
@@ -69,18 +73,15 @@ export class EstudianteAdmisionTipoCargoComponent implements OnInit {
 
     modificarTipoCargo(data: any){
         this.tipoCargoForm.reset();
-        // this.lista();
         this.tipoCargoDialog = true;
         this.optionDialogTipoCargo = false;
         this.tipoCargo = {...data};
-        console.log("antes modificar: ", this.tipoCargo)
         this.tipoCargoForm.patchValue({
             carid: this.tipoCargo.carid,
             carnombre: this.tipoCargo.carnombre,
             carobservacion: this.tipoCargo.carobservacion,
             carestado: this.tipoCargo.carestado
         });
-        console.log("modificar: ", this.tipoCargoForm.value)
     }
 
     // Obtener Severity Estado
@@ -227,14 +228,16 @@ export class EstudianteAdmisionTipoCargoComponent implements OnInit {
     }
 
     listarTipoCargo(){
+        this.spinner.show();
         this.personaService.listarTipoCargo().subscribe(
             (data: any) => {
                 this.TipoCargo = Array.isArray(data["data"]) ? data["data"] : [];
-                console.log("Tipo Cargo: ", this.TipoCargo)
+                this.spinner.hide();
             },
             (error: any) => {
                 console.error("Error: ", error['message']);
                 this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
+                this.spinner.hide();
             }
         );
     }
