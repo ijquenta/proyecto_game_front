@@ -1,12 +1,13 @@
-<!-- <p-toast></p-toast> -->
 <ngx-spinner
     bdColor = "rgba(0, 0, 0, 0.8)"
     size = "large"
-    color = "#7254f3"
+    color = "#3B82F6"
     type = "ball-scale-multiple"
     [fullScreen] = "true"
 >
-    <p style="color: white" > Cargando... </p>
+    <div class="zoominleft animation-duration-1000 animation-iteration-infinite flex align-items-center justify-content-center font-bold  border-round m-2 px-5 py-3">
+        <p style="color: white" > Cargando... </p>
+    </div>
 </ngx-spinner>
 
 <router-outlet>
