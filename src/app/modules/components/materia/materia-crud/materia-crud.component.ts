@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Materia } from 'src/app/modules/models/materia';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
@@ -18,6 +18,7 @@ import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/fo
 import { Observable, of } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as FileSaver from 'file-saver';
+
 interface Column {
     field: string;
     header: string;
@@ -28,6 +29,12 @@ interface ExportColumn {
     title: string;
     dataKey: string;
 }
+
+interface ColumsTable {
+    field: string;
+    header: string;
+}
+
 @Component({
     templateUrl: './materia-crud.component.html',
     providers: [MessageService],
@@ -66,16 +73,61 @@ export class MateriaCrudComponent implements OnInit {
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
 
-    constructor(private messageService: MessageService,
-                private materiaService: MateriaService,
-                private formBuilder: FormBuilder,
-                public reporte: ReporteService,
-                private spinner: NgxSpinnerService,
-                private authService: AuthService,)
-                {
-                    this.tipoModuloSeleccionado = new TipoModulo(0,"");
-                    this.tipoEstadoSeleccionado = new TipoEstado(0,"");
-                }
+    items: MenuItem[];
+    home: MenuItem | undefined;
+
+    selectedColumns: { field: string; header: string }[];
+    colsColumsTable!: ColumsTable[];
+
+    tipoModuloOptions: any[] = [];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
+    ];
+
+    constructor(
+        private messageService: MessageService,
+        private materiaService: MateriaService,
+        private formBuilder: FormBuilder,
+        public reporte: ReporteService,
+        private spinner: NgxSpinnerService,
+        private authService: AuthService,
+    ) {
+        this.tipoModuloSeleccionado = new TipoModulo(0,"");
+        this.tipoEstadoSeleccionado = new TipoEstado(0,"");
+
+        this.items = [
+            { label: 'Materia' },
+            { label: 'Gestionar Materias', routerLink: '' },
+        ];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+        this.colsColumsTable = [
+            { field: 'matnombre', header: 'Materia' },
+            { field: 'matnivel', header: 'Módulo' },
+            { field: 'matdescripcion', header: 'Descripción'},
+            { field: 'matusureg', header: 'Usuario Registrado' },
+            { field: 'matusumod', header: 'Usuario Modificado' },
+            { field: 'matestado', header: 'Estado' },
+        ];
+        this.selectedColumns = [
+            { field: 'matnombre', header: 'Materia' },
+            { field: 'matnivel', header: 'Módulo' },
+            { field: 'matdescripcion', header: 'Descripción'},
+            { field: 'matusureg', header: 'Usuario Registrado' },
+            { field: 'matusumod', header: 'Usuario Modificado' },
+            { field: 'matestado', header: 'Estado' },
+        ];
+
+        this.tipoModuloOptions = [
+            { label: 'PRIMERO', value: 1 },
+            { label: 'SEGUNDO', value: 2 },
+            { label: 'TERCERO', value: 3 },
+            { label: 'CUARTO', value: 4 },
+            { label: 'OTRO', value: 5 },
+        ];
+    }
 
     ngOnInit() {
         this.getProfileUsuario();
@@ -105,22 +157,19 @@ export class MateriaCrudComponent implements OnInit {
     listarMaterias(){
         this.loading = true;
         this.spinner.show();
-        this.materiaService.listarMateria().subscribe(
-            (result: any) => {
+        this.materiaService.listarMateria().subscribe({
+            next: (result: any) => {
                 this.listaMaterias = result;
                 this.listaMateriasDuplicated = result;
-                this.listaMateriasDesactivos = this.listaMaterias.filter(materia => materia.matestado === 0);
-                this.listaMaterias = this.listaMaterias.filter(materia => materia.matestado === 1);
                 this.loading = false;
                 this.spinner.hide();
             },
-            (error: any) => {
+            error: (error: any) => {
                 console.error(error);
                 this.spinner.hide();
             }
-        )
+        })
     }
-
 
     // Método para asignar las variables de React Form Valid
     asignacionValidaciones() {
@@ -200,21 +249,20 @@ export class MateriaCrudComponent implements OnInit {
     // Método de confirmación de eliminación de materia
     confirmarActivarDesactivar() {
         this.materia.matusumod = this.usuario.usuname;
-        console.log("materia", this.materia);
-        this.materiaService.gestionarMateriaEstado(this.materia).subscribe(
-            (result: any) => {
+        this.materiaService.gestionarMateriaEstado(this.materia).subscribe({
+            next: (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de la materia modificada exitosamente.', life: 3000 });
                 this.listarMaterias();
                 this.desactivarMateriaDialog = false;
                 this.activarMateriaDialog = false;
                 this.materia = {};
             },
-            error => {
+            error: error => {
             console.log("error",error);
             const descripcionError = error.error.message;
                 this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
             }
-        );
+        });
     }
     // Obtener datos para el p-dialog
     setData(){
@@ -270,27 +318,27 @@ export class MateriaCrudComponent implements OnInit {
         }
         this.obtenerBody();
         if (this.opcionMateria) {
-            this.materiaService.insertarMateria(this.materia).subscribe(
-                (result: any) => {
+            this.materiaService.insertarMateria(this.materia).subscribe({
+                next: (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Agregado', life: 3000 });
                     this.listarMaterias();
                     this.materiaDialog = false;
                     this.opcionMateria = false;
                 },
-                error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'}); }
-            );
+                error: error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'}); }
+            });
         }
         else {
             this.materia.matid = this.materiaForm.value.mf_id;
-            this.materiaService.modificarMateria(this.materia).subscribe(
-                (result: any) => {
+            this.materiaService.modificarMateria(this.materia).subscribe({
+                next: (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Materia Modificado', life: 3000 });
                     this.listarMaterias();
                     this.materiaDialog = false;
                     this.opcionMateria = false;
                 },
-                error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'}); }
-            );
+                error: error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'}); }
+            });
         }
     }
     // Función para retornar los colores para el tipo de módulo o nivel

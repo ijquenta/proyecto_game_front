@@ -24,9 +24,17 @@ import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { MultiSelectModule } from "primeng/multiselect";
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
     imports: [
+        SidebarModule,
+        MultiSelectModule,
+        BreadcrumbModule,
+        CardModule,
         CommonModule,
         MateriaCrudRoutingModule,
         TableModule,
