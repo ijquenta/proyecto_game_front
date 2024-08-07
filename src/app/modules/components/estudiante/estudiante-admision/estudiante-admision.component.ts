@@ -23,6 +23,7 @@ interface UploadEvent {
 @Component({
     templateUrl: './estudiante-admision.component.html',
     providers: [MessageService],
+    styleUrls: ['../../../../app.component.css']
 })
 export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     @ViewChild('fileUploadperfoto') fileUploadperfoto: FileUpload;
@@ -37,6 +38,7 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     estudianteForm: FormGroup;
 
     userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
+    userProfilePhotoEmpty = '../../../../../assets/images/login/sin_foto_perfil.png';
     userProfilePhotoDocumentoAdmision = environment.API_URL_DOCUMENTO_ADMISION;
 
     personasFiltradas: any[] | undefined;
@@ -55,10 +57,10 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     informacionAcademicaDialog: boolean = false;
     informacionMinisterialDialog: boolean = false;
 
-    infoPersonal: PersonaInfoPersonal[];
+    infoPersonal: PersonaInfoPersonal;
     infoAcademica: PersonaInfoAcademica[];
     infoMinisterial: PersonaInfoMinisterial[];
-    documentoAdmision: PersonaDocAdmision[];
+    documentoAdmision: PersonaDocAdmision;
 
     infopersonal: PersonaInfoPersonal;
     infoacademica: PersonaInfoAcademica;
@@ -142,16 +144,11 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit() {
-
         this.items = [{ label: 'Estudiantes'}, { label: 'Gestionar Admisión', routerLink:''},];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
-
         this.obtenerUsuario()
-
         this.obtenerPersonas();
-
         this.asignacionVariablesValidaciones();
-
         this.generarGestiones(50);
     }
 
@@ -161,7 +158,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         this.buscarForm = this.formBuilder.group({
             buscar: ['', Validators.required],
         });
-
         this.estudianteForm = this.formBuilder.group({
             perid: [''],
             pernrohijos: ['', [Validators.required]],
@@ -172,7 +168,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             pernomdiriglesia: ['', [Validators.required]],
             pernompastor: ['', [Validators.required]],
         });
-
         this.infoPersonalForm = this.formBuilder.group({
             perid: [''],
             peredad: ['', [Validators.required]],
@@ -192,7 +187,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             permotivo: ['', [Validators.required]],
             perplanesmetas: ['', [Validators.required]],
         });
-
         this.infoAcademicaForm = this.formBuilder.group({
             perinfoaca: [''],
             perid: [''],
@@ -205,7 +199,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             perobservacion: [''],
             perestado: ['', [Validators.required]]
         });
-
         this.infoMinisterialForm = this.formBuilder.group({
             perinfomin: [''],
             perid: [''],
@@ -215,7 +208,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             perobservacion: [''],
             perestado: ['', [Validators.required]]
         });
-
         this.docAdmisionForm = this.formBuilder.group({
             perid: [''],
             perfoto: ['', [Validators.required]],
@@ -229,7 +221,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
 
     generarGestiones(cantidad: number){
         const gestionActual = new Date().getFullYear();
-
         for (let i = 0; i < cantidad; i++){
             const gestion = gestionActual - i;
             this.TipoGestion.push({gesid: gestion})
@@ -237,7 +228,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     }
 
     // Usuario
-
     obtenerUsuario() {
         this.authService.usuario$.subscribe((user => {
             if (user) {
@@ -254,9 +244,7 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         });
     }
 
-
     // Busqueda
-
     limpiar(){
         this.showDialogPersona = false;
         this.showDialogPersonaInformacionPersonal = false;
@@ -270,7 +258,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
     filtrarPersona(event: AutoCompleteCompleteEvent){
         let filtrado: any[] = [];
         let consulta = event.query;
-
         for(let i = 0; i < (this.Personas as any[]).length; i++){
             let persona = this.Personas[i];
             if(
@@ -283,14 +270,12 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                 filtrado.push(persona);
             }
         }
-
         this.personasFiltradas = filtrado;
     }
 
     seleccionarPersona(event: any){
+        this.infoPersonal = new PersonaInfoPersonal();
         this.persona = event.value;
-
-        console.log("persona seleced", this.persona)
         this.showDialogPersona = true;
         this.showDialogPersonaInformacionPersonal = true;
         this.showDialogPersonaInformacionAcademica = true;
@@ -360,15 +345,18 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
 
     listarInformacionPersonal(perid: number){
         this.showDialogPersonaInformacionPersonal = true;
-        this.personaService.listarInformacionPersonal(perid).subscribe(
-            (data: any) => {
-                this.infoPersonal = Array.isArray(data["data"]) ? data["data"] : [];
+        this.spinner.show();
+        this.personaService.listarInformacionPersonal(perid).subscribe({
+            next: (data: any) => {
+                this.infoPersonal = data["data"][0] ? data["data"][0]: null;
+                this.spinner.hide();
             },
-            (error: any) => {
+            error: (error: any) => {
                 console.error("Error: ", error['message']);
                 this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
+                this.spinner.hide();
             }
-        );
+        });
     }
 
     adicionarInformacionPersonal() {
@@ -600,9 +588,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         this.infoacademica = new PersonaInfoAcademica();
 
         if (this.optionDialogInformacionAcademica) {
-
-            console.log("data: ", this.infoacademica)
-
             this.infoacademica.perid = this.infoAcademicaForm.value.perid;
             this.infoacademica.pereducacion = this.infoAcademicaForm.value.tipoEducacion.eduid;
             this.infoacademica.pernominstitucion = this.infoAcademicaForm.value.pernominstitucion;
@@ -653,9 +638,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             this.infoacademica.perestado = this.infoAcademicaForm.value.perestado;
             this.infoacademica.perusumod = this.usuario.usuname;
             this.loadingIA=true;
-
-            console.log("data: ", this.infoacademica)
-
             this.personaService.modificarInformacionAcademica(this.infoacademica, this.infoacademica.perinfoaca).subscribe(
                 (data: any) => {
                     this.optionDialogInformacionAcademica = false;
@@ -665,7 +647,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                           detail: 'Se modifidicó correctamente en el sistema.',
                           life: 3000
                         });
-
                     this.listarInformacionAcademica(data.data.perid);
                     this.informacionAcademicaDialog = false;
                     this.loadingIA=false;
@@ -705,9 +686,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         this.informacionMinisterialDialog = true;
         this.optionDialogInformacionMinisterial = true;
         this.persona = { ...this.persona};
-
-
-
         this.infoMinisterialForm.patchValue({
             perid: this.persona.perid
         });
@@ -744,11 +722,8 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                 control.markAsDirty();
             })
         }
-
         this.infoministerial = new PersonaInfoMinisterial();
-
         if (this.optionDialogInformacionMinisterial) {
-
             this.infoministerial.perid = this.infoMinisterialForm.value.perid;
             this.infoministerial.percargo = this.infoMinisterialForm.value.tipoCargo.carid;
             this.infoministerial.pernomiglesia = this.infoMinisterialForm.value.pernomiglesia;
@@ -757,8 +732,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             this.infoministerial.perusureg = this.usuario.usuname;
             this.infoministerial.perestado = this.infoMinisterialForm.value.perestado;
             this.loadingIM=true;
-
-            console.log("nuevo: ", this.infoministerial);
             this.personaService.adicionarInformacionMinisterial(this.infoministerial).subscribe(
                 (data: any) => {
                     this.optionDialogInformacionMinisterial = false;
@@ -795,9 +768,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             this.infoministerial.perestado = this.infoMinisterialForm.value.perestado;
             this.infoministerial.perusumod = this.usuario.usuname;
             this.loadingIM=true;
-
-            console.log("editar: ", this.infoministerial);
-
             this.personaService.modificarInformacionMinisterial(this.infoministerial, this.infoministerial.perinfomin).subscribe(
                 (data: any) => {
                     this.optionDialogInformacionMinisterial = false;
@@ -807,7 +777,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                           detail: 'Se modifidicó correctamente en el sistema.',
                           life: 3000
                         });
-
                     this.listarInformacionMinisterial(data.data.perid);
                     this.informacionMinisterialDialog = false;
                     this.loadingIM=false;
@@ -830,15 +799,15 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
 
     listarDocumentoAdmision(perid: number){
         this.showDialogPersonaDocumentoAdmision = true;
-        this.personaService.listarDocumentoAdmision(perid).subscribe(
-            (data: any) => {
-                this.documentoAdmision = Array.isArray(data["data"]) ? data["data"] : [];
+        this.personaService.listarDocumentoAdmision(perid).subscribe({
+            next: (data: any) => {
+                this.documentoAdmision = data["data"][0] ? data["data"][0] : null;
             },
-            (error: any) => {
+            error: (error: any) => {
                 console.error("Error: ", error['message']);
                 this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrío un error en el registro de persona, verifique los campos ingresados.', life: 3000 });
             }
-        );
+        });
     }
 
     mostrarDocumentoAdmision(filename: any){
@@ -861,12 +830,10 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         this.fileUploadperfototitulo.clear();
         this.fileUploadpercartapastor.clear();
         this.docAdmisionForm.reset();
-
         this.docAdmisionForm.get('perfoto')?.setValidators(Validators.required);
         this.docAdmisionForm.get('perfotoci')?.setValidators(Validators.required);
         this.docAdmisionForm.get('perfototitulo')?.setValidators(Validators.required);
         this.docAdmisionForm.get('percartapastor')?.setValidators(Validators.required);
-
         this.percartapastorFile = null;
         this.percartapastorFileUrl = null;
         this.perfotoFile = null;
@@ -875,11 +842,9 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
         this.perfotociFileUrl = null;
         this.perfototituloFile = null;
         this.perfototituloFileUrl = null;
-
         this.documentoAdmisionDialog = true;
         this.optionDialogDocumentoAdmision = true;
         this.persona = { ...this.persona};
-
         this.docAdmisionForm.patchValue({
             perid: this.persona.perid
         });
@@ -908,8 +873,6 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             perfototitulo: this.fileurlperfototitulo || null,
             percartapastor: this.fileurlpercartapastor || null
         });
-
-
         if (this.docAdmisionForm.invalid) {
             this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
             return Object.values(this.docAdmisionForm.controls).forEach(control => {
@@ -917,9 +880,7 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                 control.markAsDirty();
             });
         }
-
         const formData: FormData = new FormData();
-
         if (this.optionDialogDocumentoAdmision) {
             formData.append('perid', this.docAdmisionForm.value.perid);
             formData.append('perfoto', this.perfotoFile || null);
@@ -929,13 +890,10 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             formData.append('perobservacion', this.docAdmisionForm.value.perobservacion || null);
             formData.append('perusureg', this.usuario.usuname);
             formData.append('perestado', this.docAdmisionForm.value.perestado);
-
             this.loadingDA = true;
-
             this.spinner.show();
             this.personaService.adicionarDocumentoAdmision(formData).subscribe(
                 (data: any) => {
-
                     this.optionDialogDocumentoAdmision = false;
                     this.messageService.add(
                         {
@@ -949,14 +907,11 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                     this.documentoAdmisionDialog = false;
                     this.loadingDA = false;
                     this.spinner.hide();
-
                     this.fileUploadperfoto.clear();
                     this.fileUploadperfotoci.clear();
                     this.fileUploadperfototitulo.clear();
                     this.fileUploadpercartapastor.clear();
-
                     this.docAdmisionForm.reset();
-
                     this.percartapastorFile = null;
                     this.percartapastorFileUrl = null;
                     this.perfotoFile = null;
@@ -990,9 +945,7 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
             formData.append('perobservacion', this.docAdmisionForm.value.perobservacion || null);
             formData.append('perusumod', this.usuario.usuname);
             formData.append('perestado', this.docAdmisionForm.value.perestado);
-
             this.loadingDA = true;
-
             this.spinner.show();
             this.personaService.modificarDocumentoAdmision(formData).subscribe(
                 (data: any) => {
@@ -1009,14 +962,11 @@ export class EstudianteAdmisionComponent implements AfterViewInit, OnInit {
                     this.documentoAdmisionDialog = false;
                     this.loadingDA = false;
                     this.spinner.hide();
-
                     this.fileUploadperfoto.clear();
                     this.fileUploadperfotoci.clear();
                     this.fileUploadperfototitulo.clear();
                     this.fileUploadpercartapastor.clear();
-
                     this.docAdmisionForm.reset();
-
                     this.percartapastorFile = null;
                     this.percartapastorFileUrl = null;
                     this.perfotoFile = null;

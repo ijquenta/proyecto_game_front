@@ -1,632 +1,620 @@
 <p-toast></p-toast>
-<div class="grid">
-    <div class="col-12">
-        <!-- <h2>Estudiante Admisión</h2> -->
-        <div class="card">
-            <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
-            <h3>Admisión</h3>
-            <p>Generar reporte de ficha de admisión</p>
-            <hr>
-            <form [formGroup]="buscarForm">
-                <div class="p-fluid">
-                    <div class="p-field">
-                        <label class="font-bold text-lg">Busqueda de persona:</label>
-                        <hr>
-                        <div class="card flex grid">
-                            <div class="col-12 md:col-10 lg:col-11">
-                                <p-autoComplete
-                                    formControlName="buscar"
-                                    [suggestions]="personasFiltradas"
-                                    (completeMethod)="filtrarPersona($event)"
-                                    field="pernomcompleto"
-                                    (onSelect)="seleccionarPersona($event)"
-                                    appendTo="body"
-                                    emptyMessage="No se encontraron resultados"
-                                    [showEmptyMessage]="true"
-                                    placeholder="Ingrese el nombre, apellidos o CI"
-                                >
-                                    <ng-template let-persona pTemplate="item">
-                                        <div class="flex align-items-center gap-2">
-                                            <div *ngIf="!persona.perfoto">
-                                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                                            </div>
-                                            <div *ngIf="persona.perfoto">
-                                                <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                                            </div>
-                                            <div>{{persona.pernomcompleto}}</div>
-                                            <div>{{persona.pernrodoc}}</div>
-                                        </div>
-                                    </ng-template>
-                                </p-autoComplete>
-                            </div>
-                            <div class="col-12 md:col-2 lg:col-1">
-                                <button (click)="limpiar()"
-                                        pButton
-                                        pRipple
-                                        type="button"
-                                        icon="pi pi-filter-slash"
-                                        class="p-button-rounded p-button-text p-button-primary"
-                                        pTooltip="Limpiar busqueda"
-                                        tooltipPosition="top">
-                                </button>
-                            </div>
-                        </div>
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+    <h3>Admisión</h3>
+    <p>Generar reporte de ficha de admisión</p>
+        <p-card class="p-fluid">
+                    <div class="mb-2">
+                        <label class="font-bold text-lg ">Busqueda de persona:</label>
                     </div>
-                </div>
-            </form>
-            <div *ngIf="persona?.perid != null" class="flex grid">
-                <div class="col-12 md:col-6 lg:col-3">
+                    <div>
+                        <form [formGroup]="buscarForm">
+                            <p-autoComplete
+                                formControlName="buscar"
+                                [suggestions]="personasFiltradas"
+                                (completeMethod)="filtrarPersona($event)"
+                                field="pernomcompleto"
+                                (onSelect)="seleccionarPersona($event)"
+                                appendTo="body"
+                                emptyMessage="No se encontraron resultados"
+                                [showEmptyMessage]="true"
+                                placeholder="Ingrese el nombre, apellidos o CI"
+                                lazy="true"
+                                required="true"
+                                showClear="true"
+                                (onClear)="limpiar()"
+                                dropdownIcon="'pi-filter-slash'"
+                            >
+                                <ng-template let-persona pTemplate="item">
+                                    <div class="flex align-items-center gap-2">
+                                        <div *ngIf="!persona.perfoto">
+                                            <p-avatar image="{{userProfilePhotoEmply}}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        </div>
+                                        <div *ngIf="persona.perfoto">
+                                            <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        </div>
+                                        <div>{{persona.pernomcompleto}}</div>
+                                        <div><span class="font-bold">{{persona.pernrodoc}}</span></div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </form>
+                    </div>
+            <div *ngIf="persona?.perid != null" class="flex grid mt-2">
 
-                    <p-divider align="center">
-                        <div class="inline-flex align-items-center">
-                            <i class="fa-solid fa-address-book mr-2"></i>
-                            <b>Datos Personales</b>
-                        </div>
-                    </p-divider>
-                    <!-- Datos personales -->
-                    <p-card header="{{persona.pernomcompleto}}" styleClass="w-full" *ngIf="showDialogPersona">
-                        <ng-template pTemplate="header">
-                            <div class="flex justify-content-center">
-                                <p-image src="{{userProfilePhoto}}/{{persona.perfoto}}"
-                                        alt="Image"
-                                        width="100"
-                                        height="100"
-                                        [preview]="true"
-                                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}">
-                                </p-image>
-                            </div>
-                        </ng-template>
-                        <div class="p-grid">
-                            <p>
-                                <strong>Tipo Documento:</strong> {{persona.tipodocnombre}} <br>
-                                <strong>Nro. Doc.:</strong> {{persona.pernrodoc}} <br>
-                                <strong>Email:</strong> {{persona.peremail}} <br>
-                                <strong>Fecha nacimiento:</strong> {{persona.perfecnac | date:'d MMMM, y'}} <br>
-                                <strong>Género:</strong> {{persona.generonombre}} <br>
-                                <strong>Dirección:</strong> {{persona.perdirec}} <br>
-                                <strong>Teléfono:</strong> {{persona.pertelefono}} <br>
-                                <strong>Celular:</strong> {{persona.percelular}} <br>
-                                <strong>Estado civil:</strong> {{persona.estadocivilnombre}} <br>
-                                <strong>País:</strong> {{persona.paisnombre}} <br>
-                                <strong>Ciudad:</strong> {{persona.ciudadnombre}} <br>
-                                <strong>Registrado:</strong> {{ persona.perusureg }} <br>
-                                {{ persona.perfecreg | date: 'd MMMM, y' }} <br>
-                                {{ persona.perfecreg | date: 'h:mm:ss a' }} <br>
-                                <strong>Modificado:</strong> {{ persona.perusumod}} <br>
-                                {{ persona.perfecmod | date: 'd MMMM, y' }} <br>
-                                {{ persona.perfecmod | date: 'h:mm:ss a' }} <br>
-                            </p>
-                        </div>
-
-                        <hr>
-
-                        <div class="flex mb-3 justify-content-center">
-                            <button
+                <div class="col-12 md:col-6 lg:col-3 ">
+                    <div class="text-left w-auto">
+                        <button (click)="limpiar()"
                                 pButton
                                 pRipple
-                                icon="pi pi-file-pdf"
-                                label="Ficha de Admisión"
-                                class="p-button-rounded p-button-danger mr-2"
-                                (click)="personaService.rptInformacionAdmision(persona?.perid)"
-                                pTooltip="Generar reporte"
-                                tooltipPosition="top"
-                            ></button>
+                                type="button"
+                                label="Limpiar"
+                                icon="pi pi-filter-slash"
+                                class="p-button-primary p-button-outlined w-auto mb-2"
+                                pTooltip="Limpiar busqueda"
+                                tooltipPosition="top">
+                        </button>
+                    </div>
+                    <!-- Datos personales -->
+                    <p-card header="Datos Personales" subheader="{{persona.pernomcompleto}}" styleClass="w-full" *ngIf="showDialogPersona">
+                        <div class="text-center mb-2">
+                            <div *ngIf="!persona.perfoto">
+                                <p-image src="{{userProfilePhotoEmply}}" alt="{{persona.perfoto}}" width="100" height="100" [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"> </p-image>
+                            </div>
+                            <div *ngIf="persona.perfoto">
+                                <p-image src="{{userProfilePhoto}}/{{persona.perfoto}}" alt="{{persona.perfoto}}" width="100" height="100" [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"> </p-image>
+                            </div>
                         </div>
+
+                        <div>
+                            <div class="font-medium text-3xl text-900 mb-3">Información Personal</div>
+                            <ul class="list-none p-0 m-0">
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Tipo Documento</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.tipodocnombre}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Número Documento</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.pernrodoc}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Correo</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.peremail}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Fecha Nacimiento</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.perfecnac | date:'longDate'}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Género</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.generonombre}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Dirección</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.perdirec}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Teléfono</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.pertelefono}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Celular</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.percelular}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Estado civil</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.estadocivilnombre}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">País</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.paisnombre}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Ciudad</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona.ciudadnombre}}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Registrado</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{ persona.perusureg }}</div>
+                                </li>
+                                <li class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
+                                    <div class="text-700 font-bold w-6 md:w-4">Fecha</div>
+                                    <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{ persona.perfecreg | date: 'medium'}}</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <div class="text-center">
+                                <button pButton pRipple icon="pi pi-file-pdf" label="Ficha de Admisión" class="p-button-danger p-button-outlined w-auto" (click)="personaService.rptInformacionAdmision(persona?.perid)" pTooltip="Generar reporte" tooltipPosition="top"></button>
+                            </div>
+                        </ng-template>
                     </p-card>
                 </div>
-
                 <div *ngIf="persona?.perid != null" class="col-12 md:col-6 lg:col-9">
 
-                    <p-divider align="center">
-                        <div class="inline-flex align-items-center">
-                            <i class="fa-solid fa-address-book mr-2"></i>
-                            <b>Información Personal</b>
-                        </div>
-                    </p-divider>
-
-                    <!-- p-card información personal -->
-
-                    <p-card *ngIf="showDialogPersonaInformacionPersonal">
-                        <p-table
-                            #dt2
-                            [value]="infoPersonal"
-                            [tableStyle]="{'min-width': '50rem'}"
-                            responsiveLayout="stack"
-                            [breakpoint]="'960px'"
-                            styleClass="p-datatable-striped p-card p-datatable-sm"
-                            [loading]="loadingIP"
-                        >
-                            <ng-template pTemplate="caption">
-                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                    <div *ngIf="infoPersonal?.length === 0"  class="flex justify-content-center">
-                                        <button
-                                            pButton
-                                            pRipple
-                                            icon="pi pi-plus"
-                                            class="p-button-rounded p-button-text p-button-primary mr-2"
-                                            (click)="adicionarInformacionPersonal()"
-                                            pTooltip="Adicionar Información Personal"
-                                            tooltipPosition="right"
-                                        ></button>
+                    <p-tabView styleClass="tabview-custom">
+                            <p-tabPanel>
+                                <ng-template pTemplate="header">
+                                    <i class="fa-solid fa-address-book mr-2"></i>
+                                    <span>Información Personal</span>
+                                </ng-template>
+                                <!-- p-card información personal -->
+                                <p-card *ngIf="showDialogPersonaInformacionPersonal" header="Información Personal" subheader="Registrar y/o modificar los datos:">
+                                    <div>
+                                        <ul class="list-none p-0 m-0">
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Acciones</div>
+                                                <div class="text-left">
+                                                    <button *ngIf="infoPersonal != null" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-outlined p-button-info" (click)="modificarInformacionPersonal(infoPersonal)" pTooltip="Modificar información personal" tooltipPosition="top"></button>
+                                                    <button *ngIf="infoPersonal == null" pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-outlined p-button-primary mr-2" (click)="adicionarInformacionPersonal()" pTooltip="Adicionar información personal" tooltipPosition="top"></button>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Hijos</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.pernrohijos != null; else noRegistro">
+                                                        {{infoPersonal?.pernrohijos || 0}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Profesión</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.pronombre; else noRegistro">
+                                                        {{infoPersonal?.pronombre || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Lugar Conversión</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.perlugconversion; else noRegistro">
+                                                        {{infoPersonal?.perlugconversion || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Fecha Conversión</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.perfecconversion; else noRegistro">
+                                                        {{infoPersonal?.perfecconversion | date:'d MMMM, y' || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Bautizo Aguas</div>
+                                                <div class="text-left">
+                                                    <ng-container *ngIf="infoPersonal?.perbautizoagua != null">
+                                                        <ng-container *ngIf="infoPersonal?.perbautizoagua === 1; else noRegistro">
+                                                            <i class="pi pi-check-circle" style="color: green;"></i>
+                                                        </ng-container>
+                                                        <ng-template #noRegistro>
+                                                            <i class="pi pi-times-circle" style="color: red;"></i>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Bautizo Espíritu Santo</div>
+                                                <div class="text-left">
+                                                    <ng-container *ngIf="infoPersonal?.perbautizoespiritu != null">
+                                                        <ng-container *ngIf="infoPersonal?.perbautizoespiritu === 1; else noRegistro">
+                                                            <i class="pi pi-check-circle" style="color: green;"></i>
+                                                        </ng-container>
+                                                        <ng-template #noRegistro>
+                                                            <i class="pi pi-times-circle" style="color: red;"></i>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Nombre Iglesia</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.pernomiglesia; else noRegistro">
+                                                        {{infoPersonal?.pernomiglesia || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Dirección Iglesia</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.perdiriglesia; else noRegistro">
+                                                        {{infoPersonal?.perdiriglesia || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Nombre Pastor</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.pernompastor; else noRegistro">
+                                                        {{infoPersonal?.pernompastor || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Celular Pastor</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.percelpastor; else noRegistro">
+                                                        {{infoPersonal?.percelpastor || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Experiencia</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.perexperiencia; else noRegistro">
+                                                        {{infoPersonal?.perexperiencia || 0}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Motivo</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.permotivo; else noRegistro">
+                                                        {{infoPersonal?.permotivo || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Planes y Metas</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="infoPersonal?.perplanesmetas; else noRegistro">
+                                                        {{infoPersonal?.perplanesmetas || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Observación</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1 line-height-3">
+                                                    <ng-container *ngIf="infoPersonal?.perobservacion; else noRegistro">
+                                                        {{infoPersonal?.perobservacion || '...'}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                        </ul>
                                     </div>
-                                </div>
-                            </ng-template>
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th></th>
-                                    <th pTooltip="Número de hijos" tooltipPosition="top">Hijos</th>
-                                    <th>Profesión</th>
-                                    <th pTooltip="Lugar y fecha de conversión" tooltipPosition="top">Conversión</th>
-                                    <th pTooltip="Bautizo en aguas" tooltipPosition="top">Bautizo A.</th>
-                                    <th pTooltip="Bautizo en el espiritu santo" tooltipPosition="top">Bautizo E. S.</th>
-                                    <th pTooltip="Nombre y dirección de la iglesia" tooltipPosition="top">Iglesia</th>
-                                    <th pTooltip="Nombre y celular del pastor" tooltipPosition="top">Pastor</th>
-                                    <th>Experiencia</th>
-                                    <th>Motivo</th>
-                                    <th>Planes y metas</th>
-                                    <th>Observación</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-infoper>
-                                <tr>
-                                    <td>
-                                        <div class="flex justify-content-center">
-                                            <button pButton
-                                                    pRipple
-                                                    icon="pi pi-pencil"
-                                                    class="p-button-rounded p-button-text p-button-info mr-2"
-                                                    (click)="modificarInformacionPersonal(infoper)"
-                                                    pTooltip="Modificar Información Personal"
-                                                    tooltipPosition="top"
-                                            ></button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.pernrohijos != null; else noRegistro">
-                                            {{infoper.pernrohijos}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.pronombre; else noRegistro">
-                                            {{infoper.pronombre}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.perlugconversion; else noRegistro">
-                                            {{infoper.perlugconversion}} <hr>
-                                            {{infoper.perfecconversion | date:'d MMMM, y'}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.perbautizoagua != null">
-                                            <ng-container *ngIf="infoper.perbautizoagua === 1; else noRegistro">Sí</ng-container>
-                                            <ng-template #noRegistro>No</ng-template>
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.perbautizoespiritu != null">
-                                            <ng-container *ngIf="infoper.perbautizoespiritu === 1; else noRegistro">Sí</ng-container>
-                                            <ng-template #noRegistro>No</ng-template>
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.pernomiglesia; else noRegistro">
-                                            {{infoper.pernomiglesia}} <hr>
-                                            {{infoper.perdiriglesia}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.pernompastor; else noRegistro">
-                                            {{infoper.pernompastor}} <hr>
-                                            {{infoper.percelpastor}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.perexperiencia; else noRegistro">
-                                            {{infoper.perexperiencia}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.permotivo; else noRegistro">
-                                            {{infoper.permotivo}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.perplanesmetas; else noRegistro">
-                                            {{infoper.perplanesmetas}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoper.perobservacion; else noRegistro">
-                                            {{infoper.perobservacion}}
-                                        </ng-container>
-                                    </td>
-                                    <ng-template #noRegistro>...</ng-template>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td colspan="12">No se encontró la información solicitada.</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </p-card>
 
-                    <p-divider align="center">
-                        <div class="inline-flex align-items-center">
-                            <i class="fa-solid fa-graduation-cap mr-2"></i>
-                            <b>Información Académica</b>
-                        </div>
-                    </p-divider>
+                                </p-card>
+                            </p-tabPanel>
+                            <p-tabPanel header="Header II">
+                                <ng-template pTemplate="header">
+                                    <i class="fa-solid fa-graduation-cap mr-2"></i>
+                                    <span>Información Académica</span>
+                                </ng-template>
+                                <!-- p-card información académica -->
+                                <p-card *ngIf="showDialogPersonaInformacionAcademica" header="Información Académica" subheader="Registrar y/o modificar los datos:">
+                                    <p-table
+                                        #dt2
+                                        [value]="infoAcademica"
+                                        [tableStyle]="{'min-width': '50rem'}"
+                                        responsiveLayout="stack"
+                                        [breakpoint]="'960px'"
+                                        styleClass="p-datatable-striped p-card"
+                                    >
+                                        <ng-template pTemplate="caption">
+                                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                                <div class="flex justify-content-center">
+                                                    <button
+                                                        pButton
+                                                        pRipple
+                                                        icon="pi pi-plus"
+                                                        class="p-button-rounded p-button-outlined p-button-primary mr-2"
+                                                        (click)="adicionarInformacionAcademica()"
+                                                        pTooltip="Adicionar Información Académica"
+                                                        tooltipPosition="top"
+                                                    ></button>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template pTemplate="header" let-columns>
+                                            <tr>
+                                                <th>Acciones</th>
+                                                <th>Educación</th>
+                                                <th>Institución</th>
+                                                <th>Dirección</th>
+                                                <th>Años cursados</th>
+                                                <th>Fechas</th>
+                                                <th>Titulo Obtenido</th>
+                                                <th>Observación</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-infoaca>
+                                            <tr>
+                                                <td>
+                                                    <div class="flex justify-content-center">
+                                                        <button pButton
+                                                                pRipple
+                                                                icon="pi pi-pencil"
+                                                                class="p-button-rounded p-button-outlined p-button-info mr-2"
+                                                                (click)="modificarInformacionAcademica(infoaca)"
+                                                                pTooltip="Modificar información personal"
+                                                                tooltipPosition="top">
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.pereducacion != null; else noRegistro">
+                                                        {{infoaca.edunombre}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.pernominstitucion; else noRegistro">
+                                                        {{infoaca.pernominstitucion}}
 
-                    <!-- p-card información académica -->
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.perdirinstitucion; else noRegistro">
+                                                        {{infoaca.perdirinstitucion}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.pergescursadas; else noRegistro">
+                                                        {{infoaca.pergescursadas}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.perfechas; else noRegistro">
+                                                        {{infoaca.perfechas}}
+                                                    </ng-container>
+                                                </td>
 
-                    <p-card *ngIf="showDialogPersonaInformacionAcademica">
-                        <p-table
-                            #dt2
-                            [value]="infoAcademica"
-                            [tableStyle]="{'min-width': '50rem'}"
-                            responsiveLayout="stack"
-                            [breakpoint]="'960px'"
-                            styleClass="p-datatable-striped p-card p-datatable-sm"
-                        >
-                            <ng-template pTemplate="caption">
-                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                    <div class="flex justify-content-center">
-                                        <button
-                                            pButton
-                                            pRipple
-                                            icon="pi pi-plus"
-                                            class="p-button-rounded p-button-text p-button-primary mr-2"
-                                            (click)="adicionarInformacionAcademica()"
-                                            pTooltip="Adicionar Información Académica"
-                                            tooltipPosition="right"
-                                        ></button>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.pertitulo; else noRegistro">
+                                                        {{infoaca.pertitulo}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infoaca.perobservacion; else noRegistro">
+                                                        {{infoaca.perobservacion}}
+                                                    </ng-container>
+                                                </td>
+                                                <ng-template #noRegistro>...</ng-template>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td colspan="9">No se encontró la información solicitada.</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </p-card>
+                            </p-tabPanel>
+                            <p-tabPanel header="Header III">
+                                <ng-template pTemplate="header">
+                                    <i class="fa-solid fa-church mr-2"></i>
+                                    <span>Información Ministerial</span>
+                                </ng-template>
+                                <!-- p-card información ministerial -->
+                                <p-card *ngIf="showDialogPersonaInformacionMinisterial" header="Información Ministerial" subheader="Registrar y/o modificar los datos:">
+                                    <p-table
+                                        #dt2
+                                        [value]="infoMinisterial"
+                                        [tableStyle]="{'min-width': '50rem'}"
+                                        responsiveLayout="stack"
+                                        [breakpoint]="'960px'"
+                                        styleClass="p-datatable-striped p-card"
+                                    >
+                                        <ng-template pTemplate="caption">
+                                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                                <div class="flex justify-content-center">
+                                                    <button
+                                                        pButton
+                                                        pRipple
+                                                        icon="pi pi-plus"
+                                                        class="p-button-rounded p-button-outlined p-button-primary mr-2"
+                                                        (click)="adicionarInformacionMinisterial()"
+                                                        pTooltip="Adicionar Informacioń Ministerial"
+                                                        tooltipPosition="top"
+                                                    ></button>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template pTemplate="header" let-columns>
+                                            <tr>
+                                                <th>Acciones</th>
+                                                <th>Iglesia</th>
+                                                <th>Cargo</th>
+                                                <th>Gestión</th>
+                                                <th>Observación</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-infomin>
+                                            <tr>
+                                                <td>
+                                                    <div class="flex justify-content-center">
+                                                        <button pButton
+                                                                pRipple
+                                                                icon="pi pi-pencil"
+                                                                class="p-button-rounded p-button-outlined p-button-info mr-2"
+                                                                (click)="modificarInformacionMinisterial(infomin)"
+                                                                pTooltip="Modificar información personal"
+                                                                tooltipPosition="top">
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infomin.pernomiglesia != null; else noRegistro">
+                                                        {{infomin.pernomiglesia}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infomin.percargo; else noRegistro">
+                                                        {{infomin.carnombre}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infomin.pergestion; else noRegistro">
+                                                        {{infomin.pergestion}}
+                                                    </ng-container>
+                                                </td>
+                                                <td>
+                                                    <ng-container *ngIf="infomin.perobservacion; else noRegistro">
+                                                        {{infomin.perobservacion}}
+                                                    </ng-container>
+                                                </td>
+                                                <ng-template #noRegistro>...</ng-template>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td colspan="11">No se encontró la información solicitada.</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </p-card>
+                            </p-tabPanel>
+                            <p-tabPanel header="Header IV">
+                                <ng-template pTemplate="header">
+                                    <i class="pi pi-file mr-2"></i>
+                                    <span>Documentos de Admisión</span>
+                                </ng-template>
+                                <!-- p-card documentos de admisión -->
+                                <p-card *ngIf="showDialogPersonaDocumentoAdmision"  header="Documentos de Admisión" subheader="Subir los documentos en Imagen y/o PDF:">
+                                    <div>
+                                        <ul class="list-none p-0 m-0">
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Acciones</div>
+                                                <div class="text-left">
+                                                    <button
+                                                        *ngIf="documentoAdmision == null"
+                                                        pButton
+                                                        pRipple
+                                                        icon="pi pi-plus"
+                                                        class="p-button-rounded p-button-outlined p-button-primary mr-2"
+                                                        (click)="adicionarDocumentoAdmision()"
+                                                        pTooltip="Adicionar Documento Admisión"
+                                                        tooltipPosition="top"
+                                                    ></button>
+                                                    <button
+                                                        *ngIf="documentoAdmision != null"
+                                                        pButton
+                                                        pRipple
+                                                        icon="pi pi-file-edit"
+                                                        class="p-button-rounded p-button-outlined p-button-info mr-2"
+                                                        (click)="modificarDocumentoAdmision(documentoAdmision)"
+                                                        pTooltip="Modificar Documento Admisión"
+                                                        tooltipPosition="top"
+                                                    ></button>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Foto</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="documentoAdmision?.perfoto">
+                                                        <ng-container *ngIf="esImagen(documentoAdmision?.perfoto); else noImagenFoto">
+                                                            <p-image [src]="userProfilePhotoDocumentoAdmision + '/' + documentoAdmision?.perfoto" alt="{{documentoAdmision?.perfoto}}" width="100" height="100" [preview]="true" [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}" ></p-image>
+                                                        </ng-container>
+                                                        <ng-template #noImagenFoto>
+                                                            <button pButton pRipple icon="pi pi-file-pdf" label="Ver PDF" class="p-button p-button-outlined p-button-danger mr-2 w-auto" (click)="mostrarDocumentoAdmision(documentoAdmision?.perfoto)" pTooltip="Mostrar" tooltipPosition="top"></button>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Fotocopia CI</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="documentoAdmision?.perfotoci">
+                                                        <ng-container *ngIf="esImagen(documentoAdmision?.perfotoci); else noImagenCi">
+                                                            <p-image
+                                                            [src]="userProfilePhotoDocumentoAdmision + '/' + documentoAdmision?.perfotoci"
+                                                            alt="{{documentoAdmision?.perfotoci}}"
+                                                            width="100"
+                                                            height="100"
+                                                            [preview]="true"
+                                                            [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                                            ></p-image>
+                                                        </ng-container>
+                                                        <ng-template #noImagenCi>
+                                                            <button
+                                                            pButton
+                                                            pRipple
+                                                            icon="pi pi-file-pdf"
+                                                            label="Ver PDF"
+                                                            class="p-button p-button-outlined p-button-danger mr-2 w-auto"
+                                                            (click)="mostrarDocumentoAdmision(documentoAdmision?.perfotoci)"
+                                                            pTooltip="Mostrar"
+                                                            tooltipPosition="top"
+                                                            ></button>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Fotocopia Titulo</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="documentoAdmision?.perfototitulo">
+                                                        <ng-container *ngIf="esImagen(documentoAdmision?.perfototitulo); else noImagenCi">
+                                                            <p-image
+                                                            [src]="userProfilePhotoDocumentoAdmision + '/' + documentoAdmision?.perfototitulo"
+                                                            alt="{{documentoAdmision?.perfototitulo}}"
+                                                            width="100"
+                                                            height="100"
+                                                            [preview]="true"
+                                                            [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                                            ></p-image>
+                                                        </ng-container>
+                                                        <ng-template #noImagenCi>
+                                                            <button
+                                                            pButton
+                                                            pRipple
+                                                            icon="pi pi-file-pdf"
+                                                            label="Ver PDF"
+                                                            class="p-button p-button-outlined p-button-danger mr-2 w-auto"
+                                                            (click)="mostrarDocumentoAdmision(documentoAdmision?.perfototitulo)"
+                                                            pTooltip="Mostrar"
+                                                            tooltipPosition="top"
+                                                            ></button>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Carta</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="documentoAdmision?.percartapastor">
+                                                        <ng-container *ngIf="esImagen(documentoAdmision?.percartapastor); else noImagenCi">
+                                                            <p-image
+                                                            [src]="userProfilePhotoDocumentoAdmision + '/' + documentoAdmision?.percartapastor"
+                                                            alt="{{documentoAdmision?.percartapastor}}"
+                                                            width="100"
+                                                            height="100"
+                                                            [preview]="true"
+                                                            [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
+                                                            ></p-image>
+                                                        </ng-container>
+                                                        <ng-template #noImagenCi>
+                                                            <button
+                                                            pButton
+                                                            pRipple
+                                                            icon="pi pi-file-pdf"
+                                                            label="Ver PDF"
+                                                            class="p-button p-button-outlined p-button-danger mr-2 w-auto"
+                                                            (click)="mostrarDocumentoAdmision(documentoAdmision?.percartapastor)"
+                                                            pTooltip="Mostrar"
+                                                            tooltipPosition="top"
+                                                            ></button>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                                <div class="text-500 w-6 md:w-4 font-medium">Observación</div>
+                                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                                    <ng-container *ngIf="documentoAdmision?.perobservacion">
+                                                        {{documentoAdmision.perobservacion}}
+                                                    </ng-container>
+                                                </div>
+                                            </li>
+                                        </ul>
                                     </div>
-                                </div>
-                            </ng-template>
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th></th>
-                                    <th>Educación</th>
-                                    <th>Institución</th>
-                                    <th>Dirección</th>
-                                    <th>Años cursados.</th>
-                                    <th>Fechas</th>
-                                    <th>Titulo Obtenido</th>
-                                    <th>Observación</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-infoaca>
-                                <tr>
-                                    <td>
-                                        <div class="flex justify-content-center">
-                                            <button pButton
-                                                    pRipple
-                                                    icon="pi pi-pencil"
-                                                    class="p-button-rounded p-button-text p-button-info mr-2"
-                                                    (click)="modificarInformacionAcademica(infoaca)"
-                                                    pTooltip="Modificar información personal"
-                                                    tooltipPosition="top">
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoaca.pereducacion != null; else noRegistro">
-                                            {{infoaca.edunombre}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoaca.pernominstitucion; else noRegistro">
-                                            {{infoaca.pernominstitucion}}
-
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoaca.perdirinstitucion; else noRegistro">
-                                            {{infoaca.perdirinstitucion}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoaca.pergescursadas; else noRegistro">
-                                            {{infoaca.pergescursadas}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoaca.perfechas; else noRegistro">
-                                            {{infoaca.perfechas}}
-                                        </ng-container>
-                                    </td>
-
-                                    <td>
-                                        <ng-container *ngIf="infoaca.pertitulo; else noRegistro">
-                                            {{infoaca.pertitulo}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infoaca.perobservacion; else noRegistro">
-                                            {{infoaca.perobservacion}}
-                                        </ng-container>
-                                    </td>
-                                    <ng-template #noRegistro>...</ng-template>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td colspan="9">No se encontró la información solicitada.</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </p-card>
-
-                    <p-divider align="center">
-                        <div class="inline-flex align-items-center">
-                            <i class="fa-solid fa-church mr-2"></i>
-                            <b>Información Ministerial</b>
-                        </div>
-                    </p-divider>
-
-                    <!-- p-card información ministerial -->
-
-                    <p-card *ngIf="showDialogPersonaInformacionMinisterial">
-                        <p-table
-                            #dt2
-                            [value]="infoMinisterial"
-                            [tableStyle]="{'min-width': '50rem'}"
-                            responsiveLayout="stack"
-                            [breakpoint]="'960px'"
-                            styleClass="p-datatable-striped p-card p-datatable-sm"
-                        >
-                            <ng-template pTemplate="caption">
-                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                    <div class="flex justify-content-center">
-                                        <button
-                                            pButton
-                                            pRipple
-                                            icon="pi pi-plus"
-                                            class="p-button-rounded p-button-text p-button-primary mr-2"
-                                            (click)="adicionarInformacionMinisterial()"
-                                            pTooltip="Adicionar Informacioń Ministerial"
-                                            tooltipPosition="right"
-                                        ></button>
-                                    </div>
-                                </div>
-                            </ng-template>
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th></th>
-                                    <th>Iglesia</th>
-                                    <th>Cargo</th>
-                                    <th>Gestión</th>
-                                    <th>Observación</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-infomin>
-                                <tr>
-                                    <td>
-                                        <div class="flex justify-content-center">
-                                            <button pButton
-                                                    pRipple
-                                                    icon="pi pi-pencil"
-                                                    class="p-button-rounded p-button-text p-button-info mr-2"
-                                                    (click)="modificarInformacionMinisterial(infomin)"
-                                                    pTooltip="Modificar información personal"
-                                                    tooltipPosition="top">
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infomin.pernomiglesia != null; else noRegistro">
-                                            {{infomin.pernomiglesia}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infomin.percargo; else noRegistro">
-                                            {{infomin.carnombre}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infomin.pergestion; else noRegistro">
-                                            {{infomin.pergestion}}
-                                        </ng-container>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="infomin.perobservacion; else noRegistro">
-                                            {{infomin.perobservacion}}
-                                        </ng-container>
-                                    </td>
-                                    <ng-template #noRegistro>...</ng-template>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td colspan="11">No se encontró la información solicitada.</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </p-card>
-
-                    <p-divider align="center">
-                        <div class="inline-flex align-items-center">
-                            <i class="pi pi-file mr-2"></i>
-                            <b>Documentos de Admisión</b>
-                        </div>
-                    </p-divider>
-
-                    <!-- p-card documentos de admisión -->
-
-                    <p-card *ngIf="showDialogPersonaDocumentoAdmision">
-                        <p-table
-                            #dt2
-                            [value]="documentoAdmision"
-                            [tableStyle]="{'min-width': '50rem'}"
-                            responsiveLayout="stack"
-                            [breakpoint]="'960px'"
-                            styleClass="p-datatable-striped p-card p-datatable-sm"
-                        >
-                            <ng-template pTemplate="caption">
-                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                    <div *ngIf="documentoAdmision?.length === 0" class="flex justify-content-center">
-                                        <button
-                                            pButton
-                                            pRipple
-                                            icon="pi pi-plus"
-                                            class="p-button-rounded p-button-text p-button-primary mr-2"
-                                            (click)="adicionarDocumentoAdmision()"
-                                            pTooltip="Adicionar Documento Admisión"
-                                            tooltipPosition="right"
-                                        ></button>
-                                    </div>
-                                </div>
-                            </ng-template>
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th></th>
-                                    <th>Foto</th>
-                                    <th>Fotocopia CI</th>
-                                    <th>Fotocopia Titulo</th>
-                                    <th>Carta</th>
-                                    <th>Observación</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-docadm>
-                                <tr>
-                                    <td>
-                                        <div class="flex justify-content-center">
-                                            <button pButton
-                                                    pRipple
-                                                    icon="pi pi-file-edit"
-                                                    class="p-button-rounded p-button-text p-button-info mr-2"
-                                                    (click)="modificarDocumentoAdmision(docadm)"
-                                                    pTooltip="Modificar Documento Admisión"
-                                                    tooltipPosition="top"
-                                            ></button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <ng-container *ngIf="docadm.perfoto">
-                                          <ng-container *ngIf="esImagen(docadm.perfoto); else noImagenFoto">
-                                            <p-image
-                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.perfoto"
-                                              alt="Foto 4x4"
-                                              width="100"
-                                              height="100"
-                                              [preview]="true"
-                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
-                                            ></p-image>
-                                          </ng-container>
-                                          <ng-template #noImagenFoto>
-                                            <button
-                                              pButton
-                                              pRipple
-                                              icon="pi pi-file-pdf"
-                                              label="Ver PDF"
-                                              class="p-button-rounded p-button-text p-button-info mr-2"
-                                              (click)="mostrarDocumentoAdmision(docadm.perfoto)"
-                                              pTooltip="Mostrar"
-                                              tooltipPosition="top"
-                                            ></button>
-                                          </ng-template>
-                                        </ng-container>
-                                      </td>
-
-                                      <td>
-                                        <ng-container *ngIf="docadm.perfotoci">
-                                          <ng-container *ngIf="esImagen(docadm.perfotoci); else noImagenCi">
-                                            <p-image
-                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.perfotoci"
-                                              alt="Documento de Identidad"
-                                              width="100"
-                                              height="100"
-                                              [preview]="true"
-                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
-                                            ></p-image>
-                                          </ng-container>
-                                          <ng-template #noImagenCi>
-                                            <button
-                                              pButton
-                                              pRipple
-                                              icon="pi pi-file-pdf"
-                                              label="Ver PDF"
-                                              class="p-button-rounded p-button-text p-button-info mr-2"
-                                              (click)="mostrarDocumentoAdmision(docadm.perfotoci)"
-                                              pTooltip="Mostrar"
-                                              tooltipPosition="top"
-                                            ></button>
-                                          </ng-template>
-                                        </ng-container>
-                                      </td>
-
-                                      <td>
-                                        <ng-container *ngIf="docadm.perfototitulo">
-                                          <ng-container *ngIf="esImagen(docadm.perfototitulo); else noImagenTitulo">
-                                            <p-image
-                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.perfototitulo"
-                                              alt="Título"
-                                              width="100"
-                                              height="100"
-                                              [preview]="true"
-                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
-                                            ></p-image>
-                                          </ng-container>
-                                          <ng-template #noImagenTitulo>
-                                            <button
-                                              pButton
-                                              pRipple
-                                              icon="pi pi-file-pdf"
-                                              label="Ver PDF"
-                                              class="p-button-rounded p-button-text p-button-info mr-2"
-                                              (click)="mostrarDocumentoAdmision(docadm.perfototitulo)"
-                                              pTooltip="Mostrar"
-                                              tooltipPosition="top"
-                                            ></button>
-                                          </ng-template>
-                                        </ng-container>
-                                      </td>
-                                      <td>
-                                        <ng-container *ngIf="docadm.percartapastor">
-                                          <ng-container *ngIf="esImagen(docadm.percartapastor); else noImagenCarta">
-                                            <p-image
-                                              [src]="userProfilePhotoDocumentoAdmision + '/' + docadm.percartapastor"
-                                              alt="Carta"
-                                              width="100"
-                                              height="100"
-                                              [preview]="true"
-                                              [imageStyle]="{'border-radius': '10%', 'object-fit': 'cover'}"
-                                            ></p-image>
-                                          </ng-container>
-                                          <ng-template #noImagenCarta>
-                                            <button
-                                              pButton
-                                              pRipple
-                                              icon="pi pi-file-pdf"
-                                              label="Ver PDF"
-                                              class="p-button-rounded p-button-text p-button-info mr-2"
-                                              (click)="mostrarDocumentoAdmision(docadm.percartapastor)"
-                                              pTooltip="Mostrar"
-                                              tooltipPosition="top"
-                                            ></button>
-                                          </ng-template>
-                                        </ng-container>
-                                      </td>
-                                      <td>
-                                            {{docadm.perobservacion}}
-                                      </td>
-                                    <ng-template #noRegistro>...</ng-template>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td colspan="5">No se encontró la información solicitada.</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </p-card>
+                                </p-card>
+                            </p-tabPanel>
+                    </p-tabView>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </p-card>
+</p-card>
 
 <!-- Dialog Información Personal -->
 
@@ -636,20 +624,23 @@
     [modal]="true"
     class="p-fluid"
     [breakpoints]="{ '960px': '75vw' }"
-    [style]="{ width: '50vw' }"
+    [style]="{ width: '30vw' }"
     [draggable]="false"
     [resizable]="false"
     [maximizable]="true"
+    blockScroll="true"
 >
+    <ng-template pTemplate="header"><label class="text-xl font-bold block mb-2" for="infoper">Información Personal</label></ng-template>
     <form [formGroup]="infoPersonalForm" novalidate>
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-6">
+        <div class="grid p-fluid">
+            <div class="col-12">
                 <label class="mb-2 block font-bold" for="pernrohijos">Número de Hijos</label>
                 <p-inputNumber
                     formControlName="pernrohijos"
                     [showButtons]="true"
                     inputId="pernrohijos"
                     placeholder="Ingrese el número de hijos"
+                    class="mb-2"
                 ></p-inputNumber>
                 <small
                     class="p-error block"
@@ -663,13 +654,14 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <label class="mb-2 block font-bold" for="peredad">Edad</label>
                 <p-inputNumber
                     formControlName="peredad"
                     [showButtons]="true"
                     inputId="peredad"
                     placeholder="Ingrese la edad"
+                    class="mb-1"
                 ></p-inputNumber>
                 <small
                     class="p-error block"
@@ -683,8 +675,8 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
-                <label class="block font-bold" for="tipoDocumento">Tipo Profesión</label>
+            <div class="col-12">
+                <label class="block font-bold mb-2" for="tipoDocumento">Tipo Profesión</label>
                 <p-dropdown
                     class="my-2"
                     id="tipoProfesion"
@@ -698,6 +690,7 @@
                     filterBy="pronombre"
                     [showClear]="true"
                     placeholder="Seleccionar un Tipo de Profesión"
+                    styleClass="mb-2"
                 ></p-dropdown>
                 <small class="p-success block" *ngIf="infoPersonalForm.get('tipoProfesion').valid">
                     El tipo de documento es valido.
@@ -713,14 +706,15 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
-                <label for="perlugconversion" class="block font-bold">Lugar Conversión</label>
+            <div class="col-12">
+                <label for="perlugconversion" class="block font-bold mb-2">Lugar Conversión</label>
                 <textarea id="perlugconversion"
                     pInputTextarea
                     formControlName="perlugconversion"
                     rows="1"
                     cols="30"
                     placeholder="Ingrese el lugar de conversión"
+                    class="mb-2"
                 ></textarea>
                 <small
                     class="p-error block"
@@ -734,8 +728,8 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block" for="perfecconversion">Fecha Conversión</label>
+            <div class="col-12">
+                <label class="font-bold block mb-2" for="perfecconversion">Fecha Conversión</label>
                 <p-calendar
                     id="perfecconversion"
                     class="my-2"
@@ -744,6 +738,7 @@
                     formControlName="perfecconversion"
                     [ngClass]="{ 'ng-dirty': infoPersonalForm.get('perfecconversion').touched, 'valid-field': infoPersonalForm.get('perfecconversion').valid }"
                     placeholder="Ingrese la fecha de conversión"
+                    styleClass="mb-2"
                 ></p-calendar>
                 <small
                     class="p-error block"
@@ -764,7 +759,7 @@
 
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <div class="flex">
                     <label class="font-bold block mb-2" for="perbautismoaguas">¿Bautismo en aguas?</label> <br>
                 </div>
@@ -798,7 +793,7 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <div class="flex">
                     <label class="font-bold block mb-2" for="perbautizoespiritu">¿Bautismo en Espíritu Santo?</label>
                 </div>
@@ -832,9 +827,9 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="pernomiglesia" pInputText formControlName="pernomiglesia">
+                    <input type="text" id="pernomiglesia" pInputText formControlName="pernomiglesia" class="mb-2">
                     <label for="pernomiglesia">Nombre de la Iglesia</label>
                 </span>
                 <small
@@ -849,9 +844,9 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="perdiriglesia" pInputText formControlName="perdiriglesia">
+                    <input type="text" id="perdiriglesia" pInputText formControlName="perdiriglesia" class="mb-2">
                     <label for="perdiriglesia">Dirección de la Iglesia</label>
                 </span>
                 <small
@@ -866,9 +861,9 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="pernompastor" pInputText formControlName="pernompastor">
+                    <input type="text" id="pernompastor" pInputText formControlName="pernompastor" class="mb-2">
                     <label for="pernompastor">Nombre del Pastor</label>
                 </span>
                 <small
@@ -882,12 +877,13 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <span class="font-bold block mb-2">Número de celular de su Pastor</span>
                 <p-inputMask
                     mask="+999 99999999"
                     formControlName="percelpastor"
                     placeholder="+591 77777777"
+                    styleClass="mb-2"
                 ></p-inputMask>
 
                 <small
@@ -908,13 +904,14 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <label class="mb-2 block font-bold" for="perexperiencia">Años de experiencia en el ministerio cristiano:</label>
                 <p-inputNumber
                     formControlName="perexperiencia"
                     [showButtons]="true"
                     inputId="perexperiencia"
                     placeholder="Ingrese la experiencia"
+                    styleClass="mb-2"
                 ></p-inputNumber>
                 <small
                     class="p-error block"
@@ -928,14 +925,15 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
-                <label for="permotivo" class="block font-bold">El motivo por el cual quiere estudiar en I.B.C.I:</label>
+            <div class="col-12">
+                <label for="permotivo" class="block font-bold mb-2">El motivo por el cual quiere estudiar en I.B.C.I:</label>
                 <textarea id="permotivo"
                     pInputTextarea
                     formControlName="permotivo"
-                    rows="3"
+                    rows="4"
                     cols="30"
                     placeholder="Ingrese el motivo"
+                    class="mb-2"
                 ></textarea>
                 <small
                     class="p-error block"
@@ -949,14 +947,15 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
-                <label for="perplanesmetas" class="block font-bold">¿Cuáles son sus planes y metas futuras para su servicio en el ministerio?</label>
+            <div class="col-12">
+                <label for="perplanesmetas" class="block font-bold mb-2">¿Cuáles son sus planes y metas futuras para su servicio en el ministerio?</label>
                 <textarea id="permotivo"
                     pInputTextarea
                     formControlName="perplanesmetas"
-                    rows="3"
+                    rows="4"
                     cols="30"
                     placeholder="Ingrese sus planes y metas"
+                    class="mb-2"
                 ></textarea>
                 <small
                     class="p-error block"
@@ -970,7 +969,7 @@
                 </small>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <label class="font-bold block mb-2" for="perobservacion">Observación</label>
                 <textarea
                     inputId="textarea"
@@ -982,7 +981,7 @@
                 ></textarea>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="col-12">
                 <label class="font-bold block" for="perestado">Estado</label>
                 <div class="flex align-items-center justify-content-center">
                     <p-selectButton
@@ -995,7 +994,6 @@
             </div>
         </div>
     </form>
-
     <ng-template pTemplate="footer">
         <button
             pButton
@@ -1015,7 +1013,6 @@
         ></button>
     </ng-template>
 </p-dialog>
-
 <!-- Dialog Información Académica -->
 
 <p-dialog
@@ -1024,16 +1021,16 @@
     [modal]="true"
     class="p-fluid"
     [breakpoints]="{ '960px': '75vw' }"
-    [style]="{ width: '25vw' }"
+    [style]="{ width: '30vw' }"
     [draggable]="false"
     [resizable]="false"
     [maximizable]="true"
 >
     <form [formGroup]="infoAcademicaForm" novalidate>
-        <div class="grid p-fluid mt-3">
+        <div class="grid p-fluid">
 
-            <div class="field col-12">
-                <label for="tipoEducacion" class="font-bold block">Tipo Educación</label>
+            <div class="col-12">
+                <label for="tipoEducacion" class="mb-2 font-bold block">Tipo Educación</label>
                 <p-dropdown
                     class="my-2"
                     id="tipoEducacion"
@@ -1047,6 +1044,7 @@
                     filterBy="edunombre"
                     [showClear]="true"
                     placeholder="Seleccionar un Tipo de Educación"
+                    styleClass="mb-2"
                 ></p-dropdown>
                 <small class="p-success block" *ngIf="infoAcademicaForm.get('tipoEducacion').valid">
                     El tipo de educación es valido.
@@ -1062,9 +1060,9 @@
                 </small>
             </div>
 
-            <div class="field col-12">
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="pernominstitucion" pInputText formControlName="pernominstitucion">
+                    <input type="text" id="pernominstitucion" pInputText formControlName="pernominstitucion" class="mb-2">
                     <label for="pernominstitucion">Nombre de la Institución</label>
                 </span>
                 <small
@@ -1079,9 +1077,9 @@
                 </small>
             </div>
 
-            <div class="field col-12">
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="perdirinstitucion" pInputText formControlName="perdirinstitucion">
+                    <input type="text" id="perdirinstitucion" pInputText formControlName="perdirinstitucion" class="mb-2">
                     <label for="perdirinstitucion">Dirección de la institución</label>
                 </span>
                 <small
@@ -1096,13 +1094,14 @@
                 </small>
             </div>
 
-            <div class="field col-12">
+            <div class="col-12">
                 <label class="mb-2 block font-bold" for="pergescursadas">Años Cursados</label>
                 <p-inputNumber
                     formControlName="pergescursadas"
                     [showButtons]="true"
                     inputId="pergescursadas"
                     placeholder="Ingrese los años cursados"
+                    class="mb-2"
                 ></p-inputNumber>
                 <small
                     class="p-error block"
@@ -1116,8 +1115,8 @@
                 </small>
             </div>
 
-            <div class="field col-12">
-                <label class="font-bold block" for="perfechas">Fechas</label>
+            <div class="col-12">
+                <label class="mb-2 font-bold block" for="perfechas">Fechas</label>
                 <textarea
                     class="my-2"
                     inputId="textarea"
@@ -1126,12 +1125,13 @@
                     appendTo="body"
                     pInputTextarea
                     placeholder="Ingrese las fechas de información académica"
+                    class="mb-2"
                 ></textarea>
             </div>
 
-            <div class="field col-12">
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="pertitulo" pInputText formControlName="pertitulo">
+                    <input type="text" id="pertitulo" pInputText formControlName="pertitulo" class="mb-2">
                     <label for="pertitulo">Titulo Obtenido</label>
                 </span>
                 <small
@@ -1146,8 +1146,8 @@
                 </small>
             </div>
 
-            <div class="field col-12">
-                <label class="font-bold block" for="perobservacion">Observación</label>
+            <div class="col-12">
+                <label class="mb-2 font-bold block" for="perobservacion">Observación</label>
                 <textarea
                     class="my-2"
                     inputId="textarea"
@@ -1155,10 +1155,11 @@
                     formControlName="perobservacion"
                     appendTo="body"
                     pInputTextarea
+                    styleClass="mb-2"
                 ></textarea>
             </div>
 
-            <div class="field col-12">
+            <div class="col-12">
                 <label class="font-bold block" for="perestado">Estado</label>
                 <div class="flex align-items-center justify-content-center">
                     <p-selectButton
@@ -1199,17 +1200,19 @@
     [modal]="true"
     class="p-fluid"
     [breakpoints]="{ '960px': '75vw' }"
-    [style]="{ width: '25vw' }"
+    [style]="{ width: '30vw' }"
     [draggable]="false"
     [resizable]="false"
     [maximizable]="true"
 >
     <form [formGroup]="infoMinisterialForm" novalidate>
-        <div class="grid p-fluid mt-3">
-            <p>CARGOS O MINISTERIOS QUE DESEMPEÑA O HA DESEMPEÑADO EN LA IGLESIA LOCAL, O A NIVEL REGIONAL Y NACIONAL (ejemplo: pastor, copastor, anciano, diacono, lider de jovenes, maestra EBD etc)</p>
-            <div class="field col-12 ">
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <p class="mr-2">CARGOS O MINISTERIOS QUE DESEMPEÑA O HA DESEMPEÑADO EN LA IGLESIA LOCAL, O A NIVEL REGIONAL Y NACIONAL (ejemplo: pastor, copastor, anciano, diacono, lider de jovenes, maestra EBD etc)</p>
+            </div>
+            <div class="col-12">
                 <span class="p-float-label">
-                    <input type="text" id="pernomiglesia" pInputText formControlName="pernomiglesia">
+                    <input type="text" id="pernomiglesia" pInputText formControlName="pernomiglesia" class="mb-2">
                     <label for="pernomiglesia">Nombre de la Iglesia</label>
                 </span>
                 <small
@@ -1224,8 +1227,8 @@
                 </small>
             </div>
 
-            <div class="field col-12 ">
-                <label for="tipoDocumento" class="font-bold block">Tipo Cargo</label>
+            <div class="col-12">
+                <label for="tipoDocumento" class="mb-2 font-bold block">Tipo Cargo</label>
                 <p-dropdown
                     class="my-2"
                     id="tipoCargo"
@@ -1239,6 +1242,7 @@
                     filterBy="carnombre"
                     [showClear]="true"
                     placeholder="Seleccionar un Tipo de Cargo"
+                    styleClass="mb-2"
                 ></p-dropdown>
                 <small class="p-success block" *ngIf="infoMinisterialForm.get('tipoCargo').valid">
                     El tipo de cargo es valido.
@@ -1254,8 +1258,8 @@
                 </small>
             </div>
 
-            <div class="field col-12 ">
-                <label for="pergestion" class="font-bold block">Gestión</label>
+            <div class="col-12">
+                <label for="pergestion" class="mb-2 font-bold block">Gestión</label>
                 <p-dropdown
                     class="my-2"
                     id="pergestion"
@@ -1269,6 +1273,7 @@
                     filterBy="gesid"
                     [showClear]="true"
                     placeholder="Seleccionar una gestión"
+                    styleClass="mb-2"
                 ></p-dropdown>
                 <small class="p-success block" *ngIf="infoMinisterialForm.get('pergestion').valid">
                     La gestión es valido.
@@ -1284,10 +1289,10 @@
                 </small>
             </div>
 
-            <div class="field col-12 ">
+            <div class="col-12">
                 <label class="font-bold block" for="perobservacion">Observación</label>
                 <textarea
-                    class="my-2"
+                    class="my-2 mb-2"
                     inputId="textarea"
                     rows="2" cols="30"
                     formControlName="perobservacion"
@@ -1296,7 +1301,7 @@
                 ></textarea>
             </div>
 
-            <div class="field col-12 ">
+            <div class="col-12">
                 <label class="font-bold block" for="perestado">Estado</label>
                 <div class="flex align-items-center justify-content-center">
                     <p-selectButton

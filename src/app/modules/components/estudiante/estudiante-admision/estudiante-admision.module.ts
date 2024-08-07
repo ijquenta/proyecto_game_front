@@ -41,8 +41,11 @@ import { InputMaskModule } from "primeng/inputmask";
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { TabViewModule } from 'primeng/tabview';
+
 @NgModule({
     imports: [
+        TabViewModule,
         BreadcrumbModule,
         NgxExtendedPdfViewerModule,
         PdfViewerModule,
