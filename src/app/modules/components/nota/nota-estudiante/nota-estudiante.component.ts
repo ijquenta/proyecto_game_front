@@ -58,13 +58,12 @@ export class NotaEstudianteComponent implements OnInit {
                     (result: any) => {
                         this.spinner.hide();
                         this.listarMateriasInscritas = result as Inscripcion[];
-                        console.log("lista_materias_inscritas", this.listarMateriasInscritas)
                         // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
                     },
                     error => {
                         this.spinner.hide();
                         this.errors = error;
-                        console.log("error", error);
+                        console.error("error", error);
                         this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
                     }
                 );
@@ -87,7 +86,7 @@ export class NotaEstudianteComponent implements OnInit {
     },
     error => {
       this.errors = error;
-      console.log("error",error);
+      console.error("error",error);
       this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal!'});
     });
   }

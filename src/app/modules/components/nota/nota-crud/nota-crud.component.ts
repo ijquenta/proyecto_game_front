@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MenuItem, MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Table } from 'primeng/table';
-import { Observable, forkJoin } from 'rxjs';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
+import { catchError, forkJoin, of, tap } from 'rxjs';
 
 import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
@@ -18,6 +16,15 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import { TipoPersona2 } from 'src/app/modules/models/diccionario';
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+interface ColumsTable {
+    field: string;
+    header: string;
+}
+
 @Component({
     templateUrl: './nota-crud.component.html',
     styleUrls: ['../../../../app.component.css']
@@ -61,21 +68,70 @@ export class NotaCrudComponent implements OnInit {
     nota_recuperada_datos: any;
     notasImportadas: boolean = false;
 
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
+
+    selectedColumns: { field: string; header: string }[];
+    colsColumsTable!: ColumsTable[];
+
+    personOptions: TipoPersona2[] = [];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
+    ];
+
+    notaForm: FormGroup;
+
+    private rowIndexCounters: { [key: string]: number } = {};
+    private currentCourse: number | undefined;
+
     constructor(
-        private confirmationService: ConfirmationService,
         private messageService: MessageService,
-        private dialogService: DialogService,
-        private reporteService: ReporteService,
+        private formBuilder: FormBuilder,
         private notaService: NotaService,
         private authService: AuthService,
         private spinner: NgxSpinnerService,
-    ) { }
+        private usuarioService: UsuarioService,
+    ) {
+        this.items = [{label: 'Nota'} , { label: 'Gestionar Notas', routerLink:''},];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+        this.colsColumsTable = [
+            { field: 'curnombre', header: 'Curso' },
+            { field: 'matnombre', header: 'Materia' },
+            { field: 'curmatfecfin', header: 'Fecha Fin' },
+            { field: 'curmatfecini', header: 'Fecha Inicio' },
+            { field: 'pernomcompleto', header: 'Docente' },
+            // { field: 'pernrodoc', header: 'N° Documento' },
+            { field: 'curmatdescripcion', header: 'Descripción' },
+            { field: 'num_estudiantes', header: 'N° Estudiantes' },
+            { field: 'curmatusureg', header: 'Usuario Registrado' },
+            { field: 'curmatusumod', header: 'Usuario Modificado' },
+            { field: 'curmatestado', header: 'Estado' },
+        ];
+
+        this.selectedColumns = [
+            { field: 'matnombre', header: 'Materia' },
+            { field: 'curmatfecini', header: 'Fecha Inicio' },
+            { field: 'curmatfecfin', header: 'Fecha Fin' },
+            { field: 'pernomcompleto', header: 'Docente' },
+            { field: 'num_estudiantes', header: 'N° Estudiantes' },
+            { field: 'curmatestado', header: 'Estado' },
+        ];
+
+        this.notaForm = this.formBuilder.group({
+            not1: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+            not2: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+            not3: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+            notfinal: [0, [Validators.min(0), Validators.max(100)]]
+        });
+    }
 
     ngOnInit(): void {
         this.verMateriaClicked = true;
         this.getUserData();
         this.listarCursosMaterias();
-
         this.notaEjemplo.pernomcompleto = "Apellido Paterno Apellido Materno Nombres";
         this.notaEjemplo.pernrodoc = "9973412";
         this.notaEjemplo.not1=100;
@@ -83,11 +139,10 @@ export class NotaCrudComponent implements OnInit {
         this.notaEjemplo.not3=100;
         this.notaEjemplo.notfinal=100;
         this.listarNotaEstudianteCursoImportar.push(this.notaEjemplo)
-        console.log("notas ejemplos: ", this.listarNotaEstudianteCursoImportar)
+        this.getAllPersonCombo();
     }
 
     rptnotaMateria(){
-        console.log("curmatid", this.curmatid)
         const criterio = {
             curmatid: this.curmatid
         }
@@ -105,21 +160,20 @@ export class NotaCrudComponent implements OnInit {
     listarCursosMaterias() {
         this.spinner.show();
         this.loading = true;
-        this.notaService.listarNotaCurso().subscribe(
-            (result: any) => {
+        this.notaService.listarNotaCurso().subscribe({
+            next: (result: any) => {
                 this.listarMateriasInscritas = result as CursoMateria[];
                 this.loading = false;
                 this.spinner.hide();
             },
-            (error: any) => {
+            error: (error: any) => {
                 this.errors = error;
                 this.loading = false
                 this.spinner.hide();;
-                console.log("error", error);
+                console.error("error", error);
                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
             }
-        );
-
+        });
     }
 
     listarNotaMateria(data: CursoMateria) {
@@ -138,67 +192,129 @@ export class NotaCrudComponent implements OnInit {
         this.notaService.listarNotaEstudianteCurso(criterio).subscribe((result: any) => {
             this.listarNotaEstudianteCurso = result as Nota[];
             this.listarNotaEstudianteCursoRespaldo = this.listarNotaEstudianteCurso;
-            console.log("lista de notas respaldo: ", this.listarNotaEstudianteCursoRespaldo)
             this.loading2 = false;
         },
             error => {
                 this.errors = error;
-                console.log("error", error);
+                console.error("error", error);
                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
             });
     }
 
+    /**
+     * Método que se ejecuta al añadir una nueva nota.
+     * @param data - Datos de la nota a registrar.
+     */
     addNota(data: any) {
+        this.nota1 = 0;
+        this.nota2 = 0;
+        this.nota3 = 0;
+        this.notafinal = 0;
+        this.notaForm.reset();
         this.nota = { ...data };
         this.optionNota = true;
         this.notaRegistroDialog = true;
         this.calcularNotaFinal();
     }
 
+    /**
+     * Método que se ejecuta al actualizar una nota existente.
+     * @param data - Objeto Nota que contiene los datos a actualizar.
+     */
     updateNota(data: Nota) {
+        this.nota = new Nota();
+        this.notaForm.reset();
         this.optionNota = false;
         this.nota = { ...data };
+
+        // Actualiza los valores del formulario con los datos de la nota
+        this.notaForm.patchValue({
+            not1: this.nota.not1,
+            not2: this.nota.not2,
+            not3: this.nota.not3,
+            notfinal: this.nota.notfinal
+        });
+
         this.notaRegistroDialog = true;
         this.calcularNotaFinal();
     }
+
+    /**
+     * Método para calcular la nota final promediando las tres notas (not1, not2, not3).
+     * Si una o más notas no están presentes o son 0, no se incluyen en el cálculo.
+     */
     calcularNotaFinal() {
-        console.log('Notas antes de filtrar:', this.nota.not1, this.nota.not2, this.nota.not3);
-        const notas = [this.nota.not1, this.nota.not2, this.nota.not3].filter(nota => nota !== null && nota !== undefined && nota !== 0);
-        console.log('Notas después de filtrar:', notas);
-        this.nota.notfinal = notas.length > 0 ? notas.reduce((a, b) => a + b, 0) / notas.length : 0;
-        console.log('Nota final calculada:', this.nota.notfinal);
+        // Convertir los valores de las notas a números
+        const not1 = parseFloat(this.notaForm.value.not1) || 0;
+        const not2 = parseFloat(this.notaForm.value.not2) || 0;
+        const not3 = parseFloat(this.notaForm.value.not3) || 0;
+
+        // Crear un array con las notas y filtrar las que son mayores que 0
+        const notasValidas = [not1, not2, not3].filter(nota => nota > 0);
+
+        // Calcular el promedio de las notas válidas y asignarlo a notfinal, con dos decimales
+        if (notasValidas.length > 0) {
+            const sumaNotas = notasValidas.reduce((a, b) => a + b, 0);
+            this.nota.notfinal = parseFloat((sumaNotas / notasValidas.length).toFixed(2));
+        } else {
+            this.nota.notfinal = 0;
+        }
         return this.nota;
     }
+
+    /**
+     * Método para registrar o actualizar la nota en la base de datos.
+     * Verifica si el formulario es válido antes de intentar registrar la nota.
+     */
+    registrarNota() {
+        if (this.notaForm.invalid) {
+            this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+            return Object.values(this.notaForm.controls).forEach(control => {
+                control.markAllAsTouched();
+                control.markAsDirty();
+            });
+        }
+
+        // Asignación de valores adicionales antes de guardar
+        this.nota.notusureg = this.usuario.usuname;
+        this.nota.notusumod = this.usuario.usuname;
+        this.nota.notestado = 1;
+        this.nota.tipo = this.optionNota ? 1 : 2;
+
+        // Recalcula la nota final antes de guardar
+        this.calcularNotaFinal();
+
+        this.loading2 = true;
+
+        this.nota.not1 = this.notaForm.value.not1;
+        this.nota.not2 = this.notaForm.value.not2;
+        this.nota.not3 = this.notaForm.value.not3;
+
+        // Llama al servicio para registrar o actualizar la nota
+        this.notaService.gestionarNota(this.nota).subscribe({
+            next: (result: any) => {
+                this.notaRegistroDialog = false;
+                this.nota = new Nota();
+                const criterio = { curmatid: this.curmatid };
+                this.loading2 = false;
+                this.listarNotas(criterio);
+                this.messageService.add({ severity: this.optionNota ? 'info' : 'success', summary: 'Correcto', detail: this.optionNota ? 'Nota registrada.' : 'Nota modificada.' });
+            },
+            error: error => {
+                this.errors = error;
+                console.error("error", error);
+                this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
+            }
+        });
+    }
+
     hideDialog() {
         this.notaRegistroDialog = false;
         this.nota1 = 0;
         this.nota2 = 0;
         this.nota3 = 0;
         this.notafinal = 0;
-    }
-    registrarNota() {
-        this.nota.notusureg = this.usuario.usuname;
-        this.nota.notusumod = this.usuario.usuname;
-        this.nota.notestado = 1;
-        this.nota.tipo = this.optionNota ? 1 : 2;
-        this.calcularNotaFinal();
-        this.loading2 = true;
-        this.notaService.gestionarNota(this.nota).subscribe(
-            (result: any) => {
-                this.notaRegistroDialog = false;
-                this.nota = new Nota();
-                const notas = 0;
-                const criterio = { curmatid: this.curmatid };
-                this.loading2 = false;
-                this.listarNotas(criterio);
-                this.messageService.add({ severity: this.optionNota ? 'info' : 'success', summary: 'Correcto', detail: this.optionNota ? 'Nota registrada.' : 'Nota modificada.' });
-            },
-            error => {
-                this.errors = error;
-                console.log("error", error);
-                this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
-            }
-        );
+        this.notaForm.reset();
     }
     // Método de busqueda en la tabla
     onGlobalFilter(table: Table, event: Event) {
@@ -254,6 +370,7 @@ export class NotaCrudComponent implements OnInit {
             this.saveAsExcelFile(excelBuffer, 'lista_curso_materia');
         });
     }
+
     exportExcelModel() {
         import('xlsx').then((xlsx) => {
             const fieldsToExport = [
@@ -279,6 +396,7 @@ export class NotaCrudComponent implements OnInit {
             this.saveAsExcelFile(excelBuffer, 'modelo_notas');
         });
     }
+
     saveAsExcelFile(buffer: any, fileName: string): void { // Método para guardar en un archivo excel
         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         let EXCEL_EXTENSION = '.xlsx';
@@ -287,108 +405,242 @@ export class NotaCrudComponent implements OnInit {
         });
         FileSaver.saveAs(data, fileName + EXCEL_EXTENSION);
     }
+
+    /**
+     * Maneja el evento de cambio de archivo para procesar y extraer datos de un archivo Excel.
+     * @param {any} event - El evento que contiene la información del archivo seleccionado.
+     */
     onFileChange(event: any) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+        // Obtener el primer archivo del evento
+        const file = event.files[0];
 
-        reader.onload = (e: any) => {
-          try {
-            const workbook = XLSX.read(e.target.result, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            this.nota_recuperada_datos = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        // Verificar que se ha seleccionado un archivo y que es de tipo Excel
+        if (file && this.isExcelFile(file)) {
+            const reader = new FileReader();
 
-            // Transformar los datos a un formato deseado y contar la cantidad de registros
-            this.nota_recuperada = this.nota_recuperada_datos.slice(1).map((row: any) => {
-              return {
-                insid: row[0],
-                pernomcompleto: row[1],
-                pernrodoc: row[2],
-                not1: row[3] || 0,
-                not2: row[4] || 0,
-                not3: row[5] || 0,
-                notfinal: row[6] || 0
-              };
-            });
+            /**
+             * Procesa el archivo una vez que se ha leído completamente.
+             * @param {any} e - El evento de carga del archivo que contiene los datos leídos.
+             */
+            reader.onload = (e: any) => {
+                try {
+                    // Obtener los datos en ArrayBuffer del archivo cargado
+                    const arrayBuffer = e.target.result;
 
-            const cantidadRegistros = this.nota_recuperada.length;
+                    // Leer los datos de Excel utilizando XLSX
+                    const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
 
-            this.notasImportadas = true;
-            console.log("Cantidad de registros subidos correctamente:", cantidadRegistros);
-            console.log("lista de notas a insertar : ", this.nota_recuperada)
+                    // Obtener el nombre de la primera hoja en el archivo
+                    const sheetName = workbook.SheetNames[0];
 
-            this.messageService.add({ severity: 'success', summary: 'Subido correctamente', detail: `Se subieron ${cantidadRegistros} registros correctamente`, life: 5000 });
-          } catch (error) {
-            console.error("Error al recuperar los datos del archivo:", error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al recuperar los datos del archivo' });
-          }
-        };
+                    // Obtener la hoja correspondiente al nombre obtenido
+                    const sheet = workbook.Sheets[sheetName];
 
-        reader.readAsBinaryString(file);
+                    // Convertir la hoja en un JSON basado en la estructura de la hoja (matriz bidimensional)
+                    this.nota_recuperada_datos = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                    // Verificar si se han recuperado datos válidos
+                    if (this.nota_recuperada_datos && this.nota_recuperada_datos.length > 1) {
+                        // Transformar los datos a un formato deseado y verificar que las filas estén completas
+                        this.nota_recuperada = this.nota_recuperada_datos.slice(1).map((row: any) => {
+                            // Asegurar que la fila no sea nula y tenga el número esperado de columnas
+                            if (row && row.length >= 7) {
+                                return {
+                                    insid: row[0] || null,                // ID de inscripción
+                                    pernomcompleto: row[1] || '',        // Nombre completo de la persona
+                                    pernrodoc: row[2] || '',             // Número de documento
+                                    not1: row[3] || 0,                   // Nota 1
+                                    not2: row[4] || 0,                   // Nota 2
+                                    not3: row[5] || 0,                   // Nota 3
+                                    notfinal: row[6] || 0                // Nota final
+                                };
+                            } else {
+                                // Si la fila está incompleta o vacía, se registra una advertencia y se ignora
+                                console.warn("Fila incompleta o vacía encontrada:", row);
+                                return null;
+                            }
+                        }).filter(item => item !== null); // Filtrar las filas que no se pudieron procesar
+
+                        // Contar la cantidad de registros válidos
+                        const cantidadRegistros = this.nota_recuperada.length;
+
+                        // Indicar que se han importado notas
+                        this.notasImportadas = true;
+
+                        // Mostrar un mensaje de éxito con la cantidad de registros subidos
+                        this.messageService.add({ severity: 'success', summary: 'Archivo', detail: `Se recuperaron ${cantidadRegistros} registros correctamente`, life: 5000 });
+                    } else {
+                        // Si no se han recuperado datos válidos, mostrar un mensaje de error
+                        console.error("El archivo no contiene datos válidos.");
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo no contiene datos válidos' });
+                    }
+                } catch (error) {
+                    // Manejar cualquier error ocurrido durante la lectura y el procesamiento del archivo
+                    console.error("Error al recuperar los datos del archivo:", error);
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al recuperar los datos del archivo' });
+                }
+            };
+
+            // Leer el archivo como ArrayBuffer
+            reader.readAsArrayBuffer(file);
+        } else {
+            // Mostrar un mensaje de error si el archivo no es válido
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo debe ser un documento Excel (.xlsx o .xls)' });
+        }
+    }
+
+    /**
+     * Verifica si el archivo es un documento Excel.
+     * @param {File} file - El archivo a verificar.
+     * @returns {boolean} Retorna verdadero si el archivo es un documento Excel, falso en caso contrario.
+     */
+    isExcelFile(file: File): boolean {
+        const validExtensions = ['.xlsx', '.xls'];
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+        return fileExtension ? validExtensions.includes('.' + fileExtension) : false;
     }
 
     abrirModalNotaSubir(){
         this.notasImportadas = true;
     }
 
+    /**
+     * Sube un conjunto de notas a través del servicio de `notaService` y maneja el resultado de cada subida.
+     * @param {Nota[]} notas_a_subir - Array de notas que se desea subir.
+     */
     subirNotas(notas_a_subir: Nota[]) {
+
+        if(notas_a_subir.length === 0){
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se seleccionó ningún archivo' });
+            return;
+        }
+
         // Arreglo para almacenar las notas subidas correctamente
         const notasSubidas: Nota[] = [];
 
-        // Contador para llevar el registro de las notas que no pudieron ser subidas
-        let notasNoSubidasCount = 0;
+        // Arreglo para almacenar las notas que no pudieron ser subidas
+        let notasNoSubidas: Nota[] = [];
 
-        // Iterar sobre cada nota en el array
-        notas_a_subir.forEach(nota => {
-            // console.log("Nota antes de importar: ", nota);
+        // Indica que la operación de subida de notas está en curso
+        this.loading2 = true;
 
-            // Establecer propiedades de la nota
-            nota.notusureg = this.usuario.usuname;
-            nota.notusumod = this.usuario.usuname;
-            nota.notid = null;
-            nota.notestado = 1;
-            nota.tipo = 1;
+        /**
+         * Mapea cada nota en un Observable, configurando las propiedades necesarias
+         * y utilizando `gestionarNota` para subirla.
+         * @returns {Observable<any>} Un array de observables que realizarán la operación de subida de notas.
+         */
+        const observables = notas_a_subir.map(nota => {
+            // Configurar propiedades de la nota
+            nota.notusureg = this.usuario.usuname; // Usuario que registra la nota
+            nota.notusumod = this.usuario.usuname; // Usuario que modifica la nota
+            nota.notid = null; // ID de la nota (nueva nota)
+            nota.notestado = 1; // Estado de la nota (activa)
+            nota.tipo = 1; // Tipo de la nota
 
-            // Realizar la solicitud de subida de la nota
-            this.loading2 = true;
-            this.notaService.gestionarNota(nota).subscribe(
-                (result: any) => {
-                    // Manejar la respuesta satisfactoria
+            /**
+             * Llama al servicio para gestionar la nota, agrega la nota al array `notasSubidas` si se sube correctamente,
+             * o la agrega al array `notasNoSubidas` en caso de error.
+             * @returns {Observable<any>} Observable que maneja la subida de la nota.
+             */
+            return this.notaService.gestionarNota(nota).pipe(
+                // Si la subida es exitosa, agrega la nota a `notasSubidas`
+                tap(() => notasSubidas.push(nota)),
+                // Si hay un error, agrega la nota a `notasNoSubidas` y maneja el error sin interrumpir el flujo
+                catchError(error => {
                     this.loading2 = false;
-                    this.notasImportadas = false;
-                    notasSubidas.push(nota); // Agregar la nota a las notas subidas correctamente
-                    this.listarNotas({ curmatid: this.curmatid });
-                },
-                error => {
-                    // Manejar errores
-                    this.errors = error;
-                    this.loading2 = false;
-                    notasNoSubidasCount++; // Incrementar el contador de notas no subidas
-                    console.log("Error", error);
-                }
+                    notasNoSubidas.push(nota);
+                    console.error("Error al subir nota:", error);
+                    // Devuelve un observable vacío para continuar con el flujo
+                    return of(null);
+                })
             );
         });
 
-        // Limpiar el diálogo de registro de notas y actualizar la lista de notas
-        // this.notaRegistroDialog = false;
+        /**
+         * Ejecuta todos los observables en paralelo y espera a que todos se completen antes de emitir un único valor.
+         * Luego, maneja la lógica de la interfaz de usuario y muestra mensajes de éxito o error.
+         */
+        forkJoin(observables).subscribe(() => {
+            // Indica que la operación de subida de notas ha finalizado
+            this.loading2 = false;
 
-        console.log("cantidad de errores", notasNoSubidasCount)
-        // Mostrar mensaje con el resultado de la subida de notas
-        if (notasNoSubidasCount > 0) {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: `No se pudieron subir ${notasNoSubidasCount} notas.` });
-        } else {
-            const message = `Se han subido ${notasSubidas.length} notas correctamente.`;
-            this.messageService.add({ severity: 'info', summary: 'Notas subidas correctamente', detail: message });
-        }
+            // Reinicia la variable `notasImportadas` para permitir una nueva importación
+            this.notasImportadas = false;
+
+            // Actualiza la lista de notas después de la subida
+            this.listarNotas({ curmatid: this.curmatid });
+
+            // Mostrar un mensaje de error si alguna nota no se pudo subir
+            if (notasNoSubidas.length > 0) {
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: `No se pudieron subir ${notasNoSubidas.length} notas.` });
+            }
+
+            // Mostrar un mensaje de éxito si al menos una nota se subió correctamente
+            if (notasSubidas.length > 0) {
+                const message = `Se han subido ${notasSubidas.length} notas correctamente.`;
+                this.messageService.add({ severity: 'success', summary: 'Notas subidas correctamente', detail: message });
+            }
+        });
     }
+
+    /**
+     * Ocultar dialog subir nota
+     */
     hideSubirNota(){
         this.notasImportadas = false
         this.nota_recuperada = null;
     }
 
+    /**
+     * Obtener la lista de las personas para el combo de opciones.
+     */
+    getAllPersonCombo() {
+        this.usuarioService.getTipoPersonaDocente().subscribe((result: any) => {
+            this.personOptions = result.map((persona: any) => ({
+                label: persona.pernomcompleto,
+                value: persona.pernomcompleto,
+                pernrodoc: persona.pernrodoc,
+                perfoto: persona.perfoto,
+            }));
+        });
+    }
 
+    /**
+     * Calcula el total de estudiantes para un curso.
+     * @param curid ID del curso.
+     * @returns Total de estudiantes.
+     */
+    calculateStudentTotal(curid: number): number {
+        return this.listarMateriasInscritas
+            .filter((materiaInscrita) => materiaInscrita.curid === curid)
+            .reduce(
+                (total, materiaInscrita) =>
+                    total + materiaInscrita.num_estudiantes,
+                0
+            );
+    }
 
+    /**
+    * Resetea el índice de fila para el grupo de curso.
+    * @param rowGroupIndex Índice del grupo de filas.
+    * @returns Siempre true.
+    */
+    resetRowIndex(rowGroupIndex: number): boolean {
+        this.currentCourse = this.listarMateriasInscritas[rowGroupIndex]?.curid;
+        this.rowIndexCounters[this.currentCourse] = 0;
+        return true;
+    }
 
-
+    /**
+     * Obtiene el índice de fila para el grupo actual.
+     * @param rowIndex Índice de fila.
+     * @returns Índice de fila incrementado.
+     */
+    getRowIndex(rowIndex: number): number {
+        if (!this.rowIndexCounters[this.currentCourse]) {
+            this.rowIndexCounters[this.currentCourse] = 0;
+        }
+        return ++this.rowIndexCounters[this.currentCourse];
+    }
 }
 

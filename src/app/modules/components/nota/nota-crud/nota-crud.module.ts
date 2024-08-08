@@ -33,8 +33,16 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TabViewModule } from 'primeng/tabview';
 import { AccordionModule } from 'primeng/accordion';
+import { CardModule } from 'primeng/card';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        SidebarModule,
+        ReactiveFormsModule,
+        BreadcrumbModule,
+        CardModule,
         AccordionModule,
         TabViewModule,
         ChipModule,

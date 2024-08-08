@@ -2,10 +2,10 @@ export class Nota {
     tipo: any;
 	notid: any;
 	insid: any;
-	not1: any;
-	not2: any;
-	not3: any;
-	notfinal: any;
+	not1: number;
+	not2: number;
+	not3: number;
+	notfinal: number;
 	notusureg: any;
 	notfecreg: any;
 	notusumod: any;

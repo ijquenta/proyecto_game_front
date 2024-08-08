@@ -21,7 +21,7 @@ export class NotaService {
         return this.http.get(`${API_URL}/listarNota`);
     }
     gestionarNota(data) {
-        return this.http.post(`${API_URL}/gestionarNota`, data);
+        return this.http.post(`${API_URL}/gestionarNota`, data, { context: checktoken()});
     }
     listarNotaEstudiante(data) {
         return this.http.post(`${API_URL}/listarNotaEstudiante`, data);

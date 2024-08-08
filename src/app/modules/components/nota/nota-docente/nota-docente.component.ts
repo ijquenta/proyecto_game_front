@@ -79,7 +79,7 @@ export class NotaDocenteComponent implements OnInit {
                     },
                     error => {
                         this.errors = error;
-                        console.log("error", error);
+                        console.error("error", error);
                         this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
                     }
                 );
@@ -102,12 +102,11 @@ export class NotaDocenteComponent implements OnInit {
         this.notaService.listarNotaEstudianteCurso(criterio).subscribe((result: any) => {
             this.listarNotaEstudianteCurso = result as Nota[];
             this.listarNotaEstudianteCursoRespaldo = this.listarNotaEstudianteCurso;
-            console.log("lista de notas respaldo: ", this.listarNotaEstudianteCursoRespaldo)
             this.loading2 = false;
         },
         error => {
             this.errors = error;
-            console.log("error", error);
+            console.error("error", error);
             this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
         });
     }
@@ -162,7 +161,7 @@ export class NotaDocenteComponent implements OnInit {
     //         },
     //             error => {
     //                 this.errors = error;
-    //                 console.log("error", error);
+    //                 console.error("error", error);
     //                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
     //             });
     //     }
@@ -184,7 +183,7 @@ export class NotaDocenteComponent implements OnInit {
     //         },
     //             error => {
     //                 this.errors = error;
-    //                 console.log("error", error);
+    //                 console.error("error", error);
     //                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
     //             });
     //     }
@@ -208,7 +207,7 @@ export class NotaDocenteComponent implements OnInit {
             },
             error => {
                 this.errors = error;
-                console.log("error", error);
+                console.error("error", error);
                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
             }
         );
@@ -327,11 +326,7 @@ export class NotaDocenteComponent implements OnInit {
             });
 
             const cantidadRegistros = this.nota_recuperada.length;
-
             this.notasImportadas = true;
-            console.log("Cantidad de registros subidos correctamente:", cantidadRegistros);
-            console.log("lista de notas a insertar : ", this.nota_recuperada)
-
             this.messageService.add({ severity: 'success', summary: 'Subido correctamente', detail: `Se subieron ${cantidadRegistros} registros correctamente`, life: 5000 });
           } catch (error) {
             console.error("Error al recuperar los datos del archivo:", error);
@@ -355,8 +350,6 @@ export class NotaDocenteComponent implements OnInit {
 
         // Iterar sobre cada nota en el array
         notas_a_subir.forEach(nota => {
-            console.log("Nota antes de importar: ", nota);
-
             // Establecer propiedades de la nota
             nota.notusureg = this.usuario.usuname;
             nota.notusumod = this.usuario.usuname;
@@ -379,15 +372,11 @@ export class NotaDocenteComponent implements OnInit {
                     this.errors = error;
                     this.loading2 = false;
                     notasNoSubidasCount++; // Incrementar el contador de notas no subidas
-                    console.log("Error", error);
+                    console.error("error", error);
                 }
             );
         });
-
         // Limpiar el diálogo de registro de notas y actualizar la lista de notas
-        // this.notaRegistroDialog = false;
-
-        console.log("cantidad de errores", notasNoSubidasCount)
         // Mostrar mensaje con el resultado de la subida de notas
         if (notasNoSubidasCount > 0) {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: `No se pudieron subir ${notasNoSubidasCount} notas.` });
@@ -403,18 +392,15 @@ export class NotaDocenteComponent implements OnInit {
         this.nota_recuperada = null;
     }
     rptnotaMateria(){
-        console.log("curmatid", this.curmatid)
         const criterio = {
             curmatid: this.curmatid
         }
         this.notaService.rptNotaCursoMateria(criterio)
     }
     rptNotaCursoMateriaDocente(){
-        console.log("curmatid", this.curmatid)
         const criterio = {
             periddocente: this.usuario.perid
         }
-        console.log("rptCMD: ", criterio)
         this.notaService.rptNotaEstudianteMateriaDocente(criterio)
     }
 }
