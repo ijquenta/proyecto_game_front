@@ -7,6 +7,11 @@
     font-weight: 700;
     font-size: 12px;
     letter-spacing: .3px;
+    display: inline-block; /* Asegura que el div se ajuste al contenido */
+}
+
+.badge-container {
+    display: inline-block; /* Asegura que el div se ajuste al contenido */
 }
 
 .product-badge {
