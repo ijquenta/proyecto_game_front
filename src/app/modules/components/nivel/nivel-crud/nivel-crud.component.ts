@@ -285,7 +285,7 @@ export class NivelCrudComponent implements OnInit {
                 this.nivel = {};
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
                 this.messageService.add({ severity: 'warn', summary: 'Ups! error.', detail: 'Algo salio mal.', life: 3000 });
             }
         );
@@ -302,7 +302,7 @@ export class NivelCrudComponent implements OnInit {
                 this.nivel = {};
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
             this.messageService.add({ severity: 'warn', summary: 'Ups! error.', detail: 'Algo salio mal.', life: 3000 });
             }
         );
@@ -390,7 +390,7 @@ export class NivelCrudComponent implements OnInit {
                     this.opcionNivel = false;
                 },
                 error => {
-                console.log("error",error);
+                console.error("error",error);
                     this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'});
                 }
             );
@@ -405,7 +405,7 @@ export class NivelCrudComponent implements OnInit {
                     this.opcionNivel = false;
                 },
                 error => {
-                console.log("error",error);
+                console.error("error",error);
                     this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar el Nivel'});
                 }
             );

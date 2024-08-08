@@ -138,7 +138,7 @@ export class EstudianteMateriaComponent implements OnInit {
                 this.curnombre = this.curso.curnombre;
             },
             error: (error: any) => {
-                console.log("Error al obtener los datos del pago:", error);
+                console.error("error al obtener los datos del pago:", error);
                 this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron cargar los datos del pago' });
             }
         });
@@ -149,7 +149,7 @@ export class EstudianteMateriaComponent implements OnInit {
                 this.matnombre = this.materia.matnombre;
             },
             error: (error: any) => {
-                console.log("Error al obtener los datos del pago:", error);
+                console.error("error al obtener los datos del pago:", error);
                 this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron cargar los datos del pago' });
             }
         });
@@ -170,7 +170,7 @@ export class EstudianteMateriaComponent implements OnInit {
                 }));
             },
             error: (error: any) => {
-                console.log("Error al obtener los tipos de pago:", error);
+                console.error("error al obtener los tipos de pago:", error);
                 this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron obtener los tipos de pago' });
             }
         });
@@ -191,7 +191,7 @@ export class EstudianteMateriaComponent implements OnInit {
             error: (error: any) => {
                 this.errors = error;
                 this.loading = false;
-                console.log("Error al listar pagos y estudiantes:", error);
+                console.error("error al listar pagos y estudiantes:", error);
                 this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'Ha ocurrido un error' });
             }
         });

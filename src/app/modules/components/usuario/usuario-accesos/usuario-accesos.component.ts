@@ -211,7 +211,6 @@ export class UsuarioAccesosComponent implements OnInit {
         this.accesoService.getSubMenus().subscribe(
             (data) => {
                 this.submenus = data as any[];
-                // console.log("getSubMenus: ", this.submenus)
             },
             (error) => {
                 console.error('Error in recupered submenus', error);
@@ -350,7 +349,6 @@ export class UsuarioAccesosComponent implements OnInit {
             next: (data) => {
                 this.menus = data as Menu[];
                 this.spinner.hide();
-                // console.log("Menus: ", this.menus)
             },
             error: (error) => {
                 this.spinner.hide();
@@ -375,7 +373,6 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Delete
     MenuDelete(menu: Menu){
-        console.log("MenuDelete: ", menu)
         this.menu = {...menu};
         this.deleteMenuDialog = true;
     }
@@ -399,7 +396,6 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Update
     MenuUpdate(menu: Menu){
-        // console.log("MenuUpdate: ", menu);
         this.menuForm.reset();
         this.dialogMenu = true;
         this.optionMenu = false;
@@ -407,11 +403,9 @@ export class UsuarioAccesosComponent implements OnInit {
         const criterio = {
             menicono: menu.menicono
         }
-        // console.log("findIdIcono: ", criterio)
         this.spinner.show();
         this.tipoIconoService.findIdIcono(criterio).subscribe({
             next: (data) => {
-                // console.log("idIcono: ", data)
                 this.icoid = data['icoid'] as number;
                 this.spinner.hide();
             },
@@ -429,7 +423,6 @@ export class UsuarioAccesosComponent implements OnInit {
                     mendescripcion: menu.mendescripcion,
                     menestado: menu.menestado
                 });
-                // console.log("menuForm: ", this.menuForm.value);
             }
         })
 
@@ -442,9 +435,6 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Send from menu for create or update
     sendFormMenu(){
-        // console.log("optionMenuForm: ", this.optionMenu);
-        // console.log("Send Data: ", this.menuForm);
-
         if (this.menuForm.invalid) {
             Object.values(this.menuForm.controls).forEach( control => {
                 control.markAsTouched();
@@ -462,10 +452,8 @@ export class UsuarioAccesosComponent implements OnInit {
         this.loading = true;
 
         if(this.optionMenu){
-            // console.log("Send Data Create Menu: ", this.menu);
             this.menuService.createMenu(this.menu).subscribe({
                 next: (data) => {
-                    console.log("createMenu: ",data);
                 },
                 error: (error) => {
                     this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
@@ -484,10 +472,8 @@ export class UsuarioAccesosComponent implements OnInit {
         else{
             this.menu.menid = this.menuForm.value.menid;
             this.menu.menusumod = this.usuario.usuname;
-            console.log("Send Data Update Menu: ", this.menu);
             this.menuService.updateMenu(this.menu.menid, this.menu).subscribe({
                 next: (data) => {
-                    console.log("updateMenu: ", data);
                 },
                 error: (error) => {
                     this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
@@ -511,7 +497,6 @@ export class UsuarioAccesosComponent implements OnInit {
 
             next: (data) => {
                 this.tipoIcono = data as TipoIcono[];
-                console.log("TipoIcono: ", this.tipoIcono)
             },
 
             error: (error) => {
@@ -561,7 +546,6 @@ export class UsuarioAccesosComponent implements OnInit {
             });
 
             this.spinner.hide();
-            console.log("SubMenus: ", this.submenus);
           },
           error: (error) => {
             this.spinner.hide();
@@ -592,7 +576,6 @@ export class UsuarioAccesosComponent implements OnInit {
             next: (data) => {
                 this.tipoMenu = data as TipoMenu[];
                 this.spinner.hide();
-                // console.log("Menus: ", this.menus)
             },
             error: (error) => {
                 this.spinner.hide();
@@ -604,12 +587,10 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Update
     SubMenuUpdate(submenu: SubMenu){
-        console.log("SubMenuUpdate: ", submenu);
         this.submenuForm.reset();
         this.dialogSubMenu = true;
         this.submenu = {...submenu}
         this.optionSubMenu = false;
-        console.log("this.submenu", this.submenu)
         this.submenuForm.patchValue({
             submenid: this.submenu.submenid,
             submennombre: this.submenu.submennombre,
@@ -619,8 +600,6 @@ export class UsuarioAccesosComponent implements OnInit {
             submenumod: this.submenu.submenusureg,
             submenestado: this.submenu.submenestado
         });
-
-        console.log("submenuForm: ", this.submenuForm.value);
     }
      // Hialog dialog menu
     hideDialogSubMenu(){
@@ -629,9 +608,6 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Send from menu for create or update
     sendFormSubMenu(){
-        // console.log("optionMenuForm: ", this.optionMenu);
-        // console.log("Send Data: ", this.menuForm);
-
         if (this.submenuForm.invalid) {
             Object.values(this.submenuForm.controls).forEach( control => {
                 control.markAsTouched();
@@ -648,11 +624,8 @@ export class UsuarioAccesosComponent implements OnInit {
         this.loading = true;
 
         if(this.optionSubMenu){
-
-            console.log("Send Data Create SubMenu: ", this.submenu);
             this.subMenService.createSubMenu(this.submenu).subscribe({
                 next: (data) => {
-                    console.log("createSubMenu: ",data);
                 },
                 error: (error) => {
                     this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
@@ -671,10 +644,8 @@ export class UsuarioAccesosComponent implements OnInit {
         else{
             this.submenu.submenid = this.submenuForm.value.submenid;
             this.submenu.submenusumod = this.usuario.usuname;
-            console.log("Data Update SubMenu: ", this.submenu);
             this.subMenService.updateSubMenu(this.submenu.submenid, this.submenu).subscribe({
                 next: (data) => {
-                    console.log("updateSubMenu: ", data);
                 },
                 error: (error) => {
                     this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
@@ -694,7 +665,6 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Delete
     SubMenuDelete(submenu: SubMenu){
-        console.log("SubMenuDelete: ", submenu)
         this.submenu = {...submenu};
         this.deleteSubMenuDialog = true;
     }

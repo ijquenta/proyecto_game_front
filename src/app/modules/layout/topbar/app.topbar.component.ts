@@ -42,7 +42,6 @@ export class AppTopBarComponent {
         this.authService.getProfile().subscribe(
             (result: any) => {
               this.usuario = result[0];
-            //   console.log("result get perfil: ", this.usuario);
             },
             (error: any) => {
               console.error("Error al obtener el perfil: ", error);
@@ -71,10 +70,8 @@ export class AppTopBarComponent {
 
 
     logout(){
-
         this.authService.logout();
         this.router.navigate(['/login']);
-        // console.log("logout");
     }
 
     isValidToken(){

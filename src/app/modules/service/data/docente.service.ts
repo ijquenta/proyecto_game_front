@@ -23,7 +23,6 @@ export class DocenteService {
     }
 
     createPersonForm(criterio: any){
-        // console.log("Datos a registarPersona: ", criterio);
         return this.http.post(`${API_URL}/createPersonForm`, criterio);
     }
 

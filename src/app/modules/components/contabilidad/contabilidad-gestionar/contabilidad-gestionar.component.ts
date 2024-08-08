@@ -160,7 +160,7 @@ export class ContabilidadGestionarComponent implements OnInit {
             (error: any) => {
                 this.errors = error;
                 this.spinner.hide();
-                console.log("error", error);
+                console.error("error", error);
                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
             }
         );
@@ -194,7 +194,7 @@ export class ContabilidadGestionarComponent implements OnInit {
             },
             (error: any) => {
                 this.errors = error;
-                console.log("error", error);
+                console.error("error", error);
                 this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
             }
         );

@@ -77,14 +77,12 @@ export class EstudianteAdmisionTipoProfesionComponent implements OnInit {
         this.tipoProfesionDialog = true;
         this.optionDialogTipoProfesion = false;
         this.tipoProfesion = {...data};
-        console.log("antes modificar: ", this.tipoProfesion)
         this.tipoProfesionForm.patchValue({
             proid: this.tipoProfesion.proid,
             pronombre: this.tipoProfesion.pronombre,
             proobservacion: this.tipoProfesion.proobservacion,
             proestado: this.tipoProfesion.proestado
         });
-        console.log("modificar: ", this.tipoProfesionForm.value)
     }
 
     // Obtener Severity Estado

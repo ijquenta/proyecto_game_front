@@ -478,12 +478,7 @@ export class UsuarioPersonaComponent implements OnInit {
             });
             return;
         }
-
-        console.log("personForm: ", this.personForm.value);
-        console.log("perfotoFile: ", this.perfotoFile)
-
         const formData: FormData = new FormData();
-
         formData.append('perfoto', this.perfotoFile || null);
         formData.append('pernomcompleto', (this.personForm.value.perapepat + ' ' + this.personForm.value.perapemat + ' ' + this.personForm.value.pernombres) || null);
         formData.append('pernombres', this.personForm.value.pernombres || null);
@@ -516,7 +511,6 @@ export class UsuarioPersonaComponent implements OnInit {
 
         this.loading = true;
         this.spinner.show();
-        console.log("managePerson", formData)
         this.personaService.managePerson(formData).subscribe({
             next: (data: any) => {
                 this.messageService.add({
@@ -611,7 +605,7 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.loading = false;
             },
             error: (error: any) => {
-                console.log("Error: ", error);
+                console.error("error: ", error);
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Persona',
@@ -647,7 +641,7 @@ export class UsuarioPersonaComponent implements OnInit {
                 this.loading = false;
             },
             error: (error) => {
-                console.log("Error: ", error);
+                console.error("error: ", error);
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Persona',

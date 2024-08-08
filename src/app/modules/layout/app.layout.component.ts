@@ -61,9 +61,7 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
     }
     ngOnInit() {
         this.authService.getProfile().subscribe(() => {
-            // console.log('get profile')
         });
-        // console.log("Get Perfil Unico: ")
     }
 
     hideMenu() {

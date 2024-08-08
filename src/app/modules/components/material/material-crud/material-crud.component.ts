@@ -147,10 +147,8 @@ export class MaterialCrudComponent implements OnInit {
             this.texto.texdocumento = this.nombreArchivo;
             this.texto.textipo = this.textoForm.value.textipo;
             this.texto.texusureg = this.usuario.usuname;
-            // console.log("this.texto: ", this.texto)
             this.materialService.insertarTexto(this.texto).subscribe(
                 (result: any) => {
-                    // console.log("result", result);
                     this.messageService.add({ severity: 'success', summary: '!Exito¡', detail: result['valor'] });
                     this.listarTextos();
                     this.textoForm.reset();
@@ -158,7 +156,7 @@ export class MaterialCrudComponent implements OnInit {
                 },
                 (error: any) => {
                     this.errors = error;
-                    console.log("error", error);
+                    console.error("error", error);
                     this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
                 }
             );
@@ -181,8 +179,7 @@ export class MaterialCrudComponent implements OnInit {
           const formData = new FormData();
           for (let i = 0; i < currentFiles.length; i++) {
             const file: File = currentFiles[i];
-            // const nombrePersonaSinEspacios = pago.pernomcompleto.replace(/\s+/g, '');
-            const complemento = "texto"
+            const complemento = "texto";
             const nombreArchivoSinEspacios = file.name.replace(/\s+/g, '');
             const cleanedFilename = nombreArchivoSinEspacios.replace(/[^\w.-]/g, '');
             this.nombreArchivo = complemento + '_' + cleanedFilename;
@@ -237,7 +234,6 @@ export class MaterialCrudComponent implements OnInit {
     ListarPersonas() {
         this.materialService.listarMaterial().subscribe((data: any) => {
             this.Materiales = data;
-            console.log("Listar Materiales:", this.Materiales)
         });
     }
 
@@ -246,7 +242,6 @@ export class MaterialCrudComponent implements OnInit {
         this.materialService.listarTexto().subscribe((data: any) => {
             this.textos = data;
             this.loading = false;
-            // console.log("Listar Textos:", this.textos)
         })
     }
 
@@ -258,14 +253,12 @@ export class MaterialCrudComponent implements OnInit {
 
     modificarPersona(data: Persona) {
         this.persona = { ...data };
-        // console.log("modificar Persona: ", this.persona);
         this.personaDialog = true;
         this.TipoEstadoCivilSeleccionado = new TipoEstadoCivil(this.persona.perestcivil, this.persona.estadocivilnombre);
         this.TipoGeneroSeleccionado = new TipoGenero(this.persona.pergenero, this.persona.generonombre);
         this.TipoDocumentoSeleccionado = new TipoDocumento(this.persona.pertipodoc, this.persona.tipodocnombre);
         this.TipoPaisSeleccionado = new TipoPais(this.persona.perpais, this.persona.paisnombre);
         this.TipoCiudadSeleccionado = new TipoCiudad(this.persona.perciudad, this.persona.ciudadnombre, this.persona.perpais);
-        // console.log("tciudad: ", this.TipoCiudadSeleccionado)
         this.persona.perfecnac = new Date(this.persona.perfecnac);
         this.optionDialog = false;
     }
@@ -282,10 +275,8 @@ export class MaterialCrudComponent implements OnInit {
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            // console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.managePerson(this.personaRegistro).subscribe(
                 (data: any) => {
-                    // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se registró correctamente en el sistema.', life: 3000 });
@@ -307,17 +298,15 @@ export class MaterialCrudComponent implements OnInit {
             this.personaRegistro.pergenero = this.TipoGeneroSeleccionado.generoid;
             this.personaRegistro.perpais = this.TipoPaisSeleccionado.paisid;
             this.personaRegistro.perciudad = this.TipoCiudadSeleccionado.ciudadid;
-            // console.log("personaRegistro: ", this.personaRegistro);
             this.personaService.managePerson(this.personaRegistro).subscribe(
                 (data: any) => {
-                    // console.log("Gestionar Persona: ", data);
                     this.personaDialog = false;
                     this.optionDialog = false;
                     this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se modificó correctamente en el sistema.', life: 3000 });
                     this.ListarPersonas();
                 },
                 (error: any) => {
-                    console.log("Error: ", error);
+                    console.error("error: ", error);
                     this.messageService.add({ severity: 'error', summary: 'Problema', detail: 'Ocurrió un error en la modificación de la persona, por favor comuníquese con soporte.', life: 3000 });
                 }
             );
@@ -358,19 +347,17 @@ export class MaterialCrudComponent implements OnInit {
         this.optionDialog = true;
     }
     eliminarPersona() {
-        // console.log("eliminarPersona: ", this.persona);
         this.personaRegistro = { ...this.persona };
         this.personaRegistro.tipo = 3;
         this.personaService.managePerson(this.personaRegistro).subscribe(
             (data: any) => {
-                // console.log("Gestionar Persona: ", data);
                 this.eliminarPersonaDialog = false;
                 this.optionDialog = false;
                 this.messageService.add({ severity: 'success', summary: 'Registro Correcto!', detail: 'La persona se elimino correctamente en el sistema.', life: 3000 });
                 this.ListarPersonas();
             }),
             (error: any) => {
-                console.log("Error: ", error);
+                console.error("error: ", error);
                 this.messageService.add({ severity: 'error', summary: 'Algo salio mal!', detail: 'Ocurrio un error en la eliminación de , porfavor comunicarse con soporte.', life: 3000 });
             }
     }

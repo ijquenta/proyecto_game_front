@@ -51,10 +51,9 @@ export class MateriaDocenteComponent implements OnInit{
 
                     this.docenteService.obtenerMateriasAsignadas(this.usuario).subscribe(data => {
                         this.inscripciones = data;
-                        //  console.log("mis materias", data);
                     },
                     (error => {
-                        console.log("error", error)
+                        console.error("error", error)
                     })
                     );
                 }
@@ -81,7 +80,7 @@ export class MateriaDocenteComponent implements OnInit{
         error => {
             this.loading2 = false;
             this.errors = error;
-            console.log("error", error);
+            console.error("error", error);
             this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salio mal!' });
         });
     }

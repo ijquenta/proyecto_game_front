@@ -194,7 +194,7 @@ export class AppMenuComponent implements OnInit {
                                 ]
 
                             },
-                            {
+                            /*{
                                 label: 'Gestionar Estudiantes',
                                 icon: 'pi pi-fw pi-folder-open',
                                 routerLink: ['estudiante/crud'],
@@ -205,7 +205,7 @@ export class AppMenuComponent implements OnInit {
                                 icon: 'pi pi-fw pi-file-pdf',
                                 routerLink: ['estudiante/reporte'],
                                 roles: ['Administrador', 'Secretaria']
-                            }
+                            }*/
                         ],
                         roles: ['Administrador', 'Secretaria']
                     },
@@ -522,7 +522,7 @@ export class AppMenuComponent implements OnInit {
                                 "routerLink": ["pago/todos"],
                                 "roles": ["Administrador", "Secretaria"]
                             },
-                            {
+                            /*{
                                 "label": "Registrar Pago",
                                 "icon": "pi pi-fw pi-plus",
                                 "routerLink": ["pago/registrar"],
@@ -551,10 +551,10 @@ export class AppMenuComponent implements OnInit {
                                 "icon": "pi pi-fw pi-history",
                                 "routerLink": ["pago/historial"],
                                 "roles": ["Administrador", "Secretaria"]
-                            }
+                            }*/
                         ]
                     },
-                    {
+                    /*{
                         "label": "Reportes",
                         "icon": "pi pi-fw pi-file",
                         "roles": ["Administrador", "Secretaria"],
@@ -578,7 +578,7 @@ export class AppMenuComponent implements OnInit {
                                 "roles": ["Administrador", "Secretaria"]
                             }
                         ]
-                    },
+                    },*/
 
                 ]
             },

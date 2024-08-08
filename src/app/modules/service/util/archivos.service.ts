@@ -27,13 +27,12 @@ export class ArchivosService {
 
     // file.name = fileName+'_'+day.toString()+'_'+hour.toString()+'_'+minutes.toString()+'.pdf';
     const name = fileName.split('.');
-    console.log(name);
     file.name = name[0];
     file.lastModifiedDate = new Date();
 
     const fileURL = URL.createObjectURL(file);
     const initialState = {
-      reporteSRC: fileURL,
+              reporteSRC: fileURL,
       reporte: file
     };
     const ref = this.dialogService.open(ReportComponent, {

@@ -85,18 +85,9 @@ export class MateriaEstudianteComponent implements OnInit{
         private spinner: NgxSpinnerService,
         )
         {
-            // this.tipoModuloSeleccionado = new TipoModulo(0,"");
-            // this.tipoEstadoSeleccionado = new TipoEstado(0,"");
         }
 
     ngOnInit(): void {
-        // this.sub = this.recarga$.subscribe((result: any)=>{
-        //   if(result){
-        //     // this.obtenerDatosCalculo();
-        //     // this.display = false;
-        //   }
-        // })
-
         this.authService.usuario$.subscribe((user => {
             if (user) {
                 if (Array.isArray(user) && user.length > 0) {
@@ -104,11 +95,10 @@ export class MateriaEstudianteComponent implements OnInit{
                     this.spinner.show();
                     this.estudianteService.obtenerMateriasInscritas(this.usuario).subscribe(data => {
                         this.inscripciones = data;
-                        // console.log("mis materias", data);
                         this.spinner.hide();
                     },
                     (error => {
-                        console.log("error", error)
+                        console.error("error", error)
                         this.spinner.hide();
                     })
                     );
@@ -120,7 +110,6 @@ export class MateriaEstudianteComponent implements OnInit{
       }
 
     init(){
-        // this.docenteSeleccionado = new Persona();
         this.estadoPersona = [];
         this.montoReintegro = [];
         this.personasExcluidas = [];
@@ -144,13 +133,12 @@ export class MateriaEstudianteComponent implements OnInit{
         //   this.admCal.mostrarDatosPersonalDocente(this.nomCi, this.nomCi).subscribe
         //   (data => {
         //   this.docentedatos = data; // Almacenar el docente retornado
-        //   // console.log("Datos del docente: ", this.docentedatos);
         //   this.listarBenSoc();
         //   });
         // }
         // else {
         //   this.messageService.add({severity:'warn', summary:'Advertencia', detail:`No se ingreso nombre ni c.i. del docente`});
-        //   console.log("Error: No se ingreso nombre ni c.i. del docente");
+        //   console.error("error: No se ingreso nombre ni c.i. del docente");
         // }
       }
       // Método de busqueda en la tabla

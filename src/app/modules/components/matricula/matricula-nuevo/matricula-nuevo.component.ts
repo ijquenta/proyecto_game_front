@@ -274,7 +274,6 @@ export class MatriculaNuevoComponent implements OnInit {
                 this.matricula.matrfec = this.matriculaForm.value.matrfec;
                 this.matriculaService.insertarMatricula(this.matricula).subscribe(
                     (result: any) => {
-                        console.log("result", result);
                         this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula agregada correctamente en el sistema', life: 5000 });
                         this.listarMatricula();
                         this.matriculaDialog = false;
@@ -282,7 +281,7 @@ export class MatriculaNuevoComponent implements OnInit {
                         this.matriculaForm.reset();
                     },
                     error => {
-                            console.log("error: ", error);
+                            console.error("error: ", error);
                             let errorMessage = 'Se produjo un error.';
 
                             if (error.error.message.includes('UniqueViolation')) {
@@ -306,7 +305,7 @@ export class MatriculaNuevoComponent implements OnInit {
                         this.matriculaForm.reset();
                     },
                     (error: any) => {
-                    console.log("error",error);
+                    console.error("error",error);
                         this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la matricula'});
                     }
                 );
@@ -404,7 +403,7 @@ export class MatriculaNuevoComponent implements OnInit {
                 this.matricula = new Matricula();
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal.', life: 5000});
             }
         );
@@ -506,7 +505,7 @@ export class MatriculaNuevoComponent implements OnInit {
             this.pago = new Pago();
             this.listarMatricula();
           }, error => {
-            console.log("error",error);
+            console.error("error",error);
             this.messageService.add({severity:'warn', summary:'¡Error!', detail:'Ha ocurrido un error'});
           });
     }

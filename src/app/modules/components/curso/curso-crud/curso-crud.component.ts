@@ -215,7 +215,6 @@ export class CursoCrudComponent implements OnInit {
         this.cursoService.listarCursoMateria().subscribe(
             (result: any) => {
                 this.listaCursosMaterias = result;
-                console.log("datos curso: ", this.listaCursosMaterias);
                 this.listaCursosMateriasDuplicated = result;
                 this.loading = false;
                 this.spinner.hide();
@@ -316,7 +315,7 @@ export class CursoCrudComponent implements OnInit {
                     this.ocultarDialog();
                 },
                 (error: any) => {
-                    console.log("error: ", error);
+                    console.error("error: ", error);
                     if (error.error.message?.includes('UniqueViolation')) {
                         const errorMessage = 'No se puede crear la curso-materia porque ya existe un registro igual.';
                         this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
@@ -334,7 +333,7 @@ export class CursoCrudComponent implements OnInit {
                     this.cursoMateria = new CursoMateria();
                     this.ocultarDialog();
                 },(error: any) => {
-                    console.log("error: ", error);
+                    console.error("error: ", error);
                     if (error.error.message?.includes('UniqueViolation')) {
                         const errorMessage = 'No se puede modificar la curso-materia porque ya existe un registro igual.';
                         this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
@@ -371,7 +370,7 @@ export class CursoCrudComponent implements OnInit {
                 this.cursoMateria = {};
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
             const descripcionError = error.error.message;
                 this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
             }
@@ -390,7 +389,7 @@ export class CursoCrudComponent implements OnInit {
                 this.cursoMateria = {};
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal', life: 5000});
             }
         );

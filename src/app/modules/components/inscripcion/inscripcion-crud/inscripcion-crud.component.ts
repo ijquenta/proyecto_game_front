@@ -123,7 +123,9 @@ export class InscripcionCrudComponent implements OnInit {
     obtenerTipoMatriculaEstudiante(perid: any){
         const criterio = { peridestudiante: perid }
         this.inscripcionService.listarComboMatriculaEstudiante(criterio).subscribe(
-            (result: any) => { this.tipoMatricula = result; console.log("datosTipoMatriculaEstudiante: ", this.tipoMatricula)}
+            (result: any) => {
+                this.tipoMatricula = result;
+            }
         )
     }
 
@@ -153,13 +155,11 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcionService.listarInscripcion().subscribe(
             (result: any) => {
               this.linscripciones = result;
-            //   console.log("lista de inscripciones: ", this.linscripciones);
               this.spinner.hide();
               this.inscripciones = this.linscripciones.map(item => this.organizarInscripcion(item));
               this.listaInscripcionDuplicated = this.inscripciones;
               this.listaInscripcionDesactivados = this.inscripciones.filter(item => item.insestado == 0);
               this.inscripciones = this.inscripciones.filter(item => item.insestado == 1);
-            //   console.log("Lista inscripciones", this.inscripciones);
               this.loading = false;
             }
           );
@@ -223,7 +223,6 @@ export class InscripcionCrudComponent implements OnInit {
     // Función para editar la inscripción
     editarInscripcion(data: any) {
         this.inscripcion = { ...data }; // obtener los datos en inscripcion
-        // console.log("Datos para editar: ",this.inscripcion); // mostramos los datos en console.log
         this.setData(); // se setea los datos en el formulario
         this.inscripcionDialog = true; // abrimos el formulario
         this.optionInscripcion = false; // optioneInscripcion=FALSE por que se va a editar para ocultar algunas partes del formulario
@@ -248,14 +247,12 @@ export class InscripcionCrudComponent implements OnInit {
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
                 this.tipoRol = result.filter(rol => rol.rolnombre === "Estudiante"); // filtrar solo los roles estudiante y docente
-                // console.log("Combo roles: ", this.tipoRol);
             }
         )
     }
 
     // Función para obtener las matriculas de un estudiante x al momento de seleccionar el tipo persona
     onSelectEstudianteMatricula(data: any){
-        // console.log("Dato elejido: ", data.value);
         const perid = data.value.perid;
         this.obtenerTipoMatriculaEstudiante(perid);
 
@@ -276,8 +273,6 @@ export class InscripcionCrudComponent implements OnInit {
             this.diccionarioService.getListaPersonaDocenteCombo(criterio),
             this.inscripcionService.obtenerEstudiantesInscritos({ curmatid: this.inscripcionForm.value.tipoCursoMateria.curmatid })
         ]).subscribe(([personas, inscritos]) => {
-            // console.log("Personas:", personas);
-            // console.log("Estudiantes inscritos:", inscritos);
             const personasFiltradas = this.filtrarPersonasInscritas(personas, inscritos);
             this.tipoPersona = personasFiltradas;
         }, error => {
@@ -309,8 +304,6 @@ export class InscripcionCrudComponent implements OnInit {
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.estudiante[0].peridestudiante, this.inscripcion.estudiante[0].pernombrecompletoestudiante)
         })
-        // console.log("set: ",this.inscripcionForm.value)
-        // console.log("Set TipoPersona: ", this.inscripcionForm.value.tipoPersona)
     }
 
     // FUnción para obtener los datos en la variables incripcionRegistro
@@ -339,7 +332,6 @@ export class InscripcionCrudComponent implements OnInit {
             })
         }
         this.obtenerBody();
-        // console.log("Datos a ingresar: ", this.inscripcionRegistro);
         if(this.optionInscripcion){ // Verifica que true o false, para adicionar o editar
             this.inscripcionService.insertarInscripcion(this.inscripcionRegistro).subscribe(
                 (result: any) => {
@@ -349,10 +341,7 @@ export class InscripcionCrudComponent implements OnInit {
                     this.ocultarDialog();
                 },
                 (error: any) => {
-                    // console.log("error",error);
-                    // this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Error, algo salio mal. No puede registrar al mismo estudiante.'})
-
-                    console.log("error: ", error);
+                    console.error("error: ", error);
                     let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
 
                     // Verifica si el error contiene el mensaje específico de violación de clave única
@@ -396,7 +385,6 @@ export class InscripcionCrudComponent implements OnInit {
 
     confirmarActivarDesactivar() {
         this.inscripcion.insusumod = this.usuario.usuname;
-        // console.log("criterio: ", this.inscripcion)
         this.inscripcionService.gestionarInscripcionEstado(this.inscripcion).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Exitosa!', detail: 'Estado de Inscripción modificado correctamente', life: 3000 });
@@ -406,7 +394,7 @@ export class InscripcionCrudComponent implements OnInit {
                 this.desactivarInscripcionDialog = false;
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Ups! Algo salio mal', life: 5000});
             }
         );

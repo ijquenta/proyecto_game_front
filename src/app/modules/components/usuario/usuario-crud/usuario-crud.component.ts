@@ -203,7 +203,6 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioService.listaUsuario().subscribe(
             (result: any) => {
                 this.usuarios = result;
-                console.log("lista de usarios: ", this.usuarios)
                 this.usuariosDuplicado = this.usuarios;
                 this.filteredUsuarios = this.usuarios;
                 this.loading = false;
@@ -311,7 +310,7 @@ export class UsuarioCrudComponent implements OnInit {
                     this.listarUsuarios();
                 },
                 (error) => {
-                    console.log("error: ", error);
+                    console.error("error: ", error);
                     let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
                     if (error.error.message.includes('UniqueViolation')) {
                         errorMessage = 'Ya existe un registro con el mismo rol para esta persona.';
@@ -347,7 +346,7 @@ export class UsuarioCrudComponent implements OnInit {
                     this.listarUsuarios();
                 },
                 (error) => {
-                    console.log("error: ", error);
+                    console.error("error: ", error);
                     let errorMessage = 'Se produjo un error al intentar modificar el usuario.';
                     if (error.error.message.includes('UniqueViolation')) {
                         errorMessage = 'No se puede modificar el usuario porque ya existe un registro con el mismo rol para esta persona.';

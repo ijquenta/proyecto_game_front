@@ -111,8 +111,6 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
         this.authService.usuario$.subscribe(usuario => {
             if (usuario && Array.isArray(usuario) && usuario.length > 0) {
                 this.userRoles = Array.isArray(usuario[0].rolnombre) ? usuario[0].rolnombre : [usuario[0].rolnombre];
-                // console.log("ini: ", userRoles);
-                // Resto del código
             }
         });
     }

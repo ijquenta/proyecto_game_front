@@ -302,7 +302,6 @@ export class UsuarioRolesComponent implements OnInit {
 
     // Delete
     deleteRole(role: Rol){
-        console.log("Role: ", role)
         this.role = {...role};
         this.deleteRoleDialog = true;
     }

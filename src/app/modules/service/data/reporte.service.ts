@@ -17,7 +17,6 @@ export class ReporteService {
     constructor(private http: HttpClient, private spinner: NgxSpinnerService, private archivos: ArchivosService) { }
 
     // getUsuario() {
-    //     console.log("GetUsuario");
     //     return this.http.get<any>(`${API_URL}/listaUsuarios`)
     //         .toPromise()
     //         .then(res => res.data as Usuario[])
@@ -25,7 +24,6 @@ export class ReporteService {
     // }
 
     // getUsuario(){
-    //     console.log("GetUsuario");
     //     return this.http.get(`${API_URL}/listaUsuarios`);
     // }
     // getProductsSmall() {
@@ -59,7 +57,6 @@ export class ReporteService {
     rptUsuarios() {
 
         this.spinner.show();
-        // console.log("fechas->",this.pip.transform(fechaInicio, 'dd-MM-yyyy'), this.pip.transform(fechaFin, 'dd-MM-yyyy'))
         return this.http.post(`${API_URL}/rptTotalesSigma`, {}, httpOptions).subscribe(
           (data: any) => {
             this.spinner.hide();

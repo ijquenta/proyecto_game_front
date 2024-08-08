@@ -469,7 +469,6 @@ export class AppConfigComponent {
 
     initializeTheme() {
         const theme = localStorage.getItem('theme');
-        // console.log("theme localStorage:", theme);
         if(theme === "theme-dark"){
             this.isDarkTheme = true;
         }

@@ -59,7 +59,7 @@ export class PagoEstudianteComponent implements OnInit {
                     },
                     error => {
                         this.errors = error;
-                        console.log("error", error);
+                        console.error("error", error);
                         this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
                     }
                 );
@@ -83,7 +83,7 @@ export class PagoEstudianteComponent implements OnInit {
     },
     error => {
       this.errors = error;
-      console.log("error",error);
+      console.error("error",error);
       this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal!'});
     });
   }

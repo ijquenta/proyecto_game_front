@@ -29,13 +29,7 @@ export class PrincipalService {
     }
 
     rptCursoMateriaContabilidad(fecini:any, fecfin:any, descuento: any[], resumen:any[]) {
-        // console.log(data);
         this.usuario = this.authService.usuario$.getValue();
-        // const curmatid = data.curmatid;
-        // const criterio = {
-        //     curmatid: curmatid,
-        //     usuname: this.usuario?.[0]?.usuname
-        // };
 
         const criterio = {
             fecini: fecini,
@@ -44,12 +38,6 @@ export class PrincipalService {
             resumen: resumen
         }
 
-        // if (!criterio.usuname) {
-        //     console.error('No se pudo obtener la información del usuario.');
-        //     return;
-        // }
-
-        // console.log("rpt", criterio)
         this.spinner.show();
         this.http.post(`${API_URL}/rptCursoMateriaContabilidad`, criterio, httpOptions)
             .subscribe(

@@ -258,7 +258,7 @@ export class MateriaCrudComponent implements OnInit {
                 this.materia = {};
             },
             error: error => {
-            console.log("error",error);
+            console.error("error",error);
             const descripcionError = error.error.message;
                 this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
             }
@@ -325,7 +325,7 @@ export class MateriaCrudComponent implements OnInit {
                     this.materiaDialog = false;
                     this.opcionMateria = false;
                 },
-                error: error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'}); }
+                error: error => { console.error("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el Nivel'}); }
             });
         }
         else {
@@ -337,7 +337,7 @@ export class MateriaCrudComponent implements OnInit {
                     this.materiaDialog = false;
                     this.opcionMateria = false;
                 },
-                error: error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'}); }
+                error: error => { console.error("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la materia'}); }
             });
         }
     }

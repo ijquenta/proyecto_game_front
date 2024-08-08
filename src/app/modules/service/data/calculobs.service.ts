@@ -30,7 +30,6 @@ export class BenSocialService {
               ) { }
   errors: any;
   getData(registroCalculoBS: any){
-    // console.log("getData->",registroCalculoBS);
     this.confirmDialogObsData = false;
     const bodyTM = {"codTipoMotivo": ''}
     forkJoin(
@@ -44,14 +43,12 @@ export class BenSocialService {
       }
       ,error => {
         this.errors = error;
-        console.log("error",error);
+        console.error("error",error);
         }
       )
   }
   getData2(dataModificar: any){
-    // console.log("getData2->",dataModificar);
     this.confirmDialogObsData = false;
-    // const body = {"idGestion": idGestion, "idMes":idMes, "idPartida": idPartida}
     const bodyTM = {"codTipoMotivo": ''}
     forkJoin(
       this.admCalculobsService.listarTipoMotivo(bodyTM),

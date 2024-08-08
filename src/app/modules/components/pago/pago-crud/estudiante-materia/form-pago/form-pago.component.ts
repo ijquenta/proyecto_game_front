@@ -147,7 +147,7 @@ export class FormPagoComponent implements OnInit {
                 this.tipoPago = result;
             },
             error: (error: any) => {
-                console.log("Error al obtener los tipos de pago:", error);
+                console.error("error al obtener los tipos de pago:", error);
                 this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron obtener los tipos de pago' });
             }
         });
@@ -194,7 +194,7 @@ export class FormPagoComponent implements OnInit {
                 });
             },
             error: (error: any) => {
-                console.log("Error al obtener los datos del pago:", error);
+                console.error("error al obtener los datos del pago:", error);
                 this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudieron cargar los datos del pago' });
             }
         });
@@ -274,7 +274,7 @@ export class FormPagoComponent implements OnInit {
                 });
             },
             error: (error: any) => {
-                console.log("Error al gestionar el pago:", error);
+                console.error("error al gestionar el pago:", error);
                 this.messageService.add({
                     severity: 'warn',
                     summary: '¡Error!',

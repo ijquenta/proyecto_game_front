@@ -124,7 +124,7 @@ export class MaterialAsignarComponent implements OnInit {
             },
             (error: any) => {
                 this.errors = error;
-                console.log("error", error);
+                console.error("error", error);
                 this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
             }
         );
@@ -238,8 +238,6 @@ export class MaterialAsignarComponent implements OnInit {
 
         if (this.asignarDialog) {
             const materiaTextos = this.obtenerBody();
-            // console.log("materiaTextos:", materiaTextos);
-
             // Crear un array de observables para cada solicitud de inserción
             const observables = materiaTextos.map(materiaTexto => {
                 return this.materialService.insertarMateriaTexto(materiaTexto);
@@ -256,10 +254,7 @@ export class MaterialAsignarComponent implements OnInit {
                     this.materiaTextoForm.reset();
                 },
                 error => {
-                    // console.log("error",error);
-                    // const descripcionError = error.error.message;
-                    //     this.messageService.add({severity:'warn', summary:'Error', detail: descripcionError, life: 5000});
-                        console.log("error: ", error);
+                        console.error("error: ", error);
                         // let errorMessage = 'Se produjo un error al intentar registrar el material.';
                         // Verifica si el error contiene el mensaje específico de violación de clave única
                         if (error.error.message.includes('UniqueViolation')) {
@@ -273,30 +268,6 @@ export class MaterialAsignarComponent implements OnInit {
                     }
             );
         }
-
-        // if (this.asignarBool) {
-        //     this.materialService.insertarMateriaTexto(this.materiaTexto).subscribe(
-        //         (result: any) => {
-        //             this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Material Agregado', life: 3000 });
-        //             this.listarMateriasTextos();
-        //             this.asignarDialog = false;
-        //             this.asignarBool = false;
-        //         },
-        //         error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al insertar el material'}); }
-        //     );
-        // }
-        // else {
-        //     this.materialService.insertarMateriaTexto(this.materiaTexto).subscribe(
-        //         (result: any) => {
-        //             this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Material Modificado', life: 3000 });
-        //             this.listarMateriasTextos();
-        //             this.asignarDialog = false;
-        //             this.asignarBool = false;
-        //         },
-        //         error => { console.log("error",error); this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la material'}); }
-        //     );
-        // }
-
     }
 
     ocultarDialog(){

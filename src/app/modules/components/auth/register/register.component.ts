@@ -243,7 +243,7 @@ export class RegisterComponent implements OnInit {
                 this.spinner.hide();
             },
             error: (error: any) => {
-                console.log("Error: ", error);
+                console.error("error: ", error);
                 this.spinner.hide();
                 this.messageService.add({ severity: 'error', summary: '', detail: 'No se pudo obtener datos de tipo de documentos ', life: 3000 });
             }
@@ -255,7 +255,7 @@ export class RegisterComponent implements OnInit {
             this.spinner.hide();
             },
             error: (error: any) => {
-                console.log("Error: ", error);
+                console.error("error: ", error);
                 this.spinner.hide();
                 this.messageService.add({ severity: 'error', summary: '', detail: 'No se pudo obtener datos de tipo de rol ', life: 3000 });
             }

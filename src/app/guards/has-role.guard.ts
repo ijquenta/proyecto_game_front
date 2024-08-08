@@ -68,7 +68,6 @@ export const hasRole = (allowedRoles: any[]) => {
     const authService = inject(AuthService);
     const usurol = authService.getUserData();
     const usu = usurol ? usurol[0].rolnombre : null;
-    // console.log("rol_usuario: ", usu);
     return authService.usuario$.pipe(
       map((user) => Boolean(user && allowedRoles.includes(usu))),
    //    tap((hasRole) => hasRole === false && alert('Acceso Denegado'))

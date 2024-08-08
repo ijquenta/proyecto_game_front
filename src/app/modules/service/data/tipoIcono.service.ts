@@ -16,12 +16,8 @@ export class TipoIconoService {
     }
 
     findIdIcono(data: any){
-        console.log("Datos service: ", data)
         return this.http.post(`${API_URL}/findIdIcono`, data)
     }
-
-
-
 
     // Other examples
     createOperation(data: any){

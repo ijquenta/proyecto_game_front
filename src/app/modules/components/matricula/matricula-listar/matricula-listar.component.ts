@@ -192,15 +192,10 @@ export class MatriculaListarComponent implements OnInit {
             })
         }
         if(this.tipoMatriculaForm.valid){
-
-            // window.alert("Hola mira mis datos: " + JSON.stringify(this.tipoMatriculaForm.value));
-
             this.obtenerBody();
-
             if(this.opcionTipoMatricula){
                 this.matriculaService.insertarTipoMatricula(this.tipoMatricula).subscribe(
                     (result: any) => {
-                        // console.log("result", result);
                         this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula agregada correctamente en el sistema', life: 5000 });
                         this.listarTipoMatricula();
                         this.tipoMatriculaDialog = false;
@@ -208,7 +203,7 @@ export class MatriculaListarComponent implements OnInit {
                         this.tipoMatriculaForm.reset();
                     },
                     (error: any) => {
-                    console.log("error",error);
+                    console.error("error",error);
                         this.messageService.add({severity:'warn', summary:'Ups! error de registro', detail:'Algo salio mal al agregar la matricula', life: 5000});
                     }
                 );
@@ -222,7 +217,7 @@ export class MatriculaListarComponent implements OnInit {
                         this.tipoMatriculaForm.reset();
                     },
                     (error: any) => {
-                    console.log("error",error);
+                    console.error("error",error);
                         this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la matricula'});
                     }
                 );
@@ -273,7 +268,7 @@ export class MatriculaListarComponent implements OnInit {
                 this.tipoMatricula = new TipoMatricula();
             },
             error => {
-            console.log("error",error);
+            console.error("error",error);
                 this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal.', life: 5000});
             }
         );

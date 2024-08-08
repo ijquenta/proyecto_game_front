@@ -153,8 +153,6 @@ export class UsuarioPermisoComponent implements OnInit {
                 console.error('Error in getTipoOperacion', error);
             },
             complete: () => {
-                console.log("tipoOperacion: ", this.tipoOperacion)
-                console.log('Operación de obtención de tipos de operación completada.');
             }
         });
     }
@@ -168,8 +166,6 @@ export class UsuarioPermisoComponent implements OnInit {
                 console.error('Error in getTipoRol', error);
             },
             complete: () => {
-                console.log("tipoRol: ", this.tipoRol)
-                console.log('Operación de obtención de tipos de rol completada.');
             }
         });
     }
@@ -189,7 +185,6 @@ export class UsuarioPermisoComponent implements OnInit {
                 console.error('Error al listar roles', error);
             },
             complete: () => {
-                console.log('Roles obtenidos correctamente.');
             }
         })
     }
@@ -203,7 +198,6 @@ export class UsuarioPermisoComponent implements OnInit {
                 console.error('Error al listar operaciones', error);
             },
             complete: () => {
-                console.log('Operaciones obtenidas correctamente.');
             }
         })
     }
@@ -224,7 +218,6 @@ export class UsuarioPermisoComponent implements OnInit {
             },
             complete: () => {
                 this.spinner.hide();
-                console.log('Permisos obtenidos correctamente.');
             }
         })
     }
@@ -246,7 +239,6 @@ export class UsuarioPermisoComponent implements OnInit {
         permiso.permusumod = this.usuario.usuname;
         this.permisoService.updatePermiso(permiso).subscribe({
             next: (data) => {
-                console.log("Update Permiso: ", data);
             },
             error: (error) => {
                 console.error('Error al actualizar permiso', error);
@@ -382,7 +374,6 @@ export class UsuarioPermisoComponent implements OnInit {
             console.error('Error in getOperations', error);
           },
           complete: () => {
-            console.log("Operations: ", this.operations);
           }
         });
     }
@@ -405,7 +396,6 @@ export class UsuarioPermisoComponent implements OnInit {
     OperationUpdate(operation: Operacion){
         this.dialogOperation = true;
         this.optionOperation = false;
-        console.log("Data OperationUpdate: ", operation)
         this.operationForm.patchValue({
             opeid: operation.opeid,
             openombre: operation.openombre,
@@ -430,10 +420,8 @@ export class UsuarioPermisoComponent implements OnInit {
         this.operation.opedescripcion = this.operationForm.value.opedescripcion;
         this.loading = true;
         if(this.optionOperation){
-            console.log("Send Data Create Operation: ", this.operation);
             this.operacionService.createOperation(this.operation).subscribe({
                 next: (data) => {
-                    console.log("createOperation: ",data);
                 },
                 error: (error) => {
                     this.messageService.add({ severity: 'error', summary: 'Operación', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
@@ -453,10 +441,8 @@ export class UsuarioPermisoComponent implements OnInit {
         else {
             this.operation.opeid = this.operationForm.value.opeid;
             this.operation.opeusumod = this.usuario.usuname;
-            console.log("Send Data Update Operation: ", this.operation);
             this.operacionService.updateOperation(this.operation.opeid, this.operation).subscribe({
                 next: (data) => {
-                    console.log("updateOperation: ",data);
                 },
                 error: (error) => {
                     this.messageService.add({ severity: 'error', summary: 'Operación', detail: 'Modificación incorrecta, intente nuevamente mas tarde.', life: 3000 });
@@ -476,7 +462,6 @@ export class UsuarioPermisoComponent implements OnInit {
     }
     // Delete
     OperationDelete(operation: Operacion){
-        console.log("OperationDelete: ", operation);
         this.dialogOperationDelete = true;
         this.operation = {
             ...operation
@@ -485,10 +470,8 @@ export class UsuarioPermisoComponent implements OnInit {
     }
     // Confirm Delete
     SendOperationDelete(){
-        console.log("SendOperationDelete: ", this.operation)
         this.operacionService.deleteOperation(this.operation.opeid).subscribe({
             next: (data) => {
-                console.log("deleteOperation: ", data)
             },
             error: (error) => {
                 this.messageService.add({ severity: 'error', summary: 'Operación', detail: 'Eliminado incorrecta, intente nuevamente mas tarde.', life: 3000 });
