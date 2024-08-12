@@ -94,11 +94,11 @@ export class TipoDeduccion{
 export class TipoCurso {
     curid: number = 0;
     curnombre: string = '';
-    curnivel: number = 0;
-    constructor(codTipoCurso: number,desTipoCurso: string, codCurnivel: number){
+    // curnivel: number = 0;
+    constructor(codTipoCurso: number,desTipoCurso: string){
         this.curid = codTipoCurso;
         this.curnombre = desTipoCurso;
-        this.curnivel = codCurnivel;
+        // this.curnivel = codCurnivel;
     }
 }
 // export class TipoRol {
@@ -204,6 +204,19 @@ export class TipoMateria2 {
     constructor(codTipoMateria: number, desTipoMateria: string){
         this.matid = codTipoMateria;
         this.matnombre = desTipoMateria;
+    }
+}
+
+export class TipoMateriaCombo {
+    matid: number = 0;
+    matnombre: string = '';
+    curmatfecini: string = '';
+    curmatfecfin: string = '';
+    constructor(codTipoMateria: number, desTipoMateria: string, curmatfecini: string, curmatfecfin: string){
+        this.matid = codTipoMateria;
+        this.matnombre = desTipoMateria;
+        this.curmatfecini = curmatfecini;
+        this.curmatfecfin = curmatfecfin;
     }
 }
 

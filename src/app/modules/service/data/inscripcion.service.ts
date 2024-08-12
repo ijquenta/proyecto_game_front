@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
-
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 @Injectable()
 export class InscripcionService {
 
@@ -9,7 +9,7 @@ export class InscripcionService {
 
 
     listarInscripcion(){
-        return this.http.get(`${API_URL}/listarInscripcion`);
+        return this.http.get(`${API_URL}/listarInscripcion`, { context: checktoken() });
     }
     insertarInscripcion(criterio: any){
         return this.http.post(`${API_URL}/insertarInscripcion`, criterio);
@@ -37,7 +37,12 @@ export class InscripcionService {
     gestionarInscripcionEstado(criterio: any){
         return this.http.post(`${API_URL}/gestionarInscripcionEstado`, criterio);
     }
+
     obtenerEstudiantesInscritos(criterio: any){
-        return this.http.post(`${API_URL}/obtenerEstudiantesInscritos`, criterio);
+        return this.http.post(`${API_URL}/obtenerEstudiantesInscritos`, criterio, { context: checktoken() });
+    }
+
+    getCursoMateriaByIds(criterio: any){
+        return this.http.post(`${API_URL}/getCursoMateriaByIds`, criterio, { context: checktoken() });
     }
 }

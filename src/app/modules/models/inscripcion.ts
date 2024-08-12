@@ -11,6 +11,7 @@ export class InscripcionRegistro {
     insestado?: number | null = null;
     insestadodescripcion?: string | null = null;
 }
+/*
 export class Inscripcion {
     insid?: number;
     perfoto?: string | null;
@@ -58,7 +59,7 @@ export class Inscripcion {
       pernombrecompletodocente?: string;
       perfoto?: string;
     }[] = [];
-  }
+  }*/
 //   m.matrid, m.tipmatrid, tm.tipmatrgestion, m.peridestudiante, p.pernomcompleto, p.perfoto
   export class TipoMatriculaEstudiante {
     matrid: number = 0;
@@ -75,4 +76,45 @@ export class Inscripcion {
       this.pernomcompleto = pernomcompleto;
       this.perfoto = perfoto;
     }
+  }
+
+
+
+  export class Inscripcion {
+    insid?: number;
+    perfoto?: string | null;
+    pernombrecompleto?: string | null;
+    tipo?:number;
+    matrid?: number | null;
+    matrestado?: number | null;
+    matrdescripcion?: string | null;
+    tipmatrid?: number | null;
+    tipmatrgestion?: string | null;
+    peridestudiante?: number | null;
+    pernombrecompletoestudiante?: string;
+    peridrol?: number | null;
+    rolnombre?: string | null;
+    pagid?: number | null;
+    pagdescripcion?: string;
+    pagestado?: number | null;
+    pagestadodescripcion?: string | null;
+    pagmonto?: number | null;
+    insusureg?: string | null;
+    insfecreg?: string | null;
+    insusumod?: string | null;
+    insfecmod?: string | null;
+    insestado?: number | null;
+    insestadodescripcion?: string | null;
+    curmatid?: number | null;
+    curmatdescripcion?: string | null;
+    curid?: number | null;
+    curnombre?: string;
+    matid?: number | null;
+    matnombre?: string;
+    curmatfecini?: string;
+    curmatfecfin?: string;
+    periddocente?: number | null;
+    pernombrecompletodocente?: string;
+    curnivel?: number | null;
+    perfotoestudiante?: string;
   }

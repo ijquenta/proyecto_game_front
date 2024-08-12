@@ -30,8 +30,24 @@ import { InscripcionService } from 'src/app/modules/service/data/inscripcion.ser
 import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
 import { AvatarModule } from 'primeng/avatar';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { ImageModule } from 'primeng/image';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { AnimateOnScrollModule } from 'primeng/animateonscroll';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
 @NgModule({
     imports: [
+        BreadcrumbModule,
+        PdfViewerModule,
+        NgxExtendedPdfViewerModule,
+        ImageModule,
+        ProgressBarModule,
+        AnimateOnScrollModule,
+        OverlayPanelModule,
+        SelectButtonModule,
         MultiSelectModule,
         CommonModule,
         InscripcionCrudRoutingModule,

@@ -1,219 +1,377 @@
-<div class="grid">
-    <p-toast></p-toast>
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <div class="font-bold text-3xl text-center">
-                <span class="text-900">Administrar</span>
-                <span class="text-primary-600"> Inscripciones </span>
+<p-toast></p-toast>
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" ></p-breadcrumb>
+    <h3>Inscripción</h3>
+    <p>Administrar registros de inscripciones</p>
+    <p-table 
+        #dt 
+        [loading]="loading" 
+        [value]="inscripciones" 
+        [globalFilterFields]="['pernombrecompletoestudiante']" 
+        [rowsPerPageOptions]="[10, 20, 50, 100]" 
+        [rows]="50"
+        [paginator]="true" 
+        styleClass="p-datatable-striped p-datatable-sm p-card"
+        [breakpoint]="'960px'"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+        rowGroupMode="subheader"
+        groupRowsBy="pernombrecompletoestudiante" 
+        sortField="pernomcopernombrecompletoestudiantempleto" 
+        sortMode="single"  
+        [tableStyle]="{'min-width': '85rem'}"
+        [columns]="selectedColumns"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+               <div>
+                <button pButton pRipple label="Nuevo" icon="pi pi-plus-circle" class="p-button-primary mr-2" (click)="abrirNuevo()" pTooltip="Registrar inscripción" tooltipPosition="top"></button>
+               </div>
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" pTooltip="Buscar por nombre completo" tooltipPosition="top"/>
+                </span>
             </div>
-            <hr/>
-            <p-table #dt [loading]="loading" [value]="inscripciones" dataKey="insid" [responsive]="true"
-                [globalFilterFields]="['pernombrecompleto']" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
-                [paginator]="true" styleClass="p-datatable-striped p-card">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                       <div>
-                        <button pButton pRipple label="Nueva inscripción" icon="pi pi-plus" class="p-button-primary mr-2" (click)="abrirNuevo()" pTooltip="Registrar nueva inscripción" tooltipPosition="bottom"></button>
-                        <!-- <button pButton pRipple label="Reporte de inscripciones" icon="pi pi-file-pdf" class="p-button-danger mr-2" pTooltip="Reporte de inscripciones" tooltipPosition="bottom"></button> -->
-                       </div>
-                        <!-- <h5 class="m-0">Administrar inscripciones</h5> -->
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" />
-
-                        </span>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="min-width:50px text-center">#</th>
+                <th style="min-width:150px text-center">Acciones</th>
+                <th style="min-width:400px">Curso</th>
+                <th style="min-width:200px">Materia</th>
+                <th style="min-width:200px">Fecha Inicio</th>
+                <th style="min-width:200px">Fecha Final</th>
+                <th style="min-width:200px">Docente</th>
+                <th style="min-width:200px">Matricula</th>
+                <th style="min-width:200px">Pago</th>
+                <th style="min-width:150px">Monto (Bs)</th>
+                <th style="min-width:200px">Registrado por</th>
+                <th style="min-width:200px">Modificado por</th>
+                <th style="min-width:200px">Observación</th>
+                <th style="min-width:100px">Estado</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="col.field">
+                        <!-- <ng-container *ngSwitchCase="'pernomcompleto'">
+                            <p-columnFilter field="pernomcompleto" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown appendTo="body" [ngModel]="value" [options]="personOptions" (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true" [filter]="true" filterBy="value">
+                                        <ng-template let-persona pTemplate="item" >
+                                            <div class="flex align-items-center" >
+                                                <div *ngIf="persona.perfoto == null" class="user-display">
+                                                    <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" size="large" shape="circle" ></p-avatar>
+                                                    <span class="font-bold ml-2">{{persona.value}}</span>
+                                                </div>
+                                                <div *ngIf="persona.perfoto != null" class="user-display" >
+                                                    <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mb-2" size="large" shape="circle" ></p-avatar>
+                                                    <div> <span class="font-bold mb-2 p-2">{{ persona.value }} </span> <br/> <span class="ml-2">{{ persona.pernrodoc }}</span> </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container> -->
+                        <ng-container ng-container *ngSwitchCase="'insestado'" >
+                            <p-columnFilter field="insestado" matchMode="equals" [showMenu]="false" >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback" >
+                                    <p-dropdown [ngModel]="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true">
+                                        <ng-template let-option pTemplate="item" >
+                                            <p-tag [value]="getDescriptionStatus(option.value)" [severity]=" getSeverityStatus(option.value)"></p-tag>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <p-columnFilter type="text" field="{{ col.field }}" ></p-columnFilter>
+                        </ng-container>
+                    </ng-container>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="groupheader" let-inscripcion>
+            <tr pRowGroupHeader>
+                <td colspan="13">
+                    <div *ngIf="!inscripcion.perfoto || !isImageLoaded" class="user-display">
+                        <p-avatar 
+                            [label]="getInitials(inscripcion.pernombrecompletoestudiante)" 
+                            styleClass="mr-2" 
+                            size="large" 
+                            shape="circle">
+                        </p-avatar>
+                        <span class="font-bold ml-2">{{ inscripcion.pernombrecompletoestudiante }}</span>
                     </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th></th>
-                        <th style="width: 5rem;"></th>
-                        <th>N°</th>
-                        <th>Estudiante</th>
-                        <th>Registrado por</th>
-                        <th>Modificado por</th>
-                        <th>Estado</th>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-inscripcion let-expanded="expanded">
-                    <tr>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar inscripción"
-                                    tooltipPosition="left" (click)="editarInscripcion(inscripcion)" tooltipPosition="top"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash"
-                                    class="p-button-rounded p-button-danger mr-2" pTooltip="Desactivar Inscripción"
-                                    tooltipPosition="left" (click)="desactivarInscripcion(inscripcion)" tooltipPosition="top"></button>
-                                <!-- <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-money-bill"
-                                    class="p-button-rounded p-button-info mr-2"
-                                    pTooltip="Administrar Pago"
-                                ></button> -->
-                            </div>
-                        </td>
-                        <td>
-                            <button type="button" pButton pRipple [pRowToggler]="inscripcion"
-                                class="p-button-text p-button-rounded p-button-plain"
-                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Ver Información de la inscripción" tooltipPosition="top"></button>
-                        </td>
-                        <td>{{ 'INS000'+inscripcion.insid }}</td>
-                        <td>
-                            <div *ngIf="inscripcion.perfoto == null" class="user-display">
-                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
-                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante
-                                    }}</span>
-                            </div>
-                            <div *ngIf="inscripcion.perfoto != null" class="user-display">
-                                <p-avatar image="{{ userProfilePhoto }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge"
-                                    shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante
-                                    }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    Usuario: {{ inscripcion.insusureg }} Fecha: {{
-                                    inscripcion.insfecreg}}
-                                </div>
-                            </p-chip>
-                        </td>
-
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    Usuario: {{ inscripcion.insusumod }} Fecha: {{
-                                    inscripcion.insfecmod }}
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td> <p-tag [value]="getDescriptionStatus(inscripcion.insestado)"
-                                [severity]="getSeverityStatus(inscripcion.insestado)" [rounded]="true"></p-tag>
-                        </td>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
-
-
-                <ng-template pTemplate="rowexpansion" let-inscripcion>
-                    <tr>
-                        <td colspan="12">
-                            <p-card>
-                                <div class="p-grid">
-                        <td>
-                            <div class="p-3">
-                                <p-table [value]="inscripcion.curso_materia" dataKey="curmatid">
-                                    <ng-template pTemplate="header">
-                    <tr>
-                        <th>Curso</th>
-                        <th>Materia</th>
-                        <th>Fechas</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-cursomateria>
-                    <tr>
-                        <td>{{ cursomateria.curnombre }}</td>
-                        <td>{{ cursomateria.matnombre }}</td>
-                        <td><strong>{{ cursomateria.curmatfecini + ' a ' + cursomateria.curmatfecfin }}</strong></td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-        </td>
-
-        <td>
-            <div class="p-3">
-                <p-table [value]="inscripcion.docente" dataKey="periddocente">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>Docente</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-docente>
-                        <tr>
-                            <td>
-                                <div *ngIf="docente.perfoto == null" class="user-display">
-                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
-                                        styleClass="mr-2" shape="circle"></p-avatar>
-                                    <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
-                                </div>
-                                <div *ngIf="docente.perfoto != null" class="user-display">
-                                    <p-avatar image="{{ userProfilePhoto }}/{{ docente.perfoto }}" styleClass="mr-2"
-                                        shape="circle"></p-avatar>
-                                    <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+                    <div *ngIf="inscripcion.perfoto && isImageLoaded" class="user-display">
+                        <p-avatar 
+                            image="{{ userProfilePhoto }}/{{ inscripcion.perfoto }}" 
+                            (onImageError)="onImageError()" 
+                            (onImageLoad)="onImageLoad()"
+                            styleClass="mr-2" 
+                            size="large" 
+                            shape="circle">
+                        </p-avatar>
+                        <span class="font-bold ml-2">{{ inscripcion.pernombrecompletoestudiante }}</span>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-inscripcion let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex + 1}}</td>
+                <td>
+                    <div class="flex">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-outlined p-button-primary mr-2" pTooltip="Editar inscripción" tooltipPosition="left" (click)="editarInscripcion(inscripcion)" tooltipPosition="top"></button>
+                        <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-outlined p-button-danger mr-2" pTooltip="Desactivar Inscripción" tooltipPosition="left" (click)="desactivarInscripcion(inscripcion)" tooltipPosition="top"></button>
+                    </div>
+                </td>
+                <td> {{ inscripcion.curnombre }} </td>
+                <td> {{ inscripcion.matnombre }} </td>
+                <td> {{ inscripcion.curmatfecini }} </td>
+                <td> {{ inscripcion.curmatfecfin }} </td>
+                <td>
+                    <div *ngIf="!inscripcion.perfotodocente || !isImageLoaded" class="user-display">
+                        <p-avatar 
+                            [label]="getInitials(inscripcion.pernombrecompletodocente)" 
+                            styleClass="mr-2" 
+                            size="large" 
+                            shape="circle">
+                        </p-avatar>
+                        <span class="ml-2">{{ inscripcion.pernombrecompletodocente }}</span>
+                    </div>
+                    <div *ngIf="inscripcion.perfotodocente && isImageLoaded" class="user-display">
+                        <p-avatar 
+                            image="{{ userProfilePhoto }}/{{ inscripcion.perfotodocente}}" 
+                            (onImageError)="onImageError()" 
+                            (onImageLoad)="onImageLoad()"
+                            styleClass="mr-2" 
+                            size="large" 
+                            shape="circle">
+                        </p-avatar>
+                        <span class="ml-2">{{ inscripcion.pernombrecompletodocente }}</span>
+                    </div>
+                </td>
+                <td> {{ inscripcion.tipmatrgestion }} </td>
+                <td> {{ inscripcion.pagdescripcion }} </td>
+                <td> {{ inscripcion.pagmonto }} </td>                
+                <td>
+                    <div pTooltip="{{ inscripcion.insfecreg | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="top">
+                        <p-chip> <div class="p-2"> {{ inscripcion.insusureg }} </div> </p-chip>
+                    </div>
+                    <!-- <p-chip>
+                        <div class="p-2"> {{ inscripcion.insusureg }} {{ inscripcion.insfecreg}}
+                        </div>
+                    </p-chip> -->
+                </td>
+                <td>
+                    <div pTooltip="{{ inscripcion.insfecmod | date : 'd MMMM, y h:mm:ss a' }}" tooltipPosition="top">
+                        <p-chip> <div class="p-2"> {{ inscripcion.insusumod }} </div> </p-chip>
+                    </div>
+                    <!-- <p-chip>
+                        <div class="p-2"> {{ inscripcion.insusumod }} {{ inscripcion.insfecmod }}
+                        </div>
+                    </p-chip> -->
+                </td>
+                <td> {{ inscripcion.insestadodescripcion }} </td>
+                <td> 
+                    <p-tag [value]="getDescriptionStatus(inscripcion.insestado)" [severity]="getSeverityStatus(inscripcion.insestado)" [rounded]="true"></p-tag>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9">No se encontró ningún registro.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+    <!-- <p-table 
+        #dt [loading]="loading" 
+        [value]="inscripciones" 
+        dataKey="insid" 
+        [responsive]="true"
+        [globalFilterFields]="['pernombrecompleto']" 
+        [rowsPerPageOptions]="[5, 10, 20]" 
+        [rows]="10"
+        [paginator]="true" 
+        styleClass="p-datatable-striped p-card"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <div>
+                <button pButton pRipple label="Nueva inscripción" icon="pi pi-plus" class="p-button-primary mr-2" (click)="abrirNuevo()" pTooltip="Registrar nueva inscripción" tooltipPosition="bottom"></button>
             </div>
-        </td>
-
-        <td>
-            <div class="p-3">
-                <p-table [value]="inscripcion.matricula" dataKey="matrid">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>Matrícula</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-matricula>
-                        <tr>
-                            <td>{{ matricula.tipmatrgestion }}</td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
+                </span>
             </div>
-        </td>
-
-        <td>
-            <div class="p-3">
-                <ng-container *ngIf="inscripcion.pago[0].pagid != null; else noPayment">
-                    <p-table [value]="inscripcion.pago" dataKey="matrid">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>Pago</th>
-                                <th>Monto</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-pago>
-                            <tr>
-                                <td>{{ pago.pagdescripcion }}</td>
-                                <td>Bs. {{ pago.pagmonto }}</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </ng-container>
-                <ng-template #noPayment>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th></th>
+                <th style="width: 5rem;"></th>
+                <th>N°</th>
+                <th>Estudiante</th>
+                <th>Registrado por</th>
+                <th>Modificado por</th>
+                <th>Estado</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-inscripcion let-expanded="expanded">
+            <tr>
+                <td>
+                    <div class="flex">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" pTooltip="Editar inscripción" tooltipPosition="left" (click)="editarInscripcion(inscripcion)" tooltipPosition="top"></button>
+                        <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2" pTooltip="Desactivar Inscripción" tooltipPosition="left" (click)="desactivarInscripcion(inscripcion)" tooltipPosition="top"></button>
+                    </div>
+                </td>
+                <td>
+                    <button type="button" pButton pRipple [pRowToggler]="inscripcion" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" pTooltip="Ver Información de la inscripción" tooltipPosition="top"></button>
+                </td>
+                <td>{{inscripcion.insid }}</td>
+                <td>
+                    <div *ngIf="inscripcion.perfoto == null" class="user-display">
+                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                        <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante}}</span>
+                    </div>
+                    <div *ngIf="inscripcion.perfoto != null" class="user-display">
+                        <p-avatar image="{{ userProfilePhoto }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                        <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante}}</span>
+                    </div>
+                </td>
+                <td>
                     <p-chip>
-                        <div class="p-text-center">
-                            No se realizó ningún tipo de pago aún.
+                        <div class="p-2"> Usuario: {{ inscripcion.insusureg }} Fecha: {{ inscripcion.insfecreg}}
                         </div>
                     </p-chip>
-                </ng-template>
-            </div>
-        </td>
-    </div>
-    </p-card>
-    </td>
-    </tr>
-    </ng-template>
+                </td>
+                <td>
+                    <p-chip>
+                        <div class="p-2"> Usuario: {{ inscripcion.insusumod }} Fecha: {{ inscripcion.insfecmod }}
+                        </div>
+                    </p-chip>
+                </td>
+                <td> 
+                    <p-tag [value]="getDescriptionStatus(inscripcion.insestado)" [severity]="getSeverityStatus(inscripcion.insestado)" [rounded]="true"></p-tag>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9">No se encontró ningún registro.</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-inscripcion>
+            <tr>
+                <td colspan="12">
+                    <p-card>
+                        <div class="p-grid">
+                            <td>
+                                <div class="p-3">
+                                    <p-table [value]="inscripcion.curso_materia" dataKey="curmatid">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>Curso</th>
+                                                <th>Materia</th>
+                                                <th>Fechas</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-cursomateria>
+                                            <tr>
+                                                <td>{{ cursomateria.curnombre }}</td>
+                                                <td>{{ cursomateria.matnombre }}</td>
+                                                <td><strong>{{ cursomateria.curmatfecini + ' a ' + cursomateria.curmatfecfin }}</strong></td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </td>
+        
+                            <td>
+                                <div class="p-3">
+                                    <p-table [value]="inscripcion.docente" dataKey="periddocente">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>Docente</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-docente>
+                                            <tr>
+                                                <td>
+                                                    <div *ngIf="docente.perfoto == null" class="user-display">
+                                                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2"
+                                                            shape="circle"></p-avatar>
+                                                        <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
+                                                    </div>
+                                                    <div *ngIf="docente.perfoto != null" class="user-display">
+                                                        <p-avatar image="{{ userProfilePhoto }}/{{ docente.perfoto }}" styleClass="mr-2"
+                                                            shape="circle"></p-avatar>
+                                                        <span class="font-bold ml-2"> {{ docente.pernombrecompletodocente }}</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </td>
+        
+                            <td>
+                                <div class="p-3">
+                                    <p-table [value]="inscripcion.matricula" dataKey="matrid">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>Matrícula</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-matricula>
+                                            <tr>
+                                                <td>{{ matricula.tipmatrgestion }}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </td>
+        
+                            <td>
+                                <div class="p-3">
+                                    <ng-container *ngIf="inscripcion.pago[0].pagid != null; else noPayment">
+                                        <p-table [value]="inscripcion.pago" dataKey="matrid">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th>Pago</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-pago>
+                                                <tr>
+                                                    <td>{{ pago.pagdescripcion }}</td>
+                                                    <td>Bs. {{ pago.pagmonto }}</td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </ng-container>
+                                    <ng-template #noPayment>
+                                        <p-chip>
+                                            <div class="p-text-center">
+                                                No se realizó ningún tipo de pago aún.
+                                            </div>
+                                        </p-chip>
+                                    </ng-template>
+                                </div>
+                            </td>
+                        </div>
+                    </p-card>
+                </td>
+            </tr>
+        </ng-template>
 
-            </p-table>
-        </div>
-    </div>
-    <div class="col-12">
+    </p-table> -->
+
+    <!-- <div class="col-12">
         <div class="card px-6 py-6">
             <div class="font-bold text-3xl text-center">
                 <span class="text-900">Inscripciones </span>
@@ -255,13 +413,13 @@
                             <div *ngIf="inscripcion.perfoto == null" class="user-display">
                                 <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
                                     styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante
+                                <span class="font-bold ml-2">{{ inscripcion.pernombrecompletoestudiante
                                     }}</span>
                             </div>
                             <div *ngIf="inscripcion.perfoto != null" class="user-display">
                                 <p-avatar image="{{ userProfilePhoto }}/{{ inscripcion.perfoto }}" styleClass="mr-2" size="xlarge"
                                     shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ inscripcion.estudiante[0].pernombrecompletoestudiante
+                                <span class="font-bold ml-2">{{ inscripcion.pernombrecompletoestudiante
                                     }}</span>
                             </div>
                         </td>
@@ -408,155 +566,231 @@
 
             </p-table>
         </div>
-    </div>
-</div>
+    </div> -->
 
 
-<p-dialog [(visible)]="inscripcionDialog" header="Inscripción" [modal]="true" class="p-fluid"
-[breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
+<p-dialog [(visible)]="inscripcionDialog" header="Inscripción" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
 >
     <div *ngIf="!optionInscripcion">
         <p-card>
-            <ng-template pTemplate="title">
-                Información de la inscripción
-            </ng-template>
             <ng-template pTemplate="content">
-                <div class="user-info-container">
-                    <div class="user-info-avatar">
-                        <div *ngIf="this.inscripcion?.perfoto">
-                            <p-avatar [image]="userProfilePhoto + '/' + this.inscripcion.perfoto" size="xlarge" shape="circle"></p-avatar>
+                <ul class="list-none p-0 m-0">
+                    <!-- Avatar -->
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-700 font-bold w-6 md:w-4">Estudiante</div>
+                        <div class="flex align-items-center w-full md:w-8 md:flex-order-0 flex-order-1">
+                            <ng-container *ngIf="!this.inscripcion?.perfoto || !isImageLoaded; else userImage">
+                                <p-avatar 
+                                    [label]="getInitials(this.inscripcion?.pernombrecompletoestudiante)" 
+                                    styleClass="mr-2" 
+                                    size="large" 
+                                    shape="circle">
+                                </p-avatar>
+                            </ng-container>
+                            <ng-template #userImage>
+                                <p-avatar 
+                                    image="{{ userProfilePhoto }}/{{ this.inscripcion?.perfoto }}" 
+                                    (onImageError)="onImageError()" 
+                                    (onImageLoad)="onImageLoad()"
+                                    styleClass="mr-2" 
+                                    size="large" 
+                                    shape="circle">
+                                </p-avatar>
+                            </ng-template>
+                            <span class="font-bold ml-2">{{ this.inscripcion?.pernombrecompletoestudiante }}</span>
                         </div>
-                        <div *ngIf="!this.inscripcion?.perfoto">
-                            <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
-                                shape="circle"></p-avatar>
+                    </li>
+
+                    <!-- Curso -->
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-700 font-bold w-6 md:w-4">Curso</div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{this.inscripcion?.curnombre}}</div>
+                    </li>
+
+                    <!-- Materia -->
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-700 font-bold w-6 md:w-4">Materia</div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{this.inscripcion?.matnombre}}</div>
+                    </li>
+
+                    <!-- Fechas -->
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-700 font-bold w-6 md:w-4">Fecha Inicio</div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            {{ this.inscripcion?.curmatfecini }}
                         </div>
-                    </div>
-                    <div class="user-info-details">
-                        <p><strong>Nombre de la persona:</strong> {{this.inscripcion?.estudiante[0].pernombrecompletoestudiante}}</p>
-                        <p><strong>Rol:</strong> Estudiante</p>
-                        <p><strong>Curso: </strong>{{this.inscripcion?.curso_materia[0].curnombre}}</p>
-                        <p><strong>Materia: </strong>{{this.inscripcion?.curso_materia[0].matnombre}}</p>
-                        <p><strong>Fechas: </strong>{{this.inscripcion?.curso_materia[0].curmatfecini + ' a ' + this.inscripcion?.curso_materia[0].curmatfecfin}}</p>
-                        <p><strong>Docente: </strong>{{this.inscripcion?.docente[0].pernombrecompletodocente}} </p>
-                        <!-- <p><strong>Rol:</strong> {{ usuario?.rolnombre }}</p> -->
-                        <p><strong>Estado de la inscripción:</strong>
-                            <p-tag [value]="getDescriptionStatus(this.inscripcion?.insestado)"
-                                [severity]="getSeverityStatus(this.inscripcion?.insestado)" [rounded]="true"></p-tag>
-                        </p>
-                    </div>
-                </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-700 font-bold w-6 md:w-4">Fecha Final</div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            {{ this.inscripcion?.curmatfecfin }}
+                        </div>
+                    </li>
+                    <!-- Docente -->
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-700 font-bold w-6 md:w-4">Docente</div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{this.inscripcion?.pernombrecompletodocente}}</div>
+                    </li>
+                </ul>
             </ng-template>
         </p-card>
     </div>
 
-    <form [formGroup]="inscripcionForm">
-        <div class="p-fluid">
-            <div class="field">
-                <label for="status">Elegir Curso y Materia</label>
-                <p-dropdown inputId="ddTipoMateria" appendTo="body" [filter]="true" [options]="tipoCursoMateria"
-                    formControlName="tipoCursoMateria" optionLabel="curmatdescripcion"
-                    [emptyFilterMessage]="'No se encontraron curso-materia registradas.'"
-                    placeholder="Seleccionar Curso Materia">
-                </p-dropdown>
-                <small class="p-success block" *ngIf="inscripcionForm.get('tipoCursoMateria').valid">
-                    El tipo de matricula es valido.
-                </small>
-                <small class="p-error block"
-                    *ngIf="inscripcionForm.get('tipoCursoMateria').invalid && inscripcionForm.get('tipoCursoMateria').touched">
-                    <span *ngIf="inscripcionForm.get('tipoCursoMateria').errors?.required">El tipo de matricula es
-                        requerido.</span>
-                    (*)
-                </small>
-            </div>
-
-            <div *ngIf="optionInscripcion" class="field">
-                <label for="status">Elegir Rol</label>
-                <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true"
-                    filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol"
-                    [emptyFilterMessage]="'No se encontraron roles.'" optionLabel="rolnombre"
-                    placeholder="Seleccionar rol">
-                </p-dropdown>
-                <small class="p-success block" *ngIf="inscripcionForm.get('tipoRol').valid">
-                    El tipo de rol es valido.
-                </small>
-                <small class="p-error block"
-                    *ngIf="inscripcionForm.get('tipoRol').invalid && inscripcionForm.get('tipoRol').touched">
-                    <span *ngIf="inscripcionForm.get('tipoRol').errors?.required">El tipo de rol es requerido.</span>
-                    (*)
-                </small>
-            </div>
-            <div *ngIf="optionInscripcion" class="field">
-                <label for="status">Elegir Estudiante</label>
-                <!-- <p-dropdown (onChange)="onSelectEstudianteMatricula($event)" [filter]="true" [options]="tipoPersona"
-                    formControlName="tipoPersona" optionLabel="pernomcompleto"
-                    [emptyFilterMessage]="'No se encontraron estudiantes.'" [emptyMessage]="'No se encontraron estudiantes.'" placeholder="Seleccionar estudiante">
-                </p-dropdown> -->
-                <p-dropdown (onChange)="onSelectEstudianteMatricula($event)"  inputId="ddTipoPersona" appendTo="body" dropdownIcon="pi pi-user" [options]="tipoPersona" placeholder="Seleccionar estudiante" formControlName="tipoPersona" appendTo="body"
-                optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
-                placeholder="Seleccionar estudiante"  [emptyFilterMessage]="'No se encontraron estudiantes.'" [emptyMessage]="'No se encontraron estudiantes.'">
-                <ng-template let-tm pTemplate="item">
-                    <div class="flex align-items-center">
-                            <div *ngIf="tm.perfoto == null" class="user-display">
-                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
-                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+    <div class="mt-2">
+        <form [formGroup]="inscripcionForm">
+            <div class="p-fluid">
+                <div class="field">
+                    <label class="font-bold block mb-2" for="status">Elegir Curso</label>
+                    <p-dropdown 
+                        inputId="ddTipoCurso" 
+                        (onChange)="onSelectCurso($event)" 
+                        appendTo="body" 
+                        [options]="tipoCurso" 
+                        formControlName="tipoCurso" 
+                        optionLabel="curnombre" 
+                        [filter]="true" 
+                        filterBy="curnombre" 
+                        [emptyFilterMessage]="'No se encontraron cursos.'" 
+                        placeholder="Seleccionar Curso" 
+                        [ngClass]="{ 'valid-field': this.inscripcionForm.get('tipoCurso').valid}" styleClass="mb-2"
+                    > 
+                    </p-dropdown>
+                    <small class="p-success block" *ngIf="inscripcionForm.get('tipoCurso').valid"> El tipo de curso es valido. </small>
+                    <small class="p-error block" *ngIf="inscripcionForm.get('tipoCurso').invalid && inscripcionForm.get('tipoCurso').touched"> <span *ngIf="inscripcionForm.get('tipoCurso').errors?.required">El tipo de curso es requerido.</span> (*)</small>
+                </div>
+                <div class="field">
+                    <label class="font-bold block mb-2" for="status">Elegir Materia</label>
+                    <p-dropdown inputId="ddTipoMateria" appendTo="body" 
+                                [options]="tipoMateria" 
+                                [emptyFilterMessage]="'No se encontraron materias para este curso.'" 
+                                [ngClass]="{ 'valid-field': this.inscripcionForm.get('tipoMateria').valid}" 
+                                formControlName="tipoMateria" 
+                                [filter]="true" 
+                                filterBy="matnombre" 
+                                optionLabel="matnombre" 
+                                placeholder="Seleccionar Materia" 
+                                styleClass="mb-2"
+                    > 
+                        <ng-template pTemplate="selectedItem" let-tipoMateriaCombo>
+                            <div class="flex flex-column" *ngIf="tipoMateriaCombo">
+                                <div class="flex align-items-center gap-2" >
+                                    <div class="font-bold">{{ tipoMateriaCombo?.matnombre }}</div>
+                                </div>
+                                <div class="text-sm mt-2">
+                                    {{ tipoMateriaCombo?.curmatfecini + ' a ' +  tipoMateriaCombo?.curmatfecfin }}
+                                </div>
                             </div>
-                            <div *ngIf="tm.perfoto != null" class="user-display">
-                                <p-avatar image="{{ userProfilePhoto }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
-                                    shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+                        </ng-template>
+                        <ng-template let-tipoMateriaCombo pTemplate="item">
+                            <div class="flex flex-column">
+                                <div class="flex align-items-center gap-2">
+                                    <div class="font-bold">{{ tipoMateriaCombo?.matnombre }}</div>
+                                </div>
+                                <div class="text-sm mt-2">
+                                    {{ tipoMateriaCombo?.curmatfecini + ' a ' +  tipoMateriaCombo?.curmatfecfin }}
+                                </div>
                             </div>
-                        </div>
-                    </ng-template>
-                </p-dropdown>
-                <small class="p-success block" *ngIf="inscripcionForm.get('tipoPersona').valid">
-                    El tipo de estudiante es valido.
-                </small>
-                <small class="p-error block"
-                    *ngIf="inscripcionForm.get('tipoPersona').invalid && inscripcionForm.get('tipoPersona').touched">
-                    <span *ngIf="inscripcionForm.get('tipoPersona').errors?.required">El tipo de estudiante es
-                        requerido.</span>
-                    (*)
-                </small>
+                        </ng-template>
+                    </p-dropdown>
+                    <small class="p-success block" *ngIf="inscripcionForm.get('tipoMateria').valid"> El tipo de materia es válido. </small>
+                    <small class="p-error block" *ngIf="inscripcionForm.get('tipoMateria').invalid && inscripcionForm.get('tipoMateria').touched"> 
+                        <span *ngIf="inscripcionForm.get('tipoMateria').errors?.required">El tipo de materia es requerido.</span> 
+                        (*) 
+                    </small>
+                </div>
+    
+                <div *ngIf="optionInscripcion" class="field">
+                    <label for="status">Elegir Rol</label>
+                    <p-dropdown inputId="ddTipoRol" (onChange)="onSelectPersona($event)" appendTo="body" [filter]="true"
+                        filterBy="rolnombre" [options]="tipoRol" formControlName="tipoRol"
+                        [emptyFilterMessage]="'No se encontraron roles.'" optionLabel="rolnombre"
+                        placeholder="Seleccionar rol">                       
+                    </p-dropdown>
+                    <small class="p-success block" *ngIf="inscripcionForm.get('tipoRol').valid">
+                        El tipo de rol es valido.
+                    </small>
+                    <small class="p-error block"
+                        *ngIf="inscripcionForm.get('tipoRol').invalid && inscripcionForm.get('tipoRol').touched">
+                        <span *ngIf="inscripcionForm.get('tipoRol').errors?.required">El tipo de rol es requerido.</span>
+                        (*)
+                    </small>
+                </div>
+                
+                <div *ngIf="optionInscripcion" class="field">
+                    <label for="status">Elegir Estudiante</label>
+                    <p-dropdown (onChange)="onSelectEstudianteMatricula($event)"  inputId="ddTipoPersona" appendTo="body" dropdownIcon="pi pi-user" [options]="tipoPersona" placeholder="Seleccionar estudiante" formControlName="tipoPersona" appendTo="body" optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" placeholder="Seleccionar estudiante"  [emptyFilterMessage]="'No se encontraron estudiantes.'" [emptyMessage]="'No se encontraron estudiantes.'">
+                        <ng-template pTemplate="selectedItem" let-persona>
+                            <div class="flex align-items-center gap-2" *ngIf="persona">
+                                <div class="user-display flex">
+                                    <div *ngIf="!persona.perfoto">
+                                        <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                    </div>
+                                    <div *ngIf="persona.perfoto">
+                                        <p-avatar image="{{ userProfilePhoto }}/{{ persona.perfoto }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                    </div>
+                                    <div class="mt-2 p-2">
+                                        <span class="font-bold mb-2">{{ persona.pernomcompleto }}</span> <br/> <span>{{ persona.pernrodoc }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-tm pTemplate="item">
+                        <div class="flex align-items-center">
+                                <div class="user-display flex">
+                                    <div *ngIf="tm.perfoto == null">
+                                        <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                    </div>
+                                    <div *ngIf="tm.perfoto">
+                                        <p-avatar image="{{ userProfilePhoto }}/{{ tm.perfoto }}" styleClass="mr-2" shape="circle" size="large" ></p-avatar>
+                                    </div>
+                                    <div class="mt-2 p-2">
+                                        <span class="font-bold mb-2">{{ tm.pernomcompleto }}</span> <br/> <span>{{ tm.pernrodoc }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown> 
+                    <small class="p-success block" *ngIf="inscripcionForm.get('tipoPersona').valid">
+                        El tipo de estudiante es valido.
+                    </small>
+                    <small class="p-error block"
+                        *ngIf="inscripcionForm.get('tipoPersona').invalid && inscripcionForm.get('tipoPersona').touched">
+                        <span *ngIf="inscripcionForm.get('tipoPersona').errors?.required">El tipo de estudiante es
+                            requerido.</span>
+                        (*)
+                    </small>
+                </div>
+    
+                <div class="field">
+                    <label for="status">Elegir Gestión de la Matricula</label>
+                    <p-dropdown inputId="ddgestion" appendTo="body" [options]="tipoMatricula"
+                        formControlName="tipoMatricula" optionLabel="tipmatrgestion"
+                        [emptyFilterMessage]="'No se encontraron matriculas registradas.'"
+                        [emptyMessage]="'No se encontraron matriculas registradas.'"
+                        placeholder="Seleccionar Gestion"></p-dropdown>
+    
+                    <small class="p-success block" *ngIf="inscripcionForm.get('tipoMatricula').valid">
+                        El tipo de matricula es valido.
+                    </small>
+                    <small class="p-error block"
+                        *ngIf="inscripcionForm.get('tipoMatricula').invalid && inscripcionForm.get('tipoMatricula').touched">
+                        <span *ngIf="inscripcionForm.get('tipoMatricula').errors?.required">El tipo de matricula es requerido. (*) </span>
+                    </small>
+                </div>
+
+                <div class="field">
+                    <label for="descripcion">Observación</label>
+                    <textarea class="my-2" inputId="descripcion" rows="1" cols="30" formControlName="insestadodescripcion" appendTo="body" pInputTextarea></textarea>
+                </div>
+                <div class="field">
+                    <label for="">Estado</label>
+                    <div class="flex align-items-center justify-content-center">
+                        <p-selectButton [options]="statusOptions" formControlName="insestado" optionLabel="label" optionValue="value"></p-selectButton>
+                    </div>
+                </div>
             </div>
-
-            <div class="field">
-                <label for="status">Elegir Gestión de la Matricula</label>
-                <p-dropdown inputId="ddgestion" appendTo="body" [options]="tipoMatricula"
-                    formControlName="tipoMatricula" optionLabel="tipmatrgestion"
-                    [emptyFilterMessage]="'No se encontraron matriculas registradas.'"
-                    [emptyMessage]="'No se encontraron matriculas registradas.'"
-                    placeholder="Seleccionar Gestion"></p-dropdown>
-
-                <small class="p-success block" *ngIf="inscripcionForm.get('tipoMatricula').valid">
-                    El tipo de matricula es valido.
-                </small>
-                <small class="p-error block"
-                    *ngIf="inscripcionForm.get('tipoMatricula').invalid && inscripcionForm.get('tipoMatricula').touched">
-                    <span *ngIf="inscripcionForm.get('tipoMatricula').errors?.required">El tipo de matricula es
-                        requerido.</span>
-                    (*)
-                </small>
-            </div>
-
-
-            <!-- <div *ngIf="optionInscripcion" class="field col-12 md:col-6">
-                <label for="status">Elegir Estudiante</label>
-                <p-multiSelect inputId="ddTipoPersona" appendTo="body" [filter]="true" [options]="tipoPersona"
-                formControlName="tipoPersona" optionLabel="pernomcompleto"
-                [emptyFilterMessage]="'No se encontraron estudiantes.'" placeholder="Seleccionar estudiante"></p-multiSelect>
-                <small class="p-success block" *ngIf="inscripcionForm.get('tipoPersona').valid">
-                    El tipo de estudiante es valido.
-                </small>
-                <small class="p-error block"
-                    *ngIf="inscripcionForm.get('tipoPersona').invalid && inscripcionForm.get('tipoPersona').touched">
-                    <span *ngIf="inscripcionForm.get('tipoPersona').errors?.required">El tipo de estudiante es
-                        requerido.</span>
-                    (*)
-                </small>
-            </div> -->
-        </div>
-    </form>
+        </form>
+    </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
             (click)="ocultarDialog()"></button>
@@ -564,6 +798,7 @@
             (click)="guardarInscripcion()"></button>
     </ng-template>
 </p-dialog>
+
 <p-dialog [(visible)]="eliminarInscripcionDialog" header="Mensaje de Confirmación" [modal]="true"
     [style]="{width:'30%'}">
     <div class="flex align-items-center justify-content-center">
