@@ -40,4 +40,13 @@ export class CursoService {
     getCursoById(curid: Number){
         return this.http.get(`${API_URL}/getCursoById/${curid}`, { context: checktoken() });
     }
+
+    getTipoCurso(){
+        return this.http.get(`${API_URL}/getTipoCurso`, { context: checktoken() });
+    }
+
+    getTipoMateriaByCursoId(curid: any){
+        console.log("curid services: ", curid)
+        return this.http.get(`${API_URL}/getTipoMateriaByCursoId/${curid}`, { context: checktoken() });
+    }
 }

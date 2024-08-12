@@ -167,7 +167,7 @@
             </div>
             <div class="col-12">
                 <label class="font-bold block mb-2" for="status">Fecha de Inicio</label>
-                <p-calendar inputId="fecini" appendTo="body" dateFormat="yy-mm-dd" formControlName="nf_curfchini" [showIcon]="true" [locale]="es" [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchini').touched, 'valid-field': nivelForm.get('nf_curfchini').valid }" styleClass="mb-2" placeholder="Seleccionar fecha de inicio"></p-calendar>
+                <p-calendar inputId="fecini" appendTo="body" dateFormat="yy-mm-dd" formControlName="nf_curfchini" [showIcon]="true" [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchini').touched, 'valid-field': nivelForm.get('nf_curfchini').valid }" styleClass="mb-2" placeholder="Seleccionar fecha de inicio"></p-calendar>
                 <small class="p-error block"
                     *ngIf="nivelForm.get('nf_curfchini').invalid && nivelForm.get('nf_curfchini').dirty">
                     <span *ngIf="nivelForm.get('nf_curfchini').errors?.required">La fecha de comienzo es requerida. (*)</span>
@@ -176,7 +176,7 @@
             </div>
             <div class="col-12">
                 <label class="font-bold block mb-2" for="fecfin">Fecha de Conclusión</label>
-                <p-calendar inputId="fecfin" appendTo="body" dateFormat="yy-mm-dd" formControlName="nf_curfchfin" [showIcon]="true" [locale]="es" [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchfin').touched, 'valid-field': nivelForm.get('nf_curfchfin').valid }" styleClass="mb-2" placeholder="Seleccionar fecha de fin"></p-calendar>
+                <p-calendar inputId="fecfin" appendTo="body" dateFormat="yy-mm-dd" formControlName="nf_curfchfin" [showIcon]="true" [ngClass]="{ 'ng-dirty': nivelForm.get('nf_curfchfin').touched, 'valid-field': nivelForm.get('nf_curfchfin').valid }" styleClass="mb-2" placeholder="Seleccionar fecha de fin"></p-calendar>
                 <small class="p-error block" *ngIf="nivelForm.get('nf_curfchfin').invalid && nivelForm.get('nf_curfchfin').dirty">
                     <span *ngIf="nivelForm.get('nf_curfchfin').errors?.required">La fecha de conclusión es requerida. (*)</span>
                 </small>

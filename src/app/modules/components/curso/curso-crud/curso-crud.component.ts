@@ -270,7 +270,7 @@ export class CursoCrudComponent implements OnInit {
         this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe( (result: any) => { this.tipoPersona = result; } )
         this.cursoForm.patchValue({
             curmatid: this.cursoMateria.curmatid,
-            tipoCurso: new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.matnivel),
+            tipoCurso: new TipoCurso(this.cursoMateria.curid, this.cursoMateria.curnombre, this.cursoMateria.curnivel),
             tipoMateria: new TipoMateria(this.cursoMateria.matid, this.cursoMateria.matnombre, this.cursoMateria.matnivel),
             tipoRol: new TipoRol(this.cursoMateria.rolid, this.cursoMateria.rolnombre),
             tipoPersona: new TipoPersona2(this.cursoMateria.periddocente, this.cursoMateria.pernomcompleto, this.cursoMateria.pernrodoc, this.cursoMateria.perfoto),
