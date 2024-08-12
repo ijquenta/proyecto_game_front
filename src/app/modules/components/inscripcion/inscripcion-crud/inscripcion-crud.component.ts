@@ -18,7 +18,7 @@ import { InscripcionService } from 'src/app/modules/service/data/inscripcion.ser
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 // Importacion de modelos
 import { TipoMatriculaEstudiante } from 'src/app/modules/models/inscripcion';
-import { TipoCurso, TipoRol, TipoPersona, TipoPersona2, TipoEstado, TipoMateria, TipoCursoMateria, TipoMatricula, TipoMateriaCombo, TipoMateria2} from 'src/app/modules/models/diccionario';
+import { TipoCurso, TipoCurso2, TipoRol, TipoPersona, TipoPersona2, TipoEstado, TipoMateria, TipoCursoMateria, TipoMatricula, TipoMateriaCombo, TipoMateria2} from 'src/app/modules/models/diccionario';
 import { CursoMateria } from 'src/app/modules/models/curso';
 import { Inscripcion, InscripcionRegistro } from 'src/app/modules/models/inscripcion';
 import { Usuario } from 'src/app/modules/models/usuario';
@@ -50,7 +50,7 @@ export class InscripcionCrudComponent implements OnInit {
 
     registroCursoMateria: CursoMateria = {};
 
-    tipoCurso: TipoCurso[] = [];
+    tipoCurso: TipoCurso2[] = [];
     tipoMateria: TipoMateriaCombo[] = [];
     tipoRol: TipoRol[] = [];
     tipoPersona: any[] = [];
@@ -458,7 +458,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcionForm.patchValue({
             insid: this.inscripcion.insid,
             tipoMatricula: new TipoMatriculaEstudiante(this.inscripcion.matrid, this.inscripcion.tipmatrid, this.inscripcion.tipmatrgestion, this.inscripcion.peridestudiante, this.inscripcion.pernombrecompletoestudiante, this.inscripcion.perfotoestudiante),
-            tipoCurso: new TipoCurso(this.inscripcion.curid, this.inscripcion.curnombre),
+            tipoCurso: new TipoCurso2(this.inscripcion.curid, this.inscripcion.curnombre),
             tipoMateria: new TipoMateriaCombo(this.inscripcion.matid, this.inscripcion.matnombre, this.inscripcion.curmatfecini, this.inscripcion.curmatfecfin),
             tipoRol: new TipoRol(4, 'Estudiante'),
             tipoPersona: new TipoPersona(this.inscripcion.peridestudiante, this.inscripcion.pernombrecompletoestudiante),
