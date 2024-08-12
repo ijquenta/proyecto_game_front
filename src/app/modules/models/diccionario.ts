@@ -94,11 +94,20 @@ export class TipoDeduccion{
 export class TipoCurso {
     curid: number = 0;
     curnombre: string = '';
-    // curnivel: number = 0;
+    curnivel: number = 0;
+    constructor(codTipoCurso: number,desTipoCurso: string, codCurnivel: number){
+        this.curid = codTipoCurso;
+        this.curnombre = desTipoCurso;
+        this.curnivel = codCurnivel;
+    }
+}
+
+export class TipoCurso2 {
+    curid: number = 0;
+    curnombre: string = '';
     constructor(codTipoCurso: number,desTipoCurso: string){
         this.curid = codTipoCurso;
         this.curnombre = desTipoCurso;
-        // this.curnivel = codCurnivel;
     }
 }
 // export class TipoRol {
