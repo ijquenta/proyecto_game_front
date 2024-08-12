@@ -47,6 +47,8 @@ import { ReportV2Component } from './modules/components/reportes/report/report-v
 import { ConfirmComponent } from './modules/components/auth/confirm/confirm.component';
 import { NoConfirmComponent } from './modules/components/auth/noConfirm/no-confirm.component';
 import { VerifiedComponent } from './modules/components/auth/verified/verified.component';
+import { AccessDeniedComponent } from './modules/components/auth/access-denied/access-denied.component';
+import { ExpiredComponent } from './modules/components/auth/expired/expired.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import localeBo from '@angular/common/locales/es-BO';
 import { registerLocaleData } from '@angular/common';
@@ -66,6 +68,8 @@ registerLocaleData(localeBo, 'es');
         ConfirmComponent,
         NoConfirmComponent,
         VerifiedComponent,
+        AccessDeniedComponent,
+        ExpiredComponent,
         ResetPasswordComponent
     ],
     imports: [

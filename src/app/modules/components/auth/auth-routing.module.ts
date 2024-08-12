@@ -8,6 +8,8 @@ import { ConfirmComponent } from './confirm/confirm.component';
 import { NoConfirmComponent } from './noConfirm/no-confirm.component';
 import { VerifiedComponent } from './verified/verified.component';
 import { ResetPasswordComponent } from './resetPassword/reset-password.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { ExpiredComponent } from './expired/expired.component';
 
 const routes: Routes = [
     {
@@ -44,6 +46,14 @@ const routes: Routes = [
         path: 'verified',
         component: VerifiedComponent,
         title: 'SGSA'
+    },
+    {
+        path: 'access-denied',
+        component: AccessDeniedComponent,
+    },
+    {
+        path: 'expired',
+        component: ExpiredComponent
     },
     {
         path:'reset-password/:token',

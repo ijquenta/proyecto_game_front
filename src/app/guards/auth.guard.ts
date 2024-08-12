@@ -1,34 +1,26 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { TokenService } from '../modules/service/core/token.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
-  constructor(
-        private router: Router,
-        private tokenService: TokenService
-        ){}
-  canActivate(): boolean {
-    // route: ActivatedRouteSnapshot,
-    // state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+/**
+ * Guard function that determines whether a route can be activated.
+ * It checks the validity of the token using the TokenService.
+ * 
+ * @returns {boolean} Returns `true` if the token is valid, `false` otherwise.
+ */
+export const authGuard: CanActivateFn = () => {
+  const router = inject(Router);
+  const tokenService = inject(TokenService);
 
-    // const token = this.tokenService.getToken();
-    const isValidToken = this.tokenService.isValidToken();
-    // if(!token) {
-    if(!isValidToken) {
-        this.router.navigate(['/login']);
-        return false;
-    }
-    return true;
+  // Check if the token is valid
+  const isValidToken = tokenService.isValidToken();
 
-    // if (localStorage.getItem('token') !== undefined && localStorage.getItem('token')) {
-    //     return true;
-    //   }
-    //   this.router.navigate(['/']);
-    //   return false;
+  if (!isValidToken) {
+    // If the token is not valid, navigate to the expired session page
+    router.navigate(['/expired']);
+    return false;
   }
 
-}
+  // If the token is valid, allow access to the route
+  return true;
+};
