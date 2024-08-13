@@ -1,324 +1,35 @@
 <p-toast></p-toast>
-<!-- <div class="grid">
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <p-table #dt [value]="listaTipoMatricula" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]"
-                [globalFilterFields]="['tipmatrgestion']"
-                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
-                >
-                <ng-template pTemplate="caption">
-                    <div class="font-bold text-3xl text-center">
-                        <span class="text-900">Asignar</span>
-                        <span class="text-primary-600"> matricula </span>
-                    </div>
-                    <hr/>
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <button pButton pRipple label="Nuevo Matricula" icon="pi pi-plus" class="p-button-primary mr-2" pTooltip="Registrar una nueva matricula"
-                        (click)="abrirNuevoTipoMatricula()"></button>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                        </span>
-
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
-                        </span>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width: 8%;" pSortableColumn="tipmatrid">Código<p-sortIcon field="tipmatrid"></p-sortIcon></th>
-                        <th style="width: 15%;" pSortableColumn="tipmatrgestion">Nombre<p-sortIcon field="tipmatrgestion"></p-sortIcon></th>
-                        <th style="width: 10%;" pSortableColumn="tipmatrfecini">Fecha Inicio<p-sortIcon field="tipmatrfecini"></p-sortIcon></th>
-                        <th style="width: 10%;" pSortableColumn="tipmatrfecfin">Fecha Final<p-sortIcon field="tipmatrfecfin"></p-sortIcon></th>
-                        <th style="width: 8%;" pSortableColumn="tipmatrcosto">Costo<p-sortIcon field="tipmatrcosto"></p-sortIcon></th>
-                        <th>Registrado por</th>
-                        <th>Modificado por</th>
-                        <th>Descripción</th>
-                        <th style="width: 8%;" pSortableColumn="tipmatrestado">Estado<p-sortIcon field="tipmatrestado"></p-sortIcon></th>
-                        <th> Opciones </th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-matricula>
-                    <tr>
-                        <td>
-                            {{ 'MATR-' + matricula.tipmatrid}}
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    {{ matricula.tipmatrgestion}}
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecini}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecfin}}
-                        </td>
-                        <td>
-                            Bs. {{matricula.tipmatrcosto}}
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
-                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
-                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            {{matricula.matrdescripcion}}
-                        </td>
-                        <td> <p-tag [value]="getDescriptionStatus(matricula.tipmatrestado)" [severity]="getSeverityStatus(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
-                                    (click)="editarTipoMatricula(matricula)"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
-                                    (click)="desactivarMatricula(matricula)"></button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
-
-
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <p-table #dt2 [value]="listaTipoMatriculaInactivo" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]"
-                [globalFilterFields]="['tipmatrgestion']"
-                >
-                <ng-template pTemplate="caption">
-                    <div class="font-bold text-3xl text-center">
-                        <span class="text-900">Matriculas</span>
-                        <span class="text-primary-600"> Desactivadas </span>
-                    </div>
-                    <hr/>
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
-                        </span>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Final</th>
-                        <th>Costo</th>
-                        <th>Modificado por</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th> Opciones </th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-matricula>
-                    <tr>
-                        <td>
-                            {{ 'MATR-' + matricula.tipmatrid}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrgestion}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecini}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecfin}}
-                        </td>
-                        <td>
-                            Bs. {{matricula.tipmatrcosto}}
-                        </td>
-
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
-                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            {{matricula.matrdescripcion}}
-                        </td>
-                        <td> <p-tag [value]="getDescriptionStatus(matricula.tipmatrestado)" [severity]="getSeverityStatus(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
-                                    (click)="activarMatricula(matricula)"></button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
-</div> -->
-
-
-
-
-<!-- <div class="grid">
-    <div class="col-12">
-        <div class="card">
-            <div class="font-bold text-3xl text-center">
-                <span class="text-900">Administrar</span>
-                <span class="text-primary-600"> Usuarios</span>
-            </div>
-            <p-dataView #dv [value]="listaTipoMatricula" [paginator]="true" [rows]="8" filterBy="pernomcompleto"
-                [sortField]="sortField" [sortOrder]="sortOrder" layout="grid"
-                [emptyMessage]="'No se encontraron registros de usuarios.'" [loadingIcon]="'pi pi-spin pi-spinner'">
-                <ng-template pTemplate="header">
-                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
-                        <button pButton pRipple label="Nuevo Usuario" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="nuevaPersona()" pTooltip="Registrar usuario nuevo"></button>
-
-                        <div class="flex">
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search"></i>
-                                <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
-                                    (input)="filterUsuarios()" />
-                            </span>
-                        </div>
-                        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-                    </div>
-                </ng-template>
-
-                <ng-template let-usuario pTemplate="listItem">
-                    <div class="col-12">
-                        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
-                            <img [src]="'http://127.0.0.1:5001/static/files_fotoperfil/' + usuario.perfoto"
-                                [alt]="usuario.perfoto"
-                                class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover"
-                                style="border-radius: 5px;" />
-                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
-                                <div class="font-bold text-xl">{{usuario.tipmatrgestion}}</div>
-                                <div>
-                                    <p-tag [rounded]="true">Usuario: {{usuario.tipmatrfecini}} </p-tag>
-                                </div>
-                                <div class="flex align-items-center mt-2">
-                                    <i class="pi pi-user mr-2"></i>
-                                    <span class="font-semibold">Usuario: {{usuario.tipmatrfecini}}</span>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-help mr-2"
-                                    tooltipPosition="left" pTooltip="Editar datos de usuario"
-                                    (click)="editarUsuario(usuario)"></button>
-                                <button pButton pRipple icon="pi pi-trash"
-                                    class="p-button-rounded p-button-sm p-button-danger" tooltipPosition="left"
-                                    pTooltip="Eliminar registro de usuario" (click)="eliminarUsuario(usuario)"></button>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
-                <ng-template let-usuario pTemplate="gridItem">
-                    <div class="col-12 md:col-3">
-                        <div class="card m-3 border-2 surface-border">
-                            <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
-                                <div class="flex align-items-center">
-                                    <i class="pi pi-user mr-2"></i>
-                                    <span class="font-semibold">{{usuario.tipmatrid}}</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-column align-items-center text-center mb-3">
-                                <img [src]="'http://127.0.0.1:5001/static/files_fotoperfil/' + usuario.perfoto"
-                                    [alt]="usuario.perfoto"
-                                    class="my-4 md:my-0 w-9 md:w-10rem h-9 md:h-10rem shadow-2 mr-5 object-cover m-2"
-                                    style="border-radius: 5px;" />
-                                <div class="text-xl font-bold">{{usuario.tipmatrgestion}}</div>
-                                <div>
-                                    <p-tag [rounded]="true">Usuario: {{usuario.tipmatrfecini}} </p-tag>
-                                </div>
-
-                            </div>
-                            <div class="flex justify-content-center">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-help mr-2"
-                                    tooltipPosition="left" pTooltip="Editar datos de usuario"
-                                    (click)="editarUsuario(usuario)"></button>
-                                <button pButton pRipple icon="pi pi-trash"
-                                    class="p-button-rounded p-button-sm p-button-danger" tooltipPosition="right"
-                                    pTooltip="Eliminar registro de usuario" (click)="eliminarUsuario(usuario)"></button>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-dataView>
-        </div>
-    </div>
-</div> -->
-
-
-
-
-<div class="grid">
-    <div class="col-12">
-        <div class="card">
-            <div class="font-bold text-3xl text-center">
-                <span class="text-900">Asignar </span>
-                <span class="text-primary-600"> matricula</span>
-            </div>
-            <hr>
-            <p-table #dt [value]="listaMatricula" [loading]="loading" [rows]="10"
-                [globalFilterFields]="['pernomcompleto', 'pernrodoc', 'tipmatrgestion']" [paginator]="true"
-                [rowsPerPageOptions]="[5,10,20]" selectionMode="multiple" [rowHover]="true" dataKey="id"
-                rowGroupMode="rowspan" groupRowsBy="pernomcompleto" sortField="pernomcompleto" sortMode="single"
-                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" ></p-breadcrumb>
+    <h3>Inscripción</h3>
+    <p>Administrar registros de inscripciones</p>
+            <p-table
+                #dt
+                [value]="listaMatricula"
+                [loading]="loading"
+                [rows]="20"
+                [globalFilterFields]="['pernomcompleto', 'pernrodoc', 'tipmatrgestion']"
+                [paginator]="true"
+                [rowsPerPageOptions]="[5,10,20, 50, 100]"
+                [rowHover]="true"
+                rowGroupMode="rowspan"
+                groupRowsBy="pernomcompleto"
+                sortField="pernomcompleto"
+                sortMode="single"
+                responsiveLayout="scroll"
+                styleClass=" p-datatable-sm p-card"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
                 >
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <div class="flex">
                             <button pButton pRipple label="Asignar matricula" icon="fa-regular fa-address-card" class="p-button-primary mr-2"
-                                (click)="nuevaAsignacion()" pTooltip="Asignar una matricula a un estudiante"
+                                (click)="crearMatriculaAsignacion()" pTooltip="Asignar una matricula a un estudiante"
                                 tooltipPosition="top">
                             </button>
                             <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-danger mr-2" pTooltip="PDF" tooltipPosition="top"></button>
                         </div>
-
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
@@ -330,55 +41,66 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
+                        <th colspan="3"></th>
+                        <th colspan="4" class="text-center bg-blue-400">Matricula</th>
+                        <th colspan="3" class="text-center bg-gray-400">Pago</th>
+                        <th colspan="5"></th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th style="min-width:200px" >Acciones</th>
+                        <th style="min-width:400px" > Estudiante </th>
+                        <th style="min-width:200px" > Descripción </th>
+                        <th style="min-width:180px" > Fecha Inicio </th>
+                        <th style="min-width:180px" > Fecha Fin </th>
+                        <th style="min-width:150px" > Monto (Bs)</th>
+                        <th style="min-width:400px" > Descripción </th>
+                        <th style="min-width:180px" > Fecha </th>
+                        <th style="min-width:150px" > Monto (Bs) </th>
+                        <th style="min-width:150px" > Fecha de matriculación </th>
+                        <th style="min-width:200px" > Registrado por </th>
+                        <th style="min-width:200px" > Modificado por </th>
+                        <th style="min-width:200px" > Descripción </th>
+                        <th style="min-width:150px" > Estado </th>
+                    </tr>
+                    <tr>
                         <th></th>
-                        <th> Estudiante </th>
-                        <!-- <th></th> -->
-                        <th> Matricula </th>
-                        <th> Pago </th>
-                        <th> Fecha de matricula </th>
-                        <th> Registrado por </th>
-                        <th> Modificado por </th>
-                        <th> Descripción </th>
-                        <th> Estado </th>
-
                         <th></th>
+                        <th><p-columnFilter type="text" field="pernomcompleto" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="tipmatrgestion" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="tipmatrfecini" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="tipmatrfecfin" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="tipmatrcosto" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="pagdescripcion" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="pagfecha" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="pagmonto" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="matrfec" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="matrusureg" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="matrusumod" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="matrdescripcion" ></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="matrestado" ></p-columnFilter></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-matr let-rowIndex="rowIndex" let-rowgroup="rowgroup"
-                    let-rowspan="rowspan">
-
+                <ng-template pTemplate="body" let-matr let-rowgroup="rowgroup" let-rowspan="rowspan" let-rowIndex="rowIndex">
                     <tr>
+                        <td> {{ rowIndex + 1 }}</td>
                         <td>
                             <div class="flex">
-
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-primary mr-2" pTooltip="Editar matricula"
-                                        tooltipPosition="top" (click)="editarMatricula(matr)">
-                                    </button>
-
-                                    <button *ngIf="!matr.pagoidmatricula" pButton pRipple icon="fa-solid fa-money-bill-wave"
-                                        class="p-button-rounded p-button-info mr-2" pTooltip="Pagar matricula"
-                                        tooltipPosition="top" (click)="pagarMatricula(matr)">
-                                    </button>
-
-                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
-                                        icon="fa-solid fa-file-pen" class="p-button-rounded p-button-info mr-2"
-                                        pTooltip="Editar pago matricula" tooltipPosition="top" (click)="actualizarPago(matr)">
-                                    </button>
-
-                                    <button *ngIf="matr.pagoidmatricula" pButton="pButton" pRipple="pRipple" type="button"
-                                            icon="pi pi-file-pdf" class="p-button-rounded p-button-warning mr-2" pTooltip="Ver archivo de pago"
-                                            tooltipPosition="top" (click)="verArchivoPago(matr.pagarchivo)">
-                                    </button>
-
-                                    <button  pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger mr-2"
-                                        (click)="desactivarMatricula(matr)" pTooltip="Desactivar matricula"
-                                        tooltipPosition="top">
-                                    </button>
-
+                                <button *ngIf="matr.matrestado == 1" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-outlined p-button-primary mr-2" pTooltip="Editar matricula" tooltipPosition="top" (click)="editarMatriculaAsignacion(matr)"> </button>
+                                <button *ngIf="!matr.pagoidmatricula && matr.matrestado == 1" pButton pRipple icon="fa-solid fa-money-bill-wave" class="p-button-outlined p-button-rounded p-button-info mr-2" pTooltip="Pagar matricula" tooltipPosition="top" (click)="crearPagoMatricula(matr)"> </button>
+                                <button *ngIf="matr.pagoidmatricula && matr.matrestado == 1" pButton="pButton" pRipple="pRipple" type="button" icon="fa-solid fa-file-pen" class="p-button-outlined p-button-rounded p-button-info mr-2" pTooltip="Editar pago matricula" tooltipPosition="top" (click)="modificarPagoMatricula(matr)"> </button>
+                                <div *ngIf="matr.pagoidmatricula && matr.matrestado == 1 && matr.pagarchivo" >
+                                    <ng-container *ngIf=" isImagen(matr.pagarchivo); else noImagen " >
+                                        <button pButton pRipple icon="pi pi-image" class="p-button-rounded p-button-outlined p-button-warning mr-2" pTooltip="Mostrar Imagen" tooltipPosition="top" (click)="mostrarPagoArchivoImagen(matr.pagarchivo)" ></button>
+                                    </ng-container>
+                                    <ng-template #noImagen>
+                                        <button pButton pRipple icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-warning mr-2" (click)=" mostrarPagoArchivo(matr.pagarchivo) " pTooltip="Ver archivo" tooltipPosition="top" ></button>
+                                    </ng-template>
                                 </div>
+                                <button *ngIf="matr.matrestado == 0" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-outlined p-button-rounded p-button-danger" pTooltip="Activar Matricula" tooltipPosition="left" (click)="activarMatricula(matr)"></button>
+                            </div>
                         </td>
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
                             <div *ngIf="matr.perfoto == null" class="user-display">
                                 <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
                                     styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
@@ -387,51 +109,54 @@
                             <div *ngIf="matr.perfoto != null" class="user-display">
                                 <p-avatar image="{{ userProfilePhoto }}/{{ matr.perfoto }}" styleClass="mr-2" size="xlarge"
                                     shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
+                                <div class="mt-2 flex-column">
+                                    <div><span class="font-bold ml-2">{{ matr.pernomcompleto }}</span></div>
+                                    <div>
+                                        <p-chip>
+                                            <div class="p-1"> {{ matr.pernrodoc}} </div>
+                                        </p-chip>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- <hr> -->
-                            <p-chip>
-                                <div class="p-1"> Nro. Doc: <strong>{{ matr.pernrodoc}}</strong> </div>
-                            </p-chip>
                         </td>
-                        <!-- <td> {{'#'+matr.matrid}} </td> -->
-                        <td style="width:15%; min-width:10rem;">
-                            <p-chip>
-                                <div class="p-1"> <strong>{{ matr.tipmatrgestion}}</strong> </div>
-                                <div class="p-2"> {{ "Fechas: " + matr.tipmatrfecini + ' ' + matr.tipmatrfecfin}} </div>
-                                <div class="p-3">  {{ 'Bs. '+ matr.tipmatrcosto }} </div>
-                            </p-chip>
-                            <!-- <hr> -->
-
-                            <!-- <hr> -->
-
+                        <td>
+                            {{ matr.tipmatrgestion}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <div *ngIf="matr.pagdescripcion">
-                                    <strong>{{ matr.pagdescripcion}}</strong> <br>
-                                     {{ matr.pagfecha}}  <br>
-                                     {{ 'Bs. '+ matr.pagmonto }}
-                                <!-- <hr> -->
-                                <!-- <hr> -->
-
-                            </div>
+                        <td>
+                            {{ matr.tipmatrfecini}}
+                        </td>
+                        <td>
+                            {{matr.tipmatrfecfin}}
+                        </td>
+                        <td>
+                            {{ matr.tipmatrcosto }}
+                        </td>
+                        <td>
+                            {{ matr.pagdescripcion}}
                             <div *ngIf="!matr.pagdescripcion">
                                 <p-chip>
                                     <div class="p-1"> <strong>{{  'No se pagó ' }}</strong> </div>
                                 </p-chip>
                             </div>
                         </td>
-
-                        <td> {{matr.matrfec}} </td>
-
-                        <td> <p-chip>
-                                <div class="p-2"> <strong>{{matr.matrusureg}}</strong> <br> {{matr.matrfecreg}} </div>
+                        <td>
+                            {{matr.pagfecha}}
+                        </td>
+                        <td>
+                            {{ matr.pagmonto }}
+                        </td>
+                        <td>
+                            {{matr.matrfec}}
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2"> <strong>{{matr.matrusureg}}</strong> <br> {{matr.matrfecreg | date : 'd MMMM, y h:mm:ss a'}} </div>
                             </p-chip>
                         </td>
                         <td>
                             <div *ngIf="matr.matrusumod != null">
                                 <p-chip>
-                                    <div class="p-2"> <strong> {{matr.matrusumod}}</strong> <br> {{matr.matrfecmod}} </div>
+                                    <div class="p-2"> <strong> {{matr.matrusumod}}</strong> <br> {{matr.matrfecmod | date : 'd MMMM, y h:mm:ss a'}} </div>
                                 </p-chip>
                             </div>
                             <div *ngIf="matr.matrusumod == null">
@@ -440,119 +165,11 @@
                                 </p-chip>
                             </div>
                         </td>
-                        <td> {{ matr.matrdescripcion }} </td>
-                        <td> <p-tag [value]="getDescriptionStatus(matr.matrestado)" [severity]="getSeverityStatus(matr.matrestado)" [rounded]="true"></p-tag></td>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="col-12">
-        <div class="card">
-            <div class="font-bold text-3xl text-center">
-                <span class="text-900">Matricula </span>
-                <span class="text-primary-600"> desactivadas</span>
-            </div>
-            <hr>
-            <p-table #dt2 [value]="listaMatriculaInactivo" [loading]="loading" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['pernomcompleto']" [paginator]="true"  [scrollable]="true"
-                [rowsPerPageOptions]="[5,10,20]" selectionMode="multiple" [rowHover]="true" dataKey="id"
-                rowGroupMode="rowspan" groupRowsBy="pernomcompleto" sortField="pernomcompleto" sortMode="single">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto"
-                                pTooltip="Buscar por nombre completo, nombre de usuario y nombre de rol"
-                                tooltipPosition="left" />
-                        </span>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th> Estudiante </th>
-                        <th> Matricula </th>
-                        <th> Pago </th>
-                        <th> Fecha de matricula </th>
-                        <th> Registrado por </th>
-                        <th> Modificado por </th>
-                        <th> Descripción </th>
-                        <th> Estado </th>
-                        <th> Opciones</th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-matr let-rowIndex="rowIndex" let-rowgroup="rowgroup"
-                    let-rowspan="rowspan">
-                    <tr>
-                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan" style="width:21%; min-width:10rem;">
-                            <div *ngIf="matr.perfoto == null" class="user-display">
-                                <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
-                                    styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
-                            </div>
-                            <div *ngIf="matr.perfoto != null" class="user-display">
-                                <p-avatar image="{{ userProfilePhoto }}/{{ matr.perfoto }}" styleClass="mr-2" size="xlarge"
-                                    shape="circle"></p-avatar>
-                                <span class="font-bold ml-2">{{ matr.pernomcompleto }}</span>
-                            </div>
-                            <hr>
-                            <p-chip>
-                                <div class="p-1"> Número de documento: <strong>{{ matr.pernrodoc}}</strong> </div>
-                            </p-chip>
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <p-chip>
-                                <div class="p-1"> <strong>{{ matr.tipmatrgestion}}</strong> </div>
-                            </p-chip>
-                            <hr>
-                            {{ matr.tipmatrfecini + '-' + matr.tipmatrfecfin}}
-                            <hr>
-                            {{ 'Bs. '+ matr.tipmatrcosto }}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <div *ngIf="matr.pagdescripcion">
-                                <p-chip>
-                                    <div class="p-1"> <strong>{{ matr.pagdescripcion}}</strong> </div>
-                                </p-chip>
-                                <hr>
-                                 {{ matr.pagfecha}}
-                                <hr>
-                                 {{ 'Bs. '+ matr.pagmonto }}
-                            </div>
-                            <div *ngIf="!matr.pagdescripcion">
-                                <p-chip>
-                                    <div class="p-1"> <strong>{{  'No se pagó ' }}</strong> </div>
-                                </p-chip>
-                            </div>
-                        </td>
-                        <td> {{matr.matrfec}} </td>
-
-                        <td> <p-chip>
-                                <div class="p-2"> <strong>{{matr.matrusureg}}</strong> <br> {{matr.matrfecreg}} </div>
-                            </p-chip>
-                        </td>
-                        <td> <p-chip>
-                                <div class="p-2"> <strong> {{matr.matrusumod}}</strong> <br> {{matr.matrfecmod}} </div>
-                            </p-chip>
-                        </td>
-                        <td> {{ matr.matrdescripcion }} </td>
-                        <td> <p-tag [value]="getDescriptionStatus(matr.matrestado)" [severity]="getSeverityStatus(matr.matrestado)" [rounded]="true"></p-tag></td>
                         <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
-                                    (click)="activarMatricula(matr)"></button>
-                            </div>
+                            {{ matr.matrdescripcion }}
+                        </td>
+                        <td>
+                            <p-tag [value]="getDescriptionStatus(matr.matrestado)" [severity]="getSeverityStatus(matr.matrestado)" [rounded]="true"></p-tag>
                         </td>
                     </tr>
                 </ng-template>
@@ -562,134 +179,130 @@
                     </tr>
                 </ng-template>
             </p-table>
-        </div>
-    </div>
-</div>
+</p-card>
 
-<p-dialog [(visible)]="matriculaDialog" header="Asignar matricula" [modal]="true"
-[breakpoints]="{ '960px': '75vw' }" [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
-class="p-fluid">
-<div *ngIf="!opcionMatricula">
-    <p-card>
-        <ng-template pTemplate="title">
-            Información de la matricula del estudiante
-        </ng-template>
-        <ng-template pTemplate="content">
-            <div class="user-info-container">
-                <div class="user-info-avatar">
-                    <div *ngIf="matricula?.perfoto">
-                        <p-avatar [image]="userProfilePhoto + '/' + matricula.perfoto" size="xlarge" shape="circle"></p-avatar>
+<p-dialog [(visible)]="matriculaDialog" header="Asignar matricula" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false" [maximizable]="false" class="p-fluid">
+    <div *ngIf="!opcionMatricula">
+        <p-card>
+            <ng-template pTemplate="title">
+                Información de la matricula del estudiante
+            </ng-template>
+            <ng-template pTemplate="content">
+                <div class="user-info-container">
+                    <div class="user-info-avatar">
+                        <div *ngIf="matricula?.perfoto">
+                            <p-avatar [image]="userProfilePhoto + '/' + matricula.perfoto" size="xlarge" shape="circle"></p-avatar>
+                        </div>
+                        <div *ngIf="!matricula?.perfoto">
+                            <p-avatar image="{{ userProfilePhotoEmpty }}" size="xlarge" shape="circle"></p-avatar>
+                        </div>
                     </div>
-                    <div *ngIf="!matricula?.perfoto">
-                        <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" size="xlarge"
-                            shape="circle"></p-avatar>
+                    <div class="user-info-details">
+                        <p><strong>Nombre del estudiante:</strong> {{ matricula?.pernomcompleto }}</p>
+                        <p><strong>Número de documento:</strong> {{ matricula?.pernrodoc }}</p>
+                        <p><strong>Estado:</strong>
+                            <p-tag [value]="getDescriptionStatus(matricula?.matrestado)"
+                                [severity]="getSeverityStatus(matricula?.matrestado)" [rounded]="true"></p-tag>
+                        </p>
                     </div>
                 </div>
-                <div class="user-info-details">
-                    <p><strong>Nombre del estudiante:</strong> {{ matricula?.pernomcompleto }}</p>
-                    <p><strong>Número de documento:</strong> {{ matricula?.pernrodoc }}</p>
-                    <p><strong>Estado:</strong>
-                        <p-tag [value]="getDescriptionStatus(matricula?.matrestado)"
-                            [severity]="getSeverityStatus(matricula?.matrestado)" [rounded]="true"></p-tag>
-                    </p>
+            </ng-template>
+        </p-card>
+    </div>
+    <div class="mt-5">
+        <form [formGroup]="matriculaForm" novalidate>
+            <div class="p-fluid">
+                <div class="field">
+                        <label class="block font-bold mb-2">Elegir Tipo Matricula</label>
+                        <p-dropdown  dropdownIcon="fa-regular fa-address-card" [options]="tiposMatricula" formControlName="tiposMatricula" appendTo="body"
+                            optionLabel="tipmatrgestion" [filter]="true" filterBy="tipmatrgestion" [showClear]="true"
+                            placeholder="Seleccionar Tipo Matricula" [emptyFilterMessage]="'No se encontraron registros.'">
+                            <ng-template let-tm pTemplate="item">
+                                <div class="flex align-items-center">
+                                    <span class="font-bold ml-2">{{ tm.tipmatrgestion }}</span>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <small class="p-success block" *ngIf="matriculaForm.get('tiposMatricula').valid">
+                            La matricula seleccionada es valida.
+                        </small>
+                        <small class="p-error block"
+                            *ngIf="matriculaForm.get('tiposMatricula').invalid && matriculaForm.get('tiposMatricula').touched">
+                            <span *ngIf="matriculaForm.get('tiposMatricula').errors?.required">La matricula es requerida.</span>
+                            (*)
+                        </small>
+                </div>
+                <div *ngIf="opcionMatricula" class="field">
+                    <label class="block font-bold mb-2">Elegir Estudiante</label>
+                    <p-dropdown dropdownIcon="pi pi-user" [options]="tipoPersonaEstudiante" formControlName="tipoPersona" appendTo="body"
+                        optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
+                        placeholder="Seleccionar estudiante" [emptyFilterMessage]="'No se encontraron registros.'">
+                        <ng-template let-tm pTemplate="item">
+                            <div class="flex align-items-center">
+                                <div *ngIf="tm.perfoto == null" class="user-display">
+                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
+                                        styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
+                                </div>
+                                <div *ngIf="tm.perfoto != null" class="user-display">
+                                    <p-avatar image="{{ userProfilePhoto }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
+                                        shape="circle"></p-avatar>
+                                    <span class="font-bold ml-2">{{ tm.pernomcompleto  }} </span>
+
+                                    {{tm.pernrdoc}}
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                    <small class="p-success block" *ngIf="matriculaForm.get('tipoPersona').valid">
+                        El estudiante seleccionada es valida.
+                    </small>
+                    <small class="p-error block"
+                        *ngIf="matriculaForm.get('tipoPersona').invalid && matriculaForm.get('tipoPersona').touched">
+                        <span *ngIf="matriculaForm.get('tipoPersona').errors?.required">El estudiante es requerida.</span>
+                        (*)
+                    </small>
+                </div>
+                <div class="field">
+                    <label class="block font-bold mb-2" >Fecha</label>
+                    <p-calendar inputId="matrfec" appendTo="body" formControlName="matrfec" placeholder="Ingrese un fecha"
+                                    [showIcon]="true" dateFormat="yy-mm-dd"
+                                    [ngClass]="{ 'ng-dirty': this.matriculaForm.get('matrfec').touched, 'valid-field': this.matriculaForm.get('matrfec').valid}"
+                                    >
+                    </p-calendar>
+                    <small class="p-success block" *ngIf="matriculaForm.get('matrfec').valid">
+                        La fecha es válido.
+                    </small>
+                    <small class="p-error block"
+                        *ngIf="matriculaForm.get('matrfec').invalid && matriculaForm.get('matrfec').touched">
+                        <span *ngIf="matriculaForm.get('matrfec').errors?.required">La fecha es requerido.</span>
+                        (*)
+                    </small>
+                </div>
+                <div class="field">
+                    <label class="block font-bold mb-2" >Descripción</label>
+                    <textarea rows="5" cols="30" pInputTextarea formControlName="matrdescripcion"
+                    [ngClass]="{ 'ng-dirty': this.matriculaForm.get('matrdescripcion').touched, 'valid-field': this.matriculaForm.get('matrdescripcion').valid}"
+                    >
+                    </textarea>
+                    <small class="p-error block"
+                        *ngIf="matriculaForm.get('matrdescripcion').invalid && matriculaForm.get('matrdescripcion').dirty">
+                        <span *ngIf="matriculaForm.get('matrdescripcion').errors?.required">La descripción es requerido.</span>
+                        (*)
+                    </small>
+                    <small class="p-success block" *ngIf="matriculaForm.get('matrdescripcion')?.valid"> La descripción es
+                        valido.
+                    </small>
                 </div>
             </div>
-        </ng-template>
-    </p-card>
-</div>
-<form [formGroup]="matriculaForm" novalidate>
-    <div class="p-fluid">
-        <div class="field">
-                <label class="block font-bold mb-2">Elegir Tipo Matricula</label>
-                <p-dropdown  dropdownIcon="fa-regular fa-address-card" [options]="tiposMatricula" formControlName="tiposMatricula" appendTo="body"
-                    optionLabel="tipmatrgestion" [filter]="true" filterBy="tipmatrgestion" [showClear]="true"
-                    placeholder="Seleccionar Tipo Matricula" [emptyFilterMessage]="'No se encontraron registros.'">
-                    <ng-template let-tm pTemplate="item">
-                        <div class="flex align-items-center">
-                            <span class="font-bold ml-2">{{ tm.tipmatrgestion }}</span>
-                        </div>
-                    </ng-template>
-                </p-dropdown>
-                <small class="p-success block" *ngIf="matriculaForm.get('tiposMatricula').valid">
-                    La matricula seleccionada es valida.
-                </small>
-                <small class="p-error block"
-                    *ngIf="matriculaForm.get('tiposMatricula').invalid && matriculaForm.get('tiposMatricula').touched">
-                    <span *ngIf="matriculaForm.get('tiposMatricula').errors?.required">La matricula es requerida.</span>
-                    (*)
-                </small>
-        </div>
-        <div *ngIf="opcionMatricula" class="field">
-            <label class="block font-bold mb-2">Elegir Estudiante</label>
-            <p-dropdown dropdownIcon="pi pi-user" [options]="tipoPersonaEstudiante" formControlName="tipoPersona" appendTo="body"
-                optionLabel="pernomcompleto" [filter]="true" filterBy="pernomcompleto" [showClear]="true"
-                placeholder="Seleccionar estudiante" [emptyFilterMessage]="'No se encontraron registros.'">
-                <ng-template let-tm pTemplate="item">
-                    <div class="flex align-items-center">
-                        <div *ngIf="tm.perfoto == null" class="user-display">
-                            <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png"
-                                styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                            <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
-                        </div>
-                        <div *ngIf="tm.perfoto != null" class="user-display">
-                            <p-avatar image="{{ userProfilePhoto }}/{{ tm.perfoto }}" styleClass="mr-2" size="xlarge"
-                                shape="circle"></p-avatar>
-                            <span class="font-bold ml-2">{{ tm.pernomcompleto }}</span>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-dropdown>
-            <small class="p-success block" *ngIf="matriculaForm.get('tipoPersona').valid">
-                El estudiante seleccionada es valida.
-            </small>
-            <small class="p-error block"
-                *ngIf="matriculaForm.get('tipoPersona').invalid && matriculaForm.get('tipoPersona').touched">
-                <span *ngIf="matriculaForm.get('tipoPersona').errors?.required">El estudiante es requerida.</span>
-                (*)
-            </small>
-        </div>
-        <div class="field">
-            <label class="block font-bold mb-2" >Fecha</label>
-            <p-calendar inputId="matrfec" appendTo="body" formControlName="matrfec" placeholder="Ingrese un fecha"
-                            [showIcon]="true" dateFormat="dd/mm/yy"
-                            [ngClass]="{ 'ng-dirty': this.matriculaForm.get('matrfec').touched, 'valid-field': this.matriculaForm.get('matrfec').valid}"
-                            >
-            </p-calendar>
-            <small class="p-success block" *ngIf="matriculaForm.get('matrfec').valid">
-                La fecha es válido.
-            </small>
-            <small class="p-error block"
-                *ngIf="matriculaForm.get('matrfec').invalid && matriculaForm.get('matrfec').touched">
-                <span *ngIf="matriculaForm.get('matrfec').errors?.required">La fecha es requerido.</span>
-                (*)
-            </small>
-        </div>
-        <div class="field">
-            <label class="block font-bold mb-2" >Descripción</label>
-            <textarea rows="5" cols="30" pInputTextarea formControlName="matrdescripcion"
-            [ngClass]="{ 'ng-dirty': this.matriculaForm.get('matrdescripcion').touched, 'valid-field': this.matriculaForm.get('matrdescripcion').valid}"
-            >
-            </textarea>
-            <small class="p-error block"
-                *ngIf="matriculaForm.get('matrdescripcion').invalid && matriculaForm.get('matrdescripcion').dirty">
-                <span *ngIf="matriculaForm.get('matrdescripcion').errors?.required">La descripción es requerido.</span>
-                (*)
-            </small>
-            <small class="p-success block" *ngIf="matriculaForm.get('matrdescripcion')?.valid"> La descripción es
-                valido.
-            </small>
-        </div>
+        </form>
     </div>
-</form>
-<ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-        (click)="ocultarDialog()"></button>
-    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [disabled]="matriculaForm.invalid"
-        (click)="guardarMatricula()"></button>
-
-
-
-</ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="ocultarDialogMatricula()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" [disabled]="matriculaForm.invalid"
+            (click)="guardarMatricula()"></button>
+    </ng-template>
 </p-dialog>
 
 <p-dialog [(visible)]="desactivarMatriculaDialog" header="Confirmar" [modal]="true" [draggable]="false" [resizable]="false">
@@ -723,96 +336,230 @@ class="p-fluid">
     </ng-template>
 </p-dialog>
 
-
-
 <p-dialog [(visible)]="pagoMatriculaDialog" header="Pago matricula" [modal]="true"
-          [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
-          class="p-fluid">
-    <p-card>
-        <ng-template pTemplate="title">
-            Información del Pago
-        </ng-template>
-        <ng-template pTemplate="content">
-                <p><strong>Matricula:</strong> {{this.matricula.tipmatrgestion}}</p>
-                <!-- <p><strong>Materia:</strong> {{this.pago.matnombre}}</p> -->
-                <p><strong>Estudiante:</strong> {{this.matricula.pernomcompleto}}</p>
-        </ng-template>
-    </p-card>
-    <form [formGroup]="pagoForm">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-9">
-                <label class="font-bold block mb-2" for="pagdescripcion"> Descripción del pago </label>
-                <input type="text" id="pagdescripcion" pInputText formControlName="pagdescripcion" placeholder="Ingrese una descripción del pago"
-                [ngClass]="{ 'ng-dirty': this.pagoForm.get('pagdescripcion').touched,
-                             'valid-field': this.pagoForm.get('pagdescripcion').valid} "
-                >
+        [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '60vw' }"
+        [draggable]="false" [resizable]="false" [maximizable]="true"
+        class="p-fluid">
+        <p-card>
+            <ng-template pTemplate="title">
+                Información del Pago
+            </ng-template>
+            <ng-template pTemplate="content">
+                    <p><strong>Matricula:</strong> {{this.matricula.tipmatrgestion}}</p>
+                    <p><strong>Estudiante:</strong> {{this.matricula.pernomcompleto}}</p>
+            </ng-template>
+        </p-card>
+    <div class="mt-5">
+        <form [formGroup]="pagoForm">
+            <div class="p-fluid grid">
+                <!-- Campo de descripción del pago -->
+                <div class="field col-12 md:col-6">
+                    <label for="pagdescripcion">Descripción del pago</label>
+                    <input pInputText id="pagdescripcion" formControlName="pagdescripcion" class="mb-2" />
+                    <div *ngIf=" pagoForm.get('pagdescripcion').invalid && pagoForm.get('pagdescripcion').touched " >
+                        <small *ngIf="pagoForm.get('pagdescripcion').errors?.required" class="p-error" >
+                            La descripción del pago es requerida.
+                        </small>
+                    </div>
+                </div>
+                <!-- Campo de fecha del pago -->
+                <div class="field col-12 md:col-6">
+                    <label for="pagfecha">Fecha del pago (Año/Mes/Día)</label>
+                    <p-calendar id="pagfecha" dateFormat="yy-mm-dd" formControlName="pagfecha" showIcon styleClass="mb-2" ></p-calendar>
+                    <div *ngIf=" pagoForm.get('pagfecha').invalid && pagoForm.get('pagfecha').touched " >
+                        <small *ngIf="pagoForm.get('pagfecha').errors?.required" class="p-error" >
+                            La fecha del pago es requerida.
+                        </small>
+                    </div>
+                </div>
 
-                <small class="p-error block" *ngIf="pagoForm.get('pagdescripcion').invalid && pagoForm.get('pagdescripcion').dirty">
-                    <span *ngIf="pagoForm.get('pagdescripcion').errors?.required">La descripción del pago es requerido.</span>
-                    (*)
-                </small>
-                <small class="p-success block" *ngIf="pagoForm.get('pagdescripcion')?.valid"> La descripción de pago es valido. </small>
-            </div>
-            <div class="field col-12 md:col-3">
-                <label class="font-bold block mb-2" for="pagfecha"> Fecha del pago </label>
-                <p-calendar id="pagfecha" dateFormat="dd/mm/yy" appendTo="body" formControlName="pagofecha" placeholder="Ingrese la fecha de pago"
-                [ngClass]="{ 'ng-dirty': pagoForm.get('pagofecha').touched, 'valid-field': pagoForm.get('pagofecha').valid }"></p-calendar>
+                <!-- Campo de monto del pago -->
+                <div class="field col-12 md:col-4">
+                    <label for="pagmonto">Monto</label>
+                    <p-inputNumber id="pagmonto" formControlName="pagmonto" mode="currency" currency="BOB" locale="es-BO" class="mb-2" ></p-inputNumber>
+                    <div *ngIf=" pagoForm.get('pagmonto').invalid && pagoForm.get('pagmonto').touched " >
+                        <small *ngIf="pagoForm.get('pagmonto').errors?.required" class="p-error" >
+                            El monto es requerido.
+                        </small>
+                        <small *ngIf="pagoForm.get('pagmonto').errors?.min" class="p-error" >
+                            El monto debe ser mayor o igual a 0.
+                        </small>
+                    </div>
+                </div>
 
-                <small class="p-error block" *ngIf="pagoForm.get('pagofecha').invalid && pagoForm.get('pagofecha').dirty">
-                    <span *ngIf="pagoForm.get('pagofecha').errors?.required">La fecha del pago es requerida. (*)</span>
-                </small>
-                <small class="p-success block" *ngIf="pagoForm.get('pagofecha')?.valid"> La fecha del pago es válida. </small>
+                <!-- Campo de tipo de pago -->
+                <div class="field col-12 md:col-4">
+                    <label for="tipoPago">Tipo de Pago</label>
+                    <p-dropdown id="tipoPago" [options]="tipoPago" formControlName="tipoPago" optionLabel="tpagnombre" placeholder="Seleccionar tipo de pago" styleClass="mb-2" ></p-dropdown>
+                    <div *ngIf=" pagoForm.get('tipoPago').invalid && pagoForm.get('tipoPago').touched " >
+                        <small *ngIf="pagoForm.get('tipoPago').errors?.required" class="p-error" >
+                            El tipo de pago es requerido.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- <div class="field col-12 md:col-6">
+                    <label for="textarea">Observación</label>
+                        <textarea
+                            inputId="textarea"
+                            rows="2" cols="30"
+                            formControlName="perobservacion"
+                            appendTo="body"
+                            pInputTextarea
+                        ></textarea>
+                </div> -->
+
+                <div class="field col-12 md:col-4">
+                    <label for="">Estado</label>
+                    <div class="flex align-items-center justify-content-center">
+                        <p-selectButton [options]="stateOptionsEstado" formControlName="pagestado" optionLabel="label" optionValue="value"></p-selectButton>
+                    </div>
+                </div>
+
+                <!-- Campo de carga de archivos -->
+                <div class="field col-12 md:col-6">
+                    <label class="block" for="pagarchivo"
+                        >Documento de respaldo</label
+                    >
+                    <p-card>
+                        <p-fileUpload
+                            url="https://www.primefaces.org/cdn/api/upload.php"
+                            name="demo[]"
+                            [customUpload]="true"
+                            (uploadHandler)="onUploadPago($event)"
+                            (onSelect)="onFileSelect($event)"
+                            (onClear)="clearFilePago()"
+                            [auto]="false"
+                            accept=".pdf,.jpg,.png,.jpeg"
+                            [chooseStyleClass]="'w-auto mb-2'"
+                            [uploadStyleClass]="'w-auto mb-2'"
+                            [cancelStyleClass]="'w-auto mb-2'"
+                            styleClass="mb-2"
+                            [cancelIcon]="'pi pi-trash'"
+                            [cancelLabel]="'Vaciar'"
+                            [uploadLabel]="'Cargar Archivo'"
+                            [chooseLabel]="'Seleccionar'"
+                        >
+                            <ng-template pTemplate="toolbar">
+                                <div class="py-3">Pasos para subir documento de respaldo:</div>
+                                <ul>
+                                    <li class="list-none">Paso 1: Haz clic en el botón "Seleccionar" y elige un archivo en formato PDF, JPG, PNG o JPEG.</li>
+                                    <li class="list-none">Paso 2: Haz clic en el botón "Cargar Archivo".</li>
+                                    <li class="list-none">Paso 3: Verifica el archivo en la sección de vista previa.</li>
+
+                                </ul>
+                                <ul>
+                                    <li class="list-none">Vaciar: Si deseas, puedes usar la opción "Vaciar" para eliminar el archivo seleccionado.</li>
+                                </ul>
+                            </ng-template>
+                            <ng-template pTemplate="fileupload-content">
+                                <ul *ngIf="pagoFile">
+                                    <li class="list-none flex align-items-center">
+                                        <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+                                            <i *ngIf="isPDF(pagoFile.type)" class="pi pi-file-pdf text-red-500 text-xl"></i>
+                                            <i *ngIf="isImage(pagoFile.type)" class="pi pi-image text-green-500 text-xl"></i>
+                                        </div>
+                                        <span class="ml-2">
+                                            {{ pagoFile.name }} - {{ (pagoFile.size / 1048576).toFixed(1) }} MB
+                                        </span>
+                                    </li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                        <div>
+                            <p-progressBar [value]="uploadProgress"></p-progressBar>
+                        </div>
+                        <div
+                            *ngIf="
+                                pagoForm.get('pagarchivo').invalid &&
+                                pagoForm.get('pagarchivo').dirty
+                            "
+                        >
+                            <small
+                                class="p-error block"
+                            >
+                                <span
+                                    *ngIf="pagoForm.get('pagarchivo').errors?.required"
+                                    >El documento de respaldo es requerido.</span
+                                >
+                            </small>
+                        </div>
+                    </p-card>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <label for="pagdescripcion">Vista previa</label>
+                    <div *ngIf="uploadProgress === 100">
+                        <p-card>
+                            <ng-container *ngIf="isImage(pagoFile.type)">
+                                <div
+                                    class="mb-2 justify-content-center align-items-center text-center"
+                                >
+                                    <p-image
+                                        [src]="pagoFileUrl"
+                                        alt="Documento"
+                                        width="400"
+                                        height="100%"
+                                        [preview]="true"
+                                        [imageStyle]="{
+                                            'border-radius': '5%',
+                                            'object-fit': 'cover'
+                                        }"
+                                    ></p-image>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="isPDF(pagoFile.type)">
+                                <div class="pdf-container">
+                                    <ngx-extended-pdf-viewer
+                                        theme="dark"
+                                        [showToolbar]="true"
+                                        [showSidebarButton]="true"
+                                        [showFindButton]="false"
+                                        [showPagingButtons]="true"
+                                        [showDrawEditor]="false"
+                                        [showStampEditor]="false"
+                                        [showTextEditor]="false"
+                                        [showZoomButtons]="true"
+                                        [showPresentationModeButton]="false"
+                                        [showOpenFileButton]="false"
+                                        [showPrintButton]="false"
+                                        [showDownloadButton]="true"
+                                        [showSecondaryToolbarButton]="true"
+                                        [showRotateButton]="undefined"
+                                        [showRotateCwButton]="true"
+                                        [showRotateCcwButton]="true"
+                                        [showHandToolButton]="false"
+                                        [showScrollingButton]="true"
+                                        [showSpreadButton]="false"
+                                        [showPropertiesButton]="false"
+                                        [language]="'es'"
+                                        [src]="pagoFileUrl" height="100     " width="100%">
+                                    </ngx-extended-pdf-viewer>
+                                </div>
+                            </ng-container>
+                        </p-card>
+                    </div>
+                </div>
             </div>
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block mb-2" for="monto">Monto del pago</label>
-                <p-inputNumber formControlName="pagmonto" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
-                               spinnerMode="horizontal" [step]="0.50" decrementButtonClass="p-button-danger"
-                               incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
-                               decrementButtonIcon="pi pi-minus" mode="currency" currency="BOB" locale="es-BO"
-                               [ngClass]="{ 'valid-field': this.pagoForm.get('pagmonto').valid}"
-               ></p-inputNumber>
-                <small class="p-error block" *ngIf="pagoForm.get('pagmonto').invalid && pagoForm.get('pagmonto').dirty">
-                    <span *ngIf="pagoForm.get('pagmonto').errors?.required">El monto del pago es requerido.</span>
-                    <span *ngIf="pagoForm.get('pagmonto').errors?.min"> El monto debe ser mayor o igual a cero.</span>
-                    (*)
-                </small>
-                <small class="p-success block" *ngIf="pagoForm.get('pagmonto')?.valid"> El monto del pago es valido. </small>
-            </div>
-            <div class="field col-12 md:col-6">
-                <label class="font-bold block mb-2" for="monto">Tipo Pago</label>
-                    <p-dropdown id="tipoPago" [autoDisplayFirst]="false"  appendTo="body" [options]="tipoPago" formControlName="tipoPago" optionLabel="tpagnombre" placeholder="Seleccionar tipo de pago"
-                               [emptyMessage]="'No se encontraron tipos de pagos.'"
-                    ></p-dropdown>
-                <small class="p-success block" *ngIf="pagoForm.get('tipoPago').valid">
-                    El tipo de pago es valido.
-                </small>
-                <small class="p-error block" *ngIf="pagoForm.get('tipoPago').invalid && pagoForm.get('tipoPago').touched">
-                    <span *ngIf="pagoForm.get('tipoPago').errors?.required">El tipo de pago es requerido.</span>
-                    (*)
-                </small>
-            </div>
-            <div class="field col-12">
-                <p-fileUpload
-                    #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
-                    accept="application/pdf" maxFileSize="5000000" (onSelect)="onUpload($event)" [showUploadButton]="false"
-                    [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
-                    [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
-                    [invalidFileTypeMessageDetail]="'Solo se permiten archivos de pdf. El tipo de archivo permitido es: PDF.'"
-                >
-                </p-fileUpload>
-            </div>
-            <div *ngIf="loadingSpinner">
-                <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-            (click)="ocultarDialog()"></button>
-        <button *ngIf="matricula.pagoidmatricula == null"pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-            (click)="registrarPago()"></button>
-        <button *ngIf="matricula.pagoidmatricula != null" pButton pRipple label="Modificar" icon="pi pi-check" class="p-button-text"
-            (click)="modificarPago(pago)"></button>
+            (click)="ocultarDialogMatricula()"></button>
+        <button *ngIf="matricula.pagoidmatricula == null"pButton pRipple label="Guardar" icon="pi pi-save" class="p-button-success p-button-outlined"
+            (click)="guardarPago()"></button>
+        <button *ngIf="matricula.pagoidmatricula != null" pButton pRipple label="Modificar" icon="pi pi-save" class="p-button-success p-button-outlined"
+            (click)="guardarPago(pago)"></button>
     </ng-template>
+</p-dialog>
 
+
+<p-dialog header="{{this.pagarchivo}}" [(visible)]="showArchivoImagen" [style]="{width: '50vw'}">
+    <div class="text-center">
+        <img
+        [src]="apiUrlPagoArchivo + '/' + this.pagarchivo"
+        alt="this.pagarchivo"
+        style="width: 50%; height: 50%;"
+    />
+    </div>
 </p-dialog>

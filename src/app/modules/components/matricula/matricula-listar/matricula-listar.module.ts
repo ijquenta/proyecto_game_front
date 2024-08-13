@@ -24,8 +24,26 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { PanelModule } from 'primeng/panel';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ImageModule } from 'primeng/image';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MultiSelectModule } from "primeng/multiselect";
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        CardModule,
+        DividerModule,
+        PanelModule,
+        BreadcrumbModule,
+        ImageModule,
+        OverlayPanelModule,
+        SelectButtonModule,
+        MultiSelectModule,
+        SidebarModule,
         ReactiveFormsModule,
         TooltipModule,
         CommonModule,

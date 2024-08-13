@@ -100,7 +100,7 @@ export class InscripcionCrudComponent implements OnInit {
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 },
     ];
-    
+
     constructor(
         private messageService: MessageService,
         public reporte: ReporteService,
@@ -135,7 +135,7 @@ export class InscripcionCrudComponent implements OnInit {
 
         this.selectedColumns = [
             { field: 'curnombre', header: 'Curso' },
-            { field: 'matnombre', header: 'Materia' },            
+            { field: 'matnombre', header: 'Materia' },
             { field: 'curmatfecini', header: 'Fecha Inicio (Año/Mes/Dia)' },
             { field: 'curmatfecfin', header: 'Fecha Fin (Año/Mes/Dia)' },
             { field: 'pernombre', header: 'Docente' },
@@ -151,7 +151,7 @@ export class InscripcionCrudComponent implements OnInit {
 
     ngOnInit() {
        this.listarCursoCombo();
-       
+
        this.listarInscripciones(); // Método para listar las inscripciones
 
        this.obtenerRoles(); // Método para obtener datos para el combo tipo roles
@@ -165,7 +165,7 @@ export class InscripcionCrudComponent implements OnInit {
        this.getProfileUsuario(); // Método de getProfile() de usuario logeado
 
     }
-    // Método para obtener los tipos de cursos 
+    // Método para obtener los tipos de cursos
     obtenerTipoCurso(){
         this.cursoService.getTipoCurso().subscribe(
             (result: any) => {
@@ -226,9 +226,9 @@ export class InscripcionCrudComponent implements OnInit {
     obtenerTipoMateria(criterio: any){
         this.spinner.show();
         this.cursoService.getTipoMateriaByCursoId(criterio).subscribe({
-            next: (result: any) => { 
+            next: (result: any) => {
                 this.spinner.hide();
-                this.tipoMateria = result['data']; 
+                this.tipoMateria = result['data'];
             },
             error: (error: any) => {
                 this.loading = false;
@@ -323,7 +323,6 @@ export class InscripcionCrudComponent implements OnInit {
     // Función para editar la inscripción
     editarInscripcion(data: any) {
         this.inscripcion = { ...data }; // obtener los datos en inscripcion
-        console.log("editar: ", this.inscripcion)
         this.setData(); // se setea los datos en el formulario
         this.inscripcionDialog = true; // abrimos el formulario
         this.optionInscripcion = false; // optioneInscripcion=FALSE por que se va a editar para ocultar algunas partes del formulario
@@ -370,21 +369,21 @@ export class InscripcionCrudComponent implements OnInit {
     }
 
     obtenerTipoPersona(criterio: any) {
-    
+
         const criterioConsulta = {
             curid: this.inscripcionForm.value.tipoCurso.curid,
             matid: this.inscripcionForm.value.tipoMateria.matid,
             curmatfecini: this.inscripcionForm.value.tipoMateria.curmatfecini,
             curmatfecfin: this.inscripcionForm.value.tipoMateria.curmatfecfin
         };
-    
+
         forkJoin([
             this.diccionarioService.getListaPersonaDocenteCombo(criterio),
             this.inscripcionService.obtenerEstudiantesInscritos(criterioConsulta),
             this.inscripcionService.getCursoMateriaByIds(criterioConsulta)
         ]).subscribe({
             next: ([personas, inscritos, curmatid]: [any[], any, any]) => {
-    
+
                 // Verificar curmatid y asignarlo si es válido
                 this.curmatid = curmatid?.curmatid || inscritos?.data?.[0]?.curmatid;
                 if (!this.curmatid) {
@@ -392,7 +391,7 @@ export class InscripcionCrudComponent implements OnInit {
                     this.messageService.add({severity: 'error', summary: 'Error', detail: 'Debe elegir un número curmatid válido.', life: 5000});
                     return;
                 }
-    
+
                 if (!Array.isArray(inscritos['data']) || inscritos['data'].length === 0) {
                     this.messageService.add({severity: 'info', summary: 'Mensaje', detail: 'No hay estudiantes inscritos, se listarán todos los estudiantes.', life: 5000});
                     // Si no hay inscritos, asignar todos los docentes
@@ -409,7 +408,7 @@ export class InscripcionCrudComponent implements OnInit {
             }
         });
     }
-    
+
     mapearEstudiantesAClaseTipoPersona(estudiantes: any[]): TipoPersona2[] {
         return estudiantes.map(estudiante => new TipoPersona2(
             estudiante.perid,
@@ -418,7 +417,7 @@ export class InscripcionCrudComponent implements OnInit {
             estudiante.perfoto || ''          // Manejar posibles valores nulos
         ));
     }
-    
+
     // Función para filtrar persona ya inscritas, esto ayuda a no inscribir a las mismas personas a los mismos grupos
     filtrarPersonasInscritas(personas: any[], inscritos: any[]): any[] {
         // Asegúrate de que inscritos sea un array de objetos con perid
@@ -440,7 +439,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.diccionarioService.getListaPersonaDocenteCombo(rolnombre).subscribe(
             (result: any) => { this.tipoPersona = result; }
         )
-        
+
         this.obtenerTipoMatriculaEstudiante(this.inscripcion.peridestudiante);
 
         const criterio = {
@@ -473,7 +472,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcionRegistro.insid = this.inscripcionForm.value.insid;
         this.inscripcionRegistro.matrid = this.inscripcionForm.value.tipoMatricula.matrid;
         this.inscripcionRegistro.curmatid = this.curmatid;
-        this.inscripcionRegistro.peridestudiante = this.inscripcionForm.value.tipoPersona.perid;        
+        this.inscripcionRegistro.peridestudiante = this.inscripcionForm.value.tipoPersona.perid;
         this.inscripcionRegistro.insusureg = this.usuario.usuname;
         this.inscripcionRegistro.insestado = this.inscripcionForm.value.insestado;
         this.inscripcionRegistro.insestadodescripcion = this.inscripcionForm.value.insestadodescripcion;
@@ -495,7 +494,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.obtenerBody();
         // Verifica que true o false, para adicionar o editar
         // Insertar inscripción
-        if(this.optionInscripcion){ 
+        if(this.optionInscripcion){
             this.inscripcionRegistro.pagid = null;
             this.inscripcionService.insertarInscripcion(this.inscripcionRegistro).subscribe({
                 next: (result: any) => {
@@ -519,10 +518,9 @@ export class InscripcionCrudComponent implements OnInit {
         }
         // Modificar inscripción
         if(!this.optionInscripcion){
-            this.inscripcionRegistro.pagid = this.inscripcion.pagid; 
+            this.inscripcionRegistro.pagid = this.inscripcion.pagid;
             this.inscripcionRegistro.insid = this.inscripcion.insid;
             this.inscripcionRegistro.curmatid = this.curmatid;
-            console.log("this.inscripcion:modificar:", this.inscripcionRegistro)
             this.inscripcionService.modificarInscripcion(this.inscripcionRegistro).subscribe({
                 next: (result: any) => {
                     this.messageService.add({ severity: 'success', summary: 'Exitosa', detail: 'Modificación Inscripcion Existosamente!', life: 3000 });
@@ -550,7 +548,7 @@ export class InscripcionCrudComponent implements OnInit {
         this.inscripcion.tipo = 3;
     }
 
-    confirmarActivarDesactivar() {        
+    confirmarActivarDesactivar() {
         this.inscripcionRegistro.insusumod = this.usuario.usuname;
         this.inscripcionService.gestionarInscripcionEstado(this.inscripcion).subscribe({
             next: (result: any) => {

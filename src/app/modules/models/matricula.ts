@@ -17,6 +17,7 @@ export class Matricula {
     pagarchivo?: string = '';
     pagfecha?: any;
     pagtipo?: number = 0;
+    pagestado?: number = 0;
     matrusureg?: string = '';
 	matrfecreg?: any;
 	matrusumod?: string = '';

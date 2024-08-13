@@ -1,6 +1,6 @@
 // --------- Importación principal
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner'; // spinner
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // validaciones
@@ -40,16 +40,24 @@ export class MatriculaListarComponent implements OnInit {
         colsTable!: Column[];
         exportColumns!: ExportColumn[];
 
-
+        items: MenuItem[];
+        home: MenuItem | undefined;
       //-----------------Variables-------------------//s
 
     constructor(
-                private messageService: MessageService,
-                private matriculaService: MatriculaService,
-                private spinner: NgxSpinnerService,
-                private authService: AuthService,
-                private formBuilder: FormBuilder,
-                ) { }
+        private messageService: MessageService,
+        private matriculaService: MatriculaService,
+        private spinner: NgxSpinnerService,
+        private authService: AuthService,
+        private formBuilder: FormBuilder,
+    ) {
+        this.items = [
+            { label: 'Matriculación' },
+            { label: 'Administrar Tipo de Matricula', routerLink: '' },
+        ];
+
+        this.home = { icon: 'pi pi-home', routerLink: '/principal' };
+    }
 
     ngOnInit() {
 
@@ -127,10 +135,10 @@ export class MatriculaListarComponent implements OnInit {
         this.spinner.show();
         this.matriculaService.listarTipoMatricula().subscribe(
             (result: any) => {
-                this.listaTipoMatricula = result;
+                this.listaTipoMatricula = result['data'];
                 this.listaTipoMatriuclaDuplicado = this.listaTipoMatricula;
-                this.listaTipoMatriculaInactivo = this.listaTipoMatricula.filter(tipoMatricula => tipoMatricula.tipmatrestado === 0);
-                this.listaTipoMatricula = this.listaTipoMatricula.filter(tipoMatricula => tipoMatricula.tipmatrestado === 1);
+                // this.listaTipoMatriculaInactivo = this.listaTipoMatricula.filter(tipoMatricula => tipoMatricula.tipmatrestado === 0);
+                // this.listaTipoMatricula = this.listaTipoMatricula.filter(tipoMatricula => tipoMatricula.tipmatrestado === 1);
                 this.spinner.hide();
             },
             (error: any) => {

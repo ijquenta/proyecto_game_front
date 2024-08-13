@@ -1,20 +1,25 @@
 <p-toast></p-toast>
-<div class="grid">
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <p-table #dt [value]="listaTipoMatricula" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home" ></p-breadcrumb>
+    <h3>Inscripción</h3>
+    <p>Administrar registros de inscripciones</p>
+            <p-table
+                #dt
+                [value]="listaTipoMatricula"
+                [rows]="10"
+                [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]"
                 [globalFilterFields]="['tipmatrgestion']"
-                responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}"
+                responsiveLayout="stack"
+                [breakpoint]="'960px'"
+                [tableStyle]="{'min-width': '50rem'}"
+                styleClass="p-datatable-striped p-datatable-sm"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
                 >
                 <ng-template pTemplate="caption">
-                    <div class="font-bold text-3xl text-center">
-                        <span class="text-900">Administrar</span>
-                        <span class="text-primary-600"> Matriculas </span>
-                    </div>
-                    <hr/>
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <button pButton pRipple label="Nuevo Matricula" icon="pi pi-plus" class="p-button-primary mr-2" pTooltip="Registrar una nueva matricula"
+                        <button pButton pRipple label="Nuevo" icon="pi pi-plus-circle" class="p-button-primary mr-2" pTooltip="Registrar una nuevo tipo de matricula" tooltipPosition="top"
                         (click)="abrirNuevoTipoMatricula()"></button>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <!-- <p-button (click)="reporte.rptUsuarios()" label="Reporte Prueba" styleClass="p-button-raised p-button-info"></p-button> -->
@@ -31,8 +36,8 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th></th>
-                        <th style="width: 8%;" pSortableColumn="tipmatrid">Código<p-sortIcon field="tipmatrid"></p-sortIcon></th>
+                        <th>Acciones</th>
+                        <!-- <th style="width: 8%;" pSortableColumn="tipmatrid">Código<p-sortIcon field="tipmatrid"></p-sortIcon></th> -->
                         <th style="width: 15%;" pSortableColumn="tipmatrgestion">Nombre<p-sortIcon field="tipmatrgestion"></p-sortIcon></th>
                         <th style="width: 10%;" pSortableColumn="tipmatrfecini">Fecha Inicio<p-sortIcon field="tipmatrfecini"></p-sortIcon></th>
                         <th style="width: 10%;" pSortableColumn="tipmatrfecfin">Fecha Final<p-sortIcon field="tipmatrfecfin"></p-sortIcon></th>
@@ -49,143 +54,51 @@
                     <tr>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
+                                <button *ngIf="matricula.tipmatrestado == 1" pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-outlined p-button-primary mr-2" pTooltip="Editar Matricula" tooltipPosition="left"
                                     (click)="editarTipoMatricula(matricula)"></button>
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
+                                <button *ngIf="matricula.tipmatrestado == 1" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-outlined p-button-rounded p-button-danger" pTooltip="Desactivar Matricula" tooltipPosition="left"
                                     (click)="desactivarMatricula(matricula)"></button>
+                                <button *ngIf="matricula.tipmatrestado == 0" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-outlined p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
+                                (click)="activarMatricula(matricula)"></button>
                             </div>
                         </td>
                         <td>
                             {{ 'MATR-' + matricula.tipmatrid}}
                         </td>
-                        <td>
+                        <!-- <td>
                             <p-chip>
                                 <div class="p-2">
                                     {{ matricula.tipmatrgestion}}
                                 </div>
                             </p-chip>
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecini}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecfin}}
-                        </td>
-                        <td>
-                            Bs. {{matricula.tipmatrcosto}}
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
-                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
-                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
-                        </td>
-                        <td>
-                            {{matricula.tipmatrdescripcion}}
-                        </td>
-                        <td> <p-tag [value]="getDescriptionStatus(matricula.tipmatrestado)" [severity]="getSeverityStatus(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="9">No se encontró ningún registro.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </div>
-
-
-    <div class="col-12">
-        <div class="card px-6 py-6">
-            <p-table #dt2 [value]="listaTipoMatriculaInactivo" responsiveLayout="scroll" [rows]="10" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]"
-                [globalFilterFields]="['tipmatrgestion']"
-                >
-                <ng-template pTemplate="caption">
-                    <div class="font-bold text-3xl text-center">
-                        <span class="text-900">Matriculas</span>
-                        <span class="text-primary-600"> Desactivadas </span>
-                    </div>
-                    <hr/>
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt2, $event)" placeholder="Buscar..."
-                                class="w-full sm:w-auto" pTooltip="Buscar por nombre de matricula" toolTipPosition="bottom"/>
-                        </span>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Final</th>
-                        <th>Costo</th>
-                        <!-- <th>Registrado por</th> -->
-                        <th>Modificado por</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th> Opciones </th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-matricula>
-                    <tr>
-                        <td>
-                            {{ 'MATR-' + matricula.tipmatrid}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrgestion}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecini}}
-                        </td>
-                        <td>
-                            {{matricula.tipmatrfecfin}}
-                        </td>
-                        <td>
-                            Bs. {{matricula.tipmatrcosto}}
-                        </td>
-                        <!-- <td>
-                            <p-chip>
-                                <div class="p-2">
-                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
-                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg}}
-                                    </ng-container>
-                                    <ng-template #noModificado>
-                                        No se ha modificado
-                                    </ng-template>
-                                </div>
-                            </p-chip>
                         </td> -->
                         <td>
+                            {{matricula.tipmatrfecini}}
+                        </td>
+                        <td>
+                            {{matricula.tipmatrfecfin}}
+                        </td>
+                        <td>
+                            Bs. {{matricula.tipmatrcosto}}
+                        </td>
+                        <td>
+                            <p-chip>
+                                <div class="p-2">
+                                    <ng-container *ngIf="matricula.tipmatrusureg; else noModificado">
+                                        {{matricula.tipmatrusureg}} <br> {{matricula.tipmatrfecreg | date : 'd MMMM, y h:mm:ss a'}}
+                                    </ng-container>
+                                    <ng-template #noModificado>
+                                        No se ha modificado
+                                    </ng-template>
+                                </div>
+                            </p-chip>
+                        </td>
+                        <td>
                             <p-chip>
                                 <div class="p-2">
                                     <ng-container *ngIf="matricula.tipmatrusumod; else noModificado">
-                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod}}
+                                        {{matricula.tipmatrusumod}} <br> {{matricula.tipmatrfecmod | date : 'd MMMM, y h:mm:ss a'}}
                                     </ng-container>
                                     <ng-template #noModificado>
                                         No se ha modificado
@@ -197,12 +110,7 @@
                             {{matricula.tipmatrdescripcion}}
                         </td>
                         <td> <p-tag [value]="getDescriptionStatus(matricula.tipmatrestado)" [severity]="getSeverityStatus(matricula.tipmatrestado)" [rounded]="true"></p-tag> </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-rounded p-button-warning" pTooltip="Activar Matricula" tooltipPosition="left"
-                                    (click)="activarMatricula(matricula)"></button>
-                            </div>
-                        </td>
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -211,9 +119,7 @@
                     </tr>
                 </ng-template>
             </p-table>
-        </div>
-    </div>
-</div>
+</p-card>
 
 <p-dialog [(visible)]="tipoMatriculaDialog" header="Matricula" [modal]="true"
 [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"

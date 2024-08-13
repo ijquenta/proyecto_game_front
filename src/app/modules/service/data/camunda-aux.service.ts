@@ -17,7 +17,7 @@ export class CamundaAuxService {
 
   //funcion para iniciar el tramite
   startProcessDefinition(processDefinitionId: any, userId:string, businessKey: any){
-    const params = { 
+    const params = {
       "link": `${processDefinitionId}/submit-form`,
       "payload": {
         "variables": {
@@ -27,9 +27,8 @@ export class CamundaAuxService {
           },
         },
         "businessKey": businessKey
-      }   
+      }
     }
-    console.log("Parametros aqui",params)
     this.http.post(`${API_URL}/process-definition`, params).subscribe((result: any) => {
       this.data = result
       console.log(`Proceso definido iniciad: ${this.data}`);
@@ -43,12 +42,12 @@ export class CamundaAuxService {
   //       console.log('No se puedo realizar la tarea')
   //     }
   //     console.log(this.process)
-  // }); 
+  // });
   }
 
   //funcion para obtener el proceso instanciado
   procesInstance(businessKey: any){
-    const params = {    
+    const params = {
       "link": "",
       "payload": {
         "businessKey": businessKey
@@ -60,9 +59,8 @@ export class CamundaAuxService {
       return this.data
     })
     // this.camunda.postProcesoInstancia(params).subscribe((result: any) => {
-    //   this.process_instance = result[0]      
+    //   this.process_instance = result[0]
     //   this.listarTarea()
-    //   console.log("ProcessInstances --> ",this.process_instance)
     // });
   }
 
@@ -80,11 +78,10 @@ export class CamundaAuxService {
     //   }
     // )
 
-    
+
     // this.camunda.getTask(params).subscribe((result: any) => {
     //   this.task = result[0]
     //   this.anclar()
-    //   console.log("Tarea --> ",result)
     // });
   }
 
@@ -106,7 +103,6 @@ export class CamundaAuxService {
     // )
 
     // this.camunda.postTask(params).subscribe((result: any) => {
-    //   console.log("roy 1 anclado",result);
     //   if(!this.boolTask){
     //     this.completarSolicitud()
     //   }else{

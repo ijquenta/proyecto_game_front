@@ -28,8 +28,30 @@ import { DataViewModule } from 'primeng/dataview';
 import { AvatarModule } from 'primeng/avatar';
 import { CardModule } from 'primeng/card';
 import { UploadService } from 'src/app/modules/service/data/upload.service';
+import { DividerModule } from 'primeng/divider';
+import { PanelModule } from 'primeng/panel';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ImageModule } from 'primeng/image';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MultiSelectModule } from "primeng/multiselect";
+import { SidebarModule } from 'primeng/sidebar';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { ProgressBarModule } from 'primeng/progressbar';
 @NgModule({
     imports: [
+        PdfViewerModule,
+        NgxExtendedPdfViewerModule,
+        ProgressBarModule,
+        DividerModule,
+        PanelModule,
+        BreadcrumbModule,
+        ImageModule,
+        OverlayPanelModule,
+        SelectButtonModule,
+        MultiSelectModule,
+        SidebarModule,
         CardModule,
         AvatarModule,
         DataViewModule,

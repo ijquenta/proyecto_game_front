@@ -46,7 +46,6 @@ export class CursoService {
     }
 
     getTipoMateriaByCursoId(curid: any){
-        console.log("curid services: ", curid)
         return this.http.get(`${API_URL}/getTipoMateriaByCursoId/${curid}`, { context: checktoken() });
     }
 }

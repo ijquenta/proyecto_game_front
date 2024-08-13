@@ -37,7 +37,6 @@ export class NuevaSolicitudService {
 //       this.solicitante.obtenerDatosPersonal(body)
 //     ).subscribe(
 //       (result: any) => {
-//         console.log("Resultado ver", result)
 //         this.sharedService.procesos = result[0];
 //         this.sharedService.solicitante = result[1];
 //         this.setDataForm(dataMensual);
@@ -54,7 +53,6 @@ export class NuevaSolicitudService {
 //     ref.onClose.subscribe((result: any) => {
 //       if (result)
 //         this.confirmDialogObsData = result;
-//         // console.log("this.confirmDialogObsData--->",result)
 //     });
 //   }
 }

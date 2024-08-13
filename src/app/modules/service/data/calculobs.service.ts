@@ -78,7 +78,6 @@ export class BenSocialService {
 
   }
   getDataDeduccion(registroDeduccion: any){
-    // console.log("getData->",registroCalculoBS);
     this.confirmDialogObsData = false;
     const bodyTM = { "ano": registroDeduccion.ano, "mes": registroDeduccion.mes, "codDocente": registroDeduccion.codDocente,"nroLiquidacion": registroDeduccion.nroLiquidacion }
     forkJoin(
@@ -96,7 +95,6 @@ export class BenSocialService {
     return this.confirm.asObservable();
   }
   setDataFormDeduccion(registroDeduccion: any){
-    // console.log("setDataForm->", registroDeduccion)
     const ref = this.dialogService.open(FormDeduccionComponent, {
       data: registroDeduccion,
       header: 'Registrar Deduccion',
@@ -112,7 +110,6 @@ export class BenSocialService {
     this.confirm.next(result);
   }
   setDataForm(registroCalculoBS: any){
-    // console.log("setDataForm->", registroCalculoBS)
     if(registroCalculoBS.tform){
       const ref = this.dialogService.open(FormCalculoBSComponent, {
         data: registroCalculoBS,
@@ -138,7 +135,6 @@ export class BenSocialService {
 
   }
   setDataForm2(dataModificar: any){
-    // console.log("setDataForm2->", dataModificar)
     const ref = this.dialogService.open(FormCalculoBSModComponent, {
       data: dataModificar,
       header: 'Modificar Registro',

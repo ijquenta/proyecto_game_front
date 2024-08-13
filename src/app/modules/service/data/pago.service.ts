@@ -6,6 +6,7 @@ import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { ArchivosService } from '../util/archivos.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
+import { MessageService } from 'primeng/api';
 
 const httpOptions = {
     responseType: 'arraybuffer' as 'json'
@@ -17,7 +18,7 @@ const httpOptions = {
 
 export class PagoService {
     usuario: any;
-    constructor(private http: HttpClient, private tokenService: TokenService, private archivos: ArchivosService, private spinner: NgxSpinnerService, private authService: AuthService) { }
+    constructor(private http: HttpClient, private tokenService: TokenService, private archivos: ArchivosService, private spinner: NgxSpinnerService, private authService: AuthService,  private messageService: MessageService,) { }
 
 
     listarPago(){
@@ -40,8 +41,8 @@ export class PagoService {
         return this.http.post(`${API_URL}/listarPagoEstudiantesMateria`, data , { context: checktoken()});
     }
 
-    gestionarPago(data) {
-        return this.http.post(`${API_URL}/gestionarPago`, data, { context: checktoken() });
+    managePayment(data) {
+        return this.http.post(`${API_URL}/managePayment`, data, { context: checktoken() });
     }
 
     insertarPago(data) {
@@ -70,22 +71,20 @@ export class PagoService {
 
     getFilePago(pagarchivo: any) {
         const nombreArchivo = pagarchivo;
-        // const nombreArchivov2 = pagarchivo.replace('.pdf', '');
-        const nombreArchivov2 = 'ArchivoPago';
+        const nombreArchivoV2 = 'ArchivoPago';
         this.spinner.show();
-        console.log(this.spinner);
-        this.http.get(`${API_URL}/pago/ /${nombreArchivo}`, httpOptions)
-        .subscribe(
-            (data: any) => {
-            this.spinner.hide();
-            this.archivos.generateReportPDF(data, nombreArchivov2);
+        this.http.get(`${API_URL}/pago/download/${nombreArchivo}`, httpOptions).subscribe({
+            next: (data: any) => {
+                this.archivos.generateReportPDF(data, nombreArchivoV2);
+                this.spinner.hide();
+                this.messageService.add({severity:'success', summary:'Archivo de pago', detail:'Se obtuvo correctamente'});
             },
-            (error) => {
-            this.spinner.hide();
-            console.error(error);
-            this.archivos.showToast();
+            error: (error) => {
+                this.spinner.hide();
+                console.error(error);
+                this.messageService.add({severity:'warn', summary:'Archivo de pago', detail:'No se pudo obtener el archivo'});
             }
-        );
+        });
     }
 
     getPagoById(pagid: Number){
@@ -107,4 +106,10 @@ export class PagoService {
             }
         });
     }
+
+
+    manageAssignPayment(data) {
+        return this.http.post(`${API_URL}/manageAssignPayment`, data, { context: checktoken() });
+    }
+
 }

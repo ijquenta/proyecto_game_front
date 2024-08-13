@@ -1,5 +1,5 @@
 // --------- Importación principal
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { MenuItem, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner'; // spinner
@@ -36,8 +36,6 @@ interface UploadEvent {
     styleUrls: ['../../../../app.component.css']
 })
 
-
-
 export class MatriculaNuevoComponent implements OnInit {
         @ViewChild('fileUpload') fileUpload: FileUpload;
         // Variables Matricula
@@ -51,6 +49,8 @@ export class MatriculaNuevoComponent implements OnInit {
         matricula = new Matricula();
         loading: boolean = false;
         userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
+        userProfilePhotoEmpty = "../../../../../assets/images/login/sin_foto_perfil.png";
+        apiUrlPagoArchivo: string = environment.API_URL_PAGO_ARCHIVO;
         tiposMatricula: TiposMatricula[] = [];
         tipoPersonaEstudiante: TipoPersonaEstudiante[] = [];
         pagoMatriculaDialog: boolean = false;
@@ -79,28 +79,54 @@ export class MatriculaNuevoComponent implements OnInit {
         nombreArchivo: any;
         loadingSpinner: boolean = false;
 
-      //-----------------Variables-------------------//s
+        items2: MenuItem[];
+        home: MenuItem | undefined;
+
+        stateOptionsEstado: any[] = [
+            { label: 'Activo', value: 1 },
+            { label: 'Inactivo', value: 0 }
+        ];
+
+      //-----------------Variables-------------------//
+
+        pagoFile: File | null = null;
+        pagoFileUrl: string | null = null;
+        fileObjectUrlPago: any;
+        uploadProgress: number = 0;
+
+        /** Indica si el formulario está en modo de edición */
+        isEditMode: boolean = false;
+        showArchivoImagen: boolean;
+        pagarchivo: any;
 
     constructor(
-                private messageService: MessageService,
-                private matriculaService: MatriculaService,
-                private spinner: NgxSpinnerService,
-                private authService: AuthService,
-                private formBuilder: FormBuilder,
-                private pagoService: PagoService,
-                private uploadService: UploadService,
-                ) { }
+        private messageService: MessageService,
+        private matriculaService: MatriculaService,
+        private spinner: NgxSpinnerService,
+        private authService: AuthService,
+        private formBuilder: FormBuilder,
+        private pagoService: PagoService,
+        private uploadService: UploadService,
+        private cdr: ChangeDetectorRef,
+    ) {
+        this.items = [
+            { label: 'Matriculación' },
+            { label: 'Asignar matricula a un estudiante', routerLink: '' },
+        ];
+
+        this.home = { icon: 'pi pi-home', routerLink: '/principal' };
+    }
 
     ngOnInit() {
 
 
         this.listarMatricula();
 
-        this.getProfileUsuario(); // obtener los valores del usuario logueado
+        this.obtenerPerfilUsuario(); // obtener los valores del usuario logueado
 
-        this.asignacionValidacion(); // se asigna los parametros para la variable de validación
+        this.validacionMatricula(); // se asigna los parametros para la variable de validación
 
-        this.asignacionValidacionesPago(); // se asigna los pararmetros para la variable pago de validación
+        this.validacionPago(); // se asigna los pararmetros para la variable pago de validación
 
         this.obtenerColumnas(); // obtener Columnas para exportar en excel y pdf la listaTipoMatricula
 
@@ -110,6 +136,39 @@ export class MatriculaNuevoComponent implements OnInit {
 
         this.obtenerTipoPersonaEstudiante();
 
+    }
+
+    // Funcion para asignar variables de validación para el formulario de registro
+    validacionMatricula() {
+        this.matriculaForm = this.formBuilder.group({
+            matrid: [''],
+            tiposMatricula: ['', [Validators.required]],
+            matrfec: ['', [Validators.required]],
+            tipoPersona: ['', [Validators.required]],
+            matrdescripcion: ['', [Validators.required]]
+        });
+    }
+
+    // Método para asignar las variables de React Form Valid
+    validacionPago() {
+        this.pagoForm = this.formBuilder.group({
+            pagid: [''],
+            insid: [''],
+            pagdescripcion: ['', Validators.required],
+            pagfecha: ['', Validators.required],
+            pagmonto: [0, [Validators.required, Validators.min(0)]],
+            tipoPago: ['', Validators.required],
+            pagestadodescripcion: [''],
+            pagarchivo: [''],
+            pagestado: ['', Validators.required]
+        });
+    }
+
+    // Funcion para obtener datos del usuario logueado
+    obtenerPerfilUsuario() {
+        this.authService.getProfile().subscribe(usuario => {
+            this.usuario = usuario[0];
+        });
     }
 
     // Obtener tipos de matricula
@@ -148,19 +207,407 @@ export class MatriculaNuevoComponent implements OnInit {
     // Función para listar las asignaciones de matricula
     listarMatricula(){
         this.spinner.show();
-        this.matriculaService.listarMatricula().subscribe(
-            (result: any) => {
-                this.listaMatricula = result;
+        this.matriculaService.listarMatricula().subscribe({
+            next: (result: any) => {
+                this.listaMatricula = result['data'];
                 this.listaMatriculaDuplicado = this.listaMatricula;
-                this.listaMatriculaInactivo = this.listaMatricula.filter(matricula => matricula.matrestado === 0);
-                this.listaMatricula = this.listaMatricula.filter(matricula => matricula.matrestado === 1);
                 this.spinner.hide();
             },
-            (error: any) => {
+            error: (error: any) => {
                 console.error(error);
                 this.spinner.hide();
             }
-        )
+        });
+    }
+
+    // Función para nueva asignación de matricula a un usuario
+    crearMatriculaAsignacion() {
+        this.matriculaForm.reset();
+        this.matriculaDialog = true;
+        this.opcionMatricula = true;
+        this.matriculaForm.patchValue({
+            matrfec: new Date()
+        })
+    }
+
+    // Función para editar matricula
+    editarMatriculaAsignacion(data: any) {
+        this.obtenerTiposMatricula();
+        this.obtenerTipoPersonaEstudiante();
+        this.matriculaForm.reset();
+        this.matricula = { ...data };
+        this.matriculaDialog = true;
+        this.opcionMatricula = false;
+        this.setDataMatricula();
+    }
+
+    // Función para obtener datos para setear datos en el formulario
+    setDataMatricula(){
+        this.matriculaForm.patchValue({
+            matrid: this.matricula.matrid,
+            tiposMatricula: new TiposMatricula(this.matricula.tipmatrid, this.matricula.tipmatrgestion),
+            tipoPersona: new TipoPersonaEstudiante(this.matricula.peridestudiante, this.matricula.pernomcompleto, this.matricula.perfoto),
+            matrfec: this.matricula.matrfec,
+            matrdescripcion: this.matricula.matrdescripcion
+        })
+    }
+
+    // Función para obtener datos del formulario para registrar
+    obtenerBodyMatricula(){
+        this.matricula.tipmatrid = this.matriculaForm.value.tiposMatricula.tipmatrid;
+        this.matricula.peridestudiante = this.matriculaForm.value.tipoPersona.perid;
+        this.matricula.matrdescripcion = this.matriculaForm.value.matrdescripcion;
+        this.matricula.matrusureg = this.usuario.usuname;
+        this.matricula.matrusumod = this.usuario.usuname;
+        const body = {...this.matricula}
+        return body;
+    }
+
+    // Función de cancelar formulario
+    ocultarDialogMatricula() {
+        this.matriculaDialog = false;
+        this.pagoMatriculaDialog = false;
+        this.opcionMatricula = true;
+        this.messageService.add({ severity: 'info', summary: 'Cancelar', detail: 'Operación cancelada', life: 3000 });
+        this.matriculaForm.reset();
+    }
+
+    // Función para guardar los datos para agregar y modificar
+    guardarMatricula() {
+        if(this.matriculaForm.invalid){
+            this.messageService.add({ severity: 'error', summary: 'Ups! error de registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 5000 });
+            return Object.values(this.matriculaForm.controls).forEach(control=>{
+                control.markAllAsTouched();
+                control.markAsDirty();
+            })
+        }
+        this.obtenerBodyMatricula();
+        if(this.opcionMatricula){
+            this.matricula.matrfec = this.matriculaForm.value.matrfec;
+            this.matriculaService.insertarMatricula(this.matricula).subscribe({
+                next: (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula agregada correctamente en el sistema', life: 5000 });
+                    this.listarMatricula();
+                    this.matriculaDialog = false;
+                    this.opcionMatricula = false;
+                    this.matriculaForm.reset();
+                },
+                error: (error: any) => {
+                    console.error("error: ", error);
+                    let errorMessage = 'Se produjo un error.';
+                    if (error.error.message.includes('UniqueViolation')) {
+                        errorMessage = 'No se puede crear el registro.';
+                    }
+                    this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                }
+            });
+        }
+        if(!this.opcionMatricula){
+            this.matriculaService.modificarMatricula(this.matricula).subscribe({
+                next: (result: any) => {
+                    this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula modificado correctamente en el sistema', life: 5000 });
+                    this.listarMatricula();
+                    this.matriculaDialog = false;
+                    this.opcionMatricula = false;
+                    this.matriculaForm.reset();
+                },
+                error: (error: any) => {
+                    console.error("error",error);
+                    this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la matricula'});
+                }
+            });
+        }
+    }
+
+    // Funciones para gestionar el estado de los registos
+    desactivarMatricula(data: Matricula) {
+        this.desactivarMatriculaDialog = true;
+        this.matricula = { ...data };
+        this.matricula.tipo = 2;
+    }
+
+    // Funciones para gestionar el estado de los registos
+    activarMatricula(data: Matricula) {
+        this.activarMatriculaDialog = true;
+        this.matricula = { ...data };
+        this.matricula.tipo = 3;
+    }
+
+    // Funcion para gestionar el estado de los registos
+    confirmarActivarDesactivar() {
+        this.matricula.matrusumod = this.usuario.usuname;
+        this.matriculaService.gestionarMatriculaEstado(this.matricula).subscribe({
+            next: (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Estado del tipo matricula modificada correctamente en el sistema', life: 5000 });
+                this.listarMatricula();
+                this.activarMatriculaDialog = false;
+                this.desactivarMatriculaDialog = false;
+                this.matricula = new Matricula();
+            },
+            error: error => {
+            console.error("error",error);
+                this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal.', life: 5000});
+            }
+        });
+    }
+
+    // Crear pago con asignación de matricula
+    crearPagoMatricula(data: Matricula){
+        this.pagoForm.reset();
+        this.pagoMatriculaDialog = true;
+        this.matricula = {...data};
+        this.isEditMode = false;
+    }
+
+    modificarPagoMatricula(data: Matricula){
+        this.pagoMatriculaDialog = true;
+        this.isEditMode = true;
+        this.matricula = {...data};
+        this.setPagoMatricula();
+    }
+
+    // Funciones para registrar pago
+    obtenerPagoBody(){
+        this.pago.pagdescripcion = this.pagoForm.value.pagdescripcion;
+        this.pago.pagfecha = this.pagoForm.value.pagfecha;
+        this.pago.pagmonto = this.pagoForm.value.pagmonto;
+        this.pago.pagtipo = this.pagoForm.value.tipoPago.tpagid;
+        this.pago.pagusumod = this.usuario.usuname;
+        this.pago.pagusureg = this.usuario.usuname;
+        this.pago.pagarchivo = this.nombreArchivo;
+        const body = { ...this.pago }
+        return body;
+    }
+
+    // Funcion para cargar los datos en el formulario
+    setPagoMatricula(){
+        this.pagoForm.reset(); // Se resetea el pagoForm para que no se retengan ningún datos anteriores.
+        this.pagoForm.patchValue({
+            pagid: this.matricula.pagoidmatricula,
+            pagdescripcion: this.matricula.pagdescripcion,
+            pagfecha: this.matricula.pagfecha,
+            pagmonto: this.matricula.pagmonto,
+            tipoPago: new TipoPago(this.matricula.pagtipo, this.getText(this.matricula.pagtipo)),
+            pagestado: this.matricula.pagestado
+        })
+    }
+
+    // Función de cancelar formulario
+    ocultarDialogPagoMatricula() {
+        this.pagoMatriculaDialog = false;
+        this.isEditMode = false;
+        this.messageService.add({ severity: 'info', summary: 'Cancelar', detail: 'Operación cancelada', life: 3000 });
+        this.pagoForm.reset();
+        this.clearFilePago();
+    }
+
+    /**
+     * Guarda los datos del pago, ya sea creando un nuevo registro y asignado a registro de matricula o actualizando uno existente.
+     * Verifica que el formulario sea válido y maneja la fecha y el archivo adjunto.
+     */
+    guardarPago(): void {
+        // Si hay un archivo seleccionado, establece su nombre en el formulario
+        if (this.pagoFile) {
+            this.pagoForm.patchValue({ pagarchivo: this.pagoFile?.name });
+        }
+        if (this.pagoForm.value.pagmonto) {
+            this.pagoForm.controls['pagmonto'].markAsTouched();  // Marca el control específico como tocado
+        }
+        // Verifica si el formulario es válido
+        if (this.pagoForm.invalid) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error en el registro de pago',
+                detail: 'Por favor, completa todos los campos obligatorios e intenta nuevamente.',
+                life: 5000
+            });
+            // Marca todos los controles como tocados y sucios para mostrar errores
+            Object.values(this.pagoForm.controls).forEach(control => {
+                control.markAllAsTouched();
+                control.markAsDirty();
+            });
+            return;
+        }
+
+        // Formateo de la fecha si está presente
+        if (this.pagoForm.value.pagfecha) {
+            const fecha = new Date(this.pagoForm.value.pagfecha);
+            const fechaFormateada = fecha.toISOString().split('T')[0];
+            this.pagoForm.patchValue({ pagfecha: fechaFormateada });
+        }
+
+        // Crear un FormData para enviar los datos al backend
+        const pagoData: FormData = new FormData();
+        pagoData.append('tipo', this.isEditMode ? '2' : '1'); // Tipo fijo según el modo de edición
+        pagoData.append('matrid', String(this.matricula.matrid));
+        pagoData.append('pagdescripcion', this.pagoForm.value.pagdescripcion);
+        pagoData.append('pagtipo', this.pagoForm.value.tipoPago.tpagid);
+        pagoData.append('pagmonto', this.pagoForm.value.pagmonto);
+        pagoData.append('pagfecha', this.pagoForm.value.pagfecha);
+        pagoData.append('pagarchivo', this.pagoFile);
+        pagoData.append('pagestado', this.pagoForm.value.pagestado);
+        // Configuración específica para la creación de un nuevo pago
+        let mensajeDetalle = ''; // Variable para el detalle del mensaje
+
+        if (!this.isEditMode) {
+            pagoData.append('pagid', '0'); // ID 0 para indicar creación
+            pagoData.append('pagusureg', this.usuario.usuname); // Usuario que registra
+            mensajeDetalle = 'El pago fue creado y matricula asignada correctamente.'; // Mensaje para creación
+        }
+
+        // Configuración específica para la actualización de un pago existente
+        if (this.isEditMode) {
+            pagoData.append('pagid', this.pagoForm.value.pagid); // ID del pago a actualizar
+            pagoData.append('pagusumod', this.usuario.usuname); // Usuario que modifica
+            mensajeDetalle = 'El pago fue modificado correctamente.'; // Mensaje para actualización
+        }
+
+        // Llamada al servicio para gestionar el pago (crear o actualizar)
+        this.spinner.show();
+        this.pagoService.manageAssignPayment(pagoData).subscribe({
+            next: (result: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: mensajeDetalle // Utiliza la variable con el mensaje adecuado
+                });
+                this.pagoMatriculaDialog = false;
+                this.isEditMode = false;
+                this.pagoForm.reset();
+                this.pagoFile = null;
+                this.pagoFileUrl = null;
+                this.uploadProgress = 0;
+
+                this.listarMatricula();
+                this.spinner.hide();
+            },
+            error: (error: any) => {
+                this.spinner.hide();
+                console.error("error al gestionar el pago:", error);
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: '¡Error!',
+                    detail: 'No se pudo guardar el registro de pago.'
+                });
+
+            }
+        });
+    }
+
+    // Función para ver el archivo pago subido
+    verArchivoPago(pagarchivo: any){
+        this.pagoService.getFilePago(pagarchivo);
+    }
+
+    /**
+     * Funcion para obtener el texto de tipo de pago
+     *
+     * @param pagtipo
+     */
+    getText(pagtipo: number): string {
+        switch (pagtipo) {
+            case 1:
+                return 'Ninguno';
+            case 2:
+                return 'Efectivo';
+            case 3:
+                return 'Deposito Bancario';
+            case 4:
+                return 'Adelanto';
+            case 5:
+                return 'Otro';
+            default:
+                return 'Otro';
+        }
+    }
+
+    /**
+     *
+     * @param filename nombre del archivo
+     * @returns retorna si el archivo es una imagen o no.
+     */
+    isImagen(filename: string): boolean {
+        const ext = filename.split('.').pop().toLowerCase();
+        return ['jpg', 'jpeg', 'png', 'gif'].includes(ext);
+    }
+
+    /**
+     *
+     * @param filename nombre del archivo
+     * @returns retorna si el archivo es un pdf o no.
+     */
+    isPdf(filename: string): boolean {
+        const ext = filename.split('.').pop().toLowerCase();
+        return ext === 'pdf';
+    }
+
+    /** Mostrar el archivo de pago */
+    mostrarPagoArchivo(filename: string){
+        if(this.isImagen(filename)){
+        }
+        if(this.isPdf(filename)){
+            this.pagoService.getPagoArchivo(filename);
+        }
+    }
+
+    /**
+     *
+     * @param pagarchivo Mostrar el archivo imagen de pago
+     */
+    mostrarPagoArchivoImagen(pagarchivo: any){
+        this.showArchivoImagen = true;
+        this.pagarchivo = pagarchivo;
+    }
+
+    /**
+     * Maneja el evento de carga de archivos para el archivo de pago.
+     *
+     * @param event - Evento de carga de archivos.
+     */
+    onUploadPago(event: any): void {
+        if (this.pagoFile) {
+            let progressInterval = setInterval(() => {
+                this.uploadProgress += Math.floor(Math.random() * 20) + 10;
+
+                if (this.uploadProgress >= 100) {
+                    this.uploadProgress = 100;
+                    clearInterval(progressInterval);
+                    this.messageService.add({ severity: 'info', summary: 'Éxito', detail: 'Archivo cargado correctamente.' });
+                    this.pagoFileUrl = URL.createObjectURL(this.pagoFile);
+                    this.pagoForm.patchValue({ pagarchivo: this.pagoFile.name });
+                    const pagarchivoControl = this.pagoForm.get('pagarchivo');
+                    if (pagarchivoControl) {
+                        pagarchivoControl.markAsTouched();
+                        pagarchivoControl.markAsDirty();
+                    }
+                }
+
+                this.cdr.detectChanges();
+            }, 500);
+        }
+    }
+
+    /**
+     * Maneja el evento de selección de archivos.
+     *
+     * @param event - Evento de selección de archivos.
+     */
+    onFileSelect(event: any): void {
+        this.pagoFile = event.files[0];
+        // this.pagoFileUrl = URL.createObjectURL(this.pagoFile);
+        this.uploadProgress = 0; // Reiniciar la barra de progreso
+        this.messageService.add({ severity: 'info', summary: 'Archivo', detail: 'Archivo seleccionado correctamente.' });
+    }
+
+    /**
+     * Limpia los archivos seleccionados para subir.
+     */
+    clearFilePago(): void {
+        this.cdr.detectChanges();
+        this.pagoFile = null;
+        this.pagoFileUrl = null;
+        this.uploadProgress = 0;
+        this.messageService.add({ severity: 'info', summary: 'Archivo', detail: 'Selección de archivo limpiada.' });
     }
 
     // Obtener columnas para recuperar los datos para exportar en pdf.
@@ -180,138 +627,55 @@ export class MatriculaNuevoComponent implements OnInit {
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
     }
 
-    // Función para nueva asignación de matricula a un usuario
-    nuevaAsignacion() {
-        this.matriculaForm.reset();
-        this.matriculaDialog = true;
-        this.opcionMatricula = true;
-        this.matriculaForm.patchValue({
-            matrfec: new Date()
-        })
+    /**
+     * Verifica si el tipo de archivo es una imagen.
+     *
+     * @param fileType - Tipo MIME del archivo.
+     * @returns True si el archivo es una imagen, de lo contrario, false.
+     */
+    isImage(fileType: string): boolean {
+        return fileType.startsWith('image/');
     }
 
-    // Funcion para asignar variables de validación para el formulario de registro
-    asignacionValidacion() {
-        this.matriculaForm = this.formBuilder.group({
-            matrid: [''],
-            tiposMatricula: ['', [Validators.required]],
-            matrfec: ['', [Validators.required]],
-            tipoPersona: ['', [Validators.required]],
-            matrdescripcion: ['', [Validators.required]]
-        });
+    /**
+     * Verifica si el tipo de archivo es un PDF.
+     *
+     * @param fileType - Tipo MIME del archivo.
+     * @returns True si el archivo es un PDF, de lo contrario, false.
+     */
+    isPDF(fileType: string): boolean {
+        return fileType === 'application/pdf';
     }
 
-    // Método para asignar las variables de React Form Valid
-    asignacionValidacionesPago() {
-        this.pagoForm = this.formBuilder.group({
-            pagoid: [''],
-            matrid:[''],
-            pagdescripcion:['', [Validators.required]],
-            pagofecha: ['', [Validators.required]],
-            pagmonto: ['', [Validators.required, Validators.min(0)]],
-            tipoPago: ['', [Validators.required]],
-        });
-    }
-
-    // Función de cancelar formulario
-    ocultarDialog() {
-        this.matriculaDialog = false;
-        this.pagoMatriculaDialog = false;
-        this.opcionMatricula = true;
-        this.messageService.add({ severity: 'info', summary: 'Cancelar', detail: 'Operación cancelada', life: 3000 });
-        this.matriculaForm.reset();
-    }
-
-    // Función para editar matricula
-    editarMatricula(data: any) {
-        this.obtenerTiposMatricula();
-        this.obtenerTipoPersonaEstudiante();
-        this.matriculaForm.reset();
-        this.matricula = { ...data };
-        this.matriculaDialog = true;
-        this.opcionMatricula = false;
-        this.setData();
-    }
-
-    // Función para obtener datos para setear datos en el formulario
-    setData(){
-        this.matriculaForm.patchValue({
-            matrid: this.matricula.matrid,
-            tiposMatricula: new TiposMatricula(this.matricula.tipmatrid, this.matricula.tipmatrgestion),
-            tipoPersona: new TipoPersonaEstudiante(this.matricula.peridestudiante, this.matricula.pernomcompleto, this.matricula.perfoto),
-            matrfec: this.matricula.matrfec,
-            matrdescripcion: this.matricula.matrdescripcion
-        })
-    }
-
-    // Función para obtener datos del formulario para registrar
-    obtenerBody(){
-        this.matricula.tipmatrid = this.matriculaForm.value.tiposMatricula.tipmatrid;
-        this.matricula.peridestudiante = this.matriculaForm.value.tipoPersona.perid;
-        this.matricula.matrdescripcion = this.matriculaForm.value.matrdescripcion;
-        this.matricula.matrusureg = this.usuario.usuname;
-        this.matricula.matrusumod = this.usuario.usuname;
-        const body = {...this.matricula}
-        return body;
-    }
-
-    // Función para guardar los datos para agregar y modificar
-    guardarMatricula() {
-        if(this.matriculaForm.invalid){
-            this.messageService.add({ severity: 'error', summary: 'Ups! error de registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 5000 });
-            return Object.values(this.matriculaForm.controls).forEach(control=>{
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
+    // Funciones para obtener el color del estado
+    getSeverityStatus(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'success';
+            case 0:
+                return 'danger';
+            default:
+                return 'info';
         }
-        if(this.matriculaForm.valid){
+    }
 
-            // window.alert("Hola mira mis datos: " + JSON.stringify(this.matriculaForm.value));
-
-            this.obtenerBody();
-
-            if(this.opcionMatricula){
-                this.matricula.matrfec = this.matriculaForm.value.matrfec;
-                this.matriculaService.insertarMatricula(this.matricula).subscribe(
-                    (result: any) => {
-                        this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula agregada correctamente en el sistema', life: 5000 });
-                        this.listarMatricula();
-                        this.matriculaDialog = false;
-                        this.opcionMatricula = false;
-                        this.matriculaForm.reset();
-                    },
-                    error => {
-                            console.error("error: ", error);
-                            let errorMessage = 'Se produjo un error.';
-
-                            if (error.error.message.includes('UniqueViolation')) {
-                                errorMessage = 'No se puede crear el registro.';
-                            }
-
-                            this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
-                        }
-                );
-            } else{
-                const parts = this.matricula.matrfec.split('/');
-                const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                this.matricula.matrfec = formattedDate;
-
-                this.matriculaService.modificarMatricula(this.matricula).subscribe(
-                    (result: any) => {
-                        this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Matricula modificado correctamente en el sistema', life: 5000 });
-                        this.listarMatricula();
-                        this.matriculaDialog = false;
-                        this.opcionMatricula = false;
-                        this.matriculaForm.reset();
-                    },
-                    (error: any) => {
-                    console.error("error",error);
-                        this.messageService.add({severity:'warn', summary:'Error', detail:'Algo salio mal, al modificar la matricula'});
-                    }
-                );
-            }
+    getDescriptionStatus(estado: number): string {
+        switch (estado) {
+            case 1:
+                return 'Activo';
+            case 0:
+                return 'Inactivo';
+            default:
+                return 'Ninguno';
         }
+    }
 
+    // Funcion para filtrar la tabla
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
     // Función para exportar el documento PDF
@@ -372,248 +736,6 @@ export class MatriculaNuevoComponent implements OnInit {
                 doc.save('lista_asignacion_matricula.pdf');
             });
         });
-    }
-
-    // Funcion para obtener datos del usuario logueado
-    getProfileUsuario() {
-        this.authService.getProfile().subscribe(usuario => {
-            this.usuario = usuario[0];
-        });
-    }
-
-    // Funciones para gestionar el estado de los registos
-    desactivarMatricula(data: Matricula) {
-        this.desactivarMatriculaDialog = true;
-        this.matricula = { ...data };
-        this.matricula.tipo = 2;
-    }
-    activarMatricula(data: Matricula) {
-        this.activarMatriculaDialog = true;
-        this.matricula = { ...data };
-        this.matricula.tipo = 3;
-    }
-    confirmarActivarDesactivar() {
-        this.matricula.matrusumod = this.usuario.usuname;
-        this.matriculaService.gestionarMatriculaEstado(this.matricula).subscribe(
-            (result: any) => {
-                this.messageService.add({ severity: 'success', summary: 'Registro correcto', detail: 'Estado del tipo matricula modificada correctamente en el sistema', life: 5000 });
-                this.listarMatricula();
-                this.activarMatriculaDialog = false;
-                this.desactivarMatriculaDialog = false;
-                this.matricula = new Matricula();
-            },
-            error => {
-            console.error("error",error);
-                this.messageService.add({severity:'warn', summary:'Error', detail: 'Algo salio mal.', life: 5000});
-            }
-        );
-    }
-
-    // Funciones para obtener el color del estado
-    getSeverityStatus(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'success';
-            case 0:
-                return 'danger';
-            default:
-                return 'info';
-        }
-    }
-
-    getDescriptionStatus(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'Activo';
-            case 0:
-                return 'Inactivo';
-            default:
-                return 'Ninguno';
-        }
-    }
-
-    // Funcion para filtrar la tabla
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal(
-            (event.target as HTMLInputElement).value,
-            'contains'
-        );
-    }
-
-    // Funciones para registrar pago
-    obtenerPagoBody(){
-        this.pago.pagdescripcion = this.pagoForm.value.pagdescripcion;
-        this.pago.pagfecha = this.pagoForm.value.pagofecha;
-        this.pago.pagmonto = this.pagoForm.value.pagmonto;
-        this.pago.pagtipo = this.pagoForm.value.tipoPago.tpagid;
-        this.pago.pagusumod = this.usuario.usuname;
-        this.pago.pagusureg = this.usuario.usuname;
-        this.pago.pagarchivo = this.nombreArchivo;
-        const body = { ...this.pago }
-        return body;
-    }
-
-    pagarMatricula(data: Matricula){
-        this.pagoForm.reset();
-        this.pagoMatriculaDialog = true;
-        this.matricula = {...data};
-    }
-
-    // Función para subir archivos
-    onUpload(event: UploadEvent) {
-        this.archivos = event;
-        for(let file of event.files) {
-            this.uploadedFiles.push(file);
-        }
-        this.messageService.add({severity: 'info', summary: 'Archivo', detail: 'Archivo seleccionado correctamente.'});
-    }
-
-    // Función para ver el archivo pago subido
-    verArchivoPago(pagarchivo: any){
-        this.pagoService.getFilePago(pagarchivo);
-    }
-
-    registrarPago() {
-        if(this.pagoForm.invalid){
-            this.messageService.add({ severity: 'error', summary: '¡Oh no! error en el registro', detail: 'Por favor, asegúrate de completar todos los campos obligatorios y luego intenta nuevamente.', life: 5000 });
-            return Object.values(this.pagoForm.controls).forEach(control=>{
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
-        }
-        if (this.archivos?.currentFiles) {
-            this.cargarArchivos(this.archivos.currentFiles, this.matricula);
-        }
-        this.obtenerPagoBody();
-        this.pagoService.insertarPago(this.pago).pipe(
-            switchMap((result: any) => {
-              this.pagoMatriculaDialog = false;
-              this.messageService.add({ severity: 'info', summary: '!Exitosamente¡', detail: 'Pago registrado correctamente.', life: 6000 });
-              return this.pagoService.obtenerUltimoPago();
-            }),
-            switchMap((result: any) => {
-              this.pagidlast = result[0].pagid;
-              const criterio = {
-                matrid: this.matricula.matrid,
-                pagid: this.pagidlast,
-                matrusumod: this.usuario.usuname
-              };
-              return this.pagoService.asignarPagoMatricula(criterio);
-            })
-          ).subscribe(() => {
-            this.messageService.add({severity:'info', summary:'¡Éxito!', detail:'Se asignó a la matricula correctamente', life: 7000});
-            this.pago = new Pago();
-            this.listarMatricula();
-          }, error => {
-            console.error("error",error);
-            this.messageService.add({severity:'warn', summary:'¡Error!', detail:'Ha ocurrido un error'});
-          });
-    }
-    // Función para carga los archivos al servidor backend
-    cargarArchivos(currentFiles: File[], matricula: Matricula): void {
-        if (currentFiles) {
-          const formData = new FormData();
-          for (let i = 0; i < currentFiles.length; i++) {
-            const file: File = currentFiles[i];
-            const nombrePersonaSinEspacios = matricula.pernrodoc.replace(/\s+/g, '');
-            const nombreArchivoSinEspacios = file.name.replace(/\s+/g, '');
-            const cleanedFilename = nombreArchivoSinEspacios.replace(/[^\w.-]/g, '');
-            this.nombreArchivo = nombrePersonaSinEspacios + '_' + cleanedFilename;
-            formData.append('files[]', file, this.nombreArchivo);
-          }
-         this.loadingSpinner = true;
-          this.uploadService.uploadFilesPago(formData).subscribe(
-            (data: any) => {
-              this.fileUpload.clear();
-              this.loadingSpinner = false;
-              this.messageService.add({ severity: 'success', summary: 'Registro documento!', detail: 'El documento se registró existosamente en el sistema.', life: 7000 });
-            },
-            (error: any) => {
-              this.fileUpload.clear();
-              this.loadingSpinner = false;
-              console.error('Error en la carga:', error);
-            }
-          );
-        } else {
-          console.warn('No se seleccionaron archivos.');
-        }
-    }
-
-    // Funcion para actualizar el registro de pago, se le envia el data: Pago del cual se setea los datos
-    actualizarPago(data: Matricula) {
-        this.fileUpload.clear();
-        this.pagoForm.reset();
-        this.pagoMatriculaDialog = true;
-        this.matricula = { ...data };
-        // window.alert("mis datos: " + JSON.stringify(this.matricula));
-        this.setPagoData();
-        this.pago.pagid = this.matricula.pagoidmatricula;
-    }
-
-    setPagoData(){
-       this.pagoForm.reset(); // Se resetea el pagoForm para que no se retengan ningún datos anteriores.
-       this.pagoForm.patchValue({
-           pagoid: this.matricula.pagoidmatricula,
-           pagdescripcion: this.matricula.pagdescripcion,
-           pagofecha: this.matricula.pagfecha,
-           pagmonto: this.matricula.pagmonto,
-           tipoPago: new TipoPago(this.matricula.pagtipo, this.getText(this.matricula.pagtipo)
-         )
-       })
-    }
-
-    // Funcion para obtener el texto de tipo de pago
-    getText(pagtipo: number): string {
-        switch (pagtipo) {
-          case 1:
-            return 'Ninguno';
-          case 2:
-            return 'Efectivo';
-          case 3:
-            return 'Deposito Bancario';
-          case 4:
-            return 'Adelanto';
-          case 5:
-            return 'Otro';
-          default:
-            return 'Otro';
-        }
-    }
-
-    modificarPago() {
-        this.obtenerPagoBody();
-        // window.alert("mis datos modificarPago: " + JSON.stringify(this.pago));
-        if(this.pagoForm.invalid){
-            this.messageService.add({ severity: 'error', summary: '¡Oh no! error en el registro', detail: 'Por favor, asegúrate de completar todos los campos obligatorios y luego intenta nuevamente.', life: 5000 });
-            return Object.values(this.pagoForm.controls).forEach(control=>{
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
-        }
-        if (this.archivos?.currentFiles) {
-            this.cargarArchivos(this.archivos.currentFiles, this.matricula);
-            this.pago.archivobol = 1;
-            this.pago.pagarchivo = this.nombreArchivo;
-        }
-        else{
-            this.pago.archivobol = 0;
-            this.pago.pagarchivo = null;
-        }
-        this.pagoService.modificarPago(this.pago).subscribe(
-            (result: any) => {
-                this.messageService.add({ severity: 'success', summary: '!Exito¡', detail: 'Pago modificado correctamente.' });
-                this.pagoMatriculaDialog = false;
-                this.listarMatricula();
-            },
-            (error: any) => {
-                console.error("Error:", error);
-                if (error.error && error.error.valor) {
-                    this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.valor });
-                } else {
-                    this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Algo salió mal!' });
-                }
-            }
-        );
     }
 
 

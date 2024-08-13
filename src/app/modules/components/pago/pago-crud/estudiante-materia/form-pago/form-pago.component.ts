@@ -262,7 +262,7 @@ export class FormPagoComponent implements OnInit {
         }
 
         // Llamada al servicio para gestionar el pago (crear o actualizar)
-        this.pagoService.gestionarPago(pagoData).subscribe({
+        this.pagoService.managePayment(pagoData).subscribe({
             next: (result: any) => {
                 this.messageService.add({
                     severity: 'success',
