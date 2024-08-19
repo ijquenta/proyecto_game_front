@@ -1,0 +1,152 @@
+<p-toast></p-toast>
+
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+    <h3>Tipo Categoria</h3>
+    <p>Administrar registros de tipo textos</p>
+
+    <div class="grid p-fluid">
+        <!-- Formulario para crear o editar tipo texto -->
+        <div class="col-12 md:col-4 lg:col-6">
+            <p-card header="Tipo Texto" subheader="{{optionDialogTipoTexto ? 'Crear' : 'Modificar'}}">
+                <form [formGroup]="tipoTextoForm" novalidate>
+                    <div class="p-fluid">
+                        <div class="field">
+                            <label for="tiptexnombre" class="font-bold">Nombre</label>
+                            <input
+                                type="text"
+                                id="tiptexnombre"
+                                pInputText
+                                formControlName="tiptexnombre"
+                                class="p-inputtext mb-2"
+                            />
+                            <small
+                                class="p-error block"
+                                *ngIf="tipoTextoForm.get('tiptexnombre').invalid && tipoTextoForm.get('tiptexnombre').touched"
+                            >
+                                <span *ngIf="tipoTextoForm.get('tiptexnombre').errors?.required">
+                                    Este campo es requerido. (*)
+                                </span>
+                            </small>
+                        </div>
+                    </div>
+                </form>
+                <ng-template pTemplate="footer" >
+                    <div class="text-center">
+                        <button
+                            pButton
+                            pRipple
+                            label="Vaciar"
+                            icon="pi pi-trash"
+                            class="p-button-outlined p-button w-auto mr-2"
+                            (click)="ocultarTipoTexto()"
+                        ></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="Guardar"
+                            icon="pi pi-save"
+                            class="p-button-outlined p-button-success w-auto mr-2"
+                            (click)="enviarTipoTexto()"
+                        ></button>
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+
+        <!-- Tabla para listar los tipos de texto -->
+        <div class="col-12 md:col-8 lg:col-6">
+            <p-table
+                #dt2
+                [value]="TipoTexto"
+                [tableStyle]="{'min-width': '30rem'}"
+                responsiveLayout="stack"
+                [breakpoint]="'960px'"
+                styleClass="p-datatable-striped p-card p-datatable-sm"
+                [loading]="loading"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="text-center">Acciones</th>
+                        <th class="text-center">Nombre</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-tiptex>
+                    <tr>
+                        <td>
+                            <div class="p-d-flex p-jc-center">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-outlined p-button-primary mr-2"
+                                    (click)="modificarTipoTexto(tiptex)"
+                                    pTooltip="Modificar"
+                                    tooltipPosition="top"
+                                ></button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-outlined p-button-danger"
+                                    (click)="confirmarEliminarTipoTexto(tiptex)"
+                                    pTooltip="Eliminar"
+                                    tooltipPosition="top"
+                                ></button>
+                            </div>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="tiptex.tiptexnombre; else noRegistro">
+                                {{tiptex.tiptexnombre}}
+                            </ng-container>
+                            <ng-template #noRegistro>
+                                No disponible
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="2">No se encontró la información solicitada.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-card>
+
+<!-- Diálogo de confirmación para eliminar -->
+<p-dialog
+    [(visible)]="eliminarTipoTextoDialog"
+    header="Confirmar"
+    [modal]="true"
+    [responsive]="true"
+    [style]="{width: 'auto'}"
+>
+    <div class="p-d-flex p-ai-center p-jc-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>
+            ¿Estás seguro de eliminar el registro <b>{{tipoTexto?.tiptexnombre}}</b>?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="No"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="eliminarTipoTextoDialog = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Sí"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="eliminarTipoTexto()"
+        ></button>
+    </ng-template>
+</p-dialog>
