@@ -1,24 +1,19 @@
 import { MaterialService } from 'src/app/modules/service/data/material.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MessageService } from 'primeng/api';
-import { AutoComplete } from 'primeng/autocomplete';
+import { Component, OnInit } from '@angular/core';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
-import { Nota } from 'src/app/modules/models/nota';
-import { Inscripcion } from 'src/app/modules/models/inscripcion';
 import { Usuario } from 'src/app/modules/models/usuario';
-import { CursoMateria } from 'src/app/modules/models/curso';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import { MateriaTexto } from 'src/app/modules/models/materiaTexto';
-// --------------- Importación para validaciones
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import * as FileSaver from 'file-saver';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TipoMateria2, TipoTexto } from 'src/app/modules/models/diccionario';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 import { forkJoin } from 'rxjs';
 import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
+import { API_URL_FILES_TEXTOS } from 'src/environments/environment';
 
 interface Column {
     field: string;
@@ -31,108 +26,157 @@ interface ExportColumn {
     dataKey: string;
 }
 
+interface ColumsTable {
+    field: string;
+    header: string;
+}
+
 @Component({
     templateUrl: './material-asignar.component.html',
-    styleUrls: ['../../../../app.component.css']
+    styleUrls: ['../../../../app.component.css'],
 })
-
 export class MaterialAsignarComponent implements OnInit {
 
-    @ViewChild('dtexc') dtexc: Table | undefined;
-    @ViewChild('autocomplete') autocomplete: AutoComplete | undefined;
-
-    listaMateriaTexto: MateriaTexto[] = [];
-    listaMateriaTextoDuplicated: MateriaTexto[] = [];
+    listMateriaTexto: MateriaTexto[] = [];
+    listMateriaTextoDuplicated: MateriaTexto[] = [];
     materiaTexto: MateriaTexto[] = [];
-    asignarDialog: boolean = false;
-    asignarBool: boolean = false;
-    //----------------Variables para validación----------------//
-    materiaTextoForm: FormGroup;
     tipoMateria: TipoMateria2[] = [];
     tipoTexto: TipoTexto[] = [];
+    materiatexto = new MateriaTexto();
 
-    criterio: any = '';
+    assignDialog: boolean = false;
+    assignBool: boolean = false;
     loading: boolean = false;
-    loading2: boolean = false;
-    listarMateriasInscritas: CursoMateria[] = [];
-    listarNotaEstudianteMateria: Nota[] = [];
-    listarNotaEstudianteCurso: Nota[] = [];
-    notaEstudiante = new Inscripcion();
-    nota = new Nota();
-    notaEstudianteMateria = new Nota();
-    verNotasClicked: boolean = false;
-    errors: any;
-    usuario: Usuario;
-    verMateriaClicked: boolean = false;
-    notaRegistroDialog: boolean = false;
-    optionNota: boolean = false;
-    nota1: any;
-    nota2: any;
-    nota3: any;
-    notafinal: any;
-    curmatid: any;
-    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
+    materiaTextoForm: FormGroup;
+
+    usuario: Usuario;
     colsTable!: Column[];
     exportColumns!: ExportColumn[];
+    items: MenuItem[] | undefined;
+    home: MenuItem | undefined;
+    selectedColumns: { field: string; header: string }[];
+    colsColumsTable!: ColumsTable[];
+
+    statusOptions = [
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
+    ];
+    modifyDialog: boolean;
+    deleteDialog: boolean;
+
     constructor(
         private messageService: MessageService,
-        private notaService: NotaService,
         private authService: AuthService,
         private spinner: NgxSpinnerService,
         private materialService: MaterialService,
-        private formBuilder: FormBuilder, // formBuilder para utilzar las validaciones del react form valid
-        private diccionarioService: DiccionarioService
+        private formBuilder: FormBuilder
     ) {
+        this.items = [
+            { label: 'Material de Apoyo' },
+            { label: 'Asignar Material', routerLink: '' },
+        ];
+        this.home = { icon: 'pi pi-home', routerLink: '/principal' };
     }
     ngOnInit(): void {
-        this.verMateriaClicked = true;
-        this.authService.usuario$.subscribe((user => {
+        this.assignColumnsForTable();
+        this.getUser();
+        this.getListMateriaTexto();
+        this.assignValidation();
+        this.getListTipoMateria();
+        this.getListTipoTexto();
+        this.assignColumnsForExport();
+    }
+
+    assignColumnsForTable(){
+        this.colsColumsTable = [
+            { field: 'matid', header: 'ID Materia' },
+            { field: 'matdesnivel', header: 'Nivel Materia' },
+            { field: 'texid', header: 'ID Texto' },
+            { field: 'texnombre', header: 'Nombre Texto' },
+            { field: 'mattexid', header: 'ID Materia Texto' },
+            { field: 'mattexdescripcion', header: 'Descripción Materia Texto' },
+            { field: 'mattexusureg', header: 'Registrado' },
+            { field: 'mattexfecreg', header: 'Fecha Registrado' },
+            { field: 'mattexusumod', header: 'Modificado' },
+            { field: 'mattexfecmod', header: 'Fecha Modificado' },
+            { field: 'mattexestado', header: 'Estado' },
+        ];
+        this.selectedColumns = [
+            { field: 'matdesnivel', header: 'Nivel Materia' },
+            { field: 'texnombre', header: 'Nombre Texto' },
+            { field: 'mattexdescripcion', header: 'Descripción Materia Texto' },
+            { field: 'mattexusureg', header: 'Registrado' },
+            { field: 'mattexfecreg', header: 'Fecha Registrado' },
+            { field: 'mattexusumod', header: 'Modificado' },
+            { field: 'mattexfecmod', header: 'Fecha Modificado' },
+            { field: 'mattexestado', header: 'Estado' },
+        ];
+    }
+
+    assignColumnsForExport(){
+        this.colsTable = [
+            { field: 'matnombre', header: 'Nombre Materia' },
+            { field: 'texnombre', header: 'Nombre Texto' },
+            { field: 'mattexdescripcion', header: 'Descripción' },
+            { field: 'mattexusureg', header: 'Registrado' },
+            { field: 'mattexfecreg', header: 'Fecha Registrado' },
+            { field: 'mattexusumod', header: 'Modificado' },
+            { field: 'mattexfecmod', header: 'Fecha Modificado' },
+            { field: 'mattexestado', header: 'Estado'}
+        ];
+        this.exportColumns = this.colsTable.map((col) => ({
+            title: col.header,
+            dataKey: col.field,
+        }));
+    }
+
+    getUser() {
+        this.authService.usuario$.subscribe((user) => {
             if (user && Array.isArray(user) && user.length > 0) {
                 this.usuario = user[0];
             }
-        }));
-        this.listarMateriasTextos();
-        this.asignacionValidacionesCurso()
-        this.obtenerTipoMateria();
-        this.obtenerTipoTexto();
-
-        this.colsTable = [
-            { field: 'mattexid', header: 'ID' },
-            { field: 'matnombre', header: 'Nombre de materia' },
-            { field: 'texnombre', header: 'Nombre del texto' },
-            { field: 'textipo', header: 'Tipo' },
-            { field: 'texdocumento', header: 'Documento' },
-            { field: 'mattexdescripcion', header: 'Descripción' },
-            { field: 'mattexusureg', header: 'Usuario Registro' },
-            { field: 'mattexfecreg', header: 'Fecha Registro' },
-            { field: 'mattexusumod', header: 'Usuario Modificación' },
-            { field: 'mattexfecmod', header: 'Fecha Modificación' }
-        ];
-
-        this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
+        });
     }
-    listarMateriasTextos() {
+
+    getListMateriaTexto() {
         this.spinner.show();
         this.loading = true;
-        this.materialService.listarMateriaTexto().subscribe(
-            (result: any) => {
-                this.listaMateriaTexto = result as MateriaTexto[];
-                this.listaMateriaTextoDuplicated = result as MateriaTexto[];
+        this.materialService.getMateriaTexto().subscribe({
+            next: (result: any) => {
+                this.listMateriaTexto = result as MateriaTexto[];
+                this.listMateriaTextoDuplicated = result as MateriaTexto[];
                 this.loading = false;
                 this.spinner.hide();
             },
-            (error: any) => {
-                this.errors = error;
-                console.error("error", error);
-                this.messageService.add({severity: 'warn', summary: 'Error', detail: 'Algo salió mal!'});
+            error: (error: any) => {
+                this.loading = false;
+                this.spinner.hide();
+                console.error('error', error);
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Error',
+                    detail: 'Algo salió mal!',
+                });
             }
-        );
+        });
+    }
 
+    getSeverityNivel(matdesnivel: string): string {
+        switch (matdesnivel) {
+            case 'PRIMERO':
+                return 'danger';
+            case 'SEGUNDO':
+                return 'info';
+            case 'TERCERO':
+                return 'warning';
+            case 'CUARTO':
+                return 'secondary';
+            default:
+                return 'success';
+        }
     }
-    verDocumentoTexto(pagarchivo: any){
-        this.materialService.getFileTexto(pagarchivo);
-    }
+
     getSeverityStatus(estado: number): string {
         switch (estado) {
             case 1:
@@ -154,62 +198,113 @@ export class MaterialAsignarComponent implements OnInit {
                 return 'Ninguno';
         }
     }
-    asignar(){
-        this.materiaTextoForm.reset();
-        this.asignarDialog = true;
-        this.asignarBool = true;
-    }
-    modificar(){
-        this.asignarDialog = true;
-        this.asignarBool = false;
-    }
-    // Método para asignar las variables de React Form Valid
-    asignacionValidacionesCurso() {
+
+    assignValidation() {
         this.materiaTextoForm = this.formBuilder.group({
             mattexid: [''],
             tipoMateria: ['', [Validators.required]],
             tipoTexto: ['', [Validators.required]],
-            mattexdescripcion: ['', [Validators.required]]
+            mattexdescripcion: ['', [Validators.required]],
+            mattexestado: ['', [Validators.required]],
         });
     }
-    obtenerTipoMateria(){
-        this.diccionarioService.listaMateriaCombo2().subscribe(
-            (result: any) => {
+
+    assign() {
+        this.materiaTextoForm.reset();
+        this.assignDialog = true;
+        this.assignBool = true;
+    }
+
+    modify(mattex: MateriaTexto) {
+        console.log("modify", mattex)
+        this.materiatexto = {...mattex};
+        this.assignDialog = true;
+        this.assignBool = false;
+        this.setBody();
+    }
+
+    setBody(){
+        this.materiaTextoForm.patchValue({
+            mattexid : this.materiatexto.mattexid,
+            tipoMateria: new TipoMateria2(this.materiatexto.matid, this.materiatexto.matnombre),
+            tipoTexto: new TipoTexto(this.materiatexto.texid, this.materiatexto.texnombre),
+            mattexdescripcion: this.materiatexto.mattexdescripcion,
+            mattexestado: this.materiatexto.mattexestado
+        });
+    }
+
+
+    delete(mattex: MateriaTexto){
+        this.materiatexto = {...mattex};
+        this.deleteDialog = true;
+    }
+
+    confirmDeleteMateriaTexto(){
+        this.spinner.show();
+        this.materialService.deleteMateriaTexto(this.materiatexto.mattexid).subscribe({
+            next: (result: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'La asignación de materia-texto fue eliminado correctamente.',
+                });
+                this.getListMateriaTexto();
+                this.deleteDialog = false;
+                this.spinner.hide();
+            },
+            error: (error: any) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: '¡Error!',
+                    detail: 'No se pudo eliminar la asignación.',
+                });
+                this.deleteDialog = false;
+                this.spinner.hide();
+            },
+        });
+    }
+
+    getListTipoMateria() {
+        this.materialService.getMateriaCombo().subscribe({
+            next: (result: any) => {
                 this.tipoMateria = result;
             },
-            (error: any) => {
+            error: (error: any) => {
                 console.error(error);
-            }
-
-        )
-    }
-
-    obtenerTipoTexto(){
-        this.diccionarioService.listarTextoCombo().subscribe(
-            (result: any) => {
-                this.tipoTexto = result;
             },
-            (error: any) => {
-                console.error(error);
-            }
-        )
+        });
     }
-    obtenerBody() {
-        const materiaTextos: MateriaTexto[] = []; // Crear una nueva lista de MateriaTexto
+
+    getListTipoTexto() {
+        this.materialService.getTextoCombo().subscribe({
+            next: (result: any) => {
+                this.tipoTexto = result;
+                console.log("tipoTexto", this.tipoTexto)
+            },
+            error: (error: any) => {
+                console.error(error);
+            },
+        });
+    }
+
+    getBody() {
+        // Crear una nueva lista de MateriaTexto
+        const materiaTextos: MateriaTexto[] = [];
 
         // Obtener los valores del formulario
         const tipoMateria = this.materiaTextoForm.value.tipoMateria;
         const tipoTexto = this.materiaTextoForm.value.tipoTexto;
         const mattexdescripcion = this.materiaTextoForm.value.mattexdescripcion;
+        const mattexestado = this.materiaTextoForm.value.mattexestado;
 
         // Crear un nuevo objeto MateriaTexto para cada texto asignado
         tipoTexto.forEach((texto: TipoTexto) => {
             const materiaTexto: MateriaTexto = {
                 mattexid: null,
                 matid: tipoMateria.matid,
-                matnombre: tipoMateria.matnombre,
+                matnombre: null,
                 texid: texto.texid,
-                texnombre: texto.texnombre,
+                texnombre: null,
                 textipo: null,
                 texdocumento: null,
                 mattexdescripcion: mattexdescripcion,
@@ -217,61 +312,129 @@ export class MaterialAsignarComponent implements OnInit {
                 mattexusumod: this.usuario.usuname,
                 mattexfecreg: null,
                 mattexfecmod: null,
-                mattexestado: 1,
-                tipo: null
+                mattexestado: mattexestado,
+                tipo: null,
             };
-            materiaTextos.push(materiaTexto); // Agregar el objeto a la lista
+            // Agregar el objeto a la lista
+            materiaTextos.push(materiaTexto);
         });
 
-        return materiaTextos; // Devolver la lista de objetos MateriaTexto
+        console.log("materiaTextos",materiaTextos)
+        // Devolver la lista de objetos MateriaTexto
+        return materiaTextos;
     }
 
-    guardarAsignar() {
+    saveAssign() {
         if (this.materiaTextoForm.invalid) {
-            this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-            Object.values(this.materiaTextoForm.controls).forEach(control => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error en el Registro',
+                detail: 'Por favor, verifica la información ingresada e intenta nuevamente.',
+                life: 3000,
+            });
+            Object.values(this.materiaTextoForm.controls).forEach((control) => {
                 control.markAllAsTouched();
                 control.markAsDirty();
             });
             return;
         }
 
-        if (this.asignarDialog) {
-            const materiaTextos = this.obtenerBody();
+        if (this.assignBool) {
+            const materiaTextos = this.getBody();
             // Crear un array de observables para cada solicitud de inserción
-            const observables = materiaTextos.map(materiaTexto => {
-                return this.materialService.insertarMateriaTexto(materiaTexto);
+            const observables = materiaTextos.map((materiaTexto) => {
+                return this.materialService.createMateriaTexto(materiaTexto);
             });
 
             // Ejecutar todas las solicitudes de inserción y esperar a que se completen
-            forkJoin(observables).subscribe(
-                (results: any[]) => {
+            this.spinner.show();
+            forkJoin(observables).subscribe({
+                next: (results: any[]) => {
                     // Todas las solicitudes se completaron exitosamente
-                    this.messageService.add({ severity: 'success', summary: 'Exitosamente', detail: 'Material Agregado', life: 3000 });
-                    this.listarMateriasTextos();
-                    this.asignarDialog = false;
-                    this.asignarBool = false;
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Exito',
+                        detail: 'Material Asignado Correctamente',
+                        life: 3000,
+                    });
+                    this.getListMateriaTexto();
+                    this.assignDialog = false;
+                    this.assignBool = false;
                     this.materiaTextoForm.reset();
+                    this.spinner.hide();
                 },
-                error => {
-                        console.error("error: ", error);
-                        // let errorMessage = 'Se produjo un error al intentar registrar el material.';
-                        // Verifica si el error contiene el mensaje específico de violación de clave única
-                        if (error.error.message.includes('UniqueViolation')) {
-                            const errorMessage = 'No se puede insertar el material porque ya se encuentra registrado.';
-                            this.messageService.add({ severity: 'warn', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
-                        }
-                        this.materiaTextoForm.reset();
-                        this.listarMateriasTextos();
-                        this.asignarDialog = false;
-                        this.asignarBool = false;
+                error: (error) => {
+                    console.error('error: ', error);
+                    // let errorMessage = 'Se produjo un error al intentar registrar el material.';
+                    // Verifica si el error contiene el mensaje específico de violación de clave única
+                    if (error.error.message.includes('UniqueViolation')) {
+                        const errorMessage =
+                            'No se puede insertar el material porque ya existe.';
+                        this.messageService.add({
+                            severity: 'warn',
+                            summary: 'Error en asignación.',
+                            detail: errorMessage,
+                            life: 7000,
+                        });
                     }
-            );
+                    this.materiaTextoForm.reset();
+                    this.getListMateriaTexto();
+                    this.assignDialog = false;
+                    this.assignBool = false;
+                    this.spinner.hide();
+                }
+            });
+        }
+        if (!this.assignBool) {
+            console.log("modify");
+            console.log("materiaTextoForm",this.materiaTextoForm.value)
+            const materiatextoData: FormData = new FormData();
+            materiatextoData.append('mattexid', this.materiaTextoForm.value.mattexid);
+            materiatextoData.append('matid', this.materiaTextoForm.value.tipoMateria.matid);
+            materiatextoData.append('texid', this.materiaTextoForm.value.tipoTexto.texid);
+            materiatextoData.append('mattexdescripcion', this.materiaTextoForm.value.mattexdescripcion);
+            materiatextoData.append('mattexusumod', this.usuario.usuname);
+            materiatextoData.append('mattexestado', this.materiaTextoForm.value.mattexestado);
+
+            this.spinner.show();
+            this.materialService.updateMateriaTexto(this.materiaTextoForm.value.mattexid, materiatextoData).subscribe({
+                next: (result: any) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Asignación modificada exixitosamente',
+                    });
+                    this.getListMateriaTexto();
+                    this.hideDialog();
+                    this.spinner.hide();
+                    this.assignDialog = false;
+                },
+                error: (error: any) => {
+                    if (error.error.message?.includes('UniqueViolation')) {
+                        const errorMessage = 'No se puede modificar, porque ya existe el registro.';
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'El registro ya existe.',
+                            detail: errorMessage,
+                            life: 7000}
+                        );
+                        this.spinner.hide();
+                        return;
+                    }
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '¡Error!',
+                        detail: 'No se pudo registrar el texto.',
+                    });
+                    this.spinner.hide();
+                }
+            });
+
         }
     }
 
-    ocultarDialog(){
-        this.asignarDialog = false;
+    hideDialog() {
+        this.assignDialog = false;
         this.materiaTextoForm.reset();
     }
 
@@ -281,22 +444,28 @@ export class MaterialAsignarComponent implements OnInit {
             'contains'
         );
     }
+
     exportPdf() {
-        import('jspdf').then(jsPDF => {
+        import('jspdf').then((jsPDF) => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default('l', 'pt', 'a4');
 
                 // Título centrado
-                const title = 'Lista de Material de Apoyo (Textos) Asignados por Materia';
+                const title =
+                    'Lista de Material de Apoyo (Textos) Asignados por Materia';
                 const titleFontSize = 16;
-                const titleWidth = doc.getStringUnitWidth(title) * titleFontSize / doc.internal.scaleFactor;
-                const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2;
+                const titleWidth =
+                    (doc.getStringUnitWidth(title) * titleFontSize) /
+                    doc.internal.scaleFactor;
+                const titleX =
+                    (doc.internal.pageSize.getWidth() - titleWidth) / 2;
                 const titleY = 60;
                 doc.setFontSize(titleFontSize);
                 doc.text(title, titleX, titleY);
 
                 // Subtítulo
-                const subtitle = 'Esta lista representa los textos asignados por materia';
+                const subtitle =
+                    'Esta lista representa los textos asignados por materia';
                 const subtitleFontSize = 9;
                 const subtitleX = 20;
                 const subtitleY = 80;
@@ -304,14 +473,16 @@ export class MaterialAsignarComponent implements OnInit {
                 doc.text(subtitle, subtitleX, subtitleY);
 
                 // Descripción
-                const description = 'Sistema de Seguimiento y Gestión Académico';
+                const description =
+                    'Sistema de Seguimiento y Gestión Académico';
                 const descriptionFontSize = 10;
                 const descriptionX = 100;
                 const descriptionY = 40;
                 doc.setFontSize(descriptionFontSize);
                 doc.text(description, descriptionX, descriptionY);
 
-                const description2 = 'Instituto Biblico de Capacitación Internacional';
+                const description2 =
+                    'Instituto Biblico de Capacitación Internacional';
                 const descriptionFontSize2 = 10;
                 const descriptionX2 = 100;
                 const descriptionY2 = 30;
@@ -324,21 +495,39 @@ export class MaterialAsignarComponent implements OnInit {
                 const imageY = 10;
                 const imageWidth = 80; // Ancho de la imagen en puntos
                 const imageHeight = 50; // Alto de la imagen en puntos
-                doc.addImage(base64Image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+                doc.addImage(
+                    base64Image,
+                    'PNG',
+                    imageX,
+                    imageY,
+                    imageWidth,
+                    imageHeight
+                );
 
                 // Tabla de datos
                 (doc as any).autoTable({
                     columns: this.exportColumns,
-                    body: this.listaMateriaTextoDuplicated,
+                    body: this.listMateriaTextoDuplicated,
                     theme: 'striped',
                     styles: { fontSize: 8, cellPadding: 3 },
                     startY: 100, // Posición inicial de la tabla
                 });
 
-                doc.save('lista_asignacion_textos_materias.pdf');
+                doc.save('lista_asignacion_texto_materia.pdf');
             });
         });
     }
 
+    isTextoPDF(documento: string): boolean {
+        return documento.split('.').pop()?.toLowerCase() === 'pdf';
+    }
+
+    viewDocumentText(pagarchivo: any) {
+        this.materialService.getFileTexto(pagarchivo);
+    }
+
+    getDownloadLink(documento: string): string {
+        return `${API_URL_FILES_TEXTOS}/${documento}`;
+    }
 }
 

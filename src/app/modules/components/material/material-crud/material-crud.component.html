@@ -1,117 +1,702 @@
-    <ng-template #noRegistro>
-        sin registrar
-    </ng-template>
-
-    <p-toast></p-toast>
-
-    <div class="grid">
-
-        <div class="col-12">
-
-            <div class="card">
-                <p-table #dt [value]="textos" [rows]="10" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
-                    [rowsPerPageOptions]="[5,10,20]" [loading]="loading">
-                    <ng-template pTemplate="caption">
-                        <div class="font-bold text-xl text-center">
-                            <span class="text-900">Lista de Textos  </span>
-                            <span class="text-primary-600"> | Material de apoyo </span>
-                        </div>
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <i class="pi pi-search"></i>
-                                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
-                            </span>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="header" let-columns>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Documento</th>
-                            <th>Estado</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-texto>
-                        <tr>
-                            <td>{{texto.texnombre}}</td>
-                            <td> {{texto.textipo}}</td>
-                            <td> {{texto.texdocumento}} </td>
-                            <td> <p-tag [value]="getDescriptionStatus(texto.texestado)" [severity]="getSeverityStatus(texto.texestado)" [rounded]="true"></p-tag> </td>
-                            <ng-template #noRegistro>
-                                sin registrar
-                            </ng-template>
-                            <td>
-                                <!-- <div class="flex justify-content-center"> -->
-                                    <!-- <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-info mr-2"
-                                        (click)="modificarPersona(texto)"></button> -->
-                                    <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-info"
-                                        (click)="confirmarEliminar(texto)"></button> -->
-                                <!-- </div> -->
-                                    <button *ngIf="texto.texdocumento" pButton="pButton" pRipple="pRipple" type="button"
-                                                icon="pi pi-file-pdf" class="p-button-rounded p-button-danger m-1" pTooltip="Ver documento"
-                                                tooltipPosition="top" (click)="verDocumentoTexto(texto.texdocumento)">
-                                    </button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <div class="card">
-                <div class="font-bold text-xl text-center">
-                    <span class="text-900">Registrar</span>
-                    <span class="text-primary-600"> Texto </span>
+<p-toast></p-toast>
+<p-card>
+    <p-breadcrumb
+        class="max-w-full"
+        [model]="items"
+        [home]="home"
+    ></p-breadcrumb>
+    <h3>Lista de Textos</h3>
+    <p>Administrar registros de textos</p>
+    <p-table
+        #dt
+        [value]="textos"
+        [paginator]="true"
+        [loading]="loading"
+        [columns]="selectedColumns"
+        [loading]="loading"
+        [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
+        [rows]="20"
+        [paginator]="true"
+        styleClass="p-datatable-striped p-datatable-sm"
+        [globalFilterFields]="['texnombre']"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+        [rowHover]="true"
+        dataKey="id"
+        [breakpoint]="'960px'"
+        [tableStyle]="{ 'min-width': '85rem' }"
+    >
+        <ng-template pTemplate="caption">
+            <div
+                class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+            >
+                <div class="flex mt-1 justify-content-center">
+                    <button
+                        pButton
+                        pRipple
+                        label="Nuevo"
+                        icon="pi pi-file"
+                        class="p-button-outlined w-auto mr-2"
+                        (click)="createTexto()"
+                        pTooltip="Crear nuevo texto"
+                        tooltipPosition="top"
+                    ></button>
+                    <p-multiSelect
+                        [options]="colsColumsTable"
+                        [(ngModel)]="selectedColumns"
+                        optionLabel="header"
+                        selectedItemsLabel="{0} columnas selecionadas"
+                        [style]="{ 'min-width': '200px' }"
+                        placeholder="Elige la/s columna/s"
+                        pTooltip="Seleccionar columnas"
+                        tooltipPosition="top"
+                    >
+                    </p-multiSelect>
                 </div>
-                <form [formGroup]="textoForm">
-                    <div class="grid p-fluid mt-3">
-                        <div class="field col-12 md:col-12">
-                            <span class="p-float-label">
-                                <input type="text" id="texnombre" pInputText formControlName="texnombre"
-                                [ngClass]="{ 'ng-dirty': this.textoForm.get('texnombre').touched,
-                                             'valid-field': this.textoForm.get('texnombre').valid} "
-                                >
-                                <label for="texnombre"> Nombre del documento </label>
-                            </span>
-                            <small class="p-error block" *ngIf="textoForm.get('texnombre').invalid && textoForm.get('texnombre').dirty">
-                                <span *ngIf="textoForm.get('texnombre').errors?.required">El nombre del documento es requerido.</span>
-                                (*)
-                            </small>
-                            <small class="p-success block" *ngIf="textoForm.get('texnombre')?.valid"> El nombre del documento es valido. </small>
-                        </div>
-                        <div class="field col-12 md:col-12">
-                            <span class="p-float-label">
-                                <input type="text" id="textipo" pInputText formControlName="textipo"
-                                [ngClass]="{ 'ng-dirty': this.textoForm.get('textipo').touched,
-                                             'valid-field': this.textoForm.get('textipo').valid} "
-                                >
-                                <label for="textipo"> Tipo del documento </label>
-                            </span>
-                            <small class="p-error block" *ngIf="textoForm.get('textipo').invalid && textoForm.get('textipo').dirty">
-                                <span *ngIf="textoForm.get('textipo').errors?.required">El tipo del documento es requerido.</span>
-                                (*)
-                            </small>
-                            <small class="p-success block" *ngIf="textoForm.get('textipo')?.valid"> El tipo del documento es valido. </small>
-                        </div>
-                        <div class="field col-12">
-                            <p-fileUpload
-                                #fileUpload mode="advanced" chooseLabel="Elegir archivo" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
-                                accept="application/pdf" maxFileSize="5000000" (onSelect)="onUpload($event)" [showUploadButton]="false"
-                                [showCancelButton]="false" cancelLabel="Cancelar" [invalidFileSizeMessageSummary]="'Tamaño de archivo no válido:'"
-                                [invalidFileSizeMessageDetail]="'El tamaño máximo de carga es 5 megabytes.'" [invalidFileTypeMessageSummary]="'Tipo de archivo no válido:'"
-                                [invalidFileTypeMessageDetail]="'Solo se permiten archivos de pdf. El tipo de archivo permitido es: PDF.'"
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="onGlobalFilter(dt, $event)"
+                        placeholder="Buscar..."
+                        class="w-full sm:w-auto"
+                        pTooltip="Buscar por nombre del texto"
+                        tooltipPosition="top"
+                    />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th>#</th>
+                <th  style="min-width: 180px;" class="text-center">Acciones</th>
+                <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+                    <ng-container [ngSwitch]="col.field">
+                        <!-- Caso específico para 'texnombre' -->
+                        <ng-container *ngSwitchCase="'texnombre'">
+                            <div style="min-width: 400px;">
+                                Nombre
+                                <p-sortIcon field="texnombre"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'textipo' -->
+                        <ng-container *ngSwitchCase="'textipo'">
+                            <div style="min-width: 180px;">
+                                Tipo Texto
+                                <p-sortIcon field="textipo"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texformato' -->
+                        <ng-container *ngSwitchCase="'texformato'">
+                            <div style="min-width: 180px;">
+                                Formato
+                                <p-sortIcon field="texformato"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texruta' -->
+                        <ng-container *ngSwitchCase="'texruta'">
+                            <div style="min-width: 500px;">
+                                Ruta
+                                <p-sortIcon field="texruta"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texdocumento' -->
+                        <ng-container *ngSwitchCase="'texdocumento'">
+                            <div style="min-width: 200px;">
+                                Documento
+                                <p-sortIcon field="texdocumento"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texdescripcion' -->
+                        <ng-container *ngSwitchCase="'texdescripcion'">
+                            <div style="min-width: 500px;">
+                                Descripción
+                                <p-sortIcon field="texdescripcion"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texautor' -->
+                        <ng-container *ngSwitchCase="'texautor'">
+                            <div style="min-width: 200px;">
+                                Autor
+                                <p-sortIcon field="texautor"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texsize' -->
+                        <ng-container *ngSwitchCase="'texsize'">
+                            <div style="min-width: 180px;">
+                                Tamaño
+                                <p-sortIcon field="texsize"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texextension' -->
+                        <ng-container *ngSwitchCase="'texextension'">
+                            <div style="min-width: 180px;">
+                                Extensión
+                                <p-sortIcon field="texextension"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texidioma' -->
+                        <ng-container *ngSwitchCase="'texidioma'">
+                            <div style="min-width: 180px;">
+                                Idioma
+                                <p-sortIcon field="texidioma"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texfecpublicacion' -->
+                        <ng-container *ngSwitchCase="'texfecpublicacion'">
+                            <div style="min-width: 200px;">
+                                Fecha Publicación
+                                <p-sortIcon field="texfecpublicacion"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texcategoria' -->
+                        <ng-container *ngSwitchCase="'texcategoria'">
+                            <div style="min-width: 180px;">
+                                Categoría
+                                <p-sortIcon field="texcategoria"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texusureg' -->
+                        <ng-container *ngSwitchCase="'texusureg'">
+                            <div style="min-width: 200px;">
+                                Registrado
+                                <p-sortIcon field="texusureg"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texfecreg' -->
+                        <ng-container *ngSwitchCase="'texfecreg'">
+                            <div style="min-width: 200px;">
+                                Fecha Registrado
+                                <p-sortIcon field="texfecreg"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texusumod' -->
+                        <ng-container *ngSwitchCase="'texusumod'">
+                            <div style="min-width: 200px;">
+                                Modificado
+                                <p-sortIcon field="texusumod"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texfecmod' -->
+                        <ng-container *ngSwitchCase="'texfecmod'">
+                            <div style="min-width: 200px;">
+                                Fecha Modificado
+                                <p-sortIcon field="texfecmod"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso específico para 'texestado' -->
+                        <ng-container *ngSwitchCase="'texestado'">
+                            <div style="min-width: 180px;">
+                                Estado
+                                <p-sortIcon field="texestado"></p-sortIcon>
+                            </div>
+                        </ng-container>
+
+                        <!-- Caso por defecto para otros campos -->
+                        <ng-container *ngSwitchDefault>
+                            <div>
+                                {{ col.header }}
+                                <p-sortIcon field="{{ col.field }}"></p-sortIcon>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container ng-container *ngSwitchCase="'texestado'">
+                            <p-columnFilter field="texestado" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Elegir"
+                                        [showClear]="true" appendTo="body">
+                                        <ng-template pTemplate="selectedItem" let-option>
+                                            <div class="flex align-items-center gap-2" *ngIf="option">
+                                                <p-tag [value]="getDescriptionStatus(option.value)" [severity]="getSeverityStatus(option.value)" [rounded]="true"></p-tag>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-option pTemplate="item">
+                                            <p-tag [value]="getDescriptionStatus(option.value)" [severity]="getSeverityStatus(option.value)" [rounded]="true"></p-tag>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <!-- textipo -->
+                        <ng-container ng-container *ngSwitchCase="'textipo'">
+                            <p-columnFilter field="textipo" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="tipoTextoOptions" (onChange)="filter($event.value)"
+                                        placeholder="Elegir" [showClear]="true" appendTo="body">
+                                        <ng-template let-option pTemplate="item">
+                                            {{getDescriptionTipoTexto(option.value)}}
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <!-- texformato -->
+                        <ng-container ng-container *ngSwitchCase="'texformato'">
+                            <p-columnFilter field="texformato" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="tipoFormatoOptions" (onChange)="filter($event.value)"
+                                        placeholder="Elegir" [showClear]="true" appendTo="body">
+                                        <ng-template let-option pTemplate="item">
+                                            {{getDescriptionTipoFormato(option.value)}}
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <!-- texextension -->
+                        <ng-container ng-container *ngSwitchCase="'texextension'">
+                            <p-columnFilter field="texextension" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="tipoExtensionOptions" (onChange)="filter($event.value)"
+                                        placeholder="Elegir" [showClear]="true" appendTo="body">
+                                        <ng-template let-option pTemplate="item">
+                                            {{getDescriptionTipoExtension(option.value)}}
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <!-- texidioma -->
+                        <ng-container ng-container *ngSwitchCase="'texidioma'">
+                            <p-columnFilter field="texidioma" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="tipoIdiomaOptions" (onChange)="filter($event.value)"
+                                        placeholder="Elegir" [showClear]="true" appendTo="body">
+                                        <ng-template let-option pTemplate="item">
+                                            {{getDescriptionTipoIdioma(option.value)}}
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <ng-container ng-container *ngSwitchCase="'texcategoria'">
+                            <p-columnFilter field="texcategoria" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="tipoCategoriaOptions" (onChange)="filter($event.value)"
+                                        placeholder="Elegir" [showClear]="true" appendTo="body">
+                                        <ng-template let-option pTemplate="item">
+                                            {{getDescriptionTipoCategoria(option.value)}}
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <p-columnFilter type="text" field="{{ col.field }}"></p-columnFilter>
+                        </ng-container>
+                    </ng-container>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-texto let-rowIndex="rowIndex" let-columns="columns">
+            <tr>
+                <td>
+                    {{ rowIndex + 1 }}
+                </td>
+                <td>
+                   <div class="text-center">
+                    <ng-container *ngIf="texto.texdocumento">
+                        <ng-container *ngIf="isTextoPDF(texto.texdocumento); else noPDF">
+                            <button
+                                pButton
+                                pRipple
+                                type="button"
+                                icon="pi pi-file"
+                                class="p-button-rounded p-button-outlined p-button-success p-mr-2 mr-2"
+                                pTooltip="Ver documento"
+                                tooltipPosition="top"
+                                (click)="viewDocumentText(texto.texdocumento)"
+                            ></button>
+                        </ng-container>
+                        <ng-template #noPDF>
+                            <a
+                                [href]="getDownloadLink(texto.texdocumento)"
+                                target="_blank"
+                                class="p-mr-2"
                             >
-                            </p-fileUpload>
-                        </div>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-download"
+                                    class="p-button-rounded p-button-outlined p-button-success mr-2"
+                                    pTooltip="Ver documento"
+                                    tooltipPosition="top"
+                                ></button>
+                            </a>
+                        </ng-template>
+                    </ng-container>
+
+                    <!-- Botones de Editar y Eliminar -->
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi-pencil"
+                        class="p-button-rounded p-button-outlined p-mr-2 mr-2"
+                        pTooltip="Editar Texto"
+                        tooltipPosition="top"
+                        (click)="updateTexto(texto)"
+                    ></button>
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-outlined p-button-danger mr-2"
+                        pTooltip="Eliminar Texto"
+                        tooltipPosition="top"
+                        (click)="deleteTexto(texto)"
+                    ></button>
+                   </div>
+                </td>
+
+
+                <td *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="col.field">
+                        <ng-container *ngSwitchCase="'texsize'">
+                            {{ convertBytesToMB(texto.texsize) }} MB
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texfecreg'">
+                            {{ texto.texfecreg | date : 'd MMMM, y h:mm:ss a' }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texfecmod'">
+                            {{ texto.texfecmod | date : 'd MMMM, y h:mm:ss a' }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'textipo'">
+                            {{ getDescriptionTipoTexto(texto.textipo) }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texformato'">
+                            {{ getDescriptionTipoFormato(texto.texformato) }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texextension'">
+                            {{ getDescriptionTipoExtension(texto.texextension) }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texidioma'">
+                            {{ getDescriptionTipoIdioma(texto.texidioma) }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texcategoria'">
+                            {{ getDescriptionTipoCategoria(texto.texcategoria) }}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'texestado'">
+                            <div class="text-center">
+                                <p-tag [value]="getDescriptionStatus(texto[col.field])" [severity]="getSeverityStatus(texto[col.field])" [rounded]="true"></p-tag>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{ texto[col.field] }}
+                        </ng-container>
+                    </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+
+
+<p-dialog header="{{ isEditMode ? 'Editar Texto' : 'Crear Texto' }}" [(visible)]="optionDialog" [style]="{ width: '70vw' }" blockScroll="true">
+    <form [formGroup]="textoForm">
+        <div class="p-fluid grid">
+            <!-- Campo de Nombre del texto -->
+            <div class="field col-12 md:col-5">
+                <label for="texnombre">Nombre</label>
+                <input pInputText id="texnombre" formControlName="texnombre" class="mb-2"/>
+                <div *ngIf=" textoForm.get('texnombre').invalid && textoForm.get('texnombre').touched " >
+                    <small *ngIf="textoForm.get('texnombre').errors?.required" class="p-error" >
+                        El nombre del texto es requerida.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de descripción del texto -->
+            <div class="field col-12 md:col-5">
+                <label for="texautor">Autor</label>
+                <input pInputText id="texautor" formControlName="texautor" class="mb-2" />
+                <div *ngIf=" textoForm.get('texautor').invalid && textoForm.get('texautor').touched " >
+                    <small *ngIf="textoForm.get('texautor').errors?.required" class="p-error" >
+                        El autor del texto es requerida.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de fecha de la publicación -->
+            <div class="field col-12 md:col-2">
+                <label for="texfecpublicacion">Fecha de publicación</label>
+                <p-calendar
+                    id="texfecpublicacion"
+                    dateFormat="yy-mm-dd"
+                    formControlName="texfecpublicacion"
+                    showIcon
+                    styleClass="mb-2"
+                    appendTo="body"
+                ></p-calendar>
+                <div *ngIf="textoForm.get('texfecpublicacion').invalid && textoForm.get('texfecpublicacion').touched ">
+                    <small *ngIf="textoForm.get('texfecpublicacion').errors?.required" class="p-error">
+                        La fecha de publicación es requerida.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de descripción del texto -->
+            <div class="field col-12 md:col-12">
+                <label for="texdescripcion">Descripción</label>
+                <!-- <input pInputText id="texdescripcion" formControlName="texdescripcion" class="mb-2" /> -->
+                <textarea rows="2" cols="30" pInputTextarea formControlName="texdescripcion"  class="mb-2" [autoResize]="true"></textarea>
+                <div *ngIf=" textoForm.get('texdescripcion').invalid && textoForm.get('texdescripcion').touched " >
+                    <small *ngIf="textoForm.get('texdescripcion').errors?.required" class="p-error" >
+                        La descripción del texto es requerida.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de tipo de texto -->
+            <div class="field col-12 md:col-2">
+                <label for="tipoTextodd">Tipo de Texto</label>
+                <p-dropdown
+                    id="tipoTextodd"
+                    [options]="tipoTexto"
+                    formControlName="tipoTexto"
+                    optionLabel="tiptexnombre"
+                    placeholder="Seleccionar"
+                    styleClass="mb-2"
+                    appendTo="body"
+                    [filter]="true" filterBy="tiptexnombre"
+                ></p-dropdown>
+                <div *ngIf="textoForm.get('tipoTexto').invalid && textoForm.get('tipoTexto').touched">
+                    <small *ngIf="textoForm.get('tipoTexto').errors?.required" class="p-error" >
+                        El tipo de texto es requerido.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de tipo de formato -->
+            <div class="field col-12 md:col-2">
+                <label for="tipoFormatodd">Tipo de Formato</label>
+                <p-dropdown
+                    id="tipoFormatodd"
+                    [options]="tipoFormatoTexto"
+                    formControlName="tipoFormato"
+                    optionLabel="tipfornombre"
+                    placeholder="Seleccionar"
+                    styleClass="mb-2"
+                    appendTo="body"
+                    [filter]="true" filterBy="tipfornombre"
+                ></p-dropdown>
+                <div *ngIf="textoForm.get('tipoFormato').invalid && textoForm.get('tipoFormato').touched">
+                    <small *ngIf="textoForm.get('tipoFormato').errors?.required" class="p-error" >
+                        El tipo de texto es requerido.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Campo de tipo idioma -->
+            <div class="field col-12 md:col-2">
+                <label for="tipoCategoriadd">Tipo de Categoria</label>
+                <p-dropdown
+                    id="tipoCategoriadd"
+                    [options]="tipoCategoriaTexto"
+                    formControlName="tipoCategoria"
+                    optionLabel="tipcatnombre"
+                    placeholder="Seleccionar"
+                    styleClass="mb-2"
+                    appendTo="body"
+                    [filter]="true" filterBy="tipcatnombre"
+                ></p-dropdown>
+                <div *ngIf="textoForm.get('tipoCategoria').invalid && textoForm.get('tipoCategoria').touched">
+                    <small *ngIf="textoForm.get('tipoCategoria').errors?.required" class="p-error" >
+                        El tipo de categoria es requerido.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de tipo extensión -->
+            <div class="field col-12 md:col-2">
+                <label for="tipoExtensiondd">Tipo de Extensión</label>
+                <p-dropdown
+                    id="tipoExtensiondd"
+                    [options]="tipoExtensionTexto"
+                    formControlName="tipoExtension"
+                    optionLabel="tipextnombre"
+                    placeholder="Seleccionar"
+                    styleClass="mb-2"
+                    appendTo="body"
+                    [filter]="true" filterBy="tipextnombre"
+                ></p-dropdown>
+                <div *ngIf="textoForm.get('tipoExtension').invalid && textoForm.get('tipoExtension').touched">
+                    <small *ngIf="textoForm.get('tipoExtension').errors?.required" class="p-error" >
+                        El tipo de extensión es requerido.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de tipo idioma -->
+            <div class="field col-12 md:col-2">
+                <label for="tipoIdiomadd">Tipo de Idioma</label>
+                <p-dropdown
+                    id="tipoIdiomadd"
+                    [options]="tipoIdiomaTexto"
+                    formControlName="tipoIdioma"
+                    optionLabel="tipidinombre"
+                    placeholder="Seleccionar"
+                    styleClass="mb-2"
+                    appendTo="body"
+                    [filter]="true" filterBy="tipidinombre"
+                ></p-dropdown>
+                <div *ngIf="textoForm.get('tipoIdioma').invalid && textoForm.get('tipoIdioma').touched">
+                    <small *ngIf="textoForm.get('tipoIdioma').errors?.required" class="p-error" >
+                        El tipo de idioma es requerido.
+                    </small>
+                </div>
+            </div>
+
+            <div class="field col-12 md:col-2">
+                <label for="">Estado</label>
+                <div class="flex align-items-center justify-content-center">
+                    <p-selectButton [options]="statusOptions" formControlName="texestado" optionLabel="label" optionValue="value"></p-selectButton>
+                </div>
+            </div>
+            <!-- Campo de carga de archivos -->
+            <div class="field col-12 md:col-6">
+                <label class="block" for="texdocumento">Subir Texto</label>
+                <p-card>
+                    <p-fileUpload
+                        url="https://www.primefaces.org/cdn/api/upload.php"
+                        name="demo[]"
+                        [customUpload]="true"
+                        (uploadHandler)="onUploadTexto($event)"
+                        (onSelect)="onFileSelect($event)"
+                        (onClear)="clearFile()"
+                        [auto]="false"
+                        accept=".pdf,.jpg,.png,.jpeg,.doc,.docx"
+                        [chooseStyleClass]="'w-auto mb-2'"
+                        [uploadStyleClass]="'w-auto mb-2'"
+                        [cancelStyleClass]="'w-auto mb-2'"
+                        styleClass="mb-2"
+                        [cancelIcon]="'pi pi-trash'"
+                        [cancelLabel]="'Vaciar'"
+                        [uploadLabel]="'Cargar Archivo'"
+                        [chooseLabel]="'Seleccionar'"
+                    >
+                        <ng-template pTemplate="toolbar">
+                            <div class="py-3">Pasos para subir texto:</div>
+                            <ul>
+                                <li class="list-none">Paso 1: Haz clic en "Seleccionar" y eligir un archivo</li>
+                                <li class="list-none">Paso 2: Haz clic en "Cargar Archivo".</li>
+                                <li class="list-none">Paso 3: Verifica el archivo en vista previa.</li>
+                            </ul>
+                            <ul>
+                                <li class="list-none">Vaciar: opción "Vaciar" elimina el archivo seleccionado.</li>
+                            </ul>
+                        </ng-template>
+                        <ng-template pTemplate="fileupload-content">
+                            <ul *ngIf="textoFile">
+                                <li class="list-none flex align-items-center">
+                                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+                                        <i *ngIf="isPDF(textoFile.type)" class="pi pi-file-pdf text-red-500 text-xl"></i>
+                                        <i *ngIf="isImage(textoFile.type)" class="pi pi-image text-green-500 text-xl"></i>
+                                    </div>
+                                    <span class="ml-2">
+                                        {{ textoFile.name }} - {{ (textoFile.size / 1048576).toFixed(2) }} MB
+                                    </span>
+                                </li>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
+                    <div>
+                        <p-progressBar [value]="uploadProgress"></p-progressBar>
                     </div>
-                </form>
-                <div class="text-center">
-                    <button pButton pRipple label="Vaciar" icon="pi pi-times" class="p-button-text" (click)="vaciarFormulario()"></button>
-                    <button pButton pRipple label="Guardar Documento" icon="pi pi-check" class="p-button-text" (click)="insertarTexto()"></button>
+                    <div class="mt-2" *ngIf="textoForm.get('texdocumento').invalid && textoForm.get('texdocumento').dirty">
+                        <small class="p-error block">
+                            <span *ngIf="textoForm.get('texdocumento').errors?.required">
+                                El texto es requerido.
+                            </span>
+                        </small>
+                    </div>
+                </p-card>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="texdescripcion">Vista Previa</label>
+                <div *ngIf="uploadProgress === 100">
+                    <p-card>
+                        <ng-container *ngIf="isImage(textoFile.type)">
+                            <div class="mb-2 justify-content-center align-items-center text-center">
+                                <p-image
+                                    [src]="textoFileUrl"
+                                    alt="Documento"
+                                    width="400"
+                                    height="100%"
+                                    [preview]="true"
+                                    [imageStyle]="{'border-radius': '5%', 'object-fit': 'cover'}"
+                                ></p-image>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="isPDF(textoFile.type)">
+                            <div class="pdf-container">
+                                <ngx-extended-pdf-viewer
+                                    theme="dark"
+                                    [showToolbar]="true"
+                                    [showSidebarButton]="true"
+                                    [showFindButton]="false"
+                                    [showPagingButtons]="true"
+                                    [showDrawEditor]="false"
+                                    [showStampEditor]="false"
+                                    [showTextEditor]="false"
+                                    [showZoomButtons]="true"
+                                    [showPresentationModeButton]="false"
+                                    [showOpenFileButton]="false"
+                                    [showPrintButton]="false"
+                                    [showDownloadButton]="true"
+                                    [showSecondaryToolbarButton]="true"
+                                    [showRotateButton]="undefined"
+                                    [showRotateCwButton]="true"
+                                    [showRotateCcwButton]="true"
+                                    [showHandToolButton]="false"
+                                    [showScrollingButton]="true"
+                                    [showSpreadButton]="false"
+                                    [showPropertiesButton]="false"
+                                    [language]="'es'"
+                                    [src]="textoFileUrl" height="100" width="100%">
+                                </ngx-extended-pdf-viewer>
+                            </div>
+                        </ng-container>
+                    </p-card>
                 </div>
             </div>
         </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger p-button-outlined w-auto" (click)="cancelar()"></button>
+        <button pButton pRipple type="submit" [label]="isEditMode ? 'Actualizar' : 'Guardar'" icon="pi pi-save" class="p-button p-button-success p-button-outlined w-auto" (click)="saveTexto()"></button>
+    </ng-template>
+</p-dialog>
+
+
+
+<p-dialog [(visible)]="deleteDialog" header="Confirmar" [modal]="true">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-trash mr-2" ></i>
+        <span *ngIf="usuario">¿Esta seguro de eliminar el texto: <b> {{texto.texnombre}} </b>? </span>
     </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="confirmDeleteTexto()"></button>
+    </ng-template>
+</p-dialog>

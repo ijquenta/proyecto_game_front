@@ -30,9 +30,15 @@ import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
-import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
+import { ReactiveFormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { SelectButtonModule } from 'primeng/selectbutton';
 @NgModule({
     imports: [
+        BreadcrumbModule,
+        SelectButtonModule,
+        CardModule,
         ReactiveFormsModule,
         TagModule,
         CommonModule,

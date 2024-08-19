@@ -28,13 +28,25 @@ import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { CalendarModule } from 'primeng/calendar';
 import { MaterialService } from 'src/app/modules/service/data/material.service';
-import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
+import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
+import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { ImageModule } from 'primeng/image';
+import { ProgressBarModule } from 'primeng/progressbar';
 @NgModule({
     imports: [
+        PdfViewerModule,
+        NgxExtendedPdfViewerModule,
+        ImageModule,
+        ProgressBarModule,
+        SelectButtonModule,
+        BreadcrumbModule,
         CommonModule,
         MaterialCrudRoutingModule,
         TableModule,
