@@ -298,7 +298,7 @@ export class MatriculaNuevoComponent implements OnInit {
                     if (error.error.message.includes('UniqueViolation')) {
                         errorMessage = 'No se puede crear el registro.';
                     }
-                    this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                    this.messageService.add({ severity: 'error', summary: 'El registro ya existe.', detail: errorMessage, life: 7000});
                 }
             });
         }

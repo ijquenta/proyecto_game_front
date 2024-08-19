@@ -5,46 +5,46 @@ import { Rol } from '../../models/rol';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
-
 export class MateriaService {
+    constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    listarMateria(){
+    listarMateria() {
         return this.http.get(`${API_URL}/listarMateria`);
     }
-    getRoles(){
+    getRoles() {
         return this.http.get(`${API_URL}/tipoRol`);
     }
-    crearRol(criterio: any){
+    crearRol(criterio: any) {
         return this.http.post(`${API_URL}/crearRol`, criterio);
     }
-    modificarRol(criterio: any){
+    modificarRol(criterio: any) {
         let registroModRol = new Rol();
         return this.http.post(`${API_URL}/modificarRol`, registroModRol);
     }
-    eliminarRol(criterio: any){
+    eliminarRol(criterio: any) {
         return this.http.post(`${API_URL}/eliminarRol`, criterio);
     }
-    ListarPersona(){
+    ListarPersona() {
         return this.http.get(`${API_URL}/listarPersona`);
     }
-    eliminarMateria(criterio: any){
+    eliminarMateria(criterio: any) {
         return this.http.post(`${API_URL}/eliminarMateria`, criterio);
     }
-    insertarMateria(criterio: any){
+    insertarMateria(criterio: any) {
         return this.http.post(`${API_URL}/insertarMateria`, criterio);
     }
-    modificarMateria(criterio: any){
+    modificarMateria(criterio: any) {
         return this.http.post(`${API_URL}/modificarMateria`, criterio);
     }
-    gestionarMateriaEstado(criterio: any){
-        return this.http.post(`${API_URL}/gestionarMateriaEstado`, criterio)
+    gestionarMateriaEstado(criterio: any) {
+        return this.http.post(`${API_URL}/gestionarMateriaEstado`, criterio);
     }
 
-    getMateriaById(matid: Number){
-        return this.http.get(`${API_URL}/getMateriaById/${matid}`, { context: checktoken() });
+    getMateriaById(matid: Number) {
+        return this.http.get(`${API_URL}/getMateriaById/${matid}`, {
+            context: checktoken(),
+        });
     }
 }
