@@ -6,37 +6,33 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class MenuService {
+    constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    // Menu Services
-
-    getMenus(): Observable<Menu[]>{
-        return this.http.get<Menu[]>(`${API_URL}/getMenus`)
+    getMenus(): Observable<Menu[]> {
+        return this.http.get<Menu[]>(`${API_URL}/getMenus`);
     }
 
-    createMenu(data: any){
+    createMenu(data: any) {
         return this.http.post(`${API_URL}/createMenu`, data);
     }
 
-    updateMenu(menuid: number, data: Menu){
-        return this.http.put(`${API_URL}/updateMenu/${menuid}`, data)
+    updateMenu(menuid: number, data: Menu) {
+        return this.http.put(`${API_URL}/updateMenu/${menuid}`, data);
     }
 
     deleteMenu(menuid: number) {
-        return this.http.delete(`${API_URL}/deleteMenu/${menuid}`)
+        return this.http.delete(`${API_URL}/deleteMenu/${menuid}`);
     }
 
-
-    createOperation(data: any){
+    createOperation(data: any) {
         return this.http.post(`${API_URL}/createOperation`, data);
     }
 
-    updateOperation(opeid: number, data: any){
-        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data)
+    updateOperation(opeid: number, data: any) {
+        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data);
     }
 
     deleteOperation(opeid: number) {
-        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`)
+        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`);
     }
 }

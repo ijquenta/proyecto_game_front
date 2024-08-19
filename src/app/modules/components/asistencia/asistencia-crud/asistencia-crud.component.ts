@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Usuarios } from 'src/app/modules/models/usuarios';
 import { Usuario } from 'src/app/modules/models/usuario';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
@@ -20,8 +19,7 @@ export class AsistenciaCrudComponent implements OnInit {
 
     products: Usuario[] = [];
 
-    // product: Product = {};
-    product: Usuarios = {};
+    product: any = {};
 
 
 
@@ -77,12 +75,12 @@ export class AsistenciaCrudComponent implements OnInit {
         this.deleteProductsDialog = true;
     }
 
-    editProduct(product: Usuarios) {
+    editProduct(product: any) {
         this.product = { ...product };
         this.productDialog = true;
     }
 
-    deleteProduct(product: Usuarios) {
+    deleteProduct(product: any) {
         this.deleteProductDialog = true;
         this.product = { ...product };
     }

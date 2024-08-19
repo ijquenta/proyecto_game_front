@@ -1,6 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { Product } from '../../api/product';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/modules/layout/service/app.layout.service';
 import { NgxSpinnerService } from 'ngx-spinner';

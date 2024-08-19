@@ -8,6 +8,5 @@ export class Asistencia {
 	asiusumod: any;
 	asifecmod: any;
 	asiestado: any;
-
 }
 

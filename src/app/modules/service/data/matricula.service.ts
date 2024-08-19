@@ -1,55 +1,55 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
-import { Rol } from '../../models/rol';
 
 @Injectable()
 export class MatriculaService {
+    constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-
-    listarMatricula(){
+    listarMatricula() {
         return this.http.get(`${API_URL}/listarMatricula`);
     }
 
-    listarTipoMatricula(){
+    listarTipoMatricula() {
         return this.http.get(`${API_URL}/listarTipoMatricula`);
     }
 
-    insertarMatricula(criterio: any){
+    insertarMatricula(criterio: any) {
         return this.http.post(`${API_URL}/insertarMatricula`, criterio);
     }
 
-    modificarMatricula(criterio: any){
+    modificarMatricula(criterio: any) {
         return this.http.post(`${API_URL}/modificarMatricula`, criterio);
     }
 
-    eliminarMatricula(criterio: any){
+    eliminarMatricula(criterio: any) {
         return this.http.post(`${API_URL}/eliminarMatricula`, criterio);
     }
 
-    gestionarMatriculaEstado(criterio: any){
+    gestionarMatriculaEstado(criterio: any) {
         return this.http.post(`${API_URL}/gestionarMatriculaEstado`, criterio);
     }
 
-    insertarTipoMatricula(criterio: any){
+    insertarTipoMatricula(criterio: any) {
         return this.http.post(`${API_URL}/insertarTipoMatricula`, criterio);
     }
 
-    modificarTipoMatricula(criterio: any){
+    modificarTipoMatricula(criterio: any) {
         return this.http.post(`${API_URL}/modificarTipoMatricula`, criterio);
     }
 
-    gestionarTipoMatriculaEstado(criterio: any){
-        return this.http.post(`${API_URL}/gestionarTipoMatriculaEstado`, criterio);
+    gestionarTipoMatriculaEstado(criterio: any) {
+        return this.http.post(
+            `${API_URL}/gestionarTipoMatriculaEstado`,
+            criterio
+        );
     }
 
-    listarTipoMatriculaCombo(){
+    listarTipoMatriculaCombo() {
         return this.http.get(`${API_URL}/listarTipoMatriculaCombo`);
     }
 
-    listarTipoPersonaEstudiante(){
+    listarTipoPersonaEstudiante() {
         return this.http.get(`${API_URL}/listarTipoPersonaEstudiante`);
     }
 }

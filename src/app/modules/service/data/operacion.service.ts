@@ -6,62 +6,73 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class OperacionService {
-
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     // Operation Services
 
-    getOperations(): Observable<Operacion[]>{
-        return this.http.get<Operacion[]>(`${API_URL}/getOperations`)
+    getOperations(): Observable<Operacion[]> {
+        return this.http.get<Operacion[]>(`${API_URL}/getOperations`);
     }
 
-    createOperation(data: any){
+    createOperation(data: any) {
         return this.http.post(`${API_URL}/createOperation`, data);
     }
 
-    updateOperation(opeid: number, data: any){
-        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data)
+    updateOperation(opeid: number, data: any) {
+        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data);
     }
 
     deleteOperation(opeid: number) {
-        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`)
+        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`);
     }
 
     // Other Examples
-    listarNivel(){
+
+    listarNivel() {
         return this.http.get(`${API_URL}/listarNivel`);
     }
-    insertarNivel(criterio: any){
+
+    insertarNivel(criterio: any) {
         return this.http.post(`${API_URL}/insertarNivel`, criterio);
     }
-    eliminarNivel(criterio: any){
+
+    eliminarNivel(criterio: any) {
         return this.http.post(`${API_URL}/eliminarNivel`, criterio);
     }
-    modificarNivel(criterio: any){
+
+    modificarNivel(criterio: any) {
         return this.http.post(`${API_URL}/modificarNivel`, criterio);
     }
-    gestionarNivelEstado(criterio: any){
-        return this.http.post(`${API_URL}/gestionarNivelEstado`, criterio)
+
+    gestionarNivelEstado(criterio: any) {
+        return this.http.post(`${API_URL}/gestionarNivelEstado`, criterio);
     }
-    listarPermiso(){
+
+    listarPermiso() {
         return this.http.get(`${API_URL}/listarPermiso`);
     }
-    listarPermisoRol(){
+
+    listarPermisoRol() {
         return this.http.get(`${API_URL}/listarPermisoRol`);
     }
-    getPermisos(){
-        return this.http.get(`${API_URL}/getPermisos`)
+
+    getPermisos() {
+        return this.http.get(`${API_URL}/getPermisos`);
     }
-    getRoles(){
-        return this.http.get(`${API_URL}/getRoles`)
+
+    getRoles() {
+        return this.http.get(`${API_URL}/getRoles`);
     }
-    getOperaciones(){
-        return this.http.get(`${API_URL}/getOperaciones`)
+
+    getOperaciones() {
+        return this.http.get(`${API_URL}/getOperaciones`);
     }
-    updatePermiso(permiso: any){
+
+    updatePermiso(permiso: any) {
         return this.http.post(`${API_URL}/updatePermiso`, permiso);
     }
-    getTipoOperacion(){
-        return this.http.get(`${API_URL}/getTipoOperacion`)
+
+    getTipoOperacion() {
+        return this.http.get(`${API_URL}/getTipoOperacion`);
     }
 }

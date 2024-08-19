@@ -8,27 +8,26 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class SubMenuService {
-
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     // Sub Menu Services
-    getListSubMenu(): Observable<SubMenu[]>{
-        return this.http.get<SubMenu[]>(`${API_URL}/getListSubMenu`)
+    getListSubMenu(): Observable<SubMenu[]> {
+        return this.http.get<SubMenu[]>(`${API_URL}/getListSubMenu`);
     }
 
-    createSubMenu(data: any){
+    createSubMenu(data: any) {
         return this.http.post(`${API_URL}/createSubMenu`, data);
     }
 
-    updateSubMenu(submenid: number, data: SubMenu){
-        return this.http.put(`${API_URL}/updateSubMenu/${submenid}`, data)
+    updateSubMenu(submenid: number, data: SubMenu) {
+        return this.http.put(`${API_URL}/updateSubMenu/${submenid}`, data);
     }
 
     deleteSubMenu(submenid: number) {
-        return this.http.delete(`${API_URL}/deleteSubMenu/${submenid}`)
+        return this.http.delete(`${API_URL}/deleteSubMenu/${submenid}`);
     }
 
-    getTipoMenu(): Observable<TipoMenu[]>{
-        return this.http.get<TipoMenu[]>(`${API_URL}/getTipoMenu`)
+    getTipoMenu(): Observable<TipoMenu[]> {
+        return this.http.get<TipoMenu[]>(`${API_URL}/getTipoMenu`);
     }
 }

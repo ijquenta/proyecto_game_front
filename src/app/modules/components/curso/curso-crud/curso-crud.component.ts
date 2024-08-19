@@ -318,7 +318,7 @@ export class CursoCrudComponent implements OnInit {
                     console.error("error: ", error);
                     if (error.error.message?.includes('UniqueViolation')) {
                         const errorMessage = 'No se puede crear la curso-materia porque ya existe un registro igual.';
-                        this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                        this.messageService.add({ severity: 'error', summary: 'El registro ya existe.', detail: errorMessage, life: 7000});
                         return;
                     }
                     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al intentar registrar el curso-materia.', life: 5000});
@@ -336,7 +336,7 @@ export class CursoCrudComponent implements OnInit {
                     console.error("error: ", error);
                     if (error.error.message?.includes('UniqueViolation')) {
                         const errorMessage = 'No se puede modificar la curso-materia porque ya existe un registro igual.';
-                        this.messageService.add({ severity: 'error', summary: 'El registro ya exite.', detail: errorMessage, life: 7000});
+                        this.messageService.add({ severity: 'error', summary: 'El registro ya existe.', detail: errorMessage, life: 7000});
                         return;
                     }
                     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error al intentar modificar el curso-materia.', life: 5000});

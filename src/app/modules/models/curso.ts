@@ -1,49 +1,142 @@
 export class CursoMateria {
-	curmatid?: number = 0;
-    curid?: number = 0;
-    rolid?: number = 0;
-    curnombre?: string | null = null;
-	matnombre?: string | null = null;
-	rolnombre?: string | null = null;
-	matid?: number = 0;
-    matnivel?: number = 0;
-    curnivel?: number = 0;
-	pernombres?: string | null = null;
-	perapepat?: string | null = null;
-	perapemat?: string | null = null;
-    pernomcompleto?: string | null = null;
+    curmatid?: number;
+    curid?: number;
+    rolid?: number;
+    curnombre?: string | null;
+    matnombre?: string | null;
+    rolnombre?: string | null;
+    matid?: number;
+    matnivel?: number;
+    curnivel?: number;
+    pernombres?: string | null;
+    perapepat?: string | null;
+    perapemat?: string | null;
+    pernomcompleto?: string | null;
     pernrodoc?: any;
-	periddocente?: number = 0;
-	curmatfecini?: any;
-	curmatfecfin?: any;
-	curmatestado?: number = 0;
-	curmatestadodescripcion?: string | null = null;
-	curmatusureg?: string | null = null;
-	curmatfecreg?: string | null = null;
-	curmatusumod?: string | null = null;
-	curmatfecmod?: string | null = null;
-    curmatidrol?: number = 0;
-    curmatidroldes?: string | null = null;
+    periddocente?: number;
+    curmatfecini?: any;
+    curmatfecfin?: any;
+    curmatestado?: number;
+    curmatestadodescripcion?: string | null;
+    curmatusureg?: string | null;
+    curmatfecreg?: string | null;
+    curmatusumod?: string | null;
+    curmatfecmod?: string | null;
+    curmatidrol?: number;
+    curmatidroldes?: string | null;
     perfoto?: any;
     tipo?: any;
     curmatcosto?: any;
-
     num_estudiantes?: any;
     num_pagos?: any;
+
+    constructor(
+        curmatid?: number,
+        curid?: number,
+        rolid?: number,
+        curnombre?: string | null,
+        matnombre?: string | null,
+        rolnombre?: string | null,
+        matid?: number,
+        matnivel?: number,
+        curnivel?: number,
+        pernombres?: string | null,
+        perapepat?: string | null,
+        perapemat?: string | null,
+        pernomcompleto?: string | null,
+        pernrodoc?: any,
+        periddocente?: number,
+        curmatfecini?: any,
+        curmatfecfin?: any,
+        curmatestado?: number,
+        curmatestadodescripcion?: string | null,
+        curmatusureg?: string | null,
+        curmatfecreg?: string | null,
+        curmatusumod?: string | null,
+        curmatfecmod?: string | null,
+        curmatidrol?: number,
+        curmatidroldes?: string | null,
+        perfoto?: any,
+        tipo?: any,
+        curmatcosto?: any,
+        num_estudiantes?: any,
+        num_pagos?: any
+    ) {
+        this.curmatid = curmatid;
+        this.curid = curid;
+        this.rolid = rolid;
+        this.curnombre = curnombre;
+        this.matnombre = matnombre;
+        this.rolnombre = rolnombre;
+        this.matid = matid;
+        this.matnivel = matnivel;
+        this.curnivel = curnivel;
+        this.pernombres = pernombres;
+        this.perapepat = perapepat;
+        this.perapemat = perapemat;
+        this.pernomcompleto = pernomcompleto;
+        this.pernrodoc = pernrodoc;
+        this.periddocente = periddocente;
+        this.curmatfecini = curmatfecini;
+        this.curmatfecfin = curmatfecfin;
+        this.curmatestado = curmatestado;
+        this.curmatestadodescripcion = curmatestadodescripcion;
+        this.curmatusureg = curmatusureg;
+        this.curmatfecreg = curmatfecreg;
+        this.curmatusumod = curmatusumod;
+        this.curmatfecmod = curmatfecmod;
+        this.curmatidrol = curmatidrol;
+        this.curmatidroldes = curmatidroldes;
+        this.perfoto = perfoto;
+        this.tipo = tipo;
+        this.curmatcosto = curmatcosto;
+        this.num_estudiantes = num_estudiantes;
+        this.num_pagos = num_pagos;
+    }
 }
 
 export class Curso {
-    curid?: number = 0;
-    curnombre?: string | null = null;
-    curestadodescripcion?: string | null = null;
-    curnivel?: number = 0;
-    curfchini?: Date | null = null;
-    curfchfin?: Date | null = null;
-    curusureg?: string | null = null;
-    curfecreg?: Date | null = null;
-    curusumod?: string | null = null;
-    curfecmod?: Date | null = null;
-    curestado?: number = 0;
-    curdesnivel?: string | null = null;
-    curdescripcion?: string | null = null;
+    curid?: number;
+    curnombre?: string | null;
+    curestadodescripcion?: string | null;
+    curnivel?: number;
+    curfchini?: Date | null;
+    curfchfin?: Date | null;
+    curusureg?: string | null;
+    curfecreg?: Date | null;
+    curusumod?: string | null;
+    curfecmod?: Date | null;
+    curestado?: number;
+    curdesnivel?: string | null;
+    curdescripcion?: string | null;
+
+    constructor(
+        curid?: number,
+        curnombre?: string | null,
+        curestadodescripcion?: string | null,
+        curnivel?: number,
+        curfchini?: Date | null,
+        curfchfin?: Date | null,
+        curusureg?: string | null,
+        curfecreg?: Date | null,
+        curusumod?: string | null,
+        curfecmod?: Date | null,
+        curestado?: number,
+        curdesnivel?: string | null,
+        curdescripcion?: string | null
+    ) {
+        this.curid = curid;
+        this.curnombre = curnombre;
+        this.curestadodescripcion = curestadodescripcion;
+        this.curnivel = curnivel;
+        this.curfchini = curfchini;
+        this.curfchfin = curfchfin;
+        this.curusureg = curusureg;
+        this.curfecreg = curfecreg;
+        this.curusumod = curusumod;
+        this.curfecmod = curfecmod;
+        this.curestado = curestado;
+        this.curdesnivel = curdesnivel;
+        this.curdescripcion = curdescripcion;
+    }
 }

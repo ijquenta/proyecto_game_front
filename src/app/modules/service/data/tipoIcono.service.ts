@@ -6,29 +6,28 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class TipoIconoService {
-
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     // Menu Services
 
-    getTipoIcono(): Observable<TipoIcono[]>{
-        return this.http.get<TipoIcono[]>(`${API_URL}/getTipoIcono`)
+    getTipoIcono(): Observable<TipoIcono[]> {
+        return this.http.get<TipoIcono[]>(`${API_URL}/getTipoIcono`);
     }
 
-    findIdIcono(data: any){
-        return this.http.post(`${API_URL}/findIdIcono`, data)
+    findIdIcono(data: any) {
+        return this.http.post(`${API_URL}/findIdIcono`, data);
     }
 
     // Other examples
-    createOperation(data: any){
+    createOperation(data: any) {
         return this.http.post(`${API_URL}/createOperation`, data);
     }
 
-    updateOperation(opeid: number, data: any){
-        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data)
+    updateOperation(opeid: number, data: any) {
+        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data);
     }
 
     deleteOperation(opeid: number) {
-        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`)
+        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`);
     }
 }

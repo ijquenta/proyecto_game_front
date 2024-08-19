@@ -1,10 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Product } from '../../api/product';
 import { API_URL } from 'src/environments/environment';
-import { Usuario } from '../../models/usuario';
-import { Rol } from '../../models/rol';
-import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable({
@@ -12,8 +8,7 @@ import { checktoken } from 'src/app/interceptors/token.interceptor';
 })
 export class AsistenciaService {
 
-    constructor(private http: HttpClient, private tokenService: TokenService) { }
-
+    constructor(private http: HttpClient) { }
 
     listarAsistencia(){
         return this.http.get(`${API_URL}/listarAsistencia`)

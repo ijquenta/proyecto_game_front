@@ -4,24 +4,26 @@ import { API_URL } from 'src/environments/environment';
 import { Rol } from '../../models/rol';
 import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
-import { Observable } from 'rxjs';
-
 import { ArchivosService } from '../util/archivos.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 const httpOptions = {
-    responseType: 'arraybuffer' as 'json'
+    responseType: 'arraybuffer' as 'json',
 };
 
 @Injectable({
     providedIn: 'root',
 })
-
 export class PersonaService {
-
     usuario: any;
-    constructor(private http: HttpClient, private tokenService: TokenService, private archivos: ArchivosService, private spinner: NgxSpinnerService, private authService: AuthService) { }
+    constructor(
+        private http: HttpClient,
+        private tokenService: TokenService,
+        private archivos: ArchivosService,
+        private spinner: NgxSpinnerService,
+        private authService: AuthService
+    ) {}
 
     // Person services
 
@@ -29,26 +31,34 @@ export class PersonaService {
         return this.http.get(`${API_URL}/getPersons`);
     }
 
-    managePerson(criterio: any){
-        return this.http.post(`${API_URL}/managePerson`, criterio, { context: checktoken() });
+    managePerson(criterio: any) {
+        return this.http.post(`${API_URL}/managePerson`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    deletePerson(criterio: any){
-        return this.http.post(`${API_URL}/deletePerson`, criterio, { context: checktoken()});
+    deletePerson(criterio: any) {
+        return this.http.post(`${API_URL}/deletePerson`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    deletePersonForm(perid: number){
+    deletePersonForm(perid: number) {
         return this.http.delete(`${API_URL}/deletePersonForm/${perid}`);
     }
 
     // Profile services
 
-    updateProfile(criterio: any){
-        return this.http.post(`${API_URL}/updateProfile`, criterio, { context: checktoken()})
+    updateProfile(criterio: any) {
+        return this.http.post(`${API_URL}/updateProfile`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    showPersonData(perid: number){
-        return this.http.get(`${API_URL}/showPersonData/${perid}`, { context: checktoken()})
+    showPersonData(perid: number) {
+        return this.http.get(`${API_URL}/showPersonData/${perid}`, {
+            context: checktoken(),
+        });
     }
 
     // Servicios Informacion Admision
@@ -57,14 +67,18 @@ export class PersonaService {
         this.usuario = this.authService.getUserData();
         const criterio = {
             perid: perid,
-            usuname: this.usuario[0]?.usuname
-        }
+            usuname: this.usuario[0]?.usuname,
+        };
         this.spinner.show();
-        this.http.post(`${API_URL}/rptInformacionAdmision`, criterio, httpOptions)
+        this.http
+            .post(`${API_URL}/rptInformacionAdmision`, criterio, httpOptions)
             .subscribe(
                 (data: any) => {
                     this.spinner.hide();
-                    this.archivos.generateReportPDF(data, 'Reporte Ficha Admisíon');
+                    this.archivos.generateReportPDF(
+                        data,
+                        'Reporte Ficha Admisíon'
+                    );
                 },
                 (error) => {
                     this.spinner.hide();
@@ -74,185 +88,236 @@ export class PersonaService {
             );
     }
 
-    listarInformacionPersonal(perid: number){
-        return this.http.get(`${API_URL}/informacionPersonal/${perid}`, { context: checktoken()})
+    listarInformacionPersonal(perid: number) {
+        return this.http.get(`${API_URL}/informacionPersonal/${perid}`, {
+            context: checktoken(),
+        });
     }
 
-    adicionarInformacionPersonal(criterio: any){
-        return this.http.post(`${API_URL}/informacionPersonal`, criterio, { context: checktoken()})
+    adicionarInformacionPersonal(criterio: any) {
+        return this.http.post(`${API_URL}/informacionPersonal`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarInformacionPersonal(criterio: any, perid: number){
-        return this.http.put(`${API_URL}/informacionPersonal/${perid}`, criterio, { context: checktoken()})
+    modificarInformacionPersonal(criterio: any, perid: number) {
+        return this.http.put(
+            `${API_URL}/informacionPersonal/${perid}`,
+            criterio,
+            { context: checktoken() }
+        );
     }
 
-    listarInformacionAcademica(perid: number){
-        return this.http.get(`${API_URL}/informacionAcademica/${perid}`, { context: checktoken()})
+    listarInformacionAcademica(perid: number) {
+        return this.http.get(`${API_URL}/informacionAcademica/${perid}`, {
+            context: checktoken(),
+        });
     }
 
-    adicionarInformacionAcademica(criterio: any){
-        return this.http.post(`${API_URL}/informacionAcademica`, criterio, { context: checktoken()})
+    adicionarInformacionAcademica(criterio: any) {
+        return this.http.post(`${API_URL}/informacionAcademica`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarInformacionAcademica(criterio: any, perinfoaca: number){
-        return this.http.put(`${API_URL}/informacionAcademica/${perinfoaca}`, criterio, { context: checktoken()})
+    modificarInformacionAcademica(criterio: any, perinfoaca: number) {
+        return this.http.put(
+            `${API_URL}/informacionAcademica/${perinfoaca}`,
+            criterio,
+            { context: checktoken() }
+        );
     }
 
-    eliminarInformacionAcademica(perinfoaca: number){
-        return this.http.delete(`${API_URL}/informacionAcademica/${perinfoaca}`, { context: checktoken()})
+    eliminarInformacionAcademica(perinfoaca: number) {
+        return this.http.delete(
+            `${API_URL}/informacionAcademica/${perinfoaca}`,
+            { context: checktoken() }
+        );
     }
 
     // Servicios Informacion Ministerial
 
-    listarInformacionMinisterial(perid: number){
-        return this.http.get(`${API_URL}/informacionMinisterial/${perid}`, { context: checktoken()})
+    listarInformacionMinisterial(perid: number) {
+        return this.http.get(`${API_URL}/informacionMinisterial/${perid}`, {
+            context: checktoken(),
+        });
     }
 
-    adicionarInformacionMinisterial(criterio: any){
-        return this.http.post(`${API_URL}/informacionMinisterial`, criterio, { context: checktoken()})
+    adicionarInformacionMinisterial(criterio: any) {
+        return this.http.post(`${API_URL}/informacionMinisterial`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarInformacionMinisterial(criterio: any, perinfomin: number){
-        return this.http.put(`${API_URL}/informacionMinisterial/${perinfomin}`, criterio, { context: checktoken()})
+    modificarInformacionMinisterial(criterio: any, perinfomin: number) {
+        return this.http.put(
+            `${API_URL}/informacionMinisterial/${perinfomin}`,
+            criterio,
+            { context: checktoken() }
+        );
     }
-
 
     // Servicios Documento Admisión
 
-    listarDocumentoAdmision(perid: number){
-        return this.http.get(`${API_URL}/documentoAdmision/${perid}`, { context: checktoken()})
+    listarDocumentoAdmision(perid: number) {
+        return this.http.get(`${API_URL}/documentoAdmision/${perid}`, {
+            context: checktoken(),
+        });
     }
 
     mostrarDocumentoAdmision(filename: any) {
         this.spinner.show();
-        this.http.get(`${API_URL}/documentoAdmision/${filename}`, httpOptions)
-        .subscribe(
-            (data: any) => {
-            this.spinner.hide();
-            this.archivos.generateReportPDF(data, filename);
-            },
-            (error) => {
-            this.spinner.hide();
-            console.error(error);
-            this.archivos.showToast();
-            }
-        );
+        this.http
+            .get(`${API_URL}/documentoAdmision/${filename}`, httpOptions)
+            .subscribe(
+                (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, filename);
+                },
+                (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            );
     }
 
-    adicionarDocumentoAdmision(criterio: any){
-        return this.http.post(`${API_URL}/documentoAdmision`, criterio, { context: checktoken()})
+    adicionarDocumentoAdmision(criterio: any) {
+        return this.http.post(`${API_URL}/documentoAdmision`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarDocumentoAdmision(criterio: any){
-        return this.http.put(`${API_URL}/documentoAdmision`, criterio, { context: checktoken()})
+    modificarDocumentoAdmision(criterio: any) {
+        return this.http.put(`${API_URL}/documentoAdmision`, criterio, {
+            context: checktoken(),
+        });
     }
-
 
     // Servicios Tipo Profesión
 
-    listarTipoProfesion(){
-        return this.http.get(`${API_URL}/tipoProfesion`, { context: checktoken()})
+    listarTipoProfesion() {
+        return this.http.get(`${API_URL}/tipoProfesion`, {
+            context: checktoken(),
+        });
     }
 
-    adicionarTipoProfesion(criterio: any){
-        return this.http.post(`${API_URL}/tipoProfesion`, criterio, { context: checktoken()})
+    adicionarTipoProfesion(criterio: any) {
+        return this.http.post(`${API_URL}/tipoProfesion`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarTipoProfesion(criterio: any, proid: number){
-        return this.http.put(`${API_URL}/tipoProfesion/${proid}`, criterio, { context: checktoken()})
+    modificarTipoProfesion(criterio: any, proid: number) {
+        return this.http.put(`${API_URL}/tipoProfesion/${proid}`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    eliminarTipoProfesion(proid: number){
-        return this.http.delete(`${API_URL}/tipoProfesion/${proid}`, { context: checktoken()})
+    eliminarTipoProfesion(proid: number) {
+        return this.http.delete(`${API_URL}/tipoProfesion/${proid}`, {
+            context: checktoken(),
+        });
     }
 
     // Servicios Tipo Educación
 
-    listarTipoEducacion(){
-        return this.http.get(`${API_URL}/tipoEducacion`, { context: checktoken()})
+    listarTipoEducacion() {
+        return this.http.get(`${API_URL}/tipoEducacion`, {
+            context: checktoken(),
+        });
     }
 
-    adicionarTipoEducacion(criterio: any){
-        return this.http.post(`${API_URL}/tipoEducacion`, criterio, { context: checktoken()})
+    adicionarTipoEducacion(criterio: any) {
+        return this.http.post(`${API_URL}/tipoEducacion`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarTipoEducacion(criterio: any, eduid: number){
-        return this.http.put(`${API_URL}/tipoEducacion/${eduid}`, criterio, { context: checktoken()})
+    modificarTipoEducacion(criterio: any, eduid: number) {
+        return this.http.put(`${API_URL}/tipoEducacion/${eduid}`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    eliminarTipoEducacion(eduid: number){
-        return this.http.delete(`${API_URL}/tipoEducacion/${eduid}`, { context: checktoken()})
+    eliminarTipoEducacion(eduid: number) {
+        return this.http.delete(`${API_URL}/tipoEducacion/${eduid}`, {
+            context: checktoken(),
+        });
     }
-
 
     // Servicios Tipo Cargo
 
-    listarTipoCargo(){
-        return this.http.get(`${API_URL}/tipoCargo`, { context: checktoken()})
+    listarTipoCargo() {
+        return this.http.get(`${API_URL}/tipoCargo`, { context: checktoken() });
     }
 
-    adicionarTipoCargo(criterio: any){
-        return this.http.post(`${API_URL}/tipoCargo`, criterio, { context: checktoken()})
+    adicionarTipoCargo(criterio: any) {
+        return this.http.post(`${API_URL}/tipoCargo`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    modificarTipoCargo(criterio: any, carid: number){
-        return this.http.put(`${API_URL}/tipoCargo/${carid}`, criterio, { context: checktoken()})
+    modificarTipoCargo(criterio: any, carid: number) {
+        return this.http.put(`${API_URL}/tipoCargo/${carid}`, criterio, {
+            context: checktoken(),
+        });
     }
 
-    eliminarTipoCargo(carid: number){
-        return this.http.delete(`${API_URL}/tipoCargo/${carid}`, { context: checktoken()})
+    eliminarTipoCargo(carid: number) {
+        return this.http.delete(`${API_URL}/tipoCargo/${carid}`, {
+            context: checktoken(),
+        });
     }
 
     // Otros servicios
 
-    actualizarDatosPersonales(criterio: any){
+    actualizarDatosPersonales(criterio: any) {
         return this.http.post(`${API_URL}/actualizarDatosPersonales`, criterio);
     }
 
-    createPersonForm(criterio: any){
+    createPersonForm(criterio: any) {
         return this.http.post(`${API_URL}/createPersonForm`, criterio);
     }
 
-    getUsuario(){
+    getUsuario() {
         return this.http.get(`${API_URL}/listaUsuarios`);
     }
 
-    getRoles(){
+    getRoles() {
         return this.http.get(`${API_URL}/tipoRol`);
     }
 
-    crearRol(criterio: any){
+    crearRol(criterio: any) {
         return this.http.post(`${API_URL}/crearRol`, criterio);
     }
 
-    modificarRol(criterio: any){
+    modificarRol(criterio: any) {
         let registroModRol = new Rol();
         return this.http.post(`${API_URL}/modificarRol`, registroModRol);
     }
 
-    eliminarRol(criterio: any){
+    eliminarRol(criterio: any) {
         return this.http.post(`${API_URL}/eliminarRol`, criterio);
     }
 
-    getTipoDocumento(){
-        return this.http.get(`${API_URL}/tipoDocumento`)
+    getTipoDocumento() {
+        return this.http.get(`${API_URL}/tipoDocumento`);
     }
 
-    getTipoEstadoCivil(){
-        return this.http.get(`${API_URL}/tipoEstadoCivil`)
+    getTipoEstadoCivil() {
+        return this.http.get(`${API_URL}/tipoEstadoCivil`);
     }
 
-    getTipoGenero(){
-        return this.http.get(`${API_URL}/tipoGenero`)
+    getTipoGenero() {
+        return this.http.get(`${API_URL}/tipoGenero`);
     }
 
-    getTipoPais(){
-        return this.http.get(`${API_URL}/tipoPais`)
+    getTipoPais() {
+        return this.http.get(`${API_URL}/tipoPais`);
     }
 
-    getTipoCiudad(){
-        return this.http.get(`${API_URL}/tipoCiudad`)
+    getTipoCiudad() {
+        return this.http.get(`${API_URL}/tipoCiudad`);
     }
-
-
 }

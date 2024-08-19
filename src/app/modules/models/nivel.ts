@@ -9,9 +9,9 @@ export class Nivel {
     curfchini?: any;
     curfchfin?: any;
     curusureg?: string | null = null;
-    curfecreg?: string | null = null; // Puedes usar un formato de fecha adecuado si lo deseas
+    curfecreg?: string | null = null;
     curusumod?: string | null = null;
-    curfecmod?: string | null = null; // Puedes usar un formato de fecha adecuado si lo deseas
+    curfecmod?: string | null = null;
     curestado?: number | null = 1;
 }
 

@@ -380,8 +380,28 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Material',
                                 icon: 'pi pi-fw pi-folder-open',
-                                routerLink: ['material/crud'],
-                                roles: ['Administrador', 'Secretaria', 'Docente']
+                                // routerLink: ['material/crud'],
+                                roles: ['Administrador', 'Secretaria', 'Docente'],
+                                items: [
+                                    {
+                                        label: 'Listar Texto',
+                                        icon: 'pi pi-fw pi-plus',
+                                        routerLink: ['material/crud'],
+                                        roles: ['Administrador', 'Secretaria', 'Docente']
+                                    },
+                                    {
+                                        label: 'Tipo Texto',
+                                        icon: 'pi pi-fw pi-folder-open',
+                                        routerLink: ['material/crud/tipo-texto'],
+                                        roles: ['Administrador', 'Secretaria', 'Docente']
+                                    },
+                                    {
+                                        label: 'Tipo Categoria Texto',
+                                        icon: 'pi pi-fw pi-folder-open',
+                                        routerLink: ['material/crud/tipo-categoria-texto'],
+                                        roles: ['Administrador', 'Secretaria', 'Docente']
+                                    }
+                                ]
                             },
                             {
                                 label: 'Asignar Material',

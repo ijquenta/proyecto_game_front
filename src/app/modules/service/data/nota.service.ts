@@ -8,7 +8,7 @@ import { ArchivosService } from '../util/archivos.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Usuario } from 'src/app/modules/models/usuario';
 const httpOptions = {
-    responseType: 'arraybuffer' as 'json'
+    responseType: 'arraybuffer' as 'json',
 };
 
 @Injectable({
@@ -16,12 +16,20 @@ const httpOptions = {
 })
 export class NotaService {
     usuario: Usuario;
-    constructor(private http: HttpClient, private tokenService: TokenService, private spinner: NgxSpinnerService, private archivos: ArchivosService, private authService: AuthService) { }
+    constructor(
+        private http: HttpClient,
+        private tokenService: TokenService,
+        private spinner: NgxSpinnerService,
+        private archivos: ArchivosService,
+        private authService: AuthService
+    ) {}
     listarNota() {
         return this.http.get(`${API_URL}/listarNota`);
     }
     gestionarNota(data) {
-        return this.http.post(`${API_URL}/gestionarNota`, data, { context: checktoken()});
+        return this.http.post(`${API_URL}/gestionarNota`, data, {
+            context: checktoken(),
+        });
     }
     listarNotaEstudiante(data) {
         return this.http.post(`${API_URL}/listarNotaEstudiante`, data);
@@ -39,7 +47,7 @@ export class NotaService {
         this.usuario = this.authService.usuario$.getValue();
         const criterio = {
             perid: this.usuario?.[0]?.perid,
-            usuname: this.usuario?.[0]?.usuname
+            usuname: this.usuario?.[0]?.usuname,
         };
 
         if (!criterio.perid || !criterio.usuname) {
@@ -48,23 +56,24 @@ export class NotaService {
         }
 
         this.spinner.show();
-        this.http.post(`${API_URL}/rptNotaEstudianteMateria`, criterio, httpOptions)
-            .subscribe(
-                (data: any) => {
+        this.http
+            .post(`${API_URL}/rptNotaEstudianteMateria`, criterio, httpOptions)
+            .subscribe({
+                next: (data: any) => {
                     this.spinner.hide();
                     this.archivos.generateReportPDF(data, 'Reporte Nota');
                 },
-                (error) => {
+                error: (error) => {
                     this.spinner.hide();
                     console.error(error);
                     this.archivos.showToast();
                 }
-            );
+            });
     }
     rptNotaEstudianteMateriaGeneral(data: any) {
         this.usuario = this.authService.usuario$.getValue();
         const criterio = {
-            usuname: this.usuario?.[0]?.usuname
+            usuname: this.usuario?.[0]?.usuname,
         };
 
         if (!criterio.usuname) {
@@ -73,25 +82,33 @@ export class NotaService {
         }
 
         this.spinner.show();
-        this.http.post(`${API_URL}/rptNotaCursoMateriaGeneral`, criterio, httpOptions)
-            .subscribe(
-                (data: any) => {
+        this.http
+            .post(
+                `${API_URL}/rptNotaCursoMateriaGeneral`,
+                criterio,
+                httpOptions
+            )
+            .subscribe({
+                next: (data: any) => {
                     this.spinner.hide();
-                    this.archivos.generateReportPDF(data, 'Reporte Nota General');
+                    this.archivos.generateReportPDF(
+                        data,
+                        'Reporte Nota General'
+                    );
                 },
-                (error) => {
+                error: (error) => {
                     this.spinner.hide();
                     console.error(error);
                     this.archivos.showToast();
                 }
-            );
+            });
     }
 
     rptNotaEstudianteMateriaDocente(data: any) {
         this.usuario = this.authService.usuario$.getValue();
         const criterio = {
             periddocente: data['periddocente'],
-            usuname: this.usuario?.[0]?.usuname
+            usuname: this.usuario?.[0]?.usuname,
         };
 
         if (!criterio.usuname) {
@@ -100,18 +117,26 @@ export class NotaService {
         }
 
         this.spinner.show();
-        this.http.post(`${API_URL}/rptNotaCursoMateriaDocente`, criterio, httpOptions)
-            .subscribe(
-                (data: any) => {
+        this.http
+            .post(
+                `${API_URL}/rptNotaCursoMateriaDocente`,
+                criterio,
+                httpOptions
+            )
+            .subscribe({
+                next: (data: any) => {
                     this.spinner.hide();
-                    this.archivos.generateReportPDF(data, 'Reporte Nota General');
+                    this.archivos.generateReportPDF(
+                        data,
+                        'Reporte Nota General'
+                    );
                 },
-                (error) => {
+                error: (error) => {
                     this.spinner.hide();
                     console.error(error);
                     this.archivos.showToast();
                 }
-            );
+            });
     }
 
     rptNotaCursoMateria(data: any) {
@@ -120,7 +145,7 @@ export class NotaService {
         const curmatid = data.curmatid;
         const criterio = {
             curmatid: curmatid,
-            usuname: this.usuario?.[0]?.usuname
+            usuname: this.usuario?.[0]?.usuname,
         };
 
         if (!criterio.usuname) {
@@ -128,22 +153,24 @@ export class NotaService {
             return;
         }
         this.spinner.show();
-        this.http.post(`${API_URL}/rptNotaCursoMateria`, criterio, httpOptions)
-            .subscribe(
-                (data: any) => {
+        this.http
+            .post(`${API_URL}/rptNotaCursoMateria`, criterio, httpOptions)
+            .subscribe({
+                next: (data: any) => {
                     this.spinner.hide();
-                    this.archivos.generateReportPDF(data, 'Reporte Curso Materia Nota');
+                    this.archivos.generateReportPDF(
+                        data,
+                        'Reporte Curso Materia Nota'
+                    );
                 },
-                (error) => {
+                error: (error) => {
                     this.spinner.hide();
                     console.error(error);
                     this.archivos.showToast();
                 }
-            );
+            });
     }
-    listarNotaCurso(){
-        return this.http.get(`${API_URL}/listarNotaCurso`)
+    listarNotaCurso() {
+        return this.http.get(`${API_URL}/listarNotaCurso`);
     }
-
-
 }

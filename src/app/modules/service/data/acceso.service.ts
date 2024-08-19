@@ -35,38 +35,4 @@ export class AccesoService {
     getIconoNombre(submenid: number){
         return this.http.get(`${API_URL}/getIconoNombre/${submenid}`)
     }
-
-    // Examples
-
-    listarPermiso(){
-        return this.http.get(`${API_URL}/listarPermiso`);
-    }
-
-    listarPermisoRol(){
-        return this.http.get(`${API_URL}/listarPermisoRol`);
-    }
-
-    getPermisos(){
-        return this.http.get(`${API_URL}/getPermisos`)
-    }
-
-    getRoles(){
-        return this.http.get(`${API_URL}/getRoles`, { context: checktoken()})
-    }
-
-    getOperaciones(){
-        return this.http.get(`${API_URL}/getOperaciones`)
-    }
-
-    updatePermiso(permiso: any){
-        return this.http.post(`${API_URL}/updatePermiso`, permiso);
-    }
-
-    addPermiso(permiso: any){
-        return this.http.post(`${API_URL}/addPermiso`, permiso)
-    }
-
-    deletePermiso(permiso: any){
-        return this.http.post(`${API_URL}/deletePermiso`, permiso)
-    }
 }
