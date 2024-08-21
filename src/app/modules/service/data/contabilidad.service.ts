@@ -23,7 +23,11 @@ export class ContabilidadService {
     ) { }
 
     listarCursoMateriaContabilidad(data) {
-        return this.http.post(`${API_URL}/listarCursoMateriaContabilidad`, data);
+        return this.http.post(`${API_URL}/listarCursoMateriaContabilidad`, data, { context: checktoken() } );
+    }
+
+    getListCursoMateriaContabilidadById(data){
+        return this.http.post(`${API_URL}/getListCursoMateriaContabilidadById`, data, { context: checktoken() } );
     }
 
     rptCursoMateriaContabilidad(fecini:any, fecfin:any, descuento: any[], resumen:any[]) {

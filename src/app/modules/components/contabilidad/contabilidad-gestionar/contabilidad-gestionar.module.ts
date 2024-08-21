@@ -29,15 +29,21 @@ import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
-import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones
+import { ReactiveFormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
-import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
+import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { CardModule } from 'primeng/card';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { PanelModule } from 'primeng/panel';
 import { ContabilidadService } from 'src/app/modules/service/data/contabilidad.service';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { TabViewModule } from 'primeng/tabview';
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        SidebarModule,
+        TabViewModule,
+        BreadcrumbModule,
         CommonModule,
         ContabilidadGestionarRoutingModule,
         TableModule,
