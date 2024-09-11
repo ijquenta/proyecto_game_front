@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { MateriaEstudianteRoutingModule } from './materia-estudiante-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -23,11 +22,29 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { MateriaEstudianteComponent } from './materia-estudiante.component';
-
+import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { HorarioService } from 'src/app/modules/service/data/horario.service';
+import { OrganizationChartModule } from 'primeng/organizationchart';
+import { TimelineModule } from 'primeng/timeline';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { TabViewModule } from 'primeng/tabview';
+import { ImageModule } from 'primeng/image';
 @NgModule({
     imports: [
+        ImageModule,
+        TabViewModule,
+        TabMenuModule,
+        TimelineModule,
+        OrganizationChartModule,
+        AvatarModule,
+        TooltipModule,
+        CardModule,
         CommonModule,
-        // MateriaCrudRoutingModule,
+        FullCalendarModule,
         MateriaEstudianteRoutingModule,
         TableModule,
         FileUploadModule,
@@ -45,9 +62,10 @@ import { MateriaEstudianteComponent } from './materia-estudiante.component';
         DialogModule,
         TagModule,
         ChipModule,
-        CalendarModule
+        CalendarModule,
+        BreadcrumbModule
     ],
     declarations: [MateriaEstudianteComponent],
-    providers: [UsuarioService, ReporteService, MateriaService]
+    providers: [UsuarioService, ReporteService, MateriaService, HorarioService]
 })
 export class MateriaEstudianteModule { }

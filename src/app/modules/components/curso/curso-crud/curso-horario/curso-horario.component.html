@@ -1,0 +1,229 @@
+<!-- Diálogo para la lista de pagos de estudiantes -->
+<p-toast></p-toast>
+<p-card>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+    <h3>Horario</h3>
+    <p>Administrar registros de asignación de horarios</p>
+    <div class="flex justify-between items-center mb-2">
+        <!-- Curso -->
+        <div class="text-left">
+            <span class="">Curso: </span>
+            <span class="text-primary">{{ curnombre }}</span>
+        </div>
+        <!-- Materia -->
+        <div class="text-right ml-2">
+            <span class="">Materia: </span>
+            <span class="text-primary">{{ matnombre }}</span>
+        </div>
+    </div>
+
+
+
+    <div class="flex mb-2 gap-2 justify-content-end">
+        <p-button (onClick)="activeIndex = 0" rounded="true" styleClass="w-2rem h-2rem p-0"
+            [outlined]="activeIndex !== 0" label="1" />
+        <p-button (onClick)="activeIndex = 1" rounded="true" styleClass="w-2rem h-2rem p-0"
+            [outlined]="activeIndex !== 1" label="2" />
+    </div>
+    <p-tabView [(activeIndex)]="activeIndex">
+        <p-tabPanel header="Gestionar Horario">
+            <p-table #dt [columns]="selectedColumns" [loading]="loading" [value]="listCursoHorario"
+                responsiveLayout="stack" [rowsPerPageOptions]="[5, 10, 20, 50, 100]" [rows]="20" [paginator]="true"
+                styleClass="p-datatable-striped p-datatable-sm" [globalFilterFields]="['pernomcompleto']"
+                groupRowsBy="curnombre" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas" [rowHover]="true"
+                dataKey="id" [breakpoint]="'960px'" [tableStyle]="{ 'min-width': '50rem' }" rowGroupMode="subheader">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <button pButton pRipple icon="pi pi-calendar-times" class="mr-2" label="Nuevo"
+                            pTooltip="Nuevo Horario" tooltipPosition="top" (click)="nuevoHorario()"></button>
+                        <div class="flex mt-1 justify-content-center">
+                            <p-multiSelect [options]="colsColumsTable" [(ngModel)]="selectedColumns"
+                                optionLabel="header" selectedItemsLabel="{0} columnas selecionadas"
+                                [style]="{ 'min-width': '200px' }" placeholder="Elige la/s columna/s">
+                            </p-multiSelect>
+                        </div>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" pTooltip="Buscar por nombre completo" tooltipPosition="top" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 3rem" class="text-center">#</th>
+                        <th class="text-center">Acciones</th>
+                        <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container *ngSwitchDefault>
+                                    {{ col.header }}
+                                    <p-sortIcon field="{{ col.field }}"></p-sortIcon>
+                                </ng-container>
+                            </ng-container>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th *ngFor="let col of columns">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container ng-container *ngSwitchCase="'pagestado'">
+                                    <p-columnFilter field="pagestado" matchMode="equals" [showMenu]="false">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown [ngModel]="value" [options]="statusOptions"
+                                                (onChange)="filter($event.value)" placeholder="Elegir"
+                                                [showClear]="true" appendTo="body">
+                                                <ng-template let-option pTemplate="item">
+                                                    <p-tag [value]="
+                                                            getDescriptionStatus(
+                                                                option.value
+                                                            )
+                                                        " [severity]="
+                                                            getSeverityStatus(
+                                                                option.value
+                                                            )
+                                                        "></p-tag>
+                                                </ng-template>
+                                            </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                                <ng-container ng-container *ngSwitchCase="'pagtipo'">
+                                    <p-columnFilter field="pagtipo" matchMode="equals" [showMenu]="false">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown [ngModel]="value" [options]="tipoPagoOptions"
+                                                (onChange)="filter($event.value)" placeholder="Elegir"
+                                                [showClear]="true" appendTo="body">
+                                                <ng-template let-option pTemplate="item">
+                                                    {{getDescriptionTipoPago(option.value)}}
+                                                </ng-template>
+                                            </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <p-columnFilter type="text" field="{{ col.field }}"></p-columnFilter>
+                                </ng-container>
+                            </ng-container>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pago let-rowIndex="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>
+                            <div class="text-center">
+                                <div class="flex">
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-outlined p-button-primary mr-2"
+                                        pTooltip="Editar" tooltipPosition="top" (click)="actualizarPago(pago)"></button>
+
+                                    <button pButton pRipple icon="pi pi-trash"
+                                        class="p-button-rounded p-button-outlined p-button-danger mr-2"
+                                        pTooltip="Eliminar" tooltipPosition="top"
+                                        (click)="actualizarPago(pago)"></button>
+                                </div>
+                            </div>
+                        </td>
+                        <td *ngFor="let col of columns">
+                            <ng-container [ngSwitch]="col.field">
+                                <ng-container *ngSwitchCase="'pernomcompleto'">
+                                    <div *ngIf="pago.perfoto == null" class="user-display">
+                                        <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" size="xlarge"
+                                            shape="circle"></p-avatar>
+                                        <span class="font-bold ml-2">{{
+                                            pago.pernomcompleto
+                                            }}</span>
+                                    </div>
+                                    <div *ngIf="pago.perfoto != null" class="user-display">
+                                        <p-avatar image="{{ userProfilePhoto }}/{{
+                                                pago.perfoto
+                                            }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                                        <div>
+                                            <span class="font-bold mb-2 p-2">{{
+                                                pago.pernomcompleto
+                                                }}</span>
+                                            <br />
+                                            <span class="ml-2">{{
+                                                pago.pernrodoc
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'pagfecha'">
+                                    <p class="text-center">{{ pago?.pagfecha }}</p>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'pagmonto'">
+                                    <p class="text-center">{{ pago?.pagmonto }}</p>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'pagtipo'">
+                                    <p-tag [rounded]="true" [severity]="getSeverityColor(pago.pagtipo)"
+                                        *ngIf="pago.pagtipo">
+                                        {{ getText(pago.pagtipo) }}
+                                    </p-tag>
+                                </ng-container>
+
+
+                                <ng-container *ngSwitchCase="'pagestado'">
+                                    <div class="text-center">
+                                        <p-tag [value]="
+                                                getDescriptionStatus(pago[col.field])
+                                            " [severity]="
+                                                getSeverityStatus(pago[col.field])
+                                            " [rounded]="true"></p-tag>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'pagusureg'">
+                                    <div pTooltip="{{
+                                            pago.pagusureg
+                                                | date : 'd MMMM, y h:mm:ss a'
+                                        }}" tooltipPosition="bottom">
+                                        <p-chip>
+                                            <div class="p-2">{{ pago.pagusureg }}</div>
+                                        </p-chip>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'pagusumod'">
+                                    <div pTooltip="{{
+                                            pago.pagusumod
+                                                | date : 'd MMMM, y h:mm:ss a'
+                                        }}" tooltipPosition="bottom">
+                                        <p-chip>
+                                            <div class="p-2">{{ pago.pagusumod }}</div>
+                                        </p-chip>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    {{ pago[col.field] }}
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7">
+                            No se encontraron estudiantes inscritos en esta materia.
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Vista Previa">
+            <full-calendar [options]="calendarOptions"></full-calendar>
+        </p-tabPanel>
+    </p-tabView>
+
+
+</p-card>
+
+<p-dialog header="{{this.pagarchivo}}" [(visible)]="showArchivoImagen" [style]="{width: '50vw'}">
+    <div class="text-center">
+        <img [src]="
+            apiUrlPagoArchivo +
+            '/' +
+            this.pagarchivo
+        " alt="this..pagarchivo" style="width: 50%; height: 50%;" />
+    </div>
+</p-dialog>

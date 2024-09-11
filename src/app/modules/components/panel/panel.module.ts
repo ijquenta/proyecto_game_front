@@ -12,8 +12,11 @@ import { PanelRoutingModule } from './panel-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 @NgModule({
     imports: [
+        CardModule,
         ToastModule,
         DialogModule,
         CommonModule,
@@ -25,7 +28,8 @@ import { ToastModule } from 'primeng/toast';
         PanelMenuModule,
         ButtonModule,
         PanelRoutingModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        NgxExtendedPdfViewerModule
     ],
     declarations: [PanelComponent]
 })

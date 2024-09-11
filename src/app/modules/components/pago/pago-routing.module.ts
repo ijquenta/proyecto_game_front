@@ -10,6 +10,7 @@ import { FormPagoComponent } from './pago-crud/estudiante-materia/form-pago/form
         { path: 'reporte', loadChildren: () => import('./pago-reporte/pago-reporte.module').then(m => m.PagoReporteModule) },
         { path: 'notificacion', loadChildren: () => import('./pago-notificacion/pago-notificacion.module').then(m => m.PagoNotificacionModule) },
         { path: 'estudiante', loadChildren: () => import('./pago-estudiante/pago-estudiante.module').then(m => m.PagoEstudianteModule) },
+        { path: 'estudiante-matricula', loadChildren: () => import('./pago-estudiante-matricula/pago-estudiante-matricula.module').then(m => m.PagoEstudianteMatriculaModule)},
         // { path: 'todos/estudiante-materia', component: EstudianteMateriaComponent },
         { path: 'estudiante-materia', component: EstudianteMateriaComponent },
 

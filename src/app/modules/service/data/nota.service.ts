@@ -44,21 +44,8 @@ export class NotaService {
         return this.http.post(`${API_URL}/listarNotaEstudianteCurso`, data);
     }
     rptNotaEstudianteMateria(data: any) {
-        this.usuario = this.authService.usuario$.getValue();
-        const criterio = {
-            perid: this.usuario?.[0]?.perid,
-            usuname: this.usuario?.[0]?.usuname,
-        };
-
-        if (!criterio.perid || !criterio.usuname) {
-            console.error('No se pudo obtener la información del usuario.');
-            return;
-        }
-
         this.spinner.show();
-        this.http
-            .post(`${API_URL}/rptNotaEstudianteMateria`, criterio, httpOptions)
-            .subscribe({
+        this.http.post(`${API_URL}/rptNotaEstudianteMateria`, data, httpOptions).subscribe({
                 next: (data: any) => {
                     this.spinner.hide();
                     this.archivos.generateReportPDF(data, 'Reporte Nota');

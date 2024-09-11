@@ -1,8 +1,8 @@
 <p-toast></p-toast>
 <p-card>
     <p-breadcrumb class="max-w-full" [model]="items" [home]="home" ></p-breadcrumb>
-    <h3>Inscripción</h3>
-    <p>Administrar registros de inscripciones</p>
+    <h3>Asignar Matricula</h3>
+    <p>Administrar registros de asignación de matriculas</p>
             <p-table
                 #dt
                 [value]="listaMatricula"
@@ -57,6 +57,7 @@
                         <th style="min-width:400px" > Descripción </th>
                         <th style="min-width:180px" > Fecha </th>
                         <th style="min-width:150px" > Monto (Bs) </th>
+                        <th style="min-width:150px" > Estado </th>
                         <th style="min-width:150px" > Fecha de matriculación </th>
                         <th style="min-width:200px" > Registrado por </th>
                         <th style="min-width:200px" > Modificado por </th>
@@ -74,6 +75,7 @@
                         <th><p-columnFilter type="text" field="pagdescripcion" ></p-columnFilter></th>
                         <th><p-columnFilter type="text" field="pagfecha" ></p-columnFilter></th>
                         <th><p-columnFilter type="text" field="pagmonto" ></p-columnFilter></th>
+                        <th></th>
                         <th><p-columnFilter type="text" field="matrfec" ></p-columnFilter></th>
                         <th><p-columnFilter type="text" field="matrusureg" ></p-columnFilter></th>
                         <th><p-columnFilter type="text" field="matrusumod" ></p-columnFilter></th>
@@ -97,7 +99,16 @@
                                         <button pButton pRipple icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-warning mr-2" (click)=" mostrarPagoArchivo(matr.pagarchivo) " pTooltip="Ver archivo" tooltipPosition="top" ></button>
                                     </ng-template>
                                 </div>
-                                <button *ngIf="matr.matrestado == 0" pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-outlined p-button-rounded p-button-danger" pTooltip="Activar Matricula" tooltipPosition="left" (click)="activarMatricula(matr)"></button>
+                                <button pButton pRipple icon="pi pi-file-pdf" (click)="generarComprobantePagoMatricula(matr)"
+                                    class="p-button-outlined p-button-danger p-button-rounded mr-2" pTooltip="Generar Comprobante de Pago"
+                                    tooltipPosition="top">
+                                </button>
+                                 <button pButton pRipple icon="pi pi-trash" (click)="eliminarPago(matr)"
+                                    class="p-button-outlined p-button-danger p-button-rounded mr-2" pTooltip="Eliminar"
+                                    tooltipPosition="top">
+                                </button>
+                                <!--
+                                <button pButton pRipple icon="fa-solid fa-eye-slash" class="p-button-outlined p-button-rounded p-button-danger" pTooltip="Activar Matricula" tooltipPosition="left" (click)="activarMatricula(matr)"></button> -->
                             </div>
                         </td>
                         <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
@@ -131,6 +142,7 @@
                         <td>
                             {{ matr.tipmatrcosto }}
                         </td>
+
                         <td>
                             {{ matr.pagdescripcion}}
                             <div *ngIf="!matr.pagdescripcion">
@@ -146,8 +158,13 @@
                             {{ matr.pagmonto }}
                         </td>
                         <td>
+                            <p-tag *ngIf="matr.estado" [severity]="getSeverityStatusMatricula(matr.estado)">{{ matr.estado }}</p-tag>
+                        </td>
+
+                        <td>
                             {{matr.matrfec}}
                         </td>
+
                         <td>
                             <p-chip>
                                 <div class="p-2"> <strong>{{matr.matrusureg}}</strong> <br> {{matr.matrfecreg | date : 'd MMMM, y h:mm:ss a'}} </div>

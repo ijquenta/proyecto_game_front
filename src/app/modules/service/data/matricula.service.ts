@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { API_URL } from 'src/environments/environment';
 
 @Injectable()
@@ -7,7 +8,11 @@ export class MatriculaService {
     constructor(private http: HttpClient) {}
 
     listarMatricula() {
-        return this.http.get(`${API_URL}/listarMatricula`);
+        return this.http.get(`${API_URL}/listarMatricula`, { context: checktoken() });
+    }
+
+    listarMatriculaEstudiante(perid: number){
+        return this.http.get(`${API_URL}/listarMatriculaEstudiante/${perid}`, { context: checktoken() });
     }
 
     listarTipoMatricula() {

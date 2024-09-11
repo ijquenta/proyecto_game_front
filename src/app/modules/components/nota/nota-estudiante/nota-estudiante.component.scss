@@ -1,0 +1,26 @@
+.valid-field {
+    border-color: #29c76f !important;
+}
+
+.p-success {
+    color: #29c76f;
+}
+
+.user-display {
+    display: flex;
+    align-items: center;
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-info-avatar {
+    margin-right: 20px;
+}
+
+.user-info-details {
+    flex-grow: 1;
+}

@@ -27,8 +27,18 @@ import { TooltipModule } from 'primeng/tooltip';
 import { KnobModule } from 'primeng/knob';
 import { AccordionModule } from 'primeng/accordion';
 import { AvatarModule } from 'primeng/avatar';
+import { TabViewModule } from 'primeng/tabview';
+import { CardModule } from 'primeng/card';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        TabViewModule,
+        CardModule,
+        BreadcrumbModule,
+        ReactiveFormsModule,
+        SidebarModule,
         AvatarModule,
         AccordionModule,
         CommonModule,

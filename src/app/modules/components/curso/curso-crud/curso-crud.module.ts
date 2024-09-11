@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CursoCrudRoutingModule } from './curso-crud-routing.module';
 import { CursoCrudComponent } from './curso-crud.component';
+import { CursoHorarioComponent } from './curso-horario/curso-horario.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -31,8 +32,13 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { MultiSelectModule } from "primeng/multiselect";
 import { SidebarModule } from 'primeng/sidebar';
+import { HorarioService } from 'src/app/modules/service/data/horario.service';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { TabViewModule } from 'primeng/tabview';
 @NgModule({
     imports: [
+        TabViewModule,
+        FullCalendarModule,
         SidebarModule,
         MultiSelectModule,
         BreadcrumbModule,
@@ -62,7 +68,7 @@ import { SidebarModule } from 'primeng/sidebar';
         ReactiveFormsModule,
         AvatarModule
     ],
-    declarations: [CursoCrudComponent],
-    providers: [UsuarioService, ReporteService, CursoService]
+    declarations: [CursoCrudComponent, CursoHorarioComponent],
+    providers: [UsuarioService, ReporteService, CursoService, HorarioService]
 })
 export class CursoCrudModule { }

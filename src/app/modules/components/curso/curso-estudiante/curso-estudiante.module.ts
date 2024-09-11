@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { CursoEstudianteRoutingModule } from './curso-estudiante-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -23,12 +22,11 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { CursoEstudianteComponent } from './curso-estudiante.component';
-
+import { FullCalendarModule } from '@fullcalendar/angular';
 @NgModule({
     imports: [
+        FullCalendarModule,
         CommonModule,
-        // MateriaCrudRoutingModule,
-        // MateriaEstudianteRoutingModule,
         CursoEstudianteRoutingModule,
         TableModule,
         FileUploadModule,

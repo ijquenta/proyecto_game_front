@@ -1,123 +1,257 @@
-<!-- <ng-container *hasPermision="admPlanilla" > -->
-    <div class="grid">
-        <div class="col-12">
-            <div class="card">
-                <ng-container>
-                    <p-table #dt1 [value]="listarMateriasInscritas" selectionMode="single" [(selection)]="notaEstudiante"
-                        data="idBeneficioSocial" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                        [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
-                        styleClass="p-datatable-striped p-card"
-                        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']">
-                        <ng-template pTemplate="caption">
-                            <div class="font-bold text-xl text-center">
-                                <span class="text-900">Mis </span>
-                                <span class="text-primary-600"> Pagos </span>
-                              </div>
-                            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                <!-- <h5 class="m-0">Lista de materias</h5> -->
-                                <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                    <i class="pi pi-search"></i>
-                                    <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar..." class="w-full sm:w-auto" />
-                                    <!-- <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button> -->
-                                </span>
-                                <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                    <!-- <i class="pi pi-search"></i> -->
-                                    <!-- <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto" /> -->
-                                    <!-- <button pButton pRipple label="Reporte pagos" icon="pi pi-file-pdf" (click)="notaService.rptNotaEstudianteMateria()" class="p-button-rounded p-button-info mr-2"></button> -->
-                                </span>
-                            </div>
-                        </ng-template>
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th> Nro </th>
-                                <th> Curso </th>
-                                <th> Fechas </th>
-                                <th> Materia</th>
-                                <th> Docente</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-pagoMateria>
-                            <tr [pSelectableRow]="pagoMateria" (click)="listarPagoMateria(pagoMateria)">
-                                <td> {{pagoMateria.insid}} </td>
-                                <td> {{pagoMateria.curnombre}} </td>
-                                <td> {{pagoMateria.curmatfecini + ' a ' + pagoMateria.curmatfecfin}} </td>
-                                <td> {{pagoMateria.matnombre}} </td>
-                                <td> {{pagoMateria.pernomcompleto}} </td>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="emptymessage">
-                            <tr>
-                                <td colspan="9">No se encontraron cursos ni materias registrados.</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                    <div  *ngIf="verNotasClicked">
-                        <p-dialog [(visible)]="verNotasClicked" header="Mis notas" [modal]="true" class="p-fluid"
-                        [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false" [maximizable]="true"
-                        >
-                        <p-table [value]="listarNotaEstudianteMateria" responsiveLayout="scroll" class="m-2"
-                            [loading]="loading2" styleClass="p-datatable-gridlines">
-                            <ng-template pTemplate="caption">
+<p-card>
+    <div class="mb-2"><p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb></div>
+    <h3>Mis Pagos</h3>
+    <p>Registros de materias por curso</p>
+    <p-tabView styleClass="tabview-custom">
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <span>Pagos Realizados</span>
+            </ng-template>
+            <p-dataView #dv [value]="listarMateriasInscritasPagado" [paginator]="true" [rows]="12" filterBy="pernomcompleto"
+                layout="grid" [sortField]="sortField" [sortOrder]="sortOrder"
+                [emptyMessage]="'No se encontraron registros.'" [loadingIcon]="'pi pi-spin pi-spinner'">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                        <button pButton pRipple label="Reporte Pagos" icon="pi pi-file-pdf" (click)="rptPagos()"
+                            class="p-button-outlined p-button-danger mr-2" pTooltip="Generar reporte"
+                            tooltipPosition="top"></button>
+                        <div class="flex">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
+                                    (input)="filtarUsuarios()" pTooltip="Buscar por Curso, Materia."
+                                    tooltipPosition="top" />
+                            </span>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template let-pagoMateria pTemplate="gridItem">
+                    <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
+                        <p-card>
+                            <div class="flex flex-wrap align-items-center justify-content-between ">
                                 <div class="flex flex-column">
-                                    <h5 class="m-0">Lista de pagos</h5>
+                                    <span class="text-xl font-bold text-truncate" style="max-width: 450px;">
+                                        {{ pagoMateria.curnombre }}
+                                    </span>
+                                    <div class="text-sm text-secondary mt-1" pTooltip="Detalles del curso"
+                                        tooltipPosition="top">
+                                        <i class="pi pi-calendar mr-1"></i>
+                                        {{ pagoMateria.curfchini }} a {{ pagoMateria.curfchfin }}
+                                    </div>
+                                </div>
+                                <p-tag [value]="getDescriptionStatus(pagoMateria.curmatestado)"
+                                    [severity]="getSeverityStatus(pagoMateria.curmatestado)">
+                                </p-tag>
+                            </div>
+
+                            <div class="flex flex-column align-items-center gap-3 py-5">
+                                <div class="text-xl font-bold text-truncate" style="max-width: 250px;">
+                                    {{ pagoMateria.matnombre }}
                                 </div>
 
-                            </ng-template>
-                            <ng-template pTemplate="header">
-                                <tr>
-                                    <!-- <th> Nro </th> -->
-                                    <th> Curso </th>
-                                    <th> Materia </th>
-                                    <th> Nro pago </th>
-                                    <th> Descripción </th>
-                                    <th> Monto </th>
-                                    <th> Archivo </th>
-                                    <th> Estado </th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-pago>
-                                <tr>
-                                    <!-- <td> {{nota.notid}} </td> -->
-                                    <td> {{pago.curnombre}} </td>
-                                    <td> {{pago.matnombre}} </td>
-                                    <td>
-                                        <p-chip *ngIf="pago.pagid">
-                                            <div class="p-1"># {{pago.pagid}}</div>
-                                        </p-chip>
-                                    </td>
-                                    <td>
-                                        <p-chip *ngIf="pago.pagdescripcion">
-                                            <div class="p-1">{{pago.pagdescripcion}}</div>
-                                        </p-chip>
-                                    </td>
-                                    <td>
-                                        <p-chip *ngIf="pago.pagmonto">
-                                            <div class="p-1">{{pago.pagmonto}} Bs</div>
-                                        </p-chip>
-                                    </td>
-                                    <td>
-                                        <button *ngIf="pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
-                                        icon="pi pi-file-pdf" class="p-button-rounded p-button-danger m-1" pTooltip="Ver archivo de pago"
-                                        tooltipPosition="top" (click)="verArchivoPago(pago.pagarchivo)">
-                                        </button>
-                                    </td>
-                                    <!-- <td> <p-chip> <div class="p-1">{{nota.pagestado}} </div> </p-chip> </td> -->
-                                    <td>
-                                        <p-tag [severity]="getSeverityColor(pago.pagestado)">
-                                            {{getText(pago.pagestado)}}
-                                        </p-tag>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td colspan="9">No se encontraron pagos registrados.</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                        </p-dialog>
+                                <div class="text-sm text-center">
+                                    <i class="pi pi-money-bill mr-1"></i>
+                                    {{ pagoMateria.pagmonto + ' Bs.'}}
+                                </div>
+                            </div>
+
+                            <div class="flex align-items-center justify-content-between">
+                                <div class="flex align-items-center">
+                                    <div class="ml-2">
+                                        <span class="font-bold text-sm text-truncate">Estado del pago:</span> <br>
+                                        <div class="mt-1">
+                                            <p-tag [severity]="getSeverityColor(pagoMateria.pagestado)">
+                                                {{getText(pagoMateria.pagestado)}}
+                                            </p-tag>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button pButton icon="pi pi-money-bill"
+                                    class="p-button-outlined p-button-primary w-auto"
+                                    (click)="listarPagoMateria(pagoMateria)" pTooltip="Ver pago" label="Pago"
+                                    tooltipPosition="top">
+                                </button>
+                            </div>
+                        </p-card>
                     </div>
-                </ng-container>
-            </div>
-        </div>
+                </ng-template>
+            </p-dataView>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <span>Pago Pendientes</span>
+            </ng-template>
+            <p-dataView #dv [value]="listarMateriasInscritasSinPagar" [paginator]="true" [rows]="12" filterBy="pernomcompleto"
+            layout="grid" [sortField]="sortField" [sortOrder]="sortOrder"
+            [emptyMessage]="'No se encontraron registros.'" [loadingIcon]="'pi pi-spin pi-spinner'">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                    <button pButton pRipple label="Reporte Pagos" icon="pi pi-file-pdf" (click)="rptPagos()"
+                        class="p-button-outlined p-button-danger mr-2" pTooltip="Generar reporte"
+                        tooltipPosition="top"></button>
+                    <div class="flex">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
+                                (input)="filtarUsuarios()" pTooltip="Buscar por Curso, Materia."
+                                tooltipPosition="top" />
+                        </span>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template let-pagoMateria pTemplate="gridItem">
+                <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
+                    <p-card>
+                        <div class="flex flex-wrap align-items-center justify-content-between ">
+                            <div class="flex flex-column">
+                                <span class="text-xl font-bold text-truncate" style="max-width: 450px;">
+                                    {{ pagoMateria.curnombre }}
+                                </span>
+                                <div class="text-sm text-secondary mt-1" pTooltip="Detalles del curso"
+                                    tooltipPosition="top">
+                                    <i class="pi pi-calendar mr-1"></i>
+                                    {{ pagoMateria.curfchini }} a {{ pagoMateria.curfchfin }}
+                                </div>
+                            </div>
+                            <p-tag [value]="getDescriptionStatus(pagoMateria.curmatestado)"
+                                [severity]="getSeverityStatus(pagoMateria.curmatestado)">
+                            </p-tag>
+                        </div>
+
+                        <div class="flex flex-column align-items-center gap-3 py-5">
+                            <div class="text-xl font-bold text-truncate" style="max-width: 250px;">
+                                {{ pagoMateria.matnombre }}
+                            </div>
+
+                            <div class="text-sm text-center">
+                                <i class="pi pi-money-bill mr-1"></i>
+                                {{ pagoMateria.pagmonto + ' Bs.'}}
+                            </div>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-between">
+                            <div class="flex align-items-center">
+                                <div class="ml-2">
+                                    <span class="font-bold text-sm text-truncate">Estado del pago:</span> <br>
+                                    <div class="mt-1">
+                                        <p-tag [severity]="getSeverityColor(pagoMateria.pagestado)">
+                                            {{getText(pagoMateria.pagestado)}}
+                                        </p-tag>
+                                    </div>
+                                </div>
+                            </div>
+                            <button pButton icon="pi pi-money-bill"
+                                class="p-button-outlined p-button-primary w-auto"
+                                (click)="listarPagoMateria(pagoMateria)" pTooltip="Ver pago" label="Pago"
+                                tooltipPosition="top">
+                            </button>
+                        </div>
+                    </p-card>
+                </div>
+            </ng-template>
+        </p-dataView>
+        </p-tabPanel>
+    </p-tabView>
+</p-card>
+
+
+<div *ngIf="verPagosClicked">
+    <p-dialog [(visible)]="verPagosClicked" header="Mis notas" [modal]="true" class="p-fluid"
+        [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false"
+        [maximizable]="false">
+        <p-table [value]="listarNotaEstudianteMateria" responsiveLayout="scroll" class="m-2" [loading]="loading2"
+            styleClass="p-datatable-striped">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th> Nro pago </th>
+                    <th> Curso </th>
+                    <th> Materia </th>
+                    <th> Descripción </th>
+                    <th> Monto </th>
+                    <th> Archivo </th>
+                    <th> Recibo </th>
+                    <th> Estado </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-pago>
+                <tr>
+                    <td> {{pago.pagid}} </td>
+                    <td> {{pago.curnombre}} </td>
+                    <td> {{pago.matnombre}} </td>
+                    <td> {{pago.pagdescripcion}} </td>
+                    <td> {{pago.pagmonto}} </td>
+                    <td>
+                        <!-- <button *ngIf="pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
+                            icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-danger mr-1"
+                            pTooltip="Ver archivo de pago" tooltipPosition="top"
+                            (click)="verArchivoPago(pago.pagarchivo)">
+                        </button> -->
+
+                        <div *ngIf="pago.pagarchivo" >
+                            <ng-container
+                                *ngIf="
+                                    isImagen(pago.pagarchivo);
+                                    else noImagen
+                                "
+                            >
+                            <button
+                                pButton
+                                pRipple
+                                icon="pi pi-image"
+                                class="p-button-rounded p-button-outlined p-button-info mr-2"
+                                pTooltip="Mostrar Imagen"
+                                tooltipPosition="top"
+                                (click)="mostrarPagoArchivoImagen(pago.pagarchivo)"
+                            ></button>
+                            </ng-container>
+                            <ng-template #noImagen>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-outlined p-button-info mr-2"
+                                    (click)="
+                                        mostrarPagoArchivo(pago.pagarchivo)
+                                    "
+                                    pTooltip="Ver archivo"
+                                    tooltipPosition="top"
+                                ></button>
+                            </ng-template>
+                        </div>
+
+
+                    </td>
+                    <td>
+                        <button *ngIf="pago.pagid" pButton pRipple icon="pi pi-file-pdf" (click)="generarComprobantePagoEstudiante(pago)"
+                        class="p-button-outlined p-button-danger p-button-rounded mr-2" pTooltip="Generar Comprobante de Pago"
+                        tooltipPosition="top"></button>
+                    </td>
+                    <td>
+                        <p-tag [severity]="getSeverityColor(pago.pagestado)">
+                            {{getText(pago.pagestado)}}
+                        </p-tag>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="9">No se encontraron pagos registrados.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-dialog>
+</div>
+
+<p-dialog header="{{this.pagarchivo}}" [(visible)]="showArchivoImagen" [style]="{width: '50vw'}">
+    <div class="text-center">
+        <img
+        [src]="
+            apiUrlPagoArchivo +
+            '/' +
+            this.pagarchivo
+        "
+        alt="this..pagarchivo"
+        style="width: 50%; height: 50%;"
+    />
     </div>
+</p-dialog>

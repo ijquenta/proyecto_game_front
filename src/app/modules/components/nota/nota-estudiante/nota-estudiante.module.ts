@@ -23,9 +23,26 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { NotaEstudianteComponent } from './nota-estudiante.component';
-
+import { CardModule } from 'primeng/card';
+import { TooltipModule } from 'primeng/tooltip';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ImageModule } from 'primeng/image';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TabViewModule } from 'primeng/tabview';
+import { DataViewModule } from 'primeng/dataview';
+import { AvatarModule } from 'primeng/avatar';
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        SidebarModule,
+        AvatarModule,
+        DataViewModule,
+        BreadcrumbModule,
+        ImageModule,
+        SelectButtonModule,
+        TabViewModule,
+        TooltipModule,
+        CardModule,
         CommonModule,
         // MateriaCrudRoutingModule,
         NotaEstudianteRoutingModule,

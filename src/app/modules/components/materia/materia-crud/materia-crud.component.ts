@@ -1,24 +1,28 @@
+// ----------------- Importaciones de Angular Core y Formularios
 import { Component, OnInit } from '@angular/core';
-import { Materia } from 'src/app/modules/models/materia';
-import { MenuItem, MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
-import { MateriaService } from 'src/app/modules/service/data/materia.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-import { DatePipe } from '@angular/common';
-import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario';
-// --------------- Importación de Autenticación
-import { AuthService } from 'src/app/modules/service/core/auth.service';
-
-// --------------- Importación para validaciones
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-// --------------- Modelo de Usuario
-import { Usuario } from 'src/app/modules/models/usuario';
-import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms'; // Importación de Formularios y Validaciones
 import { Observable, of } from 'rxjs';
-import { NgxSpinnerService } from 'ngx-spinner';
-import * as FileSaver from 'file-saver';
 
+// ----------------- Modelos
+import { Materia } from 'src/app/modules/models/materia'; // Modelo de Materia
+import { TipoModulo, TipoEstado } from 'src/app/modules/models/diccionario'; // Modelos de Diccionario
+import { Usuario } from 'src/app/modules/models/usuario'; // Modelo de Usuario
+
+// ----------------- Servicios
+import { MateriaService } from 'src/app/modules/service/data/materia.service'; // Servicio de Materia
+import { ReporteService } from 'src/app/modules/service/data/reporte.service'; // Servicio de Reporte
+import { AuthService } from 'src/app/modules/service/core/auth.service'; // Servicio de Autenticación
+
+// ----------------- Importaciones de PrimeNG para UI
+import { MenuItem, MessageService } from 'primeng/api'; // Importaciones de PrimeNG
+import { Table } from 'primeng/table';
+
+// ----------------- Utilidades y Librerías externas
+import { DatePipe } from '@angular/common'; // Importación para manejo de Fechas
+import { NgxSpinnerService } from 'ngx-spinner'; // Servicio de Spinner
+import * as FileSaver from 'file-saver'; // Librería para descargar archivos
+
+// ----------------- Definición de Interfaces para Columnas
 interface Column {
     field: string;
     header: string;
@@ -35,6 +39,7 @@ interface ColumsTable {
     header: string;
 }
 
+
 @Component({
     templateUrl: './materia-crud.component.html',
     providers: [MessageService],
@@ -42,49 +47,49 @@ interface ColumsTable {
 })
 export class MateriaCrudComponent implements OnInit {
 
+    //----------------- Variables para componente materia -------------------//
+    listaMaterias: Materia[] = []; // Lista de materias activas
+    listaMateriasDesactivos: Materia[] = []; // Lista de materias desactivadas
+    listaMateriasDuplicated: Materia[] = []; // Lista de materias duplicadas
+    materia: Materia = {}; // Objeto para una materia individual
+    submitted: boolean = false; // Indicador si el formulario fue enviado
+    materiaDialog: boolean = false; // Estado del diálogo de creación/edición de materia
+    eliminarMateriaDialog: boolean = false; // Estado del diálogo de eliminación de materia
+    activarMateriaDialog: boolean = false; // Estado del diálogo de activación de materia
+    desactivarMateriaDialog: boolean = false; // Estado del diálogo de desactivación de materia
+    tipoModulo: TipoModulo[] = []; // Lista de tipos de módulos disponibles
+    tipoModuloSeleccionado: TipoModulo; // Módulo seleccionado
+    tipoEstado: TipoEstado[] = []; // Lista de estados disponibles
+    tipoEstadoSeleccionado: TipoEstado; // Estado seleccionado
+    registroMateria: Materia = {}; // Objeto para el registro de una nueva materia
+    pip = new DatePipe('es-BO'); // Pipe para formatear fechas en el formato boliviano
+    opcionMateria: boolean = false; // Opción para activar/desactivar el formulario de materia
+    loading: boolean = false; // Indicador de carga
+    //----------------- Variables para componente materia -------------------//
 
-    //-----------------Variables para componente materia-------------------//
-    listaMaterias: Materia[] = [];
-    listaMateriasDesactivos: Materia[] = [];
-    listaMateriasDuplicated: Materia[] = [];
-    materia: Materia = {};
-    submitted: boolean = false;
-    materiaDialog: boolean = false;
-    eliminarMateriaDialog: boolean = false;
-    activarMateriaDialog: boolean = false;
-    desactivarMateriaDialog: boolean = false;
-    tipoModulo: TipoModulo[] = [];
-    tipoModuloSeleccionado: TipoModulo;
-    tipoEstado: TipoEstado[] = [];
-    tipoEstadoSeleccionado: TipoEstado;
-    registroMateria: Materia = {};
-    pip = new DatePipe('es-BO');
-    opcionMateria: boolean = false;
-    loading: boolean = false;
-    //-----------------Variables para compoente materia-------------------//
+    //---------------- Variables para validación ----------------//
+    materiaForm: FormGroup; // Formulario reactivo para validación de materia
+    originalMateriaNombre: any; // Almacena el nombre original de la materia para comparación
+    //---------------- Variables para validación ----------------//
 
-    //----------------Variables para validación----------------//
-    materiaForm: FormGroup;
-    originalMateriaNombre: any;
-    //----------------Variables para validación----------------//
+    usuario: Usuario; // Objeto de usuario actual
 
-    usuario: Usuario;
+    colsTable!: Column[]; // Columnas para la tabla de materias
+    exportColumns!: ExportColumn[]; // Columnas a exportar en la tabla
 
-    colsTable!: Column[];
-    exportColumns!: ExportColumn[];
+    items: MenuItem[]; // Items del menú de navegación
+    home: MenuItem | undefined; // Item de la página principal
 
-    items: MenuItem[];
-    home: MenuItem | undefined;
+    selectedColumns: { field: string; header: string }[]; // Columnas seleccionadas en la tabla
+    colsColumsTable!: ColumsTable[]; // Definición de las columnas para la tabla
 
-    selectedColumns: { field: string; header: string }[];
-    colsColumsTable!: ColumsTable[];
-
-    tipoModuloOptions: any[] = [];
+    tipoModuloOptions: any[] = []; // Opciones para el tipo de módulo
 
     statusOptions = [
         { label: 'Activo', value: 1 },
         { label: 'Inactivo', value: 0 },
-    ];
+    ]; // Opciones para el estado (Activo/Inactivo)
+
 
     constructor(
         private messageService: MessageService,

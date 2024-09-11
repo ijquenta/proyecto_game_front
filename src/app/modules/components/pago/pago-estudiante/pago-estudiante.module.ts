@@ -1,7 +1,7 @@
+import { CardModule } from 'primeng/card';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { PagoEstudianteRoutingModule } from './pago-estudiante-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -24,8 +24,19 @@ import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { PagoEstudianteComponent } from './pago-estudiante.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { TabViewModule } from 'primeng/tabview';
+import { DataViewModule } from 'primeng/dataview';
+import { SidebarModule } from 'primeng/sidebar';
+import { AvatarModule } from 'primeng/avatar';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 @NgModule({
     imports: [
+        BreadcrumbModule,
+        CardModule,
+        AvatarModule,
+        TabViewModule,
+        SidebarModule,
+        DataViewModule,
         CommonModule,
         // MateriaCrudRoutingModule,
         PagoEstudianteRoutingModule,

@@ -1,0 +1,57 @@
+.valid-field {
+    border-color: #29c76f !important;
+}
+
+.p-success {
+    color: #29c76f;
+}
+
+.user-display {
+    display: flex;
+    align-items: center;
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-info-avatar {
+    margin-right: 20px;
+}
+
+.user-info-details {
+    flex-grow: 1;
+}
+
+/* Estilo personalizado para el timeline */
+.customized-timeline .p-timeline-event-content {
+    padding: 1rem;
+}
+
+/* Estilo para los iconos del marcador */
+.customized-timeline .p-timeline-event-marker {
+    font-size: 1.5rem;
+}
+
+
+.horizontal-chart .p-organizationchart-table {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .horizontal-chart .p-organizationchart-node-content {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+  }
+
+  .horizontal-chart .p-organizationchart-lines-down {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+  }
+
+  .horizontal-chart .p-organizationchart-lines-right,
+  .horizontal-chart .p-organizationchart-lines-left {
+    display: none;
+  }

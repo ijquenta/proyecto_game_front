@@ -47,4 +47,8 @@ export class MateriaService {
             context: checktoken(),
         });
     }
+
+    getInformacionDocente(criterio: any){
+        return this.http.post(`${API_URL}/getInformacionDocente`, criterio, { context: checktoken() });
+    }
 }

@@ -9,6 +9,7 @@ import { NotfoundComponent } from '../notfound/notfound.component';
         { path: 'crud/tipo-categoria-texto', loadChildren: () => import('./material-crud/tipo-categoria-texto/tipo-categoria-texto.module').then(m => m.TipoCategoriaTextoModule)},
         { path: 'reporte', loadChildren: () => import('./material-reporte/material-reporte.module').then(m => m.MaterialReporteModule) },
         { path: 'asignar', loadChildren: () => import('./material-asignar/material-asignar.module').then(m => m.MaterialAsignarModule) },
+        { path: 'mi-material', loadChildren: () => import('./material-estudiante/material-estudiante.module').then(m => m.MaterialEstudianteModule)},
         // { path: 'timeline', loadChildren: () => import('./timeline/timelinedemo.module').then(m => m.TimelineDemoModule) },
         {
             path: 'notfound',

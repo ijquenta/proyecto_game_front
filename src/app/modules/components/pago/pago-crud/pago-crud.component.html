@@ -1,60 +1,29 @@
-<!-- Componente principal para mostrar la tabla de pagos y materias -->
 <div class="card">
-    <p-breadcrumb
-        class="max-w-full"
-        [model]="items"
-        [home]="home"
-    ></p-breadcrumb>
+    <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
     <h3>Pago</h3>
     <p>Administrar registros de pagos</p>
     <!-- Tabla de datos -->
-    <p-table
-        #dt
-        [columns]="selectedColumns"
-        [value]="listarMateriasInscritas"
-        [loading]="loading"
-        [rows]="50"
-        [paginator]="true"
-        [rowsPerPageOptions]="[5, 10, 20, 50, 100, 200, 500, 1000]"
-        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']"
-        responsiveLayout="stack"
-        groupRowsBy="curnombre"
-        [rowHover]="true"
-        dataKey="id"
-        [breakpoint]="'960px'"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        styleClass="p-datatable-striped p-datatable-sm"
+    <p-table #dt [columns]="selectedColumns" [value]="listarMateriasInscritas" [loading]="loading" [rows]="50"
+        [paginator]="true" [rowsPerPageOptions]="[5, 10, 20, 50, 100, 200, 500, 1000]"
+        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']" responsiveLayout="stack"
+        groupRowsBy="curnombre" [rowHover]="true" dataKey="id" [breakpoint]="'960px'"
+        [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped p-datatable-sm"
         [showCurrentPageReport]="true"
-        currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
-        rowGroupMode="subheader"
-    >
+        currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas" rowGroupMode="subheader">
         <!-- Encabezado de la tabla -->
         <ng-template pTemplate="caption">
-            <div
-                class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-            >
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                 <div class="flex mt-1 justify-content-center">
-                    <p-multiSelect
-                        [options]="colsColumsTable"
-                        [(ngModel)]="selectedColumns"
-                        optionLabel="header"
-                        selectedItemsLabel="{0} columnas selecionadas"
-                        [style]="{ 'min-width': '200px' }"
-                        placeholder="Elige la/s columna/s"
-                    >
+                    <p-multiSelect [options]="colsColumsTable" [(ngModel)]="selectedColumns" optionLabel="header"
+                        selectedItemsLabel="{0} columnas selecionadas" [style]="{ 'min-width': '200px' }"
+                        placeholder="Elige la/s columna/s">
                     </p-multiSelect>
                 </div>
                 <span class="block mt-2 md:mt-0 p-input-icon-left">
                     <i class="pi pi-search"></i>
-                    <input
-                        pInputText
-                        type="text"
-                        (input)="onGlobalFilter(dt, $event)"
-                        placeholder="Buscar..."
-                        class="w-full sm:w-auto"
-                        pTooltip="Buscar por Curso, Materia ó Docente."
-                        tooltipPosition="top"
-                    />
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                        class="w-full sm:w-auto" pTooltip="Buscar por Curso, Materia ó Docente."
+                        tooltipPosition="top" />
                 </span>
             </div>
         </ng-template>
@@ -63,10 +32,8 @@
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 3rem">#</th>
-                <th
-                    *ngFor="let col of columns"
-                    pSortableColumn="{{ col.field }}"
-                >
+                <th>Acciones</th>
+                <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">
                     <ng-container [ngSwitch]="col.field">
                         <ng-container *ngSwitchCase="'num_pagos'">
                             {{ col.header }}
@@ -83,83 +50,41 @@
             </tr>
             <tr>
                 <th></th>
+                <th></th>
                 <th *ngFor="let col of columns">
                     <ng-container [ngSwitch]="col.field">
-                        <ng-container
-                            *ngSwitchCase="'num_pagos'"
-                        ></ng-container>
-                        <ng-container
-                            *ngSwitchCase="'num_estudiantes'"
-                        ></ng-container>
+                        <ng-container *ngSwitchCase="'num_pagos'"></ng-container>
+                        <ng-container *ngSwitchCase="'num_estudiantes'"></ng-container>
                         <ng-container *ngSwitchCase="'pernomcompleto'">
-                            <p-columnFilter
-                                field="pernomcompleto"
-                                matchMode="equals"
-                                [showMenu]="false"
-                            >
-                                <ng-template
-                                    pTemplate="filter"
-                                    let-value
-                                    let-filter="filterCallback"
-                                >
-                                    <p-dropdown
-                                        appendTo="body"
-                                        [ngModel]="value"
-                                        [options]="personOptions"
-                                        (onChange)="filter($event.value)"
-                                        placeholder="Elegir"
-                                        [showClear]="true"
-                                        [filter]="true"
-                                        filterBy="value"
-                                    >
-                                        <ng-template
-                                            let-persona
-                                            pTemplate="item"
-                                        >
-                                            <div
-                                                class="flex align-items-center"
-                                            >
-                                                <div
-                                                    *ngIf="
+                            <p-columnFilter field="pernomcompleto" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown appendTo="body" [ngModel]="value" [options]="personOptions"
+                                        (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true"
+                                        [filter]="true" filterBy="value">
+                                        <ng-template let-persona pTemplate="item">
+                                            <div class="flex align-items-center">
+                                                <div *ngIf="
                                                         persona.perfoto == null
-                                                    "
-                                                    class="user-display"
-                                                >
-                                                    <p-avatar
-                                                        image="{{
+                                                    " class="user-display">
+                                                    <p-avatar image="{{
                                                             userProfilePhotoEmpty
-                                                        }}"
-                                                        styleClass="mr-2"
-                                                        size="large"
-                                                        shape="circle"
-                                                    ></p-avatar>
-                                                    <span
-                                                        class="font-bold ml-2"
-                                                        >{{
-                                                            persona.value
-                                                        }}</span
-                                                    >
+                                                        }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
+                                                    <span class="font-bold ml-2">{{
+                                                        persona.value
+                                                        }}</span>
                                                 </div>
-                                                <div
-                                                    *ngIf="
+                                                <div *ngIf="
                                                         persona.perfoto != null
-                                                    "
-                                                    class="user-display"
-                                                >
-                                                    <p-avatar
-                                                        image="{{
+                                                    " class="user-display">
+                                                    <p-avatar image="{{
                                                             userProfilePhoto
                                                         }}/{{
                                                             persona.perfoto
-                                                        }}"
-                                                        styleClass="mr-2"
-                                                        size="large"
-                                                        shape="circle"
-                                                    ></p-avatar>
+                                                        }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
                                                     <div>
                                                         <span class="font-bold mb-2 p-2">{{
                                                             persona.value
-                                                        }}</span>
+                                                            }}</span>
                                                         <br />
                                                         <span class="ml-2">{{ persona.pernrodoc }}</span>
                                                     </div>
@@ -170,64 +95,35 @@
                                 </ng-template>
                             </p-columnFilter>
                         </ng-container>
-                        <ng-container
-                            ng-container
-                            *ngSwitchCase="'curmatestado'"
-                        >
-                            <p-columnFilter
-                                field="curmatestado"
-                                matchMode="equals"
-                                [showMenu]="false"
-                            >
-                                <ng-template
-                                    pTemplate="filter"
-                                    let-value
-                                    let-filter="filterCallback"
-                                >
-                                    <p-dropdown
-                                        [ngModel]="value"
-                                        [options]="statusOptions"
-                                        (onChange)="filter($event.value)"
-                                        placeholder="Elegir"
-                                        [showClear]="true"
-                                    >
-                                        <ng-template
-                                            let-option
-                                            pTemplate="item"
-                                        >
-                                            <p-tag
-                                                [value]="
+                        <ng-container ng-container *ngSwitchCase="'curmatestado'">
+                            <p-columnFilter field="curmatestado" matchMode="equals" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="statusOptions"
+                                        (onChange)="filter($event.value)" placeholder="Elegir" [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <p-tag [value]="
                                                     getDescriptionStatus(
                                                         option.value
                                                     )
-                                                "
-                                                [severity]="
+                                                " [severity]="
                                                     getSeverityStatus(
                                                         option.value
                                                     )
-                                                "
-                                            ></p-tag>
+                                                "></p-tag>
                                         </ng-template>
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
                         </ng-container>
                         <ng-container *ngSwitchDefault>
-                            <p-columnFilter
-                                type="text"
-                                field="{{ col.field }}"
-                            ></p-columnFilter>
+                            <p-columnFilter type="text" field="{{ col.field }}"></p-columnFilter>
                         </ng-container>
                     </ng-container>
                 </th>
             </tr>
         </ng-template>
         <!-- Encabezado de grupo (Curso) -->
-        <ng-template
-            pTemplate="groupheader"
-            let-pagoMateria
-            let-rowGroupIndex="rowGroupIndex"
-        >
+        <ng-template pTemplate="groupheader" let-pagoMateria let-rowGroupIndex="rowGroupIndex">
             <tr pRowGroupHeader>
                 <td colspan="8">
                     <div class="flex text-center text-xl mt-4">
@@ -255,45 +151,28 @@
             </tr>
         </ng-template>
         <!-- Cuerpo de la tabla -->
-        <ng-template
-            pTemplate="body"
-            let-pagoMateria
-            let-rowIndex="rowIndex"
-            let-columns="columns"
-        >
-            <tr
-                [pSelectableRow]="pagoMateria"
-                (click)="listarPagoMateria(pagoMateria)"
-                pTooltip="Seleccionar"
-                tooltipPosition="top"
-            >
+        <ng-template pTemplate="body" let-pagoMateria let-rowIndex="rowIndex" let-columns="columns">
+            <tr [pSelectableRow]="pagoMateria" (click)="listarPagoMateria(pagoMateria)" pTooltip="Seleccionar"
+                tooltipPosition="top">
                 <td>{{ getRowIndex(rowIndex) }}</td>
+                <td> <button pButton pRipple icon="pi pi-eye" class="p-button-rounded"></button> </td>
                 <td *ngFor="let col of columns">
                     <ng-container [ngSwitch]="col.field">
                         <ng-container *ngSwitchCase="'pernomcompleto'">
                             <div class="user-display flex">
                                 <div *ngIf="!pagoMateria.perfoto">
-                                    <p-avatar
-                                        image="{{ userProfilePhotoEmpty }}"
-                                        styleClass="mr-2"
-                                        shape="circle"
-                                        size="large"
-                                    ></p-avatar>
+                                    <p-avatar image="{{ userProfilePhotoEmpty }}" styleClass="mr-2" shape="circle"
+                                        size="large"></p-avatar>
                                 </div>
                                 <div *ngIf="pagoMateria.perfoto">
-                                    <p-avatar
-                                        image="{{ userProfilePhoto }}/{{
+                                    <p-avatar image="{{ userProfilePhoto }}/{{
                                             pagoMateria.perfoto
-                                        }}"
-                                        styleClass="mr-2"
-                                        shape="circle"
-                                        size="large"
-                                    ></p-avatar>
+                                        }}" styleClass="mr-2" shape="circle" size="large"></p-avatar>
                                 </div>
                                 <div>
                                     <span class="font-bold mb-2">{{
                                         pagoMateria.pernomcompleto
-                                    }}</span>
+                                        }}</span>
                                     <br />
                                     <span>{{ pagoMateria.pernrodoc }}</span>
                                 </div>
@@ -311,29 +190,22 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'curmatestado'">
                             <div class="text-center">
-                                <p-tag
-                                    [value]="
+                                <p-tag [value]="
                                         getDescriptionStatus(
                                             pagoMateria[col.field]
                                         )
-                                    "
-                                    [severity]="
+                                    " [severity]="
                                         getSeverityStatus(
                                             pagoMateria[col.field]
                                         )
-                                    "
-                                    [rounded]="true"
-                                ></p-tag>
+                                    " [rounded]="true"></p-tag>
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'curmatusureg'">
-                            <div
-                                pTooltip="{{
+                            <div pTooltip="{{
                                     pagoMateria.curmatusureg
                                         | date : 'd MMMM, y h:mm:ss a'
-                                }}"
-                                tooltipPosition="bottom"
-                            >
+                                }}" tooltipPosition="bottom">
                                 <p-chip>
                                     <div class="p-2">
                                         {{ pagoMateria.curmatusureg }}
@@ -342,13 +214,10 @@
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'curmatusumod'">
-                            <div
-                                pTooltip="{{
+                            <div pTooltip="{{
                                     pagoMateria.curmatusumod
                                         | date : 'd MMMM, y h:mm:ss a'
-                                }}"
-                                tooltipPosition="bottom"
-                            >
+                                }}" tooltipPosition="bottom">
                                 <p-chip>
                                     <div class="p-2">
                                         {{ pagoMateria.curmatusumod }}

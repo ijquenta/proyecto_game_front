@@ -10,7 +10,6 @@ export class InscripcionRegistro {
     curmatid?: number | null = null;
     insestado?: number | null = null;
     insestadodescripcion?: string | null = null;
-
     constructor(
         insid?: number,
         matrid?: number | null,
@@ -100,6 +99,8 @@ export class Inscripcion {
     pernombrecompletodocente?: string;
     curnivel?: number | null;
     perfotoestudiante?: string;
+    curfchini: string | null;
+    curfchfin: string | null;
 
     constructor(
         insid?: number,
@@ -137,7 +138,9 @@ export class Inscripcion {
         periddocente?: number | null,
         pernombrecompletodocente?: string,
         curnivel?: number | null,
-        perfotoestudiante?: string
+        perfotoestudiante?: string,
+        curfchini?: string,
+        curfchfin?: string
     ) {
         this.insid = insid;
         this.perfoto = perfoto;
@@ -175,5 +178,7 @@ export class Inscripcion {
         this.pernombrecompletodocente = pernombrecompletodocente;
         this.curnivel = curnivel;
         this.perfotoestudiante = perfotoestudiante;
+        this.curfchini = curfchini;
+        this.curfchfin = curfchfin;
     }
 }

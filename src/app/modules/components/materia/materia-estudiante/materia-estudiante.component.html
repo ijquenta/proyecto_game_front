@@ -1,109 +1,363 @@
-<div class="grid">
-    <div class="col-12">
-        <div class="card">
-            <div class="flex flex-column p-1 md:p-3">
-                <div class="col-12 py-0">
-                    <p-table #dt1 [value]="inscripciones" responsiveLayout="scroll" class="m-2" [loading]="loading"
-                        [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
-                        styleClass="p-datatable-striped p-card"
-                        [globalFilterFields]="['matrgestion','curnombre', 'matnombre', 'pernomcompleto']">
-                        <ng-template pTemplate="caption">
-                            <div class="font-bold text-xl text-center">
-                                <span class="text-900">Mis </span>
-                                <span class="text-primary-600"> Materias </span>
-                            </div>
-                            <span class="block mt-2 md:mt-0 p-input-icon-left">
-                                <i class="pi pi-search"></i>
-                                <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)"
-                                    placeholder="Buscar..." class="w-full sm:w-auto" />
-                            </span>
-                        </ng-template>
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th> Nro </th>
-                                <th> Matricula </th>
-                                <th> Curso </th>
-                                <th> Fechas </th>
-                                <th> Materia </th>
-                                <th> Docente </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-materia_estudiante>
-                            <tr>
-                                <td> {{materia_estudiante.insid}} </td>
-                                <td> {{materia_estudiante.tipmatrgestion}} </td>
-                                <td> {{materia_estudiante.curnombre}} </td>
-                                <td> {{materia_estudiante.curmatfecini + ' a ' +materia_estudiante.curmatfecfin}} </td>
-                                <td> {{ materia_estudiante.matnombre}} </td>
-                                <td> {{ materia_estudiante.pernomcompleto}} </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
+<p-card>
+    <div class="mb-2"><p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb></div>
+    <h3>Mis Materias</h3>
+    <p>Materias asignadas agrupadas por curso:</p>
+    <p-table #dt [value]="inscripciones" responsiveLayout="scroll" [loading]="loading"
+        [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true" styleClass="p-datatable-striped"
+        [globalFilterFields]="['curnombre', 'matnombre', 'pernomcompleto']" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas" [loading]="loading"
+        rowGroupMode="rowspan" groupRowsBy="curnombre">
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                <div>
+                    <button pButton pRipple icon="pi pi-file-pdf" label="Reporte Materia" class="p-button-danger mr-2"
+                        (click)="rptMateriasInscritas()" pTooltip="Generar reporte materias inscritas" tooltipPosition="top"></button>
+                    <button pButton pRipple icon="pi pi-calendar-times" label="Horario" class="mr-2"
+                        (click)="showHorarioGeneral()" pTooltip="Ver horario general" tooltipPosition="top"></button>
                 </div>
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                        class="w-full sm:w-auto" pTooltip="Buscar por curso, materia y docente" tooltipPosition="top" />
+                </span>
             </div>
-        </div>
-    </div>
-</div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th> # </th>
+                <th> Acción </th>
+                <th pSortableColumn="curnombre"> Curso <p-sortIcon field="curnombre"></p-sortIcon></th>
+                <th pSortableColumn="matnombre"> Materia <p-sortIcon field="matnombre"></p-sortIcon></th>
+                <th pSortableColumn="curmatfecini"> Fecha Inicio <p-sortIcon field="curmatfecini"></p-sortIcon></th>
+                <th pSortableColumn="curmatfecfin"> Fecha Fin <p-sortIcon field="curmatfecfin"></p-sortIcon></th>
+                <th pSortableColumn="pernomcompleto"> Docente <p-sortIcon field="pernomcompleto"></p-sortIcon></th>
+                <th pSortableColumn="curmatestado"> Estado <p-sortIcon field="curmatestado"></p-sortIcon></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th><p-columnFilter type="text" field="curnombre"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="matnombre"></p-columnFilter></th>
+                <th></th>
+                <th></th>
+                <th><p-columnFilter type="text" field="pernomcompleto"></p-columnFilter></th>
+                <th>
+                    <p-columnFilter field="curmatestado" matchMode="equals" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="statusOptions" (onChange)="filter($event.value)"
+                                placeholder="Elegir" [showClear]="true">
+                                <ng-template let-option pTemplate="item">
+                                    <p-tag [value]="getDescriptionStatus(option.value)"
+                                        [severity]=" getSeverityStatus(option.value)"></p-tag>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-inscripcionMateria let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+            let-rowspan="rowspan">
+            <tr>
+                <td> {{rowIndex+1}} </td>
+                <td>
+                    <button pButton pRipple class="p-button-rounded p-button-outlined mr-2" icon="pi pi-calendar-times"
+                        (click)="showHorariosMateria(inscripcionMateria)" pTooltip="Ver horario"
+                        tooltipPosition="top"></button>
+                    <button pButton pRipple class="p-button-rounded p-button-warning p-button-outlined mr-2"
+                        icon="fa fa-graduation-cap" (click)="showInformacionDocente(inscripcionMateria)"
+                        pTooltip="Información del docente" tooltipPosition="top"></button>
+                </td>
+                <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                    <span class="font-bold mr-2">{{ inscripcionMateria.curnombre }}</span> <br>
+                    <div class="mr-2 mt-1">
+                        {{ inscripcionMateria.curfchini | date: 'longDate' }} a {{ inscripcionMateria.curfchfin | date:
+                        'longDate' }}
+                    </div>
+                </td>
+                <td> {{inscripcionMateria.matnombre}} </td>
+                <td> {{inscripcionMateria.curmatfecini | date: 'longDate'}} </td>
+                <td> {{inscripcionMateria.curmatfecfin | date: 'longDate'}} </td>
+                <td>
+                    <div *ngIf="!inscripcionMateria.perfoto" class="user-display">
+                        <p-avatar [label]="getInitials(inscripcionMateria.pernomcompleto)" styleClass="mr-2"
+                            size="large" shape="circle">
+                        </p-avatar>
+                        <span class="font-bold ml-2">{{ inscripcionMateria.pernomcompleto }}</span>
+                    </div>
+                    <div *ngIf="inscripcionMateria.perfoto" class="user-display">
+                        <p-avatar image="{{ userProfilePhoto }}/{{ inscripcionMateria.perfoto }}" styleClass="mr-2"
+                            size="large" shape="circle">
+                        </p-avatar>
+                        <span class="font-bold ml-2">{{ inscripcionMateria.pernomcompleto }}</span>
+                    </div>
+                </td>
+                <td>
+                    <p-tag [value]="getDescriptionStatus(inscripcionMateria.curmatestado)"
+                        [severity]="getSeverityStatus(inscripcionMateria.curmatestado)" [rounded]="true">
+                    </p-tag>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9">No se encontraron cursos ni materias registrados.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
 
-<p-dialog [(visible)]="displayDelete" [modal]="true" [breakpoints]="{'960px': '85vw', '640px': '100vw'}"
-    [style]="{width: '30vw'}">
-    <ng-template pTemplate="header">
-        <h3>Eliminacion de Registro Beneficio Social</h3>
-    </ng-template>
-    <div class="p-fluid grid p-3 mt-2 text-center justify-content-center align-items-center ">
-        <div class="p-fluid grid ">
-            <span class="p-float-label">
-                <textarea id="float-input" pInputTextarea [(ngModel)]="obsEliminar"></textarea>
-                <label for="float-input">Observaciones</label>
-            </span>
-        </div>
-    </div>
-    <ng-template pTemplate="footer">
-        <p-button (click)="confirmEliminacionRegistro()" label="Eliminar Registro"
-            styleClass="p-button-text"></p-button>
-    </ng-template>
+
+<p-dialog [(visible)]="caledarDialog" header="Horario" [modal]="true"
+    [breakpoints]="{ '960px': '70vw', '640px': '90vw' }" [style]="{ width: '60vw', height: '100vh' }"
+    [maximizable]="true">
+    <full-calendar [options]="calendarOptions"></full-calendar>
 </p-dialog>
 
 
-<div class="card">
-    <div class="card">
-        <p-table [value]="inscripciones" rowGroupMode="rowspan" groupRowsBy="curnombre" sortField="curnombre"
-            sortMode="single" [tableStyle]="{'min-width': '75rem'}">
-            <ng-template pTemplate="caption">
-                <div class="font-bold text-xl text-center">
-                    <span class="text-900">Mis Materias </span>
-                    <span class="text-primary-600"> por Curso </span>
-                </div>
-            </ng-template>
+<p-dialog header="Información del docente" [modal]="true" [(visible)]="informacionDocente" [style]="{ width: '60rem' }">
+    <div>
+        <div class="flex mb-2 gap-2 justify-content-end">
+            <p-button (onClick)="activeIndex = 0" rounded="true" styleClass="w-2rem h-2rem p-0"
+                [outlined]="activeIndex !== 0" label="1" />
+            <p-button (onClick)="activeIndex = 1" rounded="true" styleClass="w-2rem h-2rem p-0"
+                [outlined]="activeIndex !== 1" label="2" />
+            <p-button (onClick)="activeIndex = 2" rounded="true" styleClass="w-2rem h-2rem p-0"
+                [outlined]="activeIndex !== 2" label="3" />
+        </div>
+        <p-tabView [(activeIndex)]="activeIndex">
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <i class="fa-solid fa-address-book mr-2"></i>
+                    <span>Información Personal</span>
+                </ng-template>
+                <p-card styleClass="w-full">
+                    <div class="text-center mb-2">
+                        <div *ngIf="persona?.perfoto">
+                            <p-image src="{{userProfilePhoto}}/{{persona?.perfoto}}" alt="{{persona?.perfoto}}"
+                                width="100" height="100" [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}">
+                            </p-image>
+                        </div>
+                    </div>
 
-            <ng-template pTemplate="header">
-                <tr>
-                    <th style="width:3rem">#</th>
-                    <th>Nombre del Curso</th>
-                    <th>Nombre de la materia</th>
-                    <th>Descripción de la Matricula</th>
-                    <th>Nombre del docente</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-customer let-rowIndex="rowIndex" let-rowgroup="rowgroup"
-                let-rowspan="rowspan">
-                <tr>
-                    <td>{{rowIndex}}</td>
-                    <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
-                        <span class="font-bold ml-2">{{customer.curnombre}}</span><br>
-                        <span class="font-bold ml-2">{{customer.curmatfecini + ' a ' + customer.curmatfecfin }}</span>
-                    </td>
-                    <td>
-                        {{customer.matnombre}}
-                    </td>
-                    <td>
-                        {{customer.tipmatrgestion}}
-                    </td>
-                    <td>
-                        {{customer.pernomcompleto}}
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
+                    <div>
+                        <ul class="list-none p-0 m-0">
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Iglesia</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                    {{persona?.pernomiglesia}}</div>
+                            </li>
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Dirección de la iglesia</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                    {{persona?.perdiriglesia}}</div>
+                            </li>
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Profesión</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona?.pronombre}}
+                                </div>
+                            </li>
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Años de experiencia</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                    {{persona?.perexperiencia}}</div>
+                            </li>
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Correo</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona?.peremail}}
+                                </div>
+                            </li>
+
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Teléfono</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                                    {{persona?.pertelefono}}</div>
+                            </li>
+                            <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                                <div class="text-700 font-bold w-6 md:w-4">Celular</div>
+                                <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{persona?.percelular}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </p-card>
+            </p-tabPanel>
+            <p-tabPanel header="Header II">
+                <ng-template pTemplate="header">
+                    <i class="fa-solid fa-graduation-cap mr-2"></i>
+                    <span>Información Académica</span>
+                </ng-template>
+                <p-card header="Información Académica">
+                    <p-table #dt2 [value]="infoAcademica" [tableStyle]="{'min-width': '50rem'}" responsiveLayout="stack"
+                        [breakpoint]="'960px'" styleClass="p-datatable-striped">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th>Educación</th>
+                                <th>Institución</th>
+                                <th>Dirección</th>
+                                <th>Años cursados</th>
+                                <th>Fechas</th>
+                                <th>Titulo Obtenido</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-infoaca>
+                            <tr>
+                                <td>
+                                    <ng-container *ngIf="infoaca.pereducacion != null; else noRegistro">
+                                        {{infoaca.edunombre}}
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="infoaca.pernominstitucion; else noRegistro">
+                                        {{infoaca.pernominstitucion}}
+
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="infoaca.perdirinstitucion; else noRegistro">
+                                        {{infoaca.perdirinstitucion}}
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="infoaca.pergescursadas; else noRegistro">
+                                        {{infoaca.pergescursadas}}
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="infoaca.perfechas; else noRegistro">
+                                        {{infoaca.perfechas}}
+                                    </ng-container>
+                                </td>
+
+                                <td>
+                                    <ng-container *ngIf="infoaca.pertitulo; else noRegistro">
+                                        {{infoaca.pertitulo}}
+                                    </ng-container>
+                                </td>
+                                <ng-template #noRegistro>...</ng-template>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="9">No se encontró la información solicitada.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-card>
+            </p-tabPanel>
+            <p-tabPanel header="Header III">
+                <ng-template pTemplate="header">
+                    <i class="fa-solid fa-church mr-2"></i>
+                    <span>Información Ministerial</span>
+                </ng-template>
+                <p-card header="Información Ministerial">
+                    <p-table #dt2 [value]="infoMinisterial" [tableStyle]="{'min-width': '50rem'}"
+                        responsiveLayout="stack" [breakpoint]="'960px'" styleClass="p-datatable-striped p-card">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th>Iglesia</th>
+                                <th>Cargo</th>
+                                <th>Gestión</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-infomin>
+                            <tr>
+                                <td>
+                                    <ng-container *ngIf="infomin.pernomiglesia != null; else noRegistro">
+                                        {{infomin.pernomiglesia}}
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="infomin.carnombre; else noRegistro">
+                                        {{infomin.carnombre}}
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="infomin.pergestion; else noRegistro">
+                                        {{infomin.pergestion}}
+                                    </ng-container>
+                                </td>
+                                <ng-template #noRegistro>...</ng-template>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="11">No se encontró la información solicitada.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-card>
+            </p-tabPanel>
+        </p-tabView>
     </div>
-</div>
+    <!-- <div class="flex justify-content-end gap-2">
+        <p-button label="Cerrar" severity="secondary" (onClick)="informacionDocente = false" />
+    </div> -->
+</p-dialog>
+
+<p-dialog header="Horarios" [(visible)]="displayDialog" [modal]="true" [responsive]="true" [style]="{'width': '50vw'}"
+    (onHide)="onDialogHide()">
+    <p-table [value]="horarios" [rows]="15" [responsive]="true" styleClass="p-datatable-sm p-datatable-striped">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Hora</th>
+                <th>Lunes</th>
+                <th>Martes</th>
+                <th>Miércoles</th>
+                <th>Jueves</th>
+                <th>Viernes</th>
+                <th>Sábado</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
+                <td>{{ rowData.hora }}</td>
+                <td [ngClass]="{'occupied': rowData.lunes}">{{ rowData.lunes || '-' }}</td>
+                <td [ngClass]="{'occupied': rowData.martes}">{{ rowData.martes || '-' }}</td>
+                <td [ngClass]="{'occupied': rowData.miercoles}">{{ rowData.miercoles || '-' }}</td>
+                <td [ngClass]="{'occupied': rowData.jueves}">{{ rowData.jueves || '-' }}</td>
+                <td [ngClass]="{'occupied': rowData.viernes}">{{ rowData.viernes || '-' }}</td>
+                <td [ngClass]="{'occupied': rowData.sabado}">{{ rowData.sabado || '-' }}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No se encontraron horarios registrados.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+
+<!-- <div class="card flex justify-content-center">
+    <p-organizationChart [value]="data" />
+</div> -->
+
+
+<!-- <div class="card">
+<p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
+    <ng-template pTemplate="marker" let-event>
+        <span
+            class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+            [style]="{ 'background-color': event.color }">
+                <i [class]="event.icon"></i>
+        </span>
+    </ng-template>
+    <ng-template pTemplate="content" let-event>
+        <p-card [header]="event.status" [subheader]="event.date">
+            <img
+                *ngIf="event.image"
+                [src]="event.image"
+                [alt]="event.status"
+                width="200"
+                class="shadow-2" />
+            <p>
+                {{ event.description }}
+            </p>
+            <p-button label="Leer más" [text]="true" />
+        </p-card>
+    </ng-template>
+</p-timeline>
+
+</div> -->

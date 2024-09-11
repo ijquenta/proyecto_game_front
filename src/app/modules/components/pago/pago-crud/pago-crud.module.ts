@@ -47,8 +47,14 @@ import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { TabViewModule } from 'primeng/tabview';
+import { DataViewModule } from 'primeng/dataview';
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        TabViewModule,
+        DataViewModule,
+        SidebarModule,
         SelectButtonModule,
         OverlayPanelModule,
         AnimateOnScrollModule,

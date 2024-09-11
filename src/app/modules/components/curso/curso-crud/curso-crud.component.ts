@@ -19,6 +19,9 @@ import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { DiccionarioService } from 'src/app/modules/service/data/diccionario.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
+import { HorarioService } from 'src/app/modules/service/data/horario.service';
+
+import { Router } from '@angular/router';
 
 interface Column {
     field: string;
@@ -36,6 +39,31 @@ interface ColumsTable {
     header: string;
 }
 
+import { CalendarOptions } from '@fullcalendar/core'; // useful for typechecking
+import timeGridPlugin from '@fullcalendar/timegrid'; // Plugin para vista de horario
+import dayGridPlugin from '@fullcalendar/daygrid';
+
+const esLocale = {
+    code: 'es',
+    week: {
+      dow: 1, // La semana comienza el lunes
+      doy: 4, // El primer jueves del año es el primer week of the year
+    },
+    buttonText: {
+      prev: 'Anterior',
+      next: 'Siguiente',
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día',
+      list: 'Agenda',
+    },
+    weekText: 'Sem',
+    allDayText: 'Todo el día',
+    moreLinkText: 'más',
+    noEventsText: 'No hay eventos para mostrar',
+  };
+
 @Component({
     templateUrl: './curso-crud.component.html',
     providers: [MessageService],
@@ -44,6 +72,7 @@ interface ColumsTable {
 
 export class CursoCrudComponent implements OnInit {
 
+    date3:any
     cols: any[] = [];
     statuses: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
@@ -105,16 +134,45 @@ export class CursoCrudComponent implements OnInit {
         { label: 'Inactivo', value: 0 },
     ];
 
+
+    // Configurar Calendario
+    calendarOptions: CalendarOptions = {
+        initialView: 'dayGridMonth', // Vista previo Mensual
+        plugins: [dayGridPlugin, timeGridPlugin],
+        locale: esLocale,
+        dayHeaderFormat: { weekday: 'long' }, // Tipo de Texto de la cabecera
+        slotLabelFormat: { // Formato del horario
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: 'short',  // AM/PM
+            hour12: true  // Formato de 12 horas
+        },
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        editable: true,
+        selectable: true,
+        events: [] // Eventos se cargarán dinámicamente
+    };
+    curid: any;
+    matid: any;
+    curmatid: any;
+
+    // calendarOptions: CalendarOptions;
     constructor(
         private messageService: MessageService,
         private cursoService: CursoService,
-        public reporte: ReporteService,
-        public diccionarioService: DiccionarioService,
+        private reporte: ReporteService,
+        private diccionarioService: DiccionarioService,
         private usuarioServicie: UsuarioService,
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
-        private usuarioService: UsuarioService
+        private usuarioService: UsuarioService,
+        private horarioService: HorarioService,
+        private router: Router
     ) {
         this.items = [
             { label: 'Curso' },
@@ -166,7 +224,68 @@ export class CursoCrudComponent implements OnInit {
             { field: 'curmatfecmod', header: 'Fec. Mod.' }
         ];
         this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
+
+        this.loadHorarios();
     }
+
+    loadHorarios(): void {
+        this.horarioService.getHorarios().subscribe({
+            next: (data: any[]) => {
+                const events = data.flatMap((horario: any) => {
+                    const startDate = horario.horfecini; // Formato 'YYYY-MM-DD'
+                    const endDate = horario.horfecfin; // Formato 'YYYY-MM-DD'
+                    const startTime = horario.horini; // Formato 'HH:MM:SS'
+                    const endTime = horario.horfin; // Formato 'HH:MM:SS'
+                    const dayOfWeek = this.getDayOfWeek(horario.hordia);
+
+                    // Genera un color aleatorio para este evento
+                    const randomColor = this.generateRandomColor();
+
+                    // Usando 'daysOfWeek' para eventos recurrentes
+                    return {
+                        title: 'Bases psicológicas en el ciclo de vida familiar',
+                        startTime: startTime, // Hora de inicio
+                        endTime: endTime,     // Hora de fin
+                        startRecur: startDate, // Fecha de inicio de la recurrencia
+                        endRecur: endDate,     // Fecha de fin de la recurrencia
+                        daysOfWeek: [dayOfWeek], // Días de la semana (0=domingo, 1=lunes...)
+                        color: randomColor // Color aleatorio
+                    };
+                });
+
+                this.calendarOptions.events = events;
+            },
+            error: (err) => {
+                console.error('Error al cargar horarios:', err);
+            }
+        });
+    }
+
+    private generateRandomColor(): string {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    private getDayOfWeek(day: string): number {
+        // Mapea los días de la semana a valores numéricos (0=domingo, 1=lunes, etc.)
+        const days: { [key: string]: number } = {
+            'Lu': 1,
+            'Ma': 2,
+            'Mi': 3,
+            'Ju': 4,
+            'Vi': 5,
+            'Sa': 6,
+            'Do': 0
+        };
+        return days[day] || 0;
+    }
+
+
+
     // Método para asignar las variables de React Form Valid
     asignacionValidacionesCurso() {
         //----- Asignación de la validaciones
@@ -279,6 +398,7 @@ export class CursoCrudComponent implements OnInit {
             curmatcosto: this.cursoMateria.curmatcosto
         })
     }
+
     obtenerBody(){
         this.cursoMateria = new CursoMateria();
         this.cursoMateria.curmatid = this.cursoForm.value.curmatid;
@@ -297,6 +417,7 @@ export class CursoCrudComponent implements OnInit {
         const body = { ...this.cursoMateria }
         return body;
     }
+
     guardarCursoMateria(){
 
         if(this.cursoForm.invalid){
@@ -344,6 +465,7 @@ export class CursoCrudComponent implements OnInit {
             )
         }
     }
+
     eliminarCursoMateria(data: CursoMateria) {
         this.eliminarCursoMateriaDialog = true;
         this.cursoMateria = { ...data };
@@ -360,6 +482,7 @@ export class CursoCrudComponent implements OnInit {
         this.cursoMateria = { ...data };
         this.cursoMateria.tipo = 3;
     }
+
     confirmarEliminar() {
         const criterio = { curmatid: this.cursoMateria.curmatid }
         this.cursoService.eliminarCursoMateria(criterio).subscribe(
@@ -546,6 +669,20 @@ export class CursoCrudComponent implements OnInit {
             type: EXCEL_TYPE
         });
         FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + EXCEL_EXTENSION);
+    }
+
+    /**
+     * Lista los pagos de un estudiante por materia y curso.
+     * @param data Datos de curso y materia.
+     */
+    listarCursoHorario(data: any): void {
+        console.log("data", data);
+        this.curmatid = data.curmatid;
+        this.curid = data.curid;
+        this.matid = data.matid;
+        this.router.navigate(['/principal/curso/curso-horario'], {
+            queryParams: { curid: this.curid, matid: this.matid, curmatid: this.curmatid },
+        });
     }
 
 

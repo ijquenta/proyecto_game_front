@@ -25,11 +25,10 @@
         currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
         rowGroupMode="subheader"
     >
-        <!-- Encabezado de la tabla -->
         <ng-template pTemplate="caption">
             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                 <div>
-                    <button pButton pRipple label="Nuevo" icon="pi pi-plus-circle" class="p-button-primary mr-2" pTooltip="Crear curso materia" tooltipPosition="top" (click)="abrirNuevo()"></button>
+                    <button pButton pRipple label="Nuevo" icon="pi pi-plus-circle" class="p-button-primary mr-2" pTooltip="Nuevo Curso" tooltipPosition="top" (click)="abrirNuevo()"></button>
                     <button pButton pRipple type="button" icon="pi pi-file-excel" class="p-button-success mr-2" pTooltip="Reporte XLS" tooltipPosition="top" (click)="exportExcel()"></button>
                     <button pButton pRipple type="button" icon="pi pi-file-pdf" class="p-button-danger mr-2" pTooltip="Reporte PDF" tooltipPosition="top" (click)="exportPdf()"></button>
                 </div>
@@ -42,7 +41,6 @@
                 </span>
             </div>
         </ng-template>
-        <!-- Encabezado de columnas -->
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th> # </th>
@@ -104,6 +102,12 @@
                         <p class="text-primary-500 ml-2">
                             {{ cursoMateria.curnombre }}
                         </p>
+                        <div class="ml-2">
+                             <p class="font-bold">Fecha de Inicio:</p> {{ cursoMateria.curfchini | date: 'longDate'}}
+                        </div>
+                        <div class="ml-2">
+                             <p class="font-bold"> Fecha de Fin: </p> {{ cursoMateria.curfchfin | date: 'longDate'}}
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -113,6 +117,7 @@
                 <td> {{ rowIndex + 1 }} </td>
                 <td>
                     <div class="flex text-center">
+                        <button pButton pRipple icon="pi pi-calendar-times" class="p-button-rounded p-button-outlined p-button-warning mr-2" (click)="listarCursoHorario(cursoMateria)" pTooltip="Gestionar Horario" tooltipPosition="top" ></button>
                         <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-outlined mr-2" (click)="editarCursoMateria(cursoMateria)" pTooltip="Editar" tooltipPosition="top"> </button>
                         <button pButton pRipple icon="pi pi-eye-slash" class="p-button-rounded p-button-outlined p-button-danger" (click)="desactivarCursoMateria(cursoMateria)" pTooltip="Desactivar" tooltipPosition="top"> </button>
                     </div>
@@ -157,6 +162,9 @@
         </ng-template>
         <ng-template pTemplate="emptymessage"> <tr> <td colspan="9">No se encontró ningún registro.</td> </tr> </ng-template>
     </p-table>
+
+
+    <!-- <full-calendar [options]="calendarOptions"></full-calendar> -->
 </p-card>
 
 <p-sidebar [(visible)]="cursoMateriaDialog" styleClass="w-30rem" position="left" blockScroll="true">

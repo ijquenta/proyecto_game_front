@@ -456,10 +456,10 @@
                         *ngIf="nota.notfinal !== null && nota.notfinal !== 0"
                         [ngClass]="{
                             'customer-badge': true,
-                            'status-qualified': nota.notfinal > 75,
-                            'status-unqualified': nota.notfinal <= 75
+                            'status-qualified': nota.notfinal > 70,
+                            'status-unqualified': nota.notfinal <= 70
                         }">
-                        {{ nota.notfinal > 75 ? 'Aprobado' : 'Reprobado' }}
+                        {{ nota.notfinal > 70 ? 'Aprobado' : 'Reprobado' }}
                     </div>
                     <div
                         *ngIf="nota.notfinal === null || nota.notfinal === 0"

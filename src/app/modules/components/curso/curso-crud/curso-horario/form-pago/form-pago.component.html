@@ -1,0 +1,277 @@
+<p-toast></p-toast>
+<p-card>
+    <h2>{{ isEditMode ? "Editar Pago" : "Crear Pago" }}</h2>
+    <form [formGroup]="pagoForm" (ngSubmit)="guardarPago()">
+        <div class="p-fluid grid">
+            <!-- Campo de descripción del pago -->
+            <div class="field col-12 md:col-6">
+                <label for="pagdescripcion">Descripción del pago</label>
+                <input
+                    pInputText
+                    id="pagdescripcion"
+                    formControlName="pagdescripcion"
+                    class="mb-2"
+                />
+                <div
+                    *ngIf="
+                        pagoForm.get('pagdescripcion').invalid &&
+                        pagoForm.get('pagdescripcion').touched
+                    "
+                >
+                    <small
+                        *ngIf="pagoForm.get('pagdescripcion').errors?.required"
+                        class="p-error"
+                    >
+                        La descripción del pago es requerida.
+                    </small>
+                </div>
+            </div>
+            <!-- Campo de fecha del pago -->
+            <div class="field col-12 md:col-6">
+                <label for="pagfecha">Fecha del pago (Año/Mes/Día)</label>
+                <p-calendar
+                    id="pagfecha"
+                    dateFormat="yy-mm-dd"
+                    formControlName="pagfecha"
+                    showIcon
+                    styleClass="mb-2"
+                ></p-calendar>
+                <div
+                    *ngIf="
+                        pagoForm.get('pagfecha').invalid &&
+                        pagoForm.get('pagfecha').touched
+                    "
+                >
+                    <small
+                        *ngIf="pagoForm.get('pagfecha').errors?.required"
+                        class="p-error"
+                    >
+                        La fecha del pago es requerida.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Campo de monto del pago -->
+            <div class="field col-12 md:col-4">
+                <label for="pagmonto">Monto</label>
+                <p-inputNumber
+                    id="pagmonto"
+                    formControlName="pagmonto"
+                    mode="currency"
+                    currency="BOB"
+                    locale="es-BO"
+                    class="mb-2"
+                ></p-inputNumber>
+                <div
+                    *ngIf="
+                        pagoForm.get('pagmonto').invalid &&
+                        pagoForm.get('pagmonto').touched
+                    "
+                >
+                    <small
+                        *ngIf="pagoForm.get('pagmonto').errors?.required"
+                        class="p-error"
+                    >
+                        El monto es requerido.
+                    </small>
+                    <small
+                        *ngIf="pagoForm.get('pagmonto').errors?.min"
+                        class="p-error"
+                    >
+                        El monto debe ser mayor o igual a 0.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Campo de tipo de pago -->
+            <div class="field col-12 md:col-4">
+                <label for="tipoPago">Tipo de Pago</label>
+                <p-dropdown
+                    id="tipoPago"
+                    [options]="tipoPago"
+                    formControlName="tipoPago"
+                    optionLabel="tpagnombre"
+                    placeholder="Seleccionar tipo de pago"
+                    styleClass="mb-2"
+                ></p-dropdown>
+                <div
+                    *ngIf="
+                        pagoForm.get('tipoPago').invalid &&
+                        pagoForm.get('tipoPago').touched
+                    "
+                >
+                    <small
+                        *ngIf="pagoForm.get('tipoPago').errors?.required"
+                        class="p-error"
+                    >
+                        El tipo de pago es requerido.
+                    </small>
+                </div>
+            </div>
+
+            <!-- <div class="field col-12 md:col-6">
+                <label for="textarea">Observación</label>
+                    <textarea
+                        inputId="textarea"
+                        rows="2" cols="30"
+                        formControlName="perobservacion"
+                        appendTo="body"
+                        pInputTextarea
+                    ></textarea>
+            </div> -->
+            <div class="field col-12 md:col-4">
+                <label for="">Estado</label>
+                <div class="flex align-items-center justify-content-center">
+                    <p-selectButton [options]="stateOptionsEstado" formControlName="pagestado" optionLabel="label" optionValue="value"></p-selectButton>
+                </div>
+            </div>
+
+            <!-- Campo de carga de archivos -->
+            <div class="field col-12 md:col-6">
+                <label class="block" for="pagarchivo"
+                    >Documento de respaldo</label
+                >
+                <p-card>
+                    <p-fileUpload
+                        url="https://www.primefaces.org/cdn/api/upload.php"
+                        name="demo[]"
+                        [customUpload]="true"
+                        (uploadHandler)="onUploadPago($event)"
+                        (onSelect)="onFileSelect($event)"
+                        (onClear)="clearFilespagarchivo()"
+                        [auto]="false"
+                        accept=".pdf,.jpg,.png,.jpeg"
+                        [chooseStyleClass]="'w-auto mb-2'"
+                        [uploadStyleClass]="'w-auto mb-2'"
+                        [cancelStyleClass]="'w-auto mb-2'"
+                        styleClass="mb-2"
+                        [cancelIcon]="'pi pi-trash'"
+                        [cancelLabel]="'Vaciar'"
+                        [uploadLabel]="'Cargar Archivo'"
+                        [chooseLabel]="'Seleccionar'"
+                    >
+                        <ng-template pTemplate="toolbar">
+                            <div class="py-3">Pasos para subir documento de respaldo:</div>
+                            <ul>
+                                <li class="list-none">Paso 1: Haz clic en el botón "Seleccionar" y elige un archivo en formato PDF, JPG, PNG o JPEG.</li>
+                                <li class="list-none">Paso 2: Haz clic en el botón "Cargar Archivo".</li>
+                                <li class="list-none">Paso 3: Verifica el archivo en la sección de vista previa.</li>
+
+                            </ul>
+                            <ul>
+                                <li class="list-none">Vaciar: Si deseas, puedes usar la opción "Vaciar" para eliminar el archivo seleccionado.</li>
+                            </ul>
+                        </ng-template>
+                        <ng-template pTemplate="fileupload-content">
+                            <ul *ngIf="pagoFile">
+                                <li class="list-none flex align-items-center">
+                                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+                                        <i *ngIf="isPDF(pagoFile.type)" class="pi pi-file-pdf text-red-500 text-xl"></i>
+                                        <i *ngIf="isImage(pagoFile.type)" class="pi pi-image text-green-500 text-xl"></i>
+                                    </div>
+                                    <span class="ml-2">
+                                        {{ pagoFile.name }} - {{ (pagoFile.size / 1048576).toFixed(1) }} MB
+                                    </span>
+                                </li>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
+                    <div>
+                        <p-progressBar [value]="uploadProgress"></p-progressBar>
+                    </div>
+                    <div
+                        *ngIf="
+                            pagoForm.get('pagarchivo').invalid &&
+                            pagoForm.get('pagarchivo').dirty
+                        "
+                    >
+                        <small
+                            class="p-error block"
+                        >
+                            <span
+                                *ngIf="pagoForm.get('pagarchivo').errors?.required"
+                                >El documento de respaldo es requerido.</span
+                            >
+                        </small>
+                    </div>
+                </p-card>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label for="pagdescripcion">Vista previa</label>
+                <div *ngIf="uploadProgress === 100">
+                    <p-card>
+                        <ng-container *ngIf="isImage(pagoFile.type)">
+                            <div
+                                class="mb-2 justify-content-center align-items-center text-center"
+                            >
+                                <p-image
+                                    [src]="pagoFileUrl"
+                                    alt="Documento"
+                                    width="400"
+                                    height="100%"
+                                    [preview]="true"
+                                    [imageStyle]="{
+                                        'border-radius': '5%',
+                                        'object-fit': 'cover'
+                                    }"
+                                ></p-image>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="isPDF(pagoFile.type)">
+                            <div class="pdf-container">
+                                <ngx-extended-pdf-viewer
+                                    theme="dark"
+                                    [showToolbar]="true"
+                                    [showSidebarButton]="true"
+                                    [showFindButton]="false"
+                                    [showPagingButtons]="true"
+                                    [showDrawEditor]="false"
+                                    [showStampEditor]="false"
+                                    [showTextEditor]="false"
+                                    [showZoomButtons]="true"
+                                    [showPresentationModeButton]="false"
+                                    [showOpenFileButton]="false"
+                                    [showPrintButton]="false"
+                                    [showDownloadButton]="true"
+                                    [showSecondaryToolbarButton]="true"
+                                    [showRotateButton]="undefined"
+                                    [showRotateCwButton]="true"
+                                    [showRotateCcwButton]="true"
+                                    [showHandToolButton]="false"
+                                    [showScrollingButton]="true"
+                                    [showSpreadButton]="false"
+                                    [showPropertiesButton]="false"
+                                    [language]="'es'"
+                                    [src]="pagoFileUrl" height="100     " width="100%">
+                                </ngx-extended-pdf-viewer>
+                            </div>
+                        </ng-container>
+                    </p-card>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="field col-12 text-right">
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    (click)="cancelar()"
+                    class="p-button p-button-primary p-button-text mr-2 w-10rem"
+                ></button>
+
+                <button
+                    pButton
+                    pRipple
+                    type="submit"
+                    [label]="isEditMode ? 'Actualizar' : 'Guardar'"
+                    icon="pi pi-save"
+                    class="p-button p-button-success p-button-outlined w-10rem"
+                ></button>
+            </div>
+        </div>
+    </form>
+</p-card>

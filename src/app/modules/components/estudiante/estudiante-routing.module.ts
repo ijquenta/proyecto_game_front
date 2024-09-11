@@ -10,6 +10,7 @@ import { NotfoundComponent } from '../notfound/notfound.component';
         { path: 'admision/tipoProfesion', loadChildren: () => import('./estudiante-admision-tipoProfesion/estudiante-admision-tipoProfesion.module').then(m => m.EstudianteTipoProfesionModule)},
         { path: 'admision/tipoEducacion', loadChildren: () => import('./estudiante-admision-tipoEducacion/estudiante-admision-tipoEducacion.module').then(m => m.EstudianteTipoEducacionModule)},
         { path: 'admision/tipoCargo', loadChildren: () => import('./estudiante-admision-tipoCargo/estudiante-admision-tipoCargo.module').then(m => m.EstudianteTipoCargoModule)},
+        { path: 'mi-admision', loadChildren: () => import('./estudiante-mi-admision/estudiante-mi-admision.module').then(m => m.EstudianteMiAdmisionModule)},
         // { path: 'timeline', loadChildren: () => import('./timeline/timelinedemo.module').then(m => m.TimelineDemoModule) },
         {
             path: 'notfound',

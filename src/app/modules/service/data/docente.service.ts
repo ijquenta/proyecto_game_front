@@ -13,7 +13,7 @@ export class DocenteService {
     constructor(private http: HttpClient, private tokenService: TokenService) { }
 
     obtenerMateriasAsignadas(criterio: any){
-        return this.http.post(`${API_URL}/obtenerMateriasAsignadas`, criterio);
+        return this.http.post(`${API_URL}/obtenerMateriasAsignadas`, criterio, { context: checktoken() });
     }
 
     listarDocente(){
@@ -21,7 +21,7 @@ export class DocenteService {
     }
 
     listarMateriaEstudianteCurso(data) {
-        return this.http.post(`${API_URL}/listarMateriaEstudianteCurso`, data);
+        return this.http.post(`${API_URL}/listarMateriaEstudianteCurso`, data, { context: checktoken() });
     }
 
 

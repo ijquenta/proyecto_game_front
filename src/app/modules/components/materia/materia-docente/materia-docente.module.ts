@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { MateriaDocenteRoutingModule } from './materia-docente-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -23,10 +22,21 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { MateriaDocenteComponent } from './materia-docente.component';
-
+import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { MultiSelectModule } from "primeng/multiselect";
+import { SidebarModule } from 'primeng/sidebar';
 @NgModule({
     imports: [
+        BreadcrumbModule,
+        MultiSelectModule,
+        SidebarModule,
+        TooltipModule,
         CommonModule,
+        CardModule,
+        AvatarModule,
         // MateriaCrudRoutingModule,
         MateriaDocenteRoutingModule,
         TableModule,

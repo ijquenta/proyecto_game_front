@@ -86,25 +86,24 @@ export class AppMenuComponent implements OnInit {
                                 routerLink: ['materia/crud'],
                                 roles: ['Administrador', 'Secretaria']
                             },
-                            // {
-                            //     label: 'Reporte Materia',
-                            //     icon: 'pi pi-fw pi-file-pdf',
-                            //     routerLink: ['materia/reporte'],
-                            //     roles: ['Administrador', 'Secretaria']
-                            // },
                             {
-                                label: 'Materias asignadas',
+                                label: 'Materias Asignadas',
                                 icon: 'pi pi-fw pi-file-pdf',
                                 routerLink: ['materia/docente'],
                                 roles: ['Docente']
                             },
                             {
                                 label: 'Mis Materias',
-                                icon: 'pi pi-fw pi-id-card',
+                                icon: 'pi pi-fw pi-book',
                                 routerLink: ['materia/estudiante'],
                                 roles: ['Estudiante']
                             },
-
+                            {
+                                label: 'Pensum',
+                                icon: 'pi pi-fw pi-book',
+                                routerLink: ['materia/pensum'],
+                                roles: ['Estudiante']
+                            },
                         ],
                         roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
                     },
@@ -165,13 +164,19 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Admisión',
                                 icon: 'pi pi-fw pi-file-import',
                                 routerLink: ['estudiante/admision'],
-                                roles: ['Administrador', 'Secretaria'],
+                                roles: ['Administrador', 'Secretaria', 'Estudiante'],
                                 items: [
                                     {
                                         label: 'Gestionar Admisión',
                                         icon: 'pi pi-fw pi-file-import',
                                         routerLink: ['estudiante/admision'],
                                         roles: ['Administrador', 'Secretaria']
+                                    },
+                                    {
+                                        label: 'Mi Admisión',
+                                        icon: 'pi pi-fw pi-file-import',
+                                        routerLink: ['estudiante/mi-admision'],
+                                        roles: ['Estudiante']
                                     },
                                     {
                                         label: 'Tipo Profesión',
@@ -207,7 +212,7 @@ export class AppMenuComponent implements OnInit {
                                 roles: ['Administrador', 'Secretaria']
                             }*/
                         ],
-                        roles: ['Administrador', 'Secretaria']
+                        roles: ['Administrador', 'Secretaria', 'Estudiante']
                     },
                     // {
                     //     label: 'Asistencias',
@@ -242,7 +247,7 @@ export class AppMenuComponent implements OnInit {
                     // },
                     {
                         label: 'Nota',
-                        icon: 'pi pi-fw pi-star',
+                        icon: 'pi pi-fw pi-folder',
                         items: [
                             {
                                 label: 'Gestionar Notas',
@@ -284,6 +289,12 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['docente/crud'],
                         roles: ['Administrador', 'Secretaria']
                     },
+                    {
+                        label: 'Mi Admisión',
+                        icon: 'pi pi-fw pi-file-import',
+                        routerLink: ['docente/mi-admision-doc'],
+                        roles: ['Docente']
+                    },
                     // {
                     //     label: 'Reportes Docentes',
                     //     icon: 'pi pi-fw pi-file-pdf',
@@ -291,7 +302,7 @@ export class AppMenuComponent implements OnInit {
                     //     roles: ['Administrador', 'Secretaria']
                     // }
                 ],
-                roles: ['Administrador', 'Secretaria']
+                roles: ['Administrador', 'Secretaria', 'Docente']
             },
             {
                 label: 'Inscripción y Matriculación',
@@ -380,7 +391,6 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Gestionar Material',
                                 icon: 'pi pi-fw pi-folder-open',
-                                // routerLink: ['material/crud'],
                                 roles: ['Administrador', 'Secretaria', 'Docente'],
                                 items: [
                                     {
@@ -409,127 +419,22 @@ export class AppMenuComponent implements OnInit {
                                 routerLink: ['material/asignar'],
                                 roles: ['Administrador', 'Secretaria', 'Docente']
                             },
-                            // {
-                            //     label: 'Reporte Material',
-                            //     icon: 'pi pi-fw pi-file-pdf',
-                            //     routerLink: ['material/reporte'],
-                            //     roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante', 'Invitado']
-                            // }
+                            {
+                                label: 'Mi Material de Apoyo',
+                                icon: 'pi pi-fw pi-file',
+                                routerLink: ['material/mi-material'],
+                                roles: ['Estudiante']
+                            },
                         ],
-                        roles: ['Administrador', 'Secretaria', 'Docente']
+                        roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
                     }
                 ],
-                roles: ['Administrador', 'Secretaria', 'Docente']
+                roles: ['Administrador', 'Secretaria', 'Docente', 'Estudiante']
             },
-            // {
-            //     label: 'Pago',
-            //     icon: 'pi pi-fw pi-briefcase',
-            //     items: [
-            //         {
-            //             label: 'Pagos',
-            //             icon: 'pi pi-fw pi-credit-card',
-            //             items: [
-            //                 {
-            //                     label: 'Todos los pagos',
-            //                     icon: 'pi pi-fw pi-money-bill',
-            //                     routerLink: ['pago/'],
-            //                     roles: ['Administrador', 'Secretaria'],
-            //                     items: [
-            //                         {
-            //                             label: 'Registrar Pago',
-            //                             icon: 'pi pi-fw pi-bell',
-            //                             // routerLink: ['/usuario/crud']
-            //                         },
-            //                         {
-            //                             label: 'Buscar Pago',
-            //                             icon: 'pi pi-fw pi-bell',
-            //                             // routerLink: ['/usuario/crud']
-            //                         },
-
-            //                     ]
-            //                 },
-            //                 {
-            //                     label: 'Generar reporte de pago',
-            //                     icon: 'pi pi-fw pi-money-bill',
-            //                     routerLink: ['pago/'],
-            //                     roles: ['Administrador', 'Secretaria'],
-            //                     items: [
-            //                         {
-            //                             label: 'Generar reporte pago estudiante',
-            //                             icon: 'pi pi-fw pi-bell',
-            //                             // routerLink: ['/usuario/crud']
-            //                         },
-            //                         {
-            //                             label: 'Generar reporte con filtros',
-            //                             icon: 'pi pi-fw pi-bell',
-            //                             // routerLink: ['/usuario/crud']
-            //                         },
-            //                         {
-            //                             label: 'Reportes de control',
-            //                             icon: 'pi pi-fw pi-bell',
-            //                             // routerLink: ['/usuario/crud']
-            //                         },
-
-            //                     ]
-            //                 },
-            //                 {
-            //                     label: 'Pagos por materia',
-            //                     icon: 'pi pi-fw pi-money-bill',
-            //                     routerLink: ['pago/'],
-            //                     roles: ['Administrador', 'Secretaria']
-            //                 },
-            //                 {
-            //                     label: 'Detalle de pago',
-            //                     icon: 'pi pi-fw pi-money-bill',
-            //                     routerLink: ['pago/'],
-            //                     roles: ['Administrador', 'Secretaria']
-            //                 },
-            //                 {
-            //                     label: 'Historial de pago',
-            //                     icon: 'pi pi-fw pi-money-bill',
-            //                     routerLink: ['pago/'],
-            //                     roles: ['Administrador', 'Secretaria']
-            //                 },
-            //                 // {
-            //                 //     label: 'Reportes Pagos',
-            //                 //     icon: 'pi pi-fw pi-file-pdf',
-            //                 //     routerLink: ['pago/reporte'],
-            //                 //     roles: ['Administrador', 'Secretaria']
-            //                 // },
-            //                 // {
-            //                 //     label: 'Notificación de pago',
-            //                 //     icon: 'pi pi-fw pi-bell',
-            //                 //     routerLink: ['pago/notificacion'],
-            //                 //     roles: ['Administrador', 'Secretaria']
-            //                 // },
-            //                 {
-            //                     label: 'Mis pagos',
-            //                     icon: 'pi pi-fw pi-money-bill',
-            //                     routerLink: ['pago/estudiante'],
-            //                     roles: ['Estudiante']
-            //                 }
-            //             ],
-            //             roles: ['Administrador', 'Secretaria', 'Estudiante']
-            //         },
-            //         // {
-            //         //     label: 'Notificación de pago',
-            //         //     icon: 'pi pi-fw pi-bell',
-            //         //     items: [
-            //         //         {
-            //         //             label: 'Envio de mensaje',
-            //         //             icon: 'pi pi-fw pi-bell',
-            //         //             // routerLink: ['/usuario/crud']
-            //         //         },
-            //         //     ]
-            //         // }
-            //     ],
-            //     roles: ['Administrador', 'Secretaria', 'Estudiante']
-            // },
-
-
             {
                 "label": "Pago",
                 "icon": "pi pi-fw pi-briefcase",
+                "roles": ["Administrador", "Secretaria", "Estudiante"],
                 "items": [
                     {
                         "label": "Gestión de Pagos",
@@ -572,6 +477,25 @@ export class AppMenuComponent implements OnInit {
                                 "routerLink": ["pago/historial"],
                                 "roles": ["Administrador", "Secretaria"]
                             }*/
+                        ],
+                    },
+                    {
+                        "label": "Mis Pagos",
+                        "icon": "pi pi-fw pi-credit-card",
+                        "roles": ["Estudiante"],
+                        "items": [
+                            {
+                                "label": "Mis Pagos",
+                                "icon": "pi pi-fw pi-money-bill",
+                                "routerLink": ["pago/estudiante"],
+                                "roles": ["Estudiante"]
+                            },
+                            {
+                                "label": "Mis Matriculas",
+                                "icon": "fa-regular fa-address-card",
+                                "routerLink": ["pago/estudiante-matricula"],
+                                "roles": ["Estudiante"]
+                            }
                         ]
                     },
                     /*{

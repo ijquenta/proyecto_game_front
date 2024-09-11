@@ -204,12 +204,36 @@ export class MatriculaNuevoComponent implements OnInit {
         )
     }
 
+    // Función para extraer el monto de una cadena
+    extractMonto(cadena: string): number {
+        const partes = cadena.trim().split(' ');
+        const monto = partes[partes.length - 1]; // Última parte de la cadena es el monto
+        return parseFloat(monto); // Convertir a número decimal
+    }
+
     // Función para listar las asignaciones de matricula
-    listarMatricula(){
+    listarMatricula() {
         this.spinner.show();
         this.matriculaService.listarMatricula().subscribe({
             next: (result: any) => {
                 this.listaMatricula = result['data'];
+
+                // Extraer y convertir montos para la lista de matrícula
+                this.listaMatricula.forEach((item: any) => {
+                    // Extraer el monto de tipmatrcosto y de pagmonto
+                    const tipmatrcostoMonto = this.extractMonto(item.tipmatrcosto);
+                    const pagmontoValor = parseFloat(item.pagmonto);
+
+                    // Comparar montos y agregar el estado
+                    if (tipmatrcostoMonto < pagmontoValor) {
+                        item.estado = 'Pendiente';
+                    } else if (tipmatrcostoMonto === pagmontoValor) {
+                        item.estado = 'Completo';
+                    } else if (tipmatrcostoMonto > pagmontoValor) {
+                        item.estado = 'Revisar';
+                    }
+                });
+
                 this.listaMatriculaDuplicado = this.listaMatricula;
                 this.spinner.hide();
             },
@@ -219,6 +243,7 @@ export class MatriculaNuevoComponent implements OnInit {
             }
         });
     }
+
 
     // Función para nueva asignación de matricula a un usuario
     crearMatriculaAsignacion() {
@@ -659,6 +684,18 @@ export class MatriculaNuevoComponent implements OnInit {
         }
     }
 
+    // Funciones para obtener el color del estado
+    getSeverityStatusMatricula(estado: string): string {
+        switch (estado) {
+            case 'Completo':
+                return 'success';
+            case 'Revisar':
+                return 'danger';
+            default:
+                return 'info';
+        }
+    }
+
     getDescriptionStatus(estado: number): string {
         switch (estado) {
             case 1:
@@ -737,6 +774,65 @@ export class MatriculaNuevoComponent implements OnInit {
             });
         });
     }
+
+    generarComprobantePagoMatricula(data: any){
+        console.log("matricula: ", data);
+        const matrid = Number(data['matrid']);
+        const perid = Number(data['peridestudiante'])
+        const criterio = {
+            perid: perid,
+            matrid: matrid,
+            usuname: this.usuario.usuname
+        }
+        console.log("criterio: ", criterio);
+        this.pagoService.generarComprobantePagoMatricula(criterio);
+    }
+
+    eliminarMatricula(data: any){
+        console.log("eliminar: ", data)
+        this.matriculaService.eliminarMatricula(data['matrid']).subscribe({
+            next: (result: any) => {
+                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Se elimino correctamente la matricula.' });
+                this.listarMatricula();
+            },
+            error: (error: any) => {
+                console.error("error al eliminar la matricula:", error);
+                this.messageService.add({ severity: 'warn', summary: '¡Error!', detail: 'No se pudo eliminar la matricula.' });
+            }
+        });
+    }
+
+    eliminarPago(data: any) {
+        console.log("eliminar: ", data);
+
+        // Corrección: Definir correctamente el objeto 'criterio'
+        const criterio = {
+            tipo: 3, // Uso correcto de los dos puntos para asignar valor
+            pagid: data['pagoidmatricula'], // Uso correcto de los dos puntos
+            pagmonto: data['pagmonto'], // Uso correcto de los dos puntos
+            pagfecha: data['pagfecha'] // Uso correcto de los dos puntos
+        };
+        console.log("criterio: ", criterio);
+        this.pagoService.managePayment(criterio).subscribe({
+            next: (result: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Se eliminó correctamente el pago.'
+                });
+                this.listarMatricula(); // Actualizar la lista después de la eliminación
+            },
+            error: (error: any) => {
+                console.error("Error al eliminar el pago:", error);
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: '¡Error!',
+                    detail: 'No se pudo eliminar el pago.'
+                });
+            }
+        });
+    }
+
 
 
 }

@@ -8,6 +8,8 @@ export class CursoMateria {
     matid?: number;
     matnivel?: number;
     curnivel?: number;
+    curfchini?: any;
+    curfchfin?: any;
     pernombres?: string | null;
     perapepat?: string | null;
     perapemat?: string | null;

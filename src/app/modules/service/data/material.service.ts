@@ -215,4 +215,10 @@ export class MaterialService {
     getMateriaCombo() {
         return this.http.get(`${API_URL}/getListMateriaCombo`);
     }
+
+    getMateriaTextoEstudiante(peridestudiante: number) {
+        return this.http.get(`${API_URL}/getMateriaTextosEstudiante/${peridestudiante}`, {
+            context: checktoken(),
+        });
+    }
 }

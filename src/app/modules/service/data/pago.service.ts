@@ -33,15 +33,15 @@ export class PagoService {
     }
 
     listarPagoCurso() {
-        return this.http.get(`${API_URL}/listarPagoCurso`);
+        return this.http.get(`${API_URL}/listarPagoCurso`, { context: checktoken() });
     }
 
     listarPagoEstudiante(data) {
-        return this.http.post(`${API_URL}/listarPagoEstudiante`, data);
+        return this.http.post(`${API_URL}/listarPagoEstudiante`, data, { context: checktoken() });
     }
 
     listarPagoEstudianteMateria(data) {
-        return this.http.post(`${API_URL}/listarPagoEstudianteMateria`, data);
+        return this.http.post(`${API_URL}/listarPagoEstudianteMateria`, data, { context: checktoken() });
     }
 
     listarPagoEstudiantesMateria(data) {
@@ -135,5 +135,50 @@ export class PagoService {
         return this.http.post(`${API_URL}/manageAssignPayment`, data, {
             context: checktoken(),
         });
+    }
+
+    rptPagoEstudianteMateria(data: any) {
+        this.spinner.show();
+        this.http.post(`${API_URL}/rptPagoEstudianteMateria`, data, httpOptions).subscribe({
+                next: (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, 'Reporte Pago');
+                },
+                error: (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            });
+    }
+
+    generarComprobantePagoEstudiante(data: any) {
+        this.spinner.show();
+        this.http.post(`${API_URL}/generarComprobantePagoEstudiante`, data, httpOptions).subscribe({
+                next: (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, 'Reporte Pago Estudiante');
+                },
+                error: (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            });
+    }
+
+    generarComprobantePagoMatricula(data: any) {
+        this.spinner.show();
+        this.http.post(`${API_URL}/generarComprobantePagoMatricula`, data, httpOptions).subscribe({
+                next: (data: any) => {
+                    this.spinner.hide();
+                    this.archivos.generateReportPDF(data, 'Reporte Pago Matricula Estudiante');
+                },
+                error: (error) => {
+                    this.spinner.hide();
+                    console.error(error);
+                    this.archivos.showToast();
+                }
+            });
     }
 }

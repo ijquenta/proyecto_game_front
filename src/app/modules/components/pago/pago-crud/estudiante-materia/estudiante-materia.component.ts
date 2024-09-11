@@ -8,10 +8,12 @@ import { Table } from 'primeng/table';
 import { Pago, TipoPago } from 'src/app/modules/models/pago';
 import { Curso } from 'src/app/modules/models/curso';
 import { Materia } from 'src/app/modules/models/materia';
+import { Usuario } from 'src/app/modules/models/usuario';
 
 import { PagoService } from 'src/app/modules/service/data/pago.service';
 import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
+import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 import { environment } from 'src/environments/environment';
 
@@ -50,6 +52,7 @@ export class EstudianteMateriaComponent implements OnInit {
     errors: any;
     loading: boolean;
 
+    usuario: Usuario | undefined;
     userProfilePhoto: string = environment.API_URL_PROFILE_PHOTO;
     userProfilePhotoEmpty = "../../../../../assets/images/login/sin_foto_perfil.png";
     apiUrlPagoArchivo: string = environment.API_URL_PAGO_ARCHIVO;
@@ -82,7 +85,8 @@ export class EstudianteMateriaComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private cursoService: CursoService,
-        private materiaService: MateriaService
+        private materiaService: MateriaService,
+        private authService: AuthService,
     ) {
 
         this.items = [
@@ -119,7 +123,19 @@ export class EstudianteMateriaComponent implements OnInit {
      */
     ngOnInit(): void {
         this.initData();
+        this.getProfileUsuario();
         this.listarTipoPagoCombo();
+    }
+
+    private getProfileUsuario(): void {
+        this.authService.getProfile().subscribe({
+            next: (usuario: Usuario[]) => {
+                this.usuario = usuario[0];
+            },
+            error: (error: any) => {
+                console.error('Error al obtener el perfil del usuario', error);
+            },
+        });
     }
 
     /**
@@ -353,6 +369,17 @@ export class EstudianteMateriaComponent implements OnInit {
                     total + parseFloat(estudianteInscrito.pagmonto || '0'),
                 0
             );
+    }
+
+    generarComprobantePagoEstudiante(data: any){
+        const insid = Number(data.insid);
+        const perid = Number(data.peridestudiante)
+        const criterio = {
+            perid: perid,
+            insid: insid,
+            usuname: this.usuario.usuname
+        }
+        this.pagoService.generarComprobantePagoEstudiante(criterio);
     }
 
 }
