@@ -14,6 +14,6 @@ export class NotfoundComponent implements OnInit{
     }
 
     volverInicio(){
-        this.router.navigate(['/']);
+        this.router.navigate(['/principal']);
     }
 }

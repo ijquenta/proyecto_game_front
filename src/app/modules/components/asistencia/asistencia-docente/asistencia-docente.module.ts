@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { AsistenciaDocenteRoutingModule } from './asistencia-docente-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -22,15 +21,11 @@ import { MateriaService } from 'src/app/modules/service/data/materia.service';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
-// import { CursoEstudianteComponent } from './curso-estudiante.component';
 import { AsistenciaDocenteComponent } from './asistencia-docente.component';
 
 @NgModule({
     imports: [
         CommonModule,
-        // MateriaCrudRoutingModule,
-        // MateriaEstudianteRoutingModule,
-        // CursoEstudianteRoutingModule,
         AsistenciaDocenteRoutingModule,
         TableModule,
         FileUploadModule,

@@ -38,10 +38,10 @@ export class UploadService {
     }
 
     uploadFilesPago(criterio: any) {
-        return this.http.post(`${API_URL}/pago/upload`, criterio);
+        return this.http.post(`${API_URL}/pago/upload`, criterio, { context: checktoken(), });
     }
 
     uploadFilesTexto(criterio: any) {
-        return this.http.post(`${API_URL}/texto/upload`, criterio);
+        return this.http.post(`${API_URL}/texto/upload`, criterio, { context: checktoken(), });
     }
 }

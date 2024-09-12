@@ -1,3 +1,4 @@
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 import { Component, OnInit } from '@angular/core'; // Importa la clase Componente y OnInit desde Angular Core
 import { Router } from '@angular/router'; // Importa el servicio de enrutamiento de Angular
 import { Message } from 'primeng/api'; // Importa la interfaz Message de PrimeNG para representar mensajes
@@ -5,7 +6,7 @@ import { AuthService } from 'src/app/modules/service/core/auth.service'; // Impo
 import { NgxSpinnerService } from 'ngx-spinner'; // Importa el servicio NgxSpinnerService para manejar spinners de carga
 import { RequestStatus } from 'src/app/modules/models/request-status.model'; // Importa la clase RequestStatus desde el archivo request-status.model
 import { ActivatedRoute } from '@angular/router';
-
+import { TokenService } from 'src/app/modules/service/core/token.service' // Importa el servicio TokenService desde el archivo token.service
 @Component({
     selector: 'app-verified',
     templateUrl: './verified.component.html',
@@ -21,12 +22,15 @@ export class VerifiedComponent implements OnInit {
     constructor(
         private authService: AuthService,
         private spinner: NgxSpinnerService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private tokenService: TokenService
     ) { }
 
     ngOnInit(): void {
         this.route.queryParams.subscribe(params => {
             this.token = params['token'];
+            if(this.tokenService.isValidTokenCheck(this.token)){
+            }
         });
     }
 

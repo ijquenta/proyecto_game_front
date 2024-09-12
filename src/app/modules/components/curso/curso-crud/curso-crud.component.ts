@@ -676,7 +676,6 @@ export class CursoCrudComponent implements OnInit {
      * @param data Datos de curso y materia.
      */
     listarCursoHorario(data: any): void {
-        console.log("data", data);
         this.curmatid = data.curmatid;
         this.curid = data.curid;
         this.matid = data.matid;

@@ -102,7 +102,6 @@ export class TipoCategoriaTextoComponent implements OnInit {
     }
 
     enviarTipoCategoriaTexto() {
-        console.log("tipoCategoriaTextoForm: ", this.tipoCategoriaTextoForm.value)
         if (this.tipoCategoriaTextoForm.invalid) {
             this.messageService.add({
                 severity: 'warn',

@@ -7,14 +7,13 @@
             <ng-template pTemplate="header">
                 <span>Pagos de Matriculas Realizados</span>
             </ng-template>
-            <p-dataView #dv [value]="listarMateriasInscritasPagado" [rows]="12" filterBy="pernomcompleto"
-                layout="grid"
+            <p-dataView #dv [value]="listarMateriasInscritasPagado" [rows]="12" filterBy="pernomcompleto" layout="grid"
                 [emptyMessage]="'No se encontraron registros.'" [loadingIcon]="'pi pi-spin pi-spinner'">
                 <ng-template pTemplate="header">
                     <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
-                        <button pButton pRipple label="Reporte Pagos de Matriculas" icon="pi pi-file-pdf" (click)="rptPagos()"
-                            class="p-button-outlined p-button-danger mr-2" pTooltip="Generar reporte"
-                            tooltipPosition="top"></button>
+                        <button pButton pRipple label="Reporte Pagos de Matriculas" icon="pi pi-file-pdf"
+                            (click)="rptPagos()" class="p-button-outlined p-button-danger mr-2"
+                            pTooltip="Generar reporte" tooltipPosition="top"></button>
                     </div>
                 </ng-template>
                 <ng-template let-pagoMatricula pTemplate="gridItem">
@@ -59,8 +58,8 @@
                                 </div>
                                 <button pButton icon="pi pi-money-bill"
                                     class="p-button-outlined p-button-primary w-auto"
-                                    (click)="listarPagoMateria(pagoMatricula)" pTooltip="Ver pago matricula" label="Pago"
-                                    tooltipPosition="top">
+                                    (click)="listarPagoMateria(pagoMatricula)" pTooltip="Ver pago matricula"
+                                    label="Pago" tooltipPosition="top">
                                 </button>
                             </div>
                         </p-card>
@@ -72,85 +71,90 @@
             <ng-template pTemplate="header">
                 <span>Pago de Matriculas Pendientes</span>
             </ng-template>
-            <p-dataView #dv [value]="listarMateriasInscritasSinPagar" [paginator]="true" [rows]="12" filterBy="pernomcompleto"
-            layout="grid" [sortField]="sortField" [sortOrder]="sortOrder"
-            [emptyMessage]="'No se encontraron registros.'" [loadingIcon]="'pi pi-spin pi-spinner'">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
-                    <button pButton pRipple label="Reporte Pagos" icon="pi pi-file-pdf" (click)="rptPagos()"
-                        class="p-button-outlined p-button-danger mr-2" pTooltip="Generar reporte"
-                        tooltipPosition="top"></button>
-                    <div class="flex">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
-                                (input)="filtarUsuarios()" pTooltip="Buscar por Curso, Materia."
-                                tooltipPosition="top" />
-                        </span>
+            <p-dataView #dv [value]="listarMateriasInscritasSinPagar" [paginator]="true" [rows]="12"
+                filterBy="pernomcompleto" layout="grid" [sortField]="sortField" [sortOrder]="sortOrder"
+                [emptyMessage]="'No se encontraron registros.'" [loadingIcon]="'pi pi-spin pi-spinner'">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                        <button pButton pRipple label="Reporte Pagos" icon="pi pi-file-pdf" (click)="rptPagos()"
+                            class="p-button-outlined p-button-danger mr-2" pTooltip="Generar reporte"
+                            tooltipPosition="top"></button>
+                        <div class="flex">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText placeholder="Buscar por nombre" [(ngModel)]="searchText"
+                                    (input)="filtarUsuarios()" pTooltip="Buscar por Curso, Materia."
+                                    tooltipPosition="top" />
+                            </span>
+                        </div>
                     </div>
-                </div>
-            </ng-template>
-            <ng-template let-pagoMatricula pTemplate="gridItem">
-                <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
-                    <p-card>
-                        <div class="flex flex-wrap align-items-center justify-content-between ">
-                            <div class="flex flex-column">
-                                <span class="text-xl font-bold text-truncate" style="max-width: 450px;">
-                                    {{ pagoMatricula.curnombre }}
-                                </span>
-                                <div class="text-sm text-secondary mt-1" pTooltip="Detalles del curso"
-                                    tooltipPosition="top">
-                                    <i class="pi pi-calendar mr-1"></i>
-                                    {{ pagoMatricula.curfchini }} a {{ pagoMatricula.curfchfin }}
-                                </div>
-                            </div>
-                            <p-tag [value]="getDescriptionStatus(pagoMatricula.curmatestado)"
-                                [severity]="getSeverityStatus(pagoMatricula.curmatestado)">
-                            </p-tag>
-                        </div>
-
-                        <div class="flex flex-column align-items-center gap-3 py-5">
-                            <div class="text-xl font-bold text-truncate" style="max-width: 250px;">
-                                {{ pagoMatricula.matnombre }}
-                            </div>
-
-                            <div class="text-sm text-center">
-                                <i class="pi pi-money-bill mr-1"></i>
-                                {{ pagoMatricula.pagmonto + ' Bs.'}}
-                            </div>
-                        </div>
-
-                        <div class="flex align-items-center justify-content-between">
-                            <div class="flex align-items-center">
-                                <div class="ml-2">
-                                    <span class="font-bold text-sm text-truncate">Estado del pago:</span> <br>
-                                    <div class="mt-1">
-                                        <p-tag [severity]="getSeverityColor(pagoMatricula.pagestado)">
-                                            {{getText(pagoMatricula.pagestado)}}
-                                        </p-tag>
+                </ng-template>
+                <ng-template let-pagoMatricula pTemplate="gridItem">
+                    <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
+                        <p-card>
+                            <div class="flex flex-wrap align-items-center justify-content-between ">
+                                <div class="flex flex-column">
+                                    <span class="text-xl font-bold text-truncate" style="max-width: 450px;">
+                                        {{ pagoMatricula.curnombre }}
+                                    </span>
+                                    <div class="text-sm text-secondary mt-1" pTooltip="Detalles del curso"
+                                        tooltipPosition="top">
+                                        <i class="pi pi-calendar mr-1"></i>
+                                        {{ pagoMatricula.curfchini }} a {{ pagoMatricula.curfchfin }}
                                     </div>
                                 </div>
+                                <p-tag [value]="getDescriptionStatus(pagoMatricula.curmatestado)"
+                                    [severity]="getSeverityStatus(pagoMatricula.curmatestado)">
+                                </p-tag>
                             </div>
-                            <!-- <button pButton icon="pi pi-money-bill"
-                                class="p-button-outlined p-button-primary w-auto"
-                                (click)="listarPagoMateria(pagoMatricula)" pTooltip="Ver pago" label="Pago"
-                                tooltipPosition="top">
-                            </button> -->
 
-                            <button *ngIf="pagoMatricula.pagoidmatricula && pagoMatricula.matrestado == 1" pButton="pButton" pRipple="pRipple" type="button" icon="fa-solid fa-file-pen" class="p-button-outlined p-button-rounded p-button-info mr-2" pTooltip="Editar pago matricula" tooltipPosition="top" (click)="modificarPagoMatricula(matr)"> </button>
-                                <div *ngIf="pagoMatricula.pagoidmatricula && pagoMatricula.matrestado == 1 && pagoMatricula.pagarchivo" >
-                                    <ng-container *ngIf=" isImagen(pagoMatricula.pagarchivo); else noImagen " >
-                                        <button pButton pRipple icon="pi pi-image" class="p-button-rounded p-button-outlined p-button-warning mr-2" pTooltip="Mostrar Imagen" tooltipPosition="top" (click)="mostrarPagoArchivoImagen(pagoMatricula.pagarchivo)" ></button>
+                            <div class="flex flex-column align-items-center gap-3 py-5">
+                                <div class="text-xl font-bold text-truncate" style="max-width: 250px;">
+                                    {{ pagoMatricula.matnombre }}
+                                </div>
+
+                                <div class="text-sm text-center">
+                                    <i class="pi pi-money-bill mr-1"></i>
+                                    {{ pagoMatricula.pagmonto + ' Bs.'}}
+                                </div>
+                            </div>
+
+                            <div class="flex align-items-center justify-content-between">
+                                <div class="flex align-items-center">
+                                    <div class="ml-2">
+                                        <span class="font-bold text-sm text-truncate">Estado del pago:</span> <br>
+                                        <div class="mt-1">
+                                            <p-tag [severity]="getSeverityColor(pagoMatricula.pagestado)">
+                                                {{getText(pagoMatricula.pagestado)}}
+                                            </p-tag>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button *ngIf="pagoMatricula.pagoidmatricula && pagoMatricula.matrestado == 1"
+                                    pButton="pButton" pRipple="pRipple" type="button" icon="fa-solid fa-file-pen"
+                                    class="p-button-outlined p-button-rounded p-button-info mr-2"
+                                    pTooltip="Editar pago matricula" tooltipPosition="top"
+                                    (click)="modificarPagoMatricula(matr)"> </button>
+                                <div
+                                    *ngIf="pagoMatricula.pagoidmatricula && pagoMatricula.matrestado == 1 && pagoMatricula.pagarchivo">
+                                    <ng-container *ngIf=" isImagen(pagoMatricula.pagarchivo); else noImagen ">
+                                        <button pButton pRipple icon="pi pi-image"
+                                            class="p-button-rounded p-button-outlined p-button-warning mr-2"
+                                            pTooltip="Mostrar Imagen" tooltipPosition="top"
+                                            (click)="mostrarPagoArchivoImagen(pagoMatricula.pagarchivo)"></button>
                                     </ng-container>
                                     <ng-template #noImagen>
-                                        <button pButton pRipple icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-warning mr-2" (click)=" mostrarPagoArchivo(pagoMatricula.pagarchivo) " pTooltip="Ver archivo" tooltipPosition="top" ></button>
+                                        <button pButton pRipple icon="pi pi-file-pdf"
+                                            class="p-button-rounded p-button-outlined p-button-warning mr-2"
+                                            (click)=" mostrarPagoArchivo(pagoMatricula.pagarchivo) "
+                                            pTooltip="Ver archivo" tooltipPosition="top"></button>
                                     </ng-template>
                                 </div>
-                        </div>
-                    </p-card>
-                </div>
-            </ng-template>
-        </p-dataView>
+                            </div>
+                        </p-card>
+                    </div>
+                </ng-template>
+            </p-dataView>
         </p-tabPanel>
     </p-tabView>
 </p-card>
@@ -174,7 +178,6 @@
                     <th> Respaldo </th>
                     <th> Comprobante </th>
                     <th> Estado </th>
-                    <!-- <th>  </th> -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-pago>
@@ -187,29 +190,26 @@
                     <td> {{pago.pagdescripcion}} </td>
                     <td> {{pago.pagmonto}} </td>
                     <td>
-                        <!-- <button pButton="pButton" pRipple="pRipple" type="button"
-                            icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-danger mr-1"
-                            pTooltip="Ver archivo de pago" tooltipPosition="top"
-                            (click)="verArchivoPago(pago.pagarchivo)">
-                        </button> -->
-                        <div *ngIf="pago.pagoidmatricula && pago.matrestado == 1 && pago.pagarchivo" >
-                            <ng-container *ngIf=" isImagen(pago.pagarchivo); else noImagen " >
-                                <button pButton pRipple icon="pi pi-image" class="p-button-rounded p-button-outlined p-button-warning mr-2" pTooltip="Mostrar Imagen" tooltipPosition="top" (click)="mostrarPagoArchivoImagen(pago.pagarchivo)" ></button>
+                        <div *ngIf="pago.pagoidmatricula && pago.matrestado == 1 && pago.pagarchivo">
+                            <ng-container *ngIf=" isImagen(pago.pagarchivo); else noImagen ">
+                                <button pButton pRipple icon="pi pi-image"
+                                    class="p-button-rounded p-button-outlined p-button-warning mr-2"
+                                    pTooltip="Mostrar Imagen" tooltipPosition="top"
+                                    (click)="mostrarPagoArchivoImagen(pago.pagarchivo)"></button>
                             </ng-container>
                             <ng-template #noImagen>
-                                <button pButton pRipple icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-warning mr-2" (click)=" mostrarPagoArchivo(pago.pagarchivo) " pTooltip="Ver archivo" tooltipPosition="top" ></button>
+                                <button pButton pRipple icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-outlined p-button-warning mr-2"
+                                    (click)=" mostrarPagoArchivo(pago.pagarchivo) " pTooltip="Ver archivo"
+                                    tooltipPosition="top"></button>
                             </ng-template>
                         </div>
 
                     </td>
                     <td>
-                        <!-- <button pButton="pButton" pRipple="pRipple" type="button"
-                            icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-danger mr-1"
-                            pTooltip="Reporte" tooltipPosition="top" (click)="verArchivoPago(pago.pagarchivo)">
-                        </button> -->
                         <button pButton pRipple icon="pi pi-file-pdf" (click)="generarComprobantePagoMatricula(pago)"
-                            class="p-button-outlined p-button-danger p-button-rounded mr-2" pTooltip="Generar Comprobante de Pago"
-                            tooltipPosition="top">
+                            class="p-button-outlined p-button-danger p-button-rounded mr-2"
+                            pTooltip="Generar Comprobante de Pago" tooltipPosition="top">
                         </button>
                     </td>
                     <td>
@@ -217,17 +217,6 @@
                             {{getText(pago.pagestado)}}
                         </p-tag>
                     </td>
-                    <!-- <td>
-                        <p-tag *ngIf="pago.tipmatrcosto < pago.pagmonto">
-                            Pendiente
-                        </p-tag>
-                        <p-tag *ngIf="pago.tipmatrcosto === pago.pagmonto">
-                            Completo
-                        </p-tag>
-                        <p-tag *ngIf="pago.tipmatrcosto > pago.pagmonto">
-                            Revisar
-                        </p-tag>
-                    </td> -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">

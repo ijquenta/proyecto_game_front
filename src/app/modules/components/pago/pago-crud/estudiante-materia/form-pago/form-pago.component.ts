@@ -5,7 +5,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 
-
 import { Pago, TipoPago } from 'src/app/modules/models/pago';
 import { Usuario } from 'src/app/modules/models/usuario';
 
@@ -321,7 +320,6 @@ export class FormPagoComponent implements OnInit {
      */
      onFileSelect(event: any): void {
         this.pagoFile = event.files[0];
-        // this.pagoFileUrl = URL.createObjectURL(this.pagoFile);
         this.uploadProgress = 0; // Reiniciar la barra de progreso
 
         this.messageService.add({ severity: 'info', summary: 'Archivo', detail: 'Archivo seleccionado correctamente.' });
@@ -360,16 +358,10 @@ export class FormPagoComponent implements OnInit {
      */
     clearFilespagarchivo(): void {
         this.cdr.detectChanges();
-
-        // if (this.fileUploadPago) {
-            // this.fileUploadPago.clear();
             this.pagoFile = null;
             this.pagoFileUrl = null;
             this.uploadProgress = 0;
             this.messageService.add({ severity: 'info', summary: 'Archivo', detail: 'Selección de archivo limpiada.' });
-        // } else {
-            // console.error('fileUploadPago is not initialized or is not available.');
-        // }
     }
 
 

@@ -174,7 +174,6 @@ export class AppConfigComponent {
             );
           },
           error: (err) => {
-            console.log(err);
             this.spinner.hide();
             this.messageService.add({
                 severity: 'error',

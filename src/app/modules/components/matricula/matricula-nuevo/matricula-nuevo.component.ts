@@ -776,7 +776,6 @@ export class MatriculaNuevoComponent implements OnInit {
     }
 
     generarComprobantePagoMatricula(data: any){
-        console.log("matricula: ", data);
         const matrid = Number(data['matrid']);
         const perid = Number(data['peridestudiante'])
         const criterio = {
@@ -784,12 +783,10 @@ export class MatriculaNuevoComponent implements OnInit {
             matrid: matrid,
             usuname: this.usuario.usuname
         }
-        console.log("criterio: ", criterio);
         this.pagoService.generarComprobantePagoMatricula(criterio);
     }
 
     eliminarMatricula(data: any){
-        console.log("eliminar: ", data)
         this.matriculaService.eliminarMatricula(data['matrid']).subscribe({
             next: (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Se elimino correctamente la matricula.' });
@@ -803,7 +800,6 @@ export class MatriculaNuevoComponent implements OnInit {
     }
 
     eliminarPago(data: any) {
-        console.log("eliminar: ", data);
 
         // Corrección: Definir correctamente el objeto 'criterio'
         const criterio = {
@@ -812,7 +808,6 @@ export class MatriculaNuevoComponent implements OnInit {
             pagmonto: data['pagmonto'], // Uso correcto de los dos puntos
             pagfecha: data['pagfecha'] // Uso correcto de los dos puntos
         };
-        console.log("criterio: ", criterio);
         this.pagoService.managePayment(criterio).subscribe({
             next: (result: any) => {
                 this.messageService.add({

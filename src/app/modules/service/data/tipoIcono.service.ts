@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
 import { TipoIcono } from '../../models/diccionario';
 import { Observable } from 'rxjs';
+import { checktoken } from 'src/app/interceptors/token.interceptor';
 
 @Injectable()
 export class TipoIconoService {
@@ -11,23 +12,22 @@ export class TipoIconoService {
     // Menu Services
 
     getTipoIcono(): Observable<TipoIcono[]> {
-        return this.http.get<TipoIcono[]>(`${API_URL}/getTipoIcono`);
+        return this.http.get<TipoIcono[]>(`${API_URL}/getTipoIcono`, { context: checktoken(), });
     }
 
     findIdIcono(data: any) {
-        return this.http.post(`${API_URL}/findIdIcono`, data);
+        return this.http.post(`${API_URL}/findIdIcono`, data, { context: checktoken(), });
     }
 
-    // Other examples
     createOperation(data: any) {
-        return this.http.post(`${API_URL}/createOperation`, data);
+        return this.http.post(`${API_URL}/createOperation`, data, { context: checktoken(), });
     }
 
     updateOperation(opeid: number, data: any) {
-        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data);
+        return this.http.put(`${API_URL}/updateOperation/${opeid}`, data, { context: checktoken(), });
     }
 
     deleteOperation(opeid: number) {
-        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`);
+        return this.http.delete(`${API_URL}/deleteOperation/${opeid}`, { context: checktoken(), });
     }
 }

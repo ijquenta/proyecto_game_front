@@ -45,39 +45,35 @@ export class PagoService {
     }
 
     listarPagoEstudiantesMateria(data) {
-        return this.http.post(`${API_URL}/listarPagoEstudiantesMateria`, data, {
-            context: checktoken(),
-        });
+        return this.http.post(`${API_URL}/listarPagoEstudiantesMateria`, data, { context: checktoken(), });
     }
 
     managePayment(data) {
-        return this.http.post(`${API_URL}/managePayment`, data, {
-            context: checktoken(),
-        });
+        return this.http.post(`${API_URL}/managePayment`, data, { context: checktoken(), });
     }
 
     insertarPago(data) {
-        return this.http.post(`${API_URL}/insertarPago`, data);
+        return this.http.post(`${API_URL}/insertarPago`, data, { context: checktoken(), });
     }
 
     modificarPago(data) {
-        return this.http.post(`${API_URL}/modificarPago`, data);
+        return this.http.post(`${API_URL}/modificarPago`, data, { context: checktoken(), });
     }
 
     asignarPagoInscripcion(data) {
-        return this.http.post(`${API_URL}/asignarPagoInscripcion`, data);
+        return this.http.post(`${API_URL}/asignarPagoInscripcion`, data, { context: checktoken(), });
     }
 
     asignarPagoMatricula(data) {
-        return this.http.post(`${API_URL}/asignarPagoMatricula`, data);
+        return this.http.post(`${API_URL}/asignarPagoMatricula`, data, { context: checktoken(), });
     }
 
     obtenerUltimoPago() {
-        return this.http.get(`${API_URL}/obtenerUltimoPago`);
+        return this.http.get(`${API_URL}/obtenerUltimoPago`, { context: checktoken(), });
     }
 
     getTipoPago() {
-        return this.http.get(`${API_URL}/tipoPago`);
+        return this.http.get(`${API_URL}/tipoPago`, { context: checktoken(), });
     }
 
     getFilePago(pagarchivo: any) {
@@ -109,9 +105,7 @@ export class PagoService {
     }
 
     getPagoById(pagid: Number) {
-        return this.http.get(`${API_URL}/getPagoById/${pagid}`, {
-            context: checktoken(),
-        });
+        return this.http.get(`${API_URL}/getPagoById/${pagid}`, { context: checktoken(), });
     }
 
     getPagoArchivo(filename: string) {
@@ -132,9 +126,7 @@ export class PagoService {
     }
 
     manageAssignPayment(data) {
-        return this.http.post(`${API_URL}/manageAssignPayment`, data, {
-            context: checktoken(),
-        });
+        return this.http.post(`${API_URL}/manageAssignPayment`, data, { context: checktoken(), });
     }
 
     rptPagoEstudianteMateria(data: any) {

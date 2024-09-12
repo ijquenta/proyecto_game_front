@@ -181,12 +181,6 @@
                     <td> {{pago.pagdescripcion}} </td>
                     <td> {{pago.pagmonto}} </td>
                     <td>
-                        <!-- <button *ngIf="pago.pagid" pButton="pButton" pRipple="pRipple" type="button"
-                            icon="pi pi-file-pdf" class="p-button-rounded p-button-outlined p-button-danger mr-1"
-                            pTooltip="Ver archivo de pago" tooltipPosition="top"
-                            (click)="verArchivoPago(pago.pagarchivo)">
-                        </button> -->
-
                         <div *ngIf="pago.pagarchivo" >
                             <ng-container
                                 *ngIf="

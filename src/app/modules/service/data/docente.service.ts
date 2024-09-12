@@ -17,7 +17,7 @@ export class DocenteService {
     }
 
     listarDocente(){
-        return this.http.get(`${API_URL}/listarDocente`)
+        return this.http.get(`${API_URL}/listarDocente`, { context: checktoken(), })
     }
 
     listarMateriaEstudianteCurso(data) {

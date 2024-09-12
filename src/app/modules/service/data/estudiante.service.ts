@@ -27,11 +27,11 @@ export class EstudianteService {
     ) {}
 
     obtenerMateriasInscritas(criterio: any) {
-        return this.http.post(`${API_URL}/obtenerMateriasInscritas`, criterio);
+        return this.http.post(`${API_URL}/obtenerMateriasInscritas`, criterio, { context: checktoken(), });
     }
 
     listarEstudiante() {
-        return this.http.get(`${API_URL}/listarEstudiante`);
+        return this.http.get(`${API_URL}/listarEstudiante`, { context: checktoken(), });
     }
 
     rptCursoMateriaEstudiante(data: any) {

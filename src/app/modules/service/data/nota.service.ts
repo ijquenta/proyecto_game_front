@@ -127,7 +127,6 @@ export class NotaService {
     }
 
     rptNotaCursoMateria(data: any) {
-        console.log(data);
         this.usuario = this.authService.usuario$.getValue();
         const curmatid = data.curmatid;
         const criterio = {

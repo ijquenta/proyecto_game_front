@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PagoCrudRoutingModule } from '../pago-crud-routing.module';
-// import { PagoEstudianteMateriaTableRoutingModule } from '../pago-estudiante-materia-table/pago-estudiante-materia-table-routing.module';
-import { PagoCrudComponent } from '../pago-crud.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -35,10 +33,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { UploadService } from 'src/app/modules/service/data/upload.service'; // Importar para subir archivos
 import { CardModule } from 'primeng/card';
 import { NgxSpinnerModule } from 'ngx-spinner';
-// import { PagoDialogComponent } from '../pago-estudiante-materia-table/pago-dialog/pago-dialog.component';
-// import { PagoEstudianteMateriaTableComponent } from '../pago-estudiante-materia-table/pago-estudiante-materia-table.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { EstudianteMateriaComponent } from './estudiante-materia.component';
 import { CursoService } from 'src/app/modules/service/data/curso.service';
 import { MateriaService } from 'src/app/modules/service/data/materia.service';
 @NgModule({
@@ -46,7 +41,6 @@ import { MateriaService } from 'src/app/modules/service/data/materia.service';
         BreadcrumbModule,
         CommonModule,
         PagoCrudRoutingModule,
-        // PagoEstudianteMateriaTableRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,

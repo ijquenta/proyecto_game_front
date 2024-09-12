@@ -125,11 +125,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         this.spinner.show();
         this.usuarioService.resetPassword(this.token, this.usuarioRegistro).subscribe({
           next: (response) => {
-            console.log(response);
             this.spinner.hide();
           },
           error: (err) => {
-            console.log(err);
             this.spinner.hide();
           },
           complete: () => {

@@ -30,7 +30,6 @@ import { ChipModule } from 'primeng/chip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
 import { UsuarioPersonaComponent } from './usuario-persona.component';

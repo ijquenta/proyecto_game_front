@@ -40,8 +40,6 @@ export class ArchivosService {
             height: '100%'
         });
         ref.onClose.subscribe((result: any) => {
-            // console.log('fileName:', result);
-            //this.confirmDialogObsData = result;
         });
     }
 
@@ -63,8 +61,6 @@ export class ArchivosService {
         height: '80%'
         });
         ref.onClose.subscribe((result: any) => {
-            // console.log('fileName:', result);
-            //this.confirmDialogObsData = result;
         });
     }
     generateReportDescargable(data: any, fileName: string){

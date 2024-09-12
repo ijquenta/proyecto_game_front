@@ -80,7 +80,6 @@ export class PagoEstudianteMatriculaComponent implements OnInit {
                 this.usuario = user[0];
                 this.matriculaService.listarMatriculaEstudiante(this.usuario.perid).subscribe(
                     (result: any) => {
-                        console.log(result['data']);
                         this.listarMateriasInscritas = result['data'] as any[];
 
                         // Filtrar los cursos que tienen pagestado en 0 o null
@@ -111,17 +110,9 @@ export class PagoEstudianteMatriculaComponent implements OnInit {
     }
 
     listarPagoMateria(data: any) {
-        console.log("data", data);
-
-
-
         this.verPagosClicked = true;
-
         // Asignar el array de datos
         this.listarNotaEstudianteMateria = Array.isArray(data) ? data : [data];
-
-
-        console.log("datos2: ", this.listarNotaEstudianteMateria);
     }
 
     getSeverityColor(pagestado: number): string {
@@ -234,7 +225,6 @@ export class PagoEstudianteMatriculaComponent implements OnInit {
     }
 
     generarComprobantePagoMatricula(data: any){
-        console.log("matricula: ", data);
         const matrid = Number(data['matrid']);
         const perid = Number(data['peridestudiante'])
         const criterio = {
@@ -242,7 +232,6 @@ export class PagoEstudianteMatriculaComponent implements OnInit {
             matrid: matrid,
             usuname: this.usuario.usuname
         }
-        console.log("criterio: ", criterio);
         this.pagoService.generarComprobantePagoMatricula(criterio);
     }
 

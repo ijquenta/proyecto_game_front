@@ -287,7 +287,6 @@ export class DocenteMiAdmisionComponent implements AfterViewInit, OnInit {
             }
         });
 
-        console.log("this.persona", perid)
         this.showDialogPersona = true;
         this.showDialogPersonaInformacionPersonal = true;
         this.showDialogPersonaInformacionAcademica = true;

@@ -155,14 +155,12 @@ export class UsuarioAccesosComponent implements OnInit {
             next: (data: any) => {
             this.accesses = data;
             this.spinner.hide();
-            console.log('list accesses: ', this.accesses);
             },
             error: (error) => {
             console.error('Error al listar accesos:', error);
             this.spinner.hide();
             },
             complete: () => {
-            // console.log('Listado de accesos completado.');
             this.spinner.hide();
             }
         });
@@ -190,7 +188,6 @@ export class UsuarioAccesosComponent implements OnInit {
     getDataRoles() {
         this.permisoService.getRoles().subscribe(
           (data: any) => {
-            console.log('Roles obtenidos:', data);  // Log para verificar los datos recibidos
             if (Array.isArray(data["data"])) {
               this.roles = data["data"];
             } else {
@@ -331,7 +328,6 @@ export class UsuarioAccesosComponent implements OnInit {
 
     // Option dialog delete
     handleClickAccess(access: any) {
-        // console.log('handleClickAccess!', access);
         this.access = access;
         this.deleteAccessDialog = true;
     }

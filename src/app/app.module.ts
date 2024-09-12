@@ -53,7 +53,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import localeBo from '@angular/common/locales/es-BO';
 import { registerLocaleData } from '@angular/common';
 import { ResetPasswordComponent } from './modules/components/auth/resetPassword/reset-password.component';
-import { FullCalendarModule } from '@fullcalendar/angular'; // Importa el módulo FullCalendar
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 
 registerLocaleData(localeBo, 'es');

@@ -366,7 +366,6 @@ export class UsuarioCrudComponent implements OnInit {
     // Abre modal para activar usuario
     confirmActivate(data: any) {
         this.usuario = { ...data };
-        console.log(this.usuario);
         this.activateUserDialog = true;
     }
     // Abre modal para cambiar contraseña
@@ -410,7 +409,6 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioRegistro = { ...this.usuario};
         this.usuarioRegistro.tipo = 2;
         this.usuarioRegistro.usuusumod = this.datosUsuario.usuname;
-        console.log(this.usuarioRegistro);
         this.usuarioService.gestionarUsuarioEstado(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Desactivado.', life: 3000});
@@ -430,7 +428,6 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuarioRegistro = { ...this.usuario};
         this.usuarioRegistro.tipo = 3;
         this.usuarioRegistro.usuusumod = this.datosUsuario.usuname;
-        console.log(this.usuarioRegistro);
         this.usuarioService.gestionarUsuarioEstado(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Activado.', life: 3000});

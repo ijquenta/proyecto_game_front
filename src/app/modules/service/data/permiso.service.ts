@@ -8,29 +8,27 @@ export class PermisoService {
     constructor(private http: HttpClient) {}
 
     listarNivel() {
-        return this.http.get(`${API_URL}/listarNivel`);
+        return this.http.get(`${API_URL}/listarNivel`, { context: checktoken(), });
     }
 
     insertarNivel(criterio: any) {
-        return this.http.post(`${API_URL}/insertarNivel`, criterio);
+        return this.http.post(`${API_URL}/insertarNivel`, criterio, { context: checktoken(), });
     }
 
     eliminarNivel(criterio: any) {
-        return this.http.post(`${API_URL}/eliminarNivel`, criterio);
+        return this.http.post(`${API_URL}/eliminarNivel`, criterio, { context: checktoken(), });
     }
 
     modificarNivel(criterio: any) {
-        return this.http.post(`${API_URL}/modificarNivel`, criterio);
+        return this.http.post(`${API_URL}/modificarNivel`, criterio, { context: checktoken(), });
     }
 
     gestionarNivelEstado(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarNivelEstado`, criterio);
+        return this.http.post(`${API_URL}/gestionarNivelEstado`, criterio, { context: checktoken(), });
     }
 
     listarPermiso() {
-        return this.http.get(`${API_URL}/listarPermiso`, {
-            context: checktoken(),
-        });
+        return this.http.get(`${API_URL}/listarPermiso`, { context: checktoken(), });
     }
 
     listarPermisoRol() {
@@ -38,9 +36,7 @@ export class PermisoService {
     }
 
     getPermisos() {
-        return this.http.get(`${API_URL}/getPermisos`, {
-            context: checktoken(),
-        });
+        return this.http.get(`${API_URL}/getPermisos`, { context: checktoken(), });
     }
 
     getRoles() {
@@ -48,18 +44,18 @@ export class PermisoService {
     }
 
     getOperaciones() {
-        return this.http.get(`${API_URL}/getOperaciones`);
+        return this.http.get(`${API_URL}/getOperaciones`, { context: checktoken(), });
     }
 
     updatePermiso(permiso: any) {
-        return this.http.post(`${API_URL}/updatePermiso`, permiso);
+        return this.http.post(`${API_URL}/updatePermiso`, permiso, { context: checktoken(), });
     }
 
     addPermiso(permiso: any) {
-        return this.http.post(`${API_URL}/addPermiso`, permiso);
+        return this.http.post(`${API_URL}/addPermiso`, permiso, { context: checktoken(), });
     }
 
     deletePermiso(permiso: any) {
-        return this.http.post(`${API_URL}/deletePermiso`, permiso);
+        return this.http.post(`${API_URL}/deletePermiso`, permiso, { context: checktoken(), });
     }
 }

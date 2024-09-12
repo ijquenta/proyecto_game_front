@@ -172,8 +172,6 @@ export class NotaDocenteComponent implements OnInit {
                 this.notaService.listarNotaDocente(criterio).subscribe(
                     (result: any) => {
                         this.listarMateriasInscritas = result as CursoMateria[];
-                        console.log('lista', this.listarMateriasInscritas);
-                        // this.messageService.add({severity: 'info', summary: 'Correcto', detail: 'Información obtenida'});
                     },
                     (error) => {
                         this.errors = error;

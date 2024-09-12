@@ -8,7 +8,5 @@ export class SubMenu {
     submenfecmod?: Date;
     submendescripcion?: string;
     submenestado: number;
-
-    // Extras
     mennombre?: string;
 }

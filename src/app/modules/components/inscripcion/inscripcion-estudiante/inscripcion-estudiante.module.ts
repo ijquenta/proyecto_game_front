@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { InscripcionEstudianteRoutingModule } from './inscripcion-estudiante-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -27,7 +26,6 @@ import { InscripcionEstudianteComponent } from './inscripcion-estudiante.compone
 @NgModule({
     imports: [
         CommonModule,
-        // MateriaCrudRoutingModule,
         InscripcionEstudianteRoutingModule,
         TableModule,
         FileUploadModule,

@@ -27,7 +27,6 @@ export class ReporteService {
                 },
                 (error) => {
                     this.spinner.hide();
-                    console.log(error);
                     this.archivos.showToast();
                 }
             );

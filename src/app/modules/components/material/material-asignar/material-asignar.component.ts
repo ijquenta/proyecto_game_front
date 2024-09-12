@@ -216,7 +216,6 @@ export class MaterialAsignarComponent implements OnInit {
     }
 
     modify(mattex: MateriaTexto) {
-        console.log("modify", mattex)
         this.materiatexto = {...mattex};
         this.assignDialog = true;
         this.assignBool = false;
@@ -279,7 +278,6 @@ export class MaterialAsignarComponent implements OnInit {
         this.materialService.getTextoCombo().subscribe({
             next: (result: any) => {
                 this.tipoTexto = result;
-                console.log("tipoTexto", this.tipoTexto)
             },
             error: (error: any) => {
                 console.error(error);
@@ -319,7 +317,6 @@ export class MaterialAsignarComponent implements OnInit {
             materiaTextos.push(materiaTexto);
         });
 
-        console.log("materiaTextos",materiaTextos)
         // Devolver la lista de objetos MateriaTexto
         return materiaTextos;
     }
@@ -386,8 +383,6 @@ export class MaterialAsignarComponent implements OnInit {
             });
         }
         if (!this.assignBool) {
-            console.log("modify");
-            console.log("materiaTextoForm",this.materiaTextoForm.value)
             const materiatextoData: FormData = new FormData();
             materiatextoData.append('mattexid', this.materiaTextoForm.value.mattexid);
             materiatextoData.append('matid', this.materiaTextoForm.value.tipoMateria.matid);

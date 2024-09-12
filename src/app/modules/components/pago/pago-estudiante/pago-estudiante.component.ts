@@ -1,11 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MenuItem, MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Table } from 'primeng/table';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-
-import { NotaService } from 'src/app/modules/service/data/nota.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { Nota } from 'src/app/modules/models/nota';
 import { Inscripcion } from 'src/app/modules/models/inscripcion';
@@ -42,11 +38,7 @@ export class PagoEstudianteComponent implements OnInit {
     showArchivoImagen: boolean;
     apiUrlPagoArchivo: string = environment.API_URL_PAGO_ARCHIVO;
     constructor(
-        private confirmationService: ConfirmationService,
         private messageService: MessageService,
-        private dialogService: DialogService,
-        private reporteService: ReporteService,
-        private notaService: NotaService,
         private authService: AuthService,
         private pagoService: PagoService
     ) {
@@ -81,7 +73,6 @@ export class PagoEstudianteComponent implements OnInit {
                             this.listarMateriasInscritas.filter(
                                 (materia) => materia.pagestado >= 1
                             );
-                        console.log(this.listarMateriasInscritasSinPagar);
                     },
                     (error) => {
                         this.errors = error;
@@ -105,13 +96,10 @@ export class PagoEstudianteComponent implements OnInit {
             curid: data.curid,
             matid: data.matid,
         };
-        console.log('criterio', criterio);
         this.pagoService.listarPagoEstudianteMateria(criterio).subscribe(
             (result: any) => {
                 this.listarNotaEstudianteMateria = result as Pago[];
-                console.log(this.listarNotaEstudianteMateria);
                 this.loading2 = false;
-                //   this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
             },
             (error) => {
                 this.loading2 = false;

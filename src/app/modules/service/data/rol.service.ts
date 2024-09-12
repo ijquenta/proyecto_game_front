@@ -12,24 +12,18 @@ export class RolService {
     }
 
     manageRole(criterio: any) {
-        return this.http.post(`${API_URL}/manageRole`, criterio, {
-            context: checktoken(),
-        });
+        return this.http.post(`${API_URL}/manageRole`, criterio, { context: checktoken(), });
     }
 
     manageRoleStatus(criterio: any) {
-        return this.http.post(`${API_URL}/manageRoleStatus`, criterio, {
-            context: checktoken(),
-        });
+        return this.http.post(`${API_URL}/manageRoleStatus`, criterio, { context: checktoken(), });
     }
 
     getTipoRol() {
-        return this.http.get(`${API_URL}/tipoRol`);
+        return this.http.get(`${API_URL}/tipoRol`, { context: checktoken(), });
     }
 
     deleteRole(rolid: number) {
-        return this.http.delete(`${API_URL}/deleteRole/${rolid}`, {
-            context: checktoken(),
-        });
+        return this.http.delete(`${API_URL}/deleteRole/${rolid}`, { context: checktoken(), });
     }
 }

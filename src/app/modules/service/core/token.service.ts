@@ -42,5 +42,20 @@ export class TokenService {
         }
         return true;
     }
+
+    // Método para verificar si el token es válido
+    isValidTokenCheck(token: any) {
+        if (!token) {
+            return false;
+        }
+        const decodeToken = jwt_decode<JwtPayload>(token);
+        if (decodeToken && decodeToken?.exp) {
+            const tokenDate = new Date(0); // Obtiene la fecha de expiración del token y compara con la fecha actual
+            tokenDate.setUTCSeconds(decodeToken.exp);
+            const today = new Date();
+            return tokenDate.getTime() > today.getTime();
+        }
+        return true;
+    }
 }
 

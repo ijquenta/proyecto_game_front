@@ -1,7 +1,3 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const API_URL = 'http://localhost:5001/academico_api';
 export const API_URL_PROFILE_PHOTO = 'http://localhost:5001/static/personProfilePhoto';
 export const API_URL_DOCUMENTO_ADMISION = 'http://localhost:5001/static/documentoAdmision';

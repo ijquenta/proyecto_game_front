@@ -8,8 +8,8 @@ import { AccessDeniedComponent } from '../auth/access-denied/access-denied.compo
 const routes: Routes = [
   {
     path: 'crud',
-    canActivate: [authGuard, HasRoleGuard], // Primero verifica autenticación y luego el rol
-    data: { role: 'Administrador' },
+    canActivate: [authGuard, HasRoleGuard],
+    data: { role: ['Administrador', 'Director', 'Secretaria'] },
     loadChildren: () => import('./usuario-crud/usuario-crud.module').then(m => m.UsuarioCrudModule)
   },
   {
@@ -27,24 +27,24 @@ const routes: Routes = [
   {
     path: 'persona',
     canActivate: [authGuard, HasRoleGuard],
-    data: { role: 'Administrador' },
+    data: { role: ['Administrador', 'Director', 'Secretaria'] },
     loadChildren: () => import('./usuario-persona/usuario-persona.module').then(m => m.UsuarioPersonaModule)
   },
   {
     path: 'reporte',
-    canActivate: [authGuard, HasRoleGuard], // Primero verifica autenticación y luego el rol
+    canActivate: [authGuard, HasRoleGuard],
     data: { role: 'Administrador' },
     loadChildren: () => import('./usuario-reporte/usuario-reporte.module').then(m => m.UsuarioReporteModule)
   },
   {
     path: 'acceso',
-    canActivate: [authGuard, HasRoleGuard], // Primero verifica autenticación y luego el rol
+    canActivate: [authGuard, HasRoleGuard],
     data: { role: 'Administrador' },
     loadChildren: () => import('./usuario-accesos/usuario-accesos.module').then(m => m.UsuarioAccesosModule)
   },
   {
     path: 'permiso',
-    canActivate: [authGuard, HasRoleGuard], // Primero verifica autenticación y luego el rol
+    canActivate: [authGuard, HasRoleGuard],
     data: { role: 'Administrador' },
     loadChildren: () => import('./usuario-permiso/usuario-permiso.module').then(m => m.UsuarioPermisoModule)
   },

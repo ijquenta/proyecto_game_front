@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { MateriaCrudRoutingModule } from '../materia-crud/materia-crud-routing.module';
 import { NotaEstudianteRoutingModule } from './nota-estudiante-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -44,7 +43,6 @@ import { SidebarModule } from 'primeng/sidebar';
         TooltipModule,
         CardModule,
         CommonModule,
-        // MateriaCrudRoutingModule,
         NotaEstudianteRoutingModule,
         TableModule,
         FileUploadModule,

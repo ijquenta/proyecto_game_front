@@ -87,10 +87,6 @@ export class MateriaDocenteComponent implements OnInit {
                             next: (data) => {
                                 this.spinner.hide();
                                 this.inscripciones = data;
-                                console.log(
-                                    'inscripciones: ',
-                                    this.inscripciones
-                                );
                             },
                             error: (error) => {
                                 this.spinner.hide();
@@ -122,7 +118,6 @@ export class MateriaDocenteComponent implements OnInit {
         this.docenteService.listarMateriaEstudianteCurso(criterio).subscribe({
             next: (result: any) => {
                 this.listarMateriaEstudianteCurso = result as any[];
-                console.log(this.listarMateriaEstudianteCurso);
                 this.loading2 = false;
             },
             error: (error) => {

@@ -14,27 +14,27 @@ export class CursoService {
 
 
     listarCursoMateria(){
-        return this.http.get(`${API_URL}/listarCursoMateria`);
+        return this.http.get(`${API_URL}/listarCursoMateria`, { context: checktoken(), });
     }
 
     eliminarCursoMateria(criterio: any){
-        return this.http.post(`${API_URL}/eliminarCursoMateria`, criterio);
+        return this.http.post(`${API_URL}/eliminarCursoMateria`, criterio, { context: checktoken(), });
     }
 
     insertarCursoMateria(criterio: any){
-        return this.http.post(`${API_URL}/insertarCursoMateria`, criterio);
+        return this.http.post(`${API_URL}/insertarCursoMateria`, criterio, { context: checktoken(), });
     }
 
     modificarCursoMateria(criterio: any){
-        return this.http.post(`${API_URL}/modificarCursoMateria`, criterio);
+        return this.http.post(`${API_URL}/modificarCursoMateria`, criterio, { context: checktoken(), });
     }
 
     listaCursoCombo(){
-        return this.http.get(`${API_URL}/listaCursoCombo`);
+        return this.http.get(`${API_URL}/listaCursoCombo`, { context: checktoken(), });
     }
 
     gestonarCursoMateriaEstado(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarCursoMateriaEstado`, criterio);
+        return this.http.post(`${API_URL}/gestionarCursoMateriaEstado`, criterio, { context: checktoken(), });
     }
 
     getCursoById(curid: Number){

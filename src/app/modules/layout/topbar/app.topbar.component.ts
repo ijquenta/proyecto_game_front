@@ -75,7 +75,7 @@ export class AppTopBarComponent {
     }
 
     isValidToken(){
-        console.log(this.tokenService.isValidToken())
+        return this.tokenService.isValidToken()
     }
 
     get visible(): boolean {
@@ -169,18 +169,15 @@ export class AppTopBarComponent {
     // En tu componente
     onEnvelopeClick() {
         // Lógica que se ejecutará cuando se haga clic en el ícono del sobre
-        console.log('Clic en el ícono del sobre');
         this.cantE = this.cantE - 1;
     }
 
     onCalendarClick() {
         // Lógica que se ejecutará cuando se haga clic en el ícono del calendario
-        console.log('Clic en el ícono del calendario');
     }
 
     onBellClick() {
         // Lógica que se ejecutará cuando se haga clic en el ícono de la campana
-        console.log('Clic en el ícono de la campana');
         this.cantN = this.cantN - 1;
     }
 

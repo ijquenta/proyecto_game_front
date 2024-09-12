@@ -319,7 +319,6 @@ export class UsuarioPermisoComponent implements OnInit {
         this.spinner.show();
         this.permisoService.deletePermiso(this.permiso).subscribe({
             next: (data) => {
-                console.log('Delete completed: ', data);
             },
             error: (error) => {
                 this.spinner.hide();
@@ -338,7 +337,6 @@ export class UsuarioPermisoComponent implements OnInit {
     }
     // Confirm delete
     confirm(event: Event) {
-        console.log('Confirm: ', event);
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             message: 'Estas seguro de continuar con este proceso?',

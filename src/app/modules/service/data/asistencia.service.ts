@@ -11,7 +11,7 @@ export class AsistenciaService {
     constructor(private http: HttpClient) { }
 
     listarAsistencia(){
-        return this.http.get(`${API_URL}/listarAsistencia`)
+        return this.http.get(`${API_URL}/listarAsistencia`, { context: checktoken(), })
     }
 
 

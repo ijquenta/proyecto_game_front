@@ -16,45 +16,42 @@ export class MatriculaService {
     }
 
     listarTipoMatricula() {
-        return this.http.get(`${API_URL}/listarTipoMatricula`);
+        return this.http.get(`${API_URL}/listarTipoMatricula`, { context: checktoken(), });
     }
 
     insertarMatricula(criterio: any) {
-        return this.http.post(`${API_URL}/insertarMatricula`, criterio);
+        return this.http.post(`${API_URL}/insertarMatricula`, criterio, { context: checktoken(), });
     }
 
     modificarMatricula(criterio: any) {
-        return this.http.post(`${API_URL}/modificarMatricula`, criterio);
+        return this.http.post(`${API_URL}/modificarMatricula`, criterio, { context: checktoken(), });
     }
 
     eliminarMatricula(criterio: any) {
-        return this.http.post(`${API_URL}/eliminarMatricula`, criterio);
+        return this.http.post(`${API_URL}/eliminarMatricula`, criterio, { context: checktoken(), });
     }
 
     gestionarMatriculaEstado(criterio: any) {
-        return this.http.post(`${API_URL}/gestionarMatriculaEstado`, criterio);
+        return this.http.post(`${API_URL}/gestionarMatriculaEstado`, criterio, { context: checktoken(), });
     }
 
     insertarTipoMatricula(criterio: any) {
-        return this.http.post(`${API_URL}/insertarTipoMatricula`, criterio);
+        return this.http.post(`${API_URL}/insertarTipoMatricula`, criterio, { context: checktoken(), });
     }
 
     modificarTipoMatricula(criterio: any) {
-        return this.http.post(`${API_URL}/modificarTipoMatricula`, criterio);
+        return this.http.post(`${API_URL}/modificarTipoMatricula`, criterio, { context: checktoken(), });
     }
 
     gestionarTipoMatriculaEstado(criterio: any) {
-        return this.http.post(
-            `${API_URL}/gestionarTipoMatriculaEstado`,
-            criterio
-        );
+        return this.http.post(`${API_URL}/gestionarTipoMatriculaEstado`, criterio, { context: checktoken(), } );
     }
 
     listarTipoMatriculaCombo() {
-        return this.http.get(`${API_URL}/listarTipoMatriculaCombo`);
+        return this.http.get(`${API_URL}/listarTipoMatriculaCombo`, { context: checktoken(), });
     }
 
     listarTipoPersonaEstudiante() {
-        return this.http.get(`${API_URL}/listarTipoPersonaEstudiante`);
+        return this.http.get(`${API_URL}/listarTipoPersonaEstudiante`, { context: checktoken(), });
     }
 }

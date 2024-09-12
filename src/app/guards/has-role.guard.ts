@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../modules/service/core/auth.service';
-import { inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,28 +13,35 @@ export class HasRoleGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
-    // Obtén el rol necesario desde los datos de la ruta
-    const requiredRole = route.data['role']; // Asegúrate de definir esto en las rutas
-    if (!requiredRole) {
-      setTimeout(() => this.router.navigate(['/access-denied']), 0);
-      return false;
+  ): Observable<boolean> {
+    // Obtén los roles necesarios desde los datos de la ruta
+    const requiredRoles: string[] = route.data['role'];
+
+    // Si no se definieron roles en la ruta, redirige al acceso denegado
+    if (!requiredRoles) {
+      this.router.navigate(['/access-denied']);
+      return new Observable<boolean>((observer) => observer.next(false));
     }
 
-    // Obtén el rol del usuario desde el servicio de autenticación
-    const userData = this.authService.getUserData();
-    if (!userData) {
-      setTimeout(() => this.router.navigate(['/access-denied']), 0);
-      return false;
-    }
+    // Utiliza la función getProfile() para obtener los datos del usuario
+    return this.authService.getProfile().pipe(
+      map((userData) => {
 
-    const userRole = userData[0]?.rolnombre; // Ajusta según tu servicio
-    // Compara los roles y decide si permitir el acceso
-    if (userRole === requiredRole) {
-      return true;
-    } else {
-      setTimeout(() => this.router.navigate(['/access-denied']), 0);
-      return false;
-    }
+        if (!userData || !userData[0]) {
+          this.router.navigate(['/access-denied']);
+          return false;
+        }
+
+        const userRole = userData[0]?.rolnombre;
+
+        // Verifica si el rol del usuario coincide con alguno de los roles permitidos
+        if (requiredRoles.includes(userRole)) {
+          return true;
+        } else {
+          this.router.navigate(['/access-denied']);
+          return false;
+        }
+      })
+    );
   }
 }

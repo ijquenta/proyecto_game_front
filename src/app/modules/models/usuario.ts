@@ -1,5 +1,3 @@
-import { Role } from './roles.type';
-
 export class Usuario {
     tipo: number | null;
     usuid: number | null;
@@ -15,7 +13,6 @@ export class Usuario {
     usufecreg: any | null;
     usuusumod: string | null;
     usufecmod: any | null;
-
     perfoto: string | null;
     pernomcompleto: string | null;
     pernrodoc: number | null;

@@ -1,25 +1,28 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { NotfoundComponent } from '../notfound/notfound.component';
+import { authGuard } from 'src/app/guards/auth.guard';
+import { HasRoleGuard } from 'src/app/guards/has-role.guard';
+
+const routes: Routes = [
+    {
+        path: 'gestionar',
+        loadChildren: () => import('./contabilidad-gestionar/contabilidad-gestionar.module').then(m => m.ContabilidadGestionarModule),
+        canActivate: [authGuard, HasRoleGuard],
+        data: { role: ['Administrador', 'Director', 'Secretaria'] },
+    },
+    {
+        path: 'notfound',
+        component: NotfoundComponent
+    },
+    {
+        path: '**',
+        redirectTo: 'notfound'
+    }
+];
 
 @NgModule({
-    imports: [RouterModule.forChild([
-        { path: 'gestionar', loadChildren: () => import('./contabilidad-gestionar/contabilidad-gestionar.module').then(m => m.ContabilidadGestionarModule) },
-        // { path: 'reporte', loadChildren: () => import('./pago-reporte/pago-reporte.module').then(m => m.PagoReporteModule) },
-        // { path: 'notificacion', loadChildren: () => import('./pago-notificacion/pago-notificacion.module').then(m => m.PagoNotificacionModule) },
-        // { path: 'estudiante', loadChildren: () => import('./pago-estudiante/pago-estudiante.module').then(m => m.PagoEstudianteModule) },
-        // { path: 'timeline', loadChildren: () => import('./timeline/timelinedemo.module').then(m => m.TimelineDemoModule) },
-        // { path: '**', redirectTo: '/notfound' }
-        {
-            path: 'notfound',
-            component: NotfoundComponent
-        },
-        {
-          path: '**',
-          redirectTo: 'notfound',
-        }
-
-    ])],
+    imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
 export class ContabilidadRoutingModule { }

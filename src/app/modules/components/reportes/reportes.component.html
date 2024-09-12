@@ -1,4 +1,3 @@
-<!-- <ng-container *hasPermision="listarReportes"> -->
 <div class="flex justify-content-center my-3">
     <h1>Reportes Beneficios Sociales</h1>
 </div>
@@ -7,7 +6,7 @@
     <div class="col-12 md:col-6">
         <p-card class="flex flex-column p-3 relative bg-gray-200 border-round p-4 text-gray-900">
             <div
-                class="card p-fluid"><!-- <h5>Fechas</h5> -->
+                class="card p-fluid">
 
             </div>
 
@@ -31,68 +30,10 @@
                     <label for="ddFechaRetiro">Fecha Fin</label>
                 </span>
             </div>
-
-            <!-- <div class="col-12 md:col-3">
-                                        <p-dropdown inputId="ddPartida" appendTo="body" [options]="partidas" [(ngModel)]="partidaSelected" optionLabel="descripcion" optionValue="idPartida"></p-dropdown>
-                                    </div> -->
         </div>
-
-        <!-- <h3>Planilla Reintegro</h3>
-                                                                                                <div class="grid p-fluid ">
-                                                                                                    <div class="col-12 md:col-4">
-                                                                                                        <button (click)="reporte.rptHaberesDescuentos(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte de haberes descuentos" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                    </div>
-                                                                                                    <div class="col-12 md:col-4">
-                                                                                                        <button (click)="reporte.rptHaberesResumen(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte de haberes resumen" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                    </div>
-                                                                                                    <div class="col-12 md:col-4">
-                                                                                                        <button (click)="reporte.rptHaberesBorrador(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte de haberes borrador" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                    </div>
-                                                                                                </div>
-
-                                                                                                <h3>Planilla Ex-administrativos</h3>
-                                                                                                <div class="grid p-fluid">
-                                                                                                    <div class="col-12 md:col-4">
-                                                                                                        <button (click)="reporte.rptHaberesExAdministrativos(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte de haberes descuentos" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                    </div>
-                                                                                                    <div class="col-12 md:col-4">
-                                                                                                        <button (click)="reporte.rptHaberesResumenExAdministrativos(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte resumen" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                    </div>
-                                                                                                    <div class="col-12 md:col-4">
-                                                                                                        <button (click)="reporte.rptExAdministrativos(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte Personal Excluido" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                    </div>
-                                                                                                </div> -->
         <div class="grid p-fluid ">
             <div class="col-12 md:col-4">
-                <!-- <button (click)="reporte.rptReporteTotalesSigma(fechaInicioSelected, fechaFinSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte Prueba" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button> -->
-
             </div>
-            <!-- <div class="col-12 md:col-4">
-                                                                                                                            <button (click)="reporte.rptHaberesResumen(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte de haberes resumen" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                                        </div>
-                                                                                                                        <div class="col-12 md:col-4">
-                                                                                                                            <button (click)="reporte.rptHaberesBorrador(gestionSelected, partidaSelected, this.username)" pButton="pButton" pRipple="pRipple" type="button" label="Reporte de haberes borrador" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-                                                                                                                        </div> -->
         </div>
-
-
     </div>
 </div>
-<!--
-<div class="flex flex-column p-3 relative bg-gray-300 border-round p-4 font-bold text-gray-900 mt-6">
-    <h3>Planilla de Aportes Mensuales
-    </h3>
-    <div class="grid p-fluid">
-        <div
-            class="col-12 md:col-4">
-            <button (click)="reporte.rptHaberesAportesAFP(gestionSelected, partidaSelected)" pButton pRipple type="button" label="Reporte de A.F.P. Futuro" icon="pi pi-file-pdf" class="p-button-raised p-button-help p-button-text"></button>
-             <p-dropdown [options]="meses" [(ngModel)]="mesSelected" optionLabel="mes" placeholder="Reporte de Aportes" (onChange)="reporte.rptHaberesAportes(gestionSelected, mesSelected['idMes'], this.username)" [showClear]="true"></p-dropdown>
-        </div>
-         <div class="col-12 md:col-4">
-                                        <p-dropdown [options]="meses" [(ngModel)]="mesSelected" optionLabel="mes" placeholder="Reporte de Aportes Gestora" (onChange)="reporte.rptHaberesAportesGestora(gestionSelected, mesSelected['idMes'], this.username)" [showClear]="true" ></p-dropdown>
-                                    </div>
-    </div>
-</div>
--->
-
-<!-- </ng-container> -->

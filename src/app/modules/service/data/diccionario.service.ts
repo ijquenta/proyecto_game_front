@@ -10,10 +10,10 @@ export class DiccionarioService {
     constructor(private http: HttpClient) {}
 
     getTipoMateria(criterio: any) {
-        return this.http.post(`${API_URL}/listaMateriaCombo`, criterio);
+        return this.http.post(`${API_URL}/listaMateriaCombo`, criterio, { context: checktoken(), });
     }
 
     getListaPersonaDocenteCombo(criterio: any) {
-        return this.http.post(`${API_URL}/listaPersonaDocenteCombo`, criterio);
+        return this.http.post(`${API_URL}/listaPersonaDocenteCombo`, criterio, { context: checktoken(), });
     }
 }

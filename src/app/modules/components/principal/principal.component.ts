@@ -140,8 +140,6 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         this.principalService.listarCantidades().subscribe(
             (data: any[]) => {
                 this.listaCantidades = data;
-                console.log(this.listaCantidades)
-
                 // Asigna los valores de cada campo a las variables correspondientes
                 this.curmatnum = this.listaCantidades[0]['curmatnum'];
                 this.matnum = this.listaCantidades[0]['matnum'];
@@ -172,7 +170,6 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         this.principalService.listarEstudiantesMateria().subscribe(
             (data: any) => {
                 this.listaEstudiantesMateria = data;
-                console.log(this.listaEstudiantesMateria)
                 this.spinner.hide();
                 this.initChartEstudiantesMateria();
             },
@@ -185,7 +182,6 @@ export class PrincipalComponent implements OnInit, OnDestroy {
         this.principalService.listarEstudiantesNivel().subscribe(
             (data: any) => {
                 this.listaEstudiantesNivel = data;
-                console.log(this.listaEstudiantesNivel)
                 this.spinner.hide();
                 this.initChartEstudiantesNivel();
             },

@@ -224,7 +224,6 @@ export class MateriaEstudianteComponent implements OnInit {
 
     // Método para abrir el diálogo
     showHorariosMateria(data: any) {
-        console.log('show', data);
         this.displayDialog = true;
         // this.getHorarios();
         // this.loadHorarios2();
@@ -343,7 +342,6 @@ export class MateriaEstudianteComponent implements OnInit {
     showHorarios(data: any): void {
         this.loadHorarios();
         this.caledarDialog = true;
-        console.log(data);
     }
 
     /**
@@ -457,17 +455,14 @@ export class MateriaEstudianteComponent implements OnInit {
     }
 
     showInformacionDocente(data: any) {
-        console.log(data);
         this.informacionDocente = true;
 
         const criterio = {
             perid: data.periddocente,
         };
 
-        console.log(criterio);
         this.materiaService.getInformacionDocente(criterio).subscribe({
             next: (data: any) => {
-                console.log(data);
                 this.persona = data['persona'];
                 this.infoMinisterial = data['infoMinisterial'];
                 this.infoAcademica = data['infoAcademica'];
@@ -493,9 +488,7 @@ export class MateriaEstudianteComponent implements OnInit {
     loadHorariosMateria(curmatid: number, matnombre: any) {
         this.horarioService.getHorariosByCursoMateria(curmatid).subscribe(
             (data) => {
-                console.log('horarios1', data);
                 this.horarios = this.processHorariosMateria(data, matnombre);
-                console.log('horarios2', this.horarios);
             },
             (error) => {
                 console.error('Error al cargar horarios:', error);

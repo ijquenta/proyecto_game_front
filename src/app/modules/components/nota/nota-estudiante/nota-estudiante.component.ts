@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Table } from 'primeng/table';
-import { Observable, forkJoin } from 'rxjs';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 
 import { NotaService } from 'src/app/modules/service/data/nota.service';
@@ -101,7 +100,6 @@ export class NotaEstudianteComponent implements OnInit {
             (result: any) => {
                 this.listarNotaEstudianteMateria = result as Nota[];
                 this.loading2 = false;
-                //   this.messageService.add({severity:'info', summary:'Correcto', detail:'Información obtenida'});
             },
             (error) => {
                 this.errors = error;

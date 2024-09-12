@@ -13,26 +13,26 @@ export class AccesoService {
     }
 
     getSubMenus(){
-        return this.http.get(`${API_URL}/getSubMenus`)
+        return this.http.get(`${API_URL}/getSubMenus`, { context: checktoken(), })
     }
 
     getSubMenuType(){
-        return this.http.get(`${API_URL}/getSubMenuType`);
+        return this.http.get(`${API_URL}/getSubMenuType`, { context: checktoken(), });
     }
 
     createAccess(data: any){
-        return this.http.post(`${API_URL}/createAccess`, data);
+        return this.http.post(`${API_URL}/createAccess`, data, { context: checktoken(), });
     }
 
     updateAccess(accid: number, data: any){
-        return this.http.put(`${API_URL}/updateAccess/${accid}`, data)
+        return this.http.put(`${API_URL}/updateAccess/${accid}`, data, { context: checktoken(), })
     }
 
     deleteAccess(accid: number) {
-        return this.http.delete(`${API_URL}/deleteAccess/${accid}`)
+        return this.http.delete(`${API_URL}/deleteAccess/${accid}`, { context: checktoken(), })
     }
 
     getIconoNombre(submenid: number){
-        return this.http.get(`${API_URL}/getIconoNombre/${submenid}`)
+        return this.http.get(`${API_URL}/getIconoNombre/${submenid}`, { context: checktoken(), })
     }
 }

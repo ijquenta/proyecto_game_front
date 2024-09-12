@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpContextToken,
-  HttpContext
+    HttpRequest,
+    HttpHandler,
+    HttpEvent,
+    HttpInterceptor,
+    HttpContextToken,
+    HttpContext,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { TokenService } from '../modules/service/core/token.service';
 
-const CHECK_TOKEN =  new HttpContextToken<boolean>(() =>  false);
+const CHECK_TOKEN = new HttpContextToken<boolean>(() => false);
 
 export function checktoken() {
     return new HttpContext().set(CHECK_TOKEN, true);
@@ -19,28 +19,29 @@ export function checktoken() {
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+    constructor(private tokenService: TokenService) {}
 
-  constructor(
-    private tokenService: TokenService
-  ) {}
-
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(request.context.get(CHECK_TOKEN)){
-        return this.addToken(request, next);
+    intercept(
+        request: HttpRequest<unknown>,
+        next: HttpHandler
+    ): Observable<HttpEvent<unknown>> {
+        if (request.context.get(CHECK_TOKEN)) {
+            return this.addToken(request, next);
+        }
+        return next.handle(request);
     }
-    return next.handle(request);
 
-
-  }
-
-  private addToken(request: HttpRequest<unknown>, next: HttpHandler){
-    const accessToken = this.tokenService.getToken();
-    if(accessToken) {
-        const authRequest = request.clone({
-            headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
-        });
-        return next.handle(authRequest);
+    private addToken(request: HttpRequest<unknown>, next: HttpHandler) {
+        const accessToken = this.tokenService.getToken();
+        if (accessToken) {
+            const authRequest = request.clone({
+                headers: request.headers.set(
+                    'Authorization',
+                    `Bearer ${accessToken}`
+                ),
+            });
+            return next.handle(authRequest);
+        }
+        return next.handle(request);
     }
-    return next.handle(request);
-  }
 }

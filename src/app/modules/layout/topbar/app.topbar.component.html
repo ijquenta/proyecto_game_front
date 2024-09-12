@@ -1,4 +1,3 @@
-<!-- <p-toast></p-toast> -->
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/layout/images/logo_ibci.png" alt="logo" class="topbar-logo">
@@ -10,7 +9,6 @@
 
     <button #menubutton class="p-button p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
         <i class="pi pi-bars"></i>
-        <!-- <i class="fa-solid fa-book-bible"></i> -->
     </button>
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
@@ -39,17 +37,7 @@
                                 </div>
                         </div>
                     </div>
-                    <!-- <button  class="p-link layout-menu-button layout-topbar-button" (click)="this.logout()" pTooltip="Salir" tooltipPosition="bottom">
-                        <i class="pi pi-sign-out"> </i>
-                    </button> -->
-
-                    <!-- <p-confirmDialog></p-confirmDialog> -->
-
-                    <!-- <p-button (click)="confirm2()" icon="pi pi-times" label="Delete" class="p-button-danger"></p-button> -->
-                <!-- <button class="p-link layout-topbar-button"  (click)="menu.toggle($event)"> <i class="pi pi-user"></i> </button>
-                <p-tieredMenu #menu [model]="modelOption" [popup]="true" appendTo="body" class="ui-tieredmenu" ></p-tieredMenu> -->
             </div>
-
 </div>
 
 
