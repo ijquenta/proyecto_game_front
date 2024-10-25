@@ -26,7 +26,6 @@ import { ImageModule } from 'primeng/image';
         ReactiveFormsModule
     ],
     declarations: [
-        // LoginComponent
     ]
 })
 export class ResetPasswordComponentModule { }

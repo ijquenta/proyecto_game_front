@@ -17,7 +17,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { SplitterModule } from 'primeng/splitter';
 import { SelectButtonModule } from 'primeng/selectbutton';
-
 import { TipoTextoRoutingModule } from './tipo-texto-routing.module';
 import { TipoTextoComponent } from './tipo-texto.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';

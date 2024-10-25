@@ -24,9 +24,6 @@ import { UsuarioRolesComponent } from './usuario-roles.component';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { RolService } from 'src/app/modules/service/data/rol.service';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-
-import { FileUploadModule } from 'primeng/fileupload';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";

@@ -16,8 +16,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { Toast, ToastModule } from 'primeng/toast';
-// Services
+import { ToastModule } from 'primeng/toast';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { ReactiveFormsModule } from '@angular/forms'; // Importamos el module para validaciones

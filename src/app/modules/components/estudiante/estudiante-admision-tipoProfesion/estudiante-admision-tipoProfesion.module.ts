@@ -17,7 +17,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { SplitterModule } from 'primeng/splitter';
 import { SelectButtonModule } from 'primeng/selectbutton';
-
 import { EstudianteAdmisionTipoProfesionRoutingModule } from './estudiante-admision-tipoProfesion-routing.module';
 import { EstudianteAdmisionTipoProfesionComponent } from './estudiante-admision-tipoProfesion.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';

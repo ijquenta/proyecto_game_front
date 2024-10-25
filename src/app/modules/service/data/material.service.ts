@@ -69,7 +69,7 @@ export class MaterialService {
 
     // Rutas para TipoTexto
     getTipoTexto() {
-        return this.http.get(`${API_URL}/getTipoTextos`, { context: checktoken(), });
+        return this.http.get(`${API_URL}/getTipoTextos`, { context: checktoken() });
     }
 
     createTipoTexto(data: any) {

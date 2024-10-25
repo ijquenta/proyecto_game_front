@@ -24,7 +24,7 @@ export class NotaService {
         private authService: AuthService
     ) {}
     listarNota() {
-        return this.http.get(`${API_URL}/listarNota`);
+        return this.http.get(`${API_URL}/listarNota`, { context: checktoken() });
     }
     gestionarNota(data) {
         return this.http.post(`${API_URL}/gestionarNota`, data, {
@@ -32,16 +32,16 @@ export class NotaService {
         });
     }
     listarNotaEstudiante(data) {
-        return this.http.post(`${API_URL}/listarNotaEstudiante`, data);
+        return this.http.post(`${API_URL}/listarNotaEstudiante`, data, { context: checktoken() });
     }
     listarNotaDocente(data) {
-        return this.http.post(`${API_URL}/listarNotaDocente`, data);
+        return this.http.post(`${API_URL}/listarNotaDocente`, data, { context: checktoken() });
     }
     listarNotaEstudianteMateria(data) {
-        return this.http.post(`${API_URL}/listarNotaEstudianteMateria`, data);
+        return this.http.post(`${API_URL}/listarNotaEstudianteMateria`, data, { context: checktoken() });
     }
     listarNotaEstudianteCurso(data) {
-        return this.http.post(`${API_URL}/listarNotaEstudianteCurso`, data);
+        return this.http.post(`${API_URL}/listarNotaEstudianteCurso`, data, { context: checktoken() });
     }
     rptNotaEstudianteMateria(data: any) {
         this.spinner.show();
@@ -157,6 +157,6 @@ export class NotaService {
             });
     }
     listarNotaCurso() {
-        return this.http.get(`${API_URL}/listarNotaCurso`);
+        return this.http.get(`${API_URL}/listarNotaCurso`, { context: checktoken() });
     }
 }
