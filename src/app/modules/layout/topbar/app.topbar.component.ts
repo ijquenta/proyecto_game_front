@@ -41,12 +41,12 @@ export class AppTopBarComponent {
     ngOnInit() {
         this.authService.getProfile().subscribe(
             (result: any) => {
-              this.usuario = result[0];
+                this.usuario = result[0];
             },
             (error: any) => {
-              console.error("Error al obtener el perfil: ", error);
+                console.error("Error al obtener el perfil: ", error);
             }
-          );
+        );
         this.modelOption = [
             {
                 label: 'Perfil',
@@ -64,17 +64,17 @@ export class AppTopBarComponent {
     }
 
     constructor(public layoutService: LayoutService, public menuService: MenuService,
-                private authService: AuthService, private router: Router, private tokenService: TokenService,
-                private confirmationService: ConfirmationService, private messageService: MessageService
-                ) { }
+        private authService: AuthService, private router: Router, private tokenService: TokenService,
+        private confirmationService: ConfirmationService, private messageService: MessageService
+    ) { }
 
 
-    logout(){
+    logout() {
         this.authService.logout();
         this.router.navigate(['/login']);
     }
 
-    isValidToken(){
+    isValidToken() {
         return this.tokenService.isValidToken()
     }
 

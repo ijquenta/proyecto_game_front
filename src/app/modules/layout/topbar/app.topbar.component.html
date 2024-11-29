@@ -1,9 +1,9 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/layout/images/logo_ibci.png" alt="logo" class="topbar-logo">
+        <img src="assets/layout/images/logo.jpg" alt="logo" class="topbar-logo">
         <span class="topbar-title">
-            <strong>SSGA</strong> Bolivia
-            <img src="assets/layout/images/flag-bolivia.png" alt="flag-bolivia" class="topbar-flag">
+            <strong>VRobotPhyio</strong>
+            <!--  <img src="assets/layout/images/flag-bolivia.png" alt="flag-bolivia" class="topbar-flag">  -->
         </span>
     </a>
 
@@ -23,18 +23,8 @@
 
             <div class="flex align-items-center gap-2 flex-wrap">
                     <div class="text-left" style="display: flex; flex-direction: column; align-items: center;">
-                        <div *ngIf="usuario.perfoto == null" class="user-display">
-                                <div class="flex align-items-center gap-2">
-                                    <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="large" shape="circle"></p-avatar>
-                                    <h5>Hola, <strong>{{usuario.usuname}}</strong> </h5>
-                                </div>
-                        </div>
-                        <div *ngIf="usuario.perfoto != null" class="user-display">
-                                <div class="flex align-items-center gap-2">
-                                    <p-avatar image="{{ userProfilePhoto }}/{{ usuario.perfoto }}" styleClass="mr-2" size="large" shape="circle"></p-avatar>
-
-                                    <h5>Hola, <strong>{{usuario.usuname}}</strong> </h5>
-                                </div>
+                        <div class="flex align-items-center gap-2">
+                            <h5>Hola, <strong>{{usuario.username ? usuario.username : 'Bienveniedo'}}</strong> </h5>
                         </div>
                     </div>
             </div>

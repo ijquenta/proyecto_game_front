@@ -23,9 +23,9 @@ export class AuthService {
 
     constructor(private http: HttpClient, private tokenService: TokenService) { }
 
-    login(usuname: string, usupassword: string) {
+    login(username: string) {
         return this.http.post<ResponseLogin>(`${this.API_URL}/login`, {
-            usuname, usupassword
+            username: username
         }).pipe(tap((response) => {
                 this.tokenService.saveToken(response.auth_token);
             })

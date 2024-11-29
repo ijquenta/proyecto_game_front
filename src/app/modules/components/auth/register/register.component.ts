@@ -350,6 +350,8 @@ export class RegisterComponent implements OnInit {
     // Función auxiliar para preparar los datos del usuario
     private prepareUserData(perid: number) {
         this.userData = {
+            username: '',
+            email: '',
             perid: perid,
             usuname: this.userForm.value.usuname,
             usuemail: this.userForm.value.usuemail,

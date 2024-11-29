@@ -45,14 +45,13 @@ export class LoginComponent implements OnInit {
 
     assignValidation(){ // Función para la asignación de la varialble de validación
         this.loginForm = this.formBuilder.group({
-            usuario: [
+            username: [
                 '',
                 [Validators.required, // Es requerido
-                 Validators.minLength(5), // Es como minimo de 5 letras
+                 Validators.minLength(1), // Es como minimo de 5 letras
                  Validators.maxLength(20), // Es como maximo de 20 letras
                  this.validationNotSpaces // Sin espacios
                 ]],
-            password: ['', [Validators.required]], // Es requerido
         });
     }
 
@@ -67,7 +66,7 @@ export class LoginComponent implements OnInit {
     doLogin() {
         // Verifica si el formulario es inválido y muestra mensajes de error
         if (this.loginForm.invalid) {
-            this.displayErrorMessage('Usuario o contraseña incorrectos');
+            this.displayErrorMessage('Usuario Incorrecto');
             Object.values(this.loginForm.controls).forEach(control => {
                 control.markAsTouched();
                 control.markAsDirty();
@@ -81,16 +80,7 @@ export class LoginComponent implements OnInit {
             this.spinner.show();
             const REQUEST_TIMEOUT = 5000; // 5 segundos
 
-            this.authService.login(this.loginForm.value.usuario, this.loginForm.value.password)
-                .pipe(
-                    timeout(REQUEST_TIMEOUT),
-                    catchError((error) => {
-                        if (error.name === 'TimeoutError') {
-                            return throwError(() => new Error('El servidor no está disponible, por favor intente más tarde.'));
-                        }
-                        return throwError(() => error);
-                    })
-                )
+            this.authService.login(this.loginForm.value.username)
                 .subscribe({
                     next: () => {
                         this.handleSuccess();

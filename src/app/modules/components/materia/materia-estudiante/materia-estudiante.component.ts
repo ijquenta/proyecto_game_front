@@ -65,7 +65,7 @@ export class MateriaEstudianteComponent implements OnInit {
 
     data: TreeNode[] = [
         {
-            label: 'Instituto Bíblico de Capacitación Internacional',
+            label: 'VRobotPhyio',
             expanded: true,
             children: [
                 {

@@ -1,4 +1,8 @@
 export class Usuario {
+    username: string | null;
+    email: string | null;
+
+
     tipo: number | null;
     usuid: number | null;
     perid: number | null;

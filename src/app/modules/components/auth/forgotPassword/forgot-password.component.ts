@@ -68,7 +68,7 @@ export class ForgotPasswordComponent implements OnInit {
         }
         if(this.loginForm.valid){
             this.spinner.show();
-            this.authService.login(this.loginForm.value.usuario, this.loginForm.value.password)
+            this.authService.login(this.loginForm.value.usuario)
                 .subscribe({
                     next: () => {
                         this.status = 'success';

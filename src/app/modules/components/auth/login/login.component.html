@@ -2,10 +2,10 @@
     <div class="flex flex-column p-3">
         <div class="surface-card p-4 shadow-2 border-round w-full md:w-30rem">
             <div class="w-full text-center mb-4">
-                <img src="assets/layout/images/logo_ibci.png" alt="logo" height="70">
+                <!--  <img src="assets/layout/images/logo.jpg" alt="logo" height="70">  -->
                 <div class="flex align-items-center justify-content-center">
-                    <span class="font-bold text-xl">SSGA Bolivia</span>
-                    <img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia" class="ml-2" width="30" height="20">
+                    <span class="font-bold text-xl">VRobotPhyio</span>
+                    <!--  <!--<img src="assets/layout/images/flag-bolivia_recortada.png" alt="flag-bolivia" class="ml-2" width="30" height="20">-->  -->
                 </div>
             </div>
             <ng-container *ngIf="status === 'failed'">
@@ -20,40 +20,39 @@
                             type="text"
                             placeholder="Ingrese su usuario"
                             pInputText
-                            formControlName="usuario"
-                            [ngClass]="{ 'ng-dirty': loginForm.get('usuario').dirty, 'valid-field': loginForm.get('usuario').valid }"
+                            formControlName="username"
+                            [ngClass]="{ 'ng-dirty': loginForm.get('username').dirty, 'valid-field': loginForm.get('username').valid }"
                             class="p-inputtext w-full"
                         >
                         <i class="pi pi-user"></i>
                     </div>
-                    <ul class="p-error list-none" *ngIf="loginForm.get('usuario').invalid && loginForm.get('usuario').dirty">
-                        <li *ngIf="loginForm.get('usuario').errors?.required"> El nombre de usuario es requerido. (*) </li>
-                        <li *ngIf="loginForm.get('usuario').errors?.minlength"> Debe tener al menos 5 caracteres. </li>
-                        <li *ngIf="loginForm.get('usuario').errors?.maxlength"> No puede exceder 20 caracteres. </li>
-                        <li *ngIf="loginForm.get('usuario').errors?.spacesNotAllowed"> No debe contener espacios. </li>
+                    <ul class="p-error list-none" *ngIf="loginForm.get('username').invalid && loginForm.get('username').dirty">
+                        <li *ngIf="loginForm.get('username').errors?.required"> El nombre de usuario es requerido. (*) </li>
+                        <li *ngIf="loginForm.get('username').errors?.minlength"> Debe tener al menos un caracteres. </li>
+                        <li *ngIf="loginForm.get('username').errors?.maxlength"> No puede exceder 20 caracteres. </li>
+                        <li *ngIf="loginForm.get('username').errors?.spacesNotAllowed"> No debe contener espacios. </li>
                     </ul>
                 </div>
-                <div class="field mb-4">
+                <!--  <div class="field mb-4">
                     <label for="password" class="block text-900 font-medium text-xl">Contraseña</label>
                     <p-password formControlName="password" [feedback]="false" placeholder="Ingrese su contraseña" [toggleMask]="true" class="w-full" [ngClass]="{ 'ng-dirty': loginForm.get('password').dirty }"></p-password>
                     <ul class="p-error list-none" *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
                         <li *ngIf="loginForm.get('password').errors?.required"> La contrasaña es requerido. (*) </li>
                     </ul>
-                </div>
+                </div>  -->
                 <div class="mb-4">
                     <p-button label="Iniciar sesión" icon="pi pi-user" styleClass="w-full" (click)="doLogin()"></p-button>
                 </div>
             </form>
             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center gap-4">
-                <p-button
+                <!-- <p-button
                     label="¿Olvidaste tu contraseña?"
                     styleClass="w-full md:w-auto"
                     [routerLink]="['/forgot-password']"
                     [text]="true"
-
-                    >
-                </p-button>
-                <div class="text-center md:text-right w-full md:w-auto">
+                > 
+                </p-button>-->
+                <!--  <div class="text-center md:text-right w-full md:w-auto">
                     <span class="font-medium no-underline">¿No tienes cuenta? </span>
                     <p-button
                         label="Registrarse"
@@ -64,7 +63,7 @@
                         severity="success"
                     >
                     </p-button>
-                </div>
+                </div>  -->
             </div>
         </div>
     </div>
