@@ -27,6 +27,10 @@ export class PersonaService {
 
     // Person services
 
+    getPacientes() {
+        return this.http.get(`${API_URL}/pacientes`);
+    }
+
     getPersons() {
         return this.http.get(`${API_URL}/getPersons`, { context: checktoken(), });
     }

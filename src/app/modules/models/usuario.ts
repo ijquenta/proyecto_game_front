@@ -23,6 +23,9 @@ export class Usuario {
     rolnombre: string | null;
 
     constructor(
+        username: string | null = null,
+        email: string | null = null,
+
         tipo: number | null = null,
         usuid: number | null = null,
         perid: number | null = null,
@@ -42,6 +45,8 @@ export class Usuario {
         pernrodoc: number | null = null,
         rolnombre: string | null = null
     ) {
+        this.username = username;
+        this.email = email;
         this.tipo = tipo;
         this.usuid = usuid;
         this.perid = perid;

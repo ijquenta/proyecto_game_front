@@ -42,7 +42,7 @@ export class UsuarioCrudComponent implements OnInit {
 
     // Usuario
     usuario: Usuario;
-    usuarios: Usuario[] = [];
+    usuarios: any[] = [];
     usuariosInactivos: Usuario[] = [];
     usuariosDuplicado: Usuario[] = [];
     datosUsuario: Usuario;
@@ -145,7 +145,7 @@ export class UsuarioCrudComponent implements OnInit {
 
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
-        this.getUserData();
+        // this.getUserData();
         this.listarUsuarios();
         this.listarPersonaCombo();
 
@@ -200,11 +200,11 @@ export class UsuarioCrudComponent implements OnInit {
     listarUsuarios(){
         this.spinner.show();
         this.loading = true;
-        this.usuarioService.listaUsuario().subscribe(
+        this.usuarioService.listaProgreso().subscribe(
             (result: any) => {
-                this.usuarios = result;
-                this.usuariosDuplicado = this.usuarios;
-                this.filteredUsuarios = this.usuarios;
+                this.usuarios = result['data'];
+                // this.usuariosDuplicado = this.usuarios;
+                // this.filteredUsuarios = this.usuarios;
                 this.loading = false;
                 this.spinner.hide();
             },

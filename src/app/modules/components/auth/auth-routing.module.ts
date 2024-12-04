@@ -19,32 +19,32 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     },
     {
         path: 'register',
         component: RegisterComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     },
     {
         path: 'forgot-password',
         component: ForgotPasswordComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     },
     {
         path: 'confirm',
         component: ConfirmComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     },
     {
         path: 'no-confirm',
         component: NoConfirmComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     },
     {
         path: 'verified',
         component: VerifiedComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     },
     {
         path: 'access-denied',
@@ -57,7 +57,7 @@ const routes: Routes = [
     {
         path:'reset-password/:token',
         component: ResetPasswordComponent,
-        title: 'SGSA'
+        title: 'Yoela'
     }
   ];
 

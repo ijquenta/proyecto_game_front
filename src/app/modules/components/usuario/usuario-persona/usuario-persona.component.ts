@@ -68,7 +68,7 @@ export class UsuarioPersonaComponent implements OnInit {
     personExpanded: PersonaExpanded;
     personExpandedElement: PersonaExpanded[];
     personExpandedData: PersonaExpanded;
-    personsExpanded: PersonaExpanded[] = [];
+    personsExpanded: any[] = [];
     personsExpandedDuplicated: PersonaExpanded[] = [];
     personsExpandedInactivate: PersonaExpanded[] = [];
 
@@ -87,6 +87,8 @@ export class UsuarioPersonaComponent implements OnInit {
     // Person validation
     personForm: FormGroup;
     originalDocumentNumber: any;
+
+    
 
     // Types: Country, city, marital status, gender, document
 
@@ -248,8 +250,8 @@ export class UsuarioPersonaComponent implements OnInit {
 
     ngOnInit() {
         this.getPersonsExpended();
-        this.fillTypeCombos();
-        this.getUserProfile();
+        // this.fillTypeCombos();
+        // this.getUserProfile();
         this.initializeValidations();
     }
 
@@ -353,12 +355,13 @@ export class UsuarioPersonaComponent implements OnInit {
     getPersonsExpended() {
         this.spinner.show();
         this.loading = true;
-        this.personaService.getPersons().subscribe({
+        this.personaService.getPacientes().subscribe({
             next: (data: any) => {
-                this.personExpandedElement = data;
-                this.personsExpanded = this.personExpandedElement.map(item => this.organizePersonData(item));
-                this.personsExpandedDuplicated = this.personsExpanded;
-                this.cd.markForCheck();
+                // this.personExpandedElement = data;
+                this.personsExpanded = data['data'];
+                // this.personsExpanded = this.personExpandedElement.map(item => this.organizePersonData(item));
+                // this.personsExpandedDuplicated = this.personsExpanded;
+                // this.cd.markForCheck();
                 this.loading = false;
                 this.spinner.hide();
             },

@@ -15,6 +15,10 @@ export class UsuarioService {
         return this.http.get(`${API_URL}/listaUsuarios`, { context: checktoken(), });
     }
 
+    getPacientes() {
+        return this.http.get(`${API_URL}/pacientes`);
+    }
+
     getUsers() {
         return this.http.get(`${API_URL}/getUsers`, { context: checktoken(), });
     }
@@ -38,6 +42,11 @@ export class UsuarioService {
     listaUsuario() {
         return this.http.get(`${API_URL}/listaUsuario`, { context: checktoken(), });
     }
+
+    listaProgreso() {
+        return this.http.get(`${API_URL}/progresos`);
+    }
+
     gestionarUsuario(criterio: any) {
         return this.http.post(`${API_URL}/gestionarUsuario`, criterio, { context: checktoken(), });
     }

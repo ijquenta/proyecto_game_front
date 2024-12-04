@@ -23,66 +23,69 @@ export class AppMenuComponent implements OnInit {
                         label: 'Principal',
                         icon: 'pi pi-fw pi-home',
                         routerLink: ['principal/'],
-                        roles: [
-                            'Administrador',
-                            'Secretaria',
-                            'Estudiante',
-                            'Docente',
-                            'Invitado',
-                        ],
-                    },
-                    {
-                        label: 'Panel',
-                        icon: 'pi pi-fw pi-chart-pie',
-                        routerLink: ['panel/'],
-                        roles: ['Administrador', 'Secretaria'],
                     },
                 ],
             },
             {
-                label: 'Usuario',
+                label: 'Pacientes',
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
-                        label: 'Usuarios',
+                        label: 'Administrar',
                         icon: 'pi pi-fw pi-user',
                         items: [
                             {
-                                label: 'Gestionar Personas',
+                                label: 'Pacientes',
                                 icon: 'pi pi-fw pi-users',
                                 routerLink: ['usuario/persona'],
-                                roles: ['Administrador', 'Secretaria'],
                             },
                             {
-                                label: 'Gestionar Usuarios',
+                                label: 'Progreso',
                                 icon: 'pi pi-fw pi-users',
                                 routerLink: ['usuario/crud'],
-                                roles: ['Administrador', 'Secretaria'],
                             },
                             {
-                                label: 'Gestionar Roles',
+                                label: 'Seguimiento',
                                 icon: 'pi pi-fw pi-wrench',
-                                routerLink: ['usuario/roles'],
-                                roles: ['Administrador'],
+                                // routerLink: ['usuario/roles'],
                             },
                             {
-                                label: 'Gestionar Accesos',
+                                label: 'Reporte',
                                 icon: 'pi pi-fw pi-wrench',
-                                routerLink: ['usuario/acceso'],
-                                roles: ['Administrador'],
-                            },
-                            {
-                                label: 'Gestionar Permisos',
-                                icon: 'pi pi-fw pi-wrench',
-                                routerLink: ['usuario/permiso'],
-                                roles: ['Administrador'],
+                                // routerLink: ['usuario/acceso'],
                             },
                         ],
-                        roles: ['Administrador', 'Secretaria'],
                     },
                 ],
-                roles: ['Administrador', 'Secretaria'],
             },
+            /*
+            { 
+                label: 'Materia',
+                icon: 'pi pi-fw pi-folder',
+                items: [
+                    {
+                        label: 'Gestionar Materias',
+                        icon: 'pi pi-fw pi-folder-open',
+                        routerLink: ['materia/crud'],
+                    },
+                    {
+                        label: 'Materias Asignadas',
+                        icon: 'pi pi-fw pi-file-pdf',
+                        routerLink: ['materia/docente'],
+                    },
+                    {
+                        label: 'Mis Materias',
+                        icon: 'pi pi-fw pi-book',
+                        routerLink: ['materia/estudiante'],
+                    },
+                    {
+                        label: 'Pensum',
+                        icon: 'pi pi-fw pi-book',
+                        routerLink: ['materia/pensum'],
+                    },
+                ],
+            }*/
+            /*
             {
                 label: 'Curso | Materia',
                 icon: 'pi pi-fw pi-briefcase',
@@ -440,6 +443,7 @@ export class AppMenuComponent implements OnInit {
                 ],
                 roles: ['Administrador', 'Secretaria'],
             },
+            */
         ];
     }
 }
