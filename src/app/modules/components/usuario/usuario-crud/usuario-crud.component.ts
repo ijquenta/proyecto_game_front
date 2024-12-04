@@ -155,17 +155,17 @@ export class UsuarioCrudComponent implements OnInit {
             usupassword2: ['', [Validators.required]]
         }, { validator: this.validatorPasswords });
 
-        this.usuarioService.getRoles().subscribe(
-            (result: any) => {
-                this.rolOptions = result.map((rol: any) => ({
-                    label: rol.rolnombre,
-                    value: rol.rolnombre
-                }));
-            },
-            (error) => {
-                console.error('Error al obtener los roles:', error);
-            }
-        );
+        // this.usuarioService.getRoles().subscribe(
+        //     (result: any) => {
+        //         this.rolOptions = result.map((rol: any) => ({
+        //             label: rol.rolnombre,
+        //             value: rol.rolnombre
+        //         }));
+        //     },
+        //     (error) => {
+        //         console.error('Error al obtener los roles:', error);
+        //     }
+        // );
     }
 
     //  Funciones
@@ -191,22 +191,22 @@ export class UsuarioCrudComponent implements OnInit {
 
     // Lista los roles para el combo de opciones
     listarRolCombo() {
-        this.usuarioService.getRoles().subscribe(
-            (result: any) => {
-                this.tipoRol = result;
-                if(this.datosUsuario?.rolid == 2){
-                    this.tipoRol = this.tipoRol.filter(usuario => usuario.rolid !== 1);
+        // this.usuarioService.getRoles().subscribe(
+        //     (result: any) => {
+        //         this.tipoRol = result;
+        //         if(this.datosUsuario?.rolid == 2){
+        //             this.tipoRol = this.tipoRol.filter(usuario => usuario.rolid !== 1);
 
-                    this.rolOptions = result.map((rol: any) => ({
-                        label: rol.rolnombre, // o el nombre que prefieras mostrar
-                        value: rol.rolnombre  // o el valor que prefieras usar
-                    }));
-                }
-            },
-            (error) => {
-                console.error('Error al obtener los roles:', error);
-            }
-        );
+        //             this.rolOptions = result.map((rol: any) => ({
+        //                 label: rol.rolnombre, // o el nombre que prefieras mostrar
+        //                 value: rol.rolnombre  // o el valor que prefieras usar
+        //             }));
+        //         }
+        //     },
+        //     (error) => {
+        //         console.error('Error al obtener los roles:', error);
+        //     }
+        // );
     }
 
     // lista las personas para el combo de opciones

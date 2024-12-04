@@ -32,6 +32,8 @@ export class UsuarioRolesComponent implements OnInit {
 
     role: any;
 
+    doctores: any[] = [];
+
     // validation
     rolForm: FormGroup;
 

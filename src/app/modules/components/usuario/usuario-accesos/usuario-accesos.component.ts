@@ -21,6 +21,12 @@ import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 })
 export class UsuarioAccesosComponent implements OnInit {
 
+
+
+    usuarios: Usuario[] = [];
+
+
+
     items: MenuItem[] | undefined;
     home: MenuItem | undefined;
     accesses: any[] = [];
@@ -41,7 +47,7 @@ export class UsuarioAccesosComponent implements OnInit {
     // Menu Variables
     manageMenuDialog: boolean = false;
     deleteMenuDialog: boolean = false;
-    menus : any[] = [];;
+    menus: any[] = [];;
     menu: any;
     loading: boolean = false;
     menuForm: FormGroup;
@@ -54,7 +60,7 @@ export class UsuarioAccesosComponent implements OnInit {
     // SubMenu Variables
     manageSubMenuDialog: boolean = false;
     deleteSubMenuDialog: boolean = false;
-    submenus : any[] = [];;
+    submenus: any[] = [];;
     submenu: any;
     submenuForm: FormGroup;
     dialogSubMenu: boolean = false;
@@ -68,13 +74,13 @@ export class UsuarioAccesosComponent implements OnInit {
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
-    ) {}
+    ) { }
 
     ngOnInit() {
 
-        this.items = [{ label: 'Administrar'}, { label: 'Usuarios', routerLink:''},];
+        this.items = [{ label: 'Administrar' }, { label: 'Usuarios', routerLink: '' },];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
-        this.stateOptionsEstado = [ { label: 'Activo', value: 1 }, { label: 'Inactivo', value: 0 } ]
+        this.stateOptionsEstado = [{ label: 'Activo', value: 1 }, { label: 'Inactivo', value: 0 }]
         this.scrollableTabs = this.roles;
 
         this.accessForm = this.formBuilder.group({
@@ -118,6 +124,16 @@ export class UsuarioAccesosComponent implements OnInit {
         this.getDataTipoRol();
 
         this.getDataAccessType();
+
+
+        this.usuarioService.obtenerUsuarios().subscribe(
+             (data) => {
+                 this.usuarios = data as Usuario[];
+             },
+             (error) => {
+                 console.error('Error in recupered submenus', error);
+             }
+        );
     }
 
     // Important Functions
@@ -150,7 +166,7 @@ export class UsuarioAccesosComponent implements OnInit {
         // });
     }
     // Delete
-    deleteAccess(){
+    deleteAccess() {
         // this.accesoService.deleteAccess(this.access.accid).subscribe(
         //     response => {
         //         this.messageService.add({ severity: 'success', summary: 'Acceso', detail: 'Eliminado, correcto.', life: 3000 });
@@ -165,7 +181,7 @@ export class UsuarioAccesosComponent implements OnInit {
         // );
     }
     // Add
-    addAcceso(){
+    addAcceso() {
         this.addAccessdialog = true;
         this.accessForm.reset();
     }
@@ -182,7 +198,7 @@ export class UsuarioAccesosComponent implements OnInit {
         //     console.error('Error al listar roles:', error);
         //   }
         // );
-      }
+    }
     // Get Operation by Id
     getOperacionPorId(submenId: number) {
         return this.submenus.find(submenu => submenu?.submenid === submenId);
@@ -210,7 +226,7 @@ export class UsuarioAccesosComponent implements OnInit {
         // )
     }
     // Get Access Type
-    getDataAccessType(){
+    getDataAccessType() {
         // this.accesoService.getSubMenuType().subscribe(
         //     (data) => {
         //         this.tipoSubMenu = data as TipoSubMenu[];
@@ -221,8 +237,8 @@ export class UsuarioAccesosComponent implements OnInit {
         // )
     }
     // Send Form Access Create Multiples
-    sendFormAccess(){
-        if(this.accessForm.invalid){
+    sendFormAccess() {
+        if (this.accessForm.invalid) {
             Object.values(this.accessForm.controls).forEach(control => {
                 control.markAsTouched();
                 control.markAsDirty();
@@ -230,16 +246,16 @@ export class UsuarioAccesosComponent implements OnInit {
             return;
         }
 
-        this.access ={};
+        this.access = {};
         this.access.rolid = this.accessForm.value.tipoRol.rolid;
-        this.access.accactivo = this.accessForm.value.accactivo? 1 : 0;
+        this.access.accactivo = this.accessForm.value.accactivo ? 1 : 0;
         this.access.accestado = this.accessForm.value.accestado;
         this.access.accusureg = this.usuario.usuname;
         this.access.accdescripcion = this.accessForm.value.accdescripcion;
 
         const submenus = this.accessForm.value.tipoSubMenu;
 
-        if(!Array.isArray(submenus) || submenus.length === 0){
+        if (!Array.isArray(submenus) || submenus.length === 0) {
             console.error('tipoSubMenu no es un array o está vacío');
             return;
         }
@@ -272,7 +288,7 @@ export class UsuarioAccesosComponent implements OnInit {
                 });
                 this.count = count;
                 this.addAccessdialog = false;
-                if(count > 0){
+                if (count > 0) {
                     this.messageService.add({ severity: 'info', summary: 'Acceso', detail: 'Ya se encuentra registrados: ' + count + ' registros', life: 3000 });
                 }
                 this.messageService.add({ severity: 'success', summary: 'Acceso', detail: 'Adicionados correctamente.', life: 3000 });
@@ -303,11 +319,11 @@ export class UsuarioAccesosComponent implements OnInit {
 
     getAccessesByRolId(rolId: number) {
         if (this.accesses) {
-          return this.accesses.filter(access => access.rolid === rolId);
+            return this.accesses.filter(access => access.rolid === rolId);
         } else {
-          return [];
+            return [];
         }
-      }
+    }
     // Get Acesses Order by rolid
 
     // Option dialog delete
@@ -323,7 +339,7 @@ export class UsuarioAccesosComponent implements OnInit {
 
     // Menu ------------------------------------------------------------------------------------------------------------------
     // Get Menus
-    getDataMenus(){
+    getDataMenus() {
         this.spinner.show();
         // this.menuService.getMenus().subscribe({
         //     next: (data) => {
@@ -339,7 +355,7 @@ export class UsuarioAccesosComponent implements OnInit {
         // })
     }
     // button manage Menus
-    manageMenus(){
+    manageMenus() {
         this.getDataMenus();
         this.getDataTipoIcono();
         this.manageMenuDialog = true;
@@ -352,12 +368,12 @@ export class UsuarioAccesosComponent implements OnInit {
         // this.getDataTipoIcono();
     }
     // Delete
-    MenuDelete(menu: any){
-        this.menu = {...menu};
+    MenuDelete(menu: any) {
+        this.menu = { ...menu };
         this.deleteMenuDialog = true;
     }
     // Send Delete Menu
-    sendDeleteMenu(){
+    sendDeleteMenu() {
         this.loading = true;
         // this.menuService.deleteMenu(this.menu.menid).subscribe({
         //     next: (data) => {
@@ -375,7 +391,7 @@ export class UsuarioAccesosComponent implements OnInit {
         // })
     }
     // Update
-    MenuUpdate(menu: any){
+    MenuUpdate(menu: any) {
         this.menuForm.reset();
         this.dialogMenu = true;
         this.optionMenu = false;
@@ -407,14 +423,14 @@ export class UsuarioAccesosComponent implements OnInit {
         // })
     }
     // Hialog dialog menu
-    hideDialogMenu(){
+    hideDialogMenu() {
         this.dialogMenu = false;
         this.menuForm.reset();
     }
     // Send from menu for create or update
-    sendFormMenu(){
+    sendFormMenu() {
         if (this.menuForm.invalid) {
-            Object.values(this.menuForm.controls).forEach( control => {
+            Object.values(this.menuForm.controls).forEach(control => {
                 control.markAsTouched();
                 control.markAsDirty();
             });
@@ -429,7 +445,7 @@ export class UsuarioAccesosComponent implements OnInit {
         this.menu.mendescripcion = this.menuForm.value.mendescripcion;
         this.loading = true;
 
-        if(this.optionMenu){
+        if (this.optionMenu) {
             // this.menuService.createMenu(this.menu).subscribe({
             //     next: (data) => {
             //     },
@@ -447,7 +463,7 @@ export class UsuarioAccesosComponent implements OnInit {
             //     }
             // })
         }
-        else{
+        else {
             this.menu.menid = this.menuForm.value.menid;
             this.menu.menusumod = this.usuario.usuname;
             // this.menuService.updateMenu(this.menu.menid, this.menu).subscribe({
@@ -470,7 +486,7 @@ export class UsuarioAccesosComponent implements OnInit {
 
     }
     // get Tipo Icono
-    getDataTipoIcono(){
+    getDataTipoIcono() {
         // this.tipoIconoService.getTipoIcono().subscribe({
 
         //     next: (data) => {
@@ -498,7 +514,7 @@ export class UsuarioAccesosComponent implements OnInit {
         }
     }
     // get Status Severity
-    getStatusSeverity(status: number): string{
+    getStatusSeverity(status: number): string {
         switch (status) {
             case 1:
                 return 'success';
@@ -533,13 +549,13 @@ export class UsuarioAccesosComponent implements OnInit {
         // });
     }
     // button manage SubMenu
-    manageSubMenu(){
+    manageSubMenu() {
         this.getListSubMenu();
         this.getTipoMenu();
         // this.getDataTipoIcono();
         this.manageSubMenuDialog = true;
     }
-     // Create
+    // Create
     SubMenuCreate() {
         this.submenuForm.reset();
         this.dialogSubMenu = true;
@@ -548,7 +564,7 @@ export class UsuarioAccesosComponent implements OnInit {
         // this.getDataTipoIcono();
     }
     // Get Tipo Menu
-    getTipoMenu(){
+    getTipoMenu() {
         this.spinner.show();
         // this.subMenService.getTipoMenu().subscribe({
         //     next: (data) => {
@@ -564,10 +580,10 @@ export class UsuarioAccesosComponent implements OnInit {
         // })
     }
     // Update
-    SubMenuUpdate(submenu: any){
+    SubMenuUpdate(submenu: any) {
         this.submenuForm.reset();
         this.dialogSubMenu = true;
-        this.submenu = {...submenu}
+        this.submenu = { ...submenu }
         this.optionSubMenu = false;
         this.submenuForm.patchValue({
             submenid: this.submenu.submenid,
@@ -579,15 +595,15 @@ export class UsuarioAccesosComponent implements OnInit {
             submenestado: this.submenu.submenestado
         });
     }
-     // Hialog dialog menu
-    hideDialogSubMenu(){
+    // Hialog dialog menu
+    hideDialogSubMenu() {
         this.dialogSubMenu = false;
         this.submenuForm.reset();
     }
     // Send from menu for create or update
-    sendFormSubMenu(){
+    sendFormSubMenu() {
         if (this.submenuForm.invalid) {
-            Object.values(this.submenuForm.controls).forEach( control => {
+            Object.values(this.submenuForm.controls).forEach(control => {
                 control.markAsTouched();
                 control.markAsDirty();
             });
@@ -601,7 +617,7 @@ export class UsuarioAccesosComponent implements OnInit {
         this.submenu.submendescripcion = this.submenuForm.value.submendescripcion;
         this.loading = true;
 
-        if(this.optionSubMenu){
+        if (this.optionSubMenu) {
             // this.subMenService.createSubMenu(this.submenu).subscribe({
             //     next: (data) => {
             //     },
@@ -619,7 +635,7 @@ export class UsuarioAccesosComponent implements OnInit {
             //     }
             // })
         }
-        else{
+        else {
             this.submenu.submenid = this.submenuForm.value.submenid;
             this.submenu.submenusumod = this.usuario.usuname;
             // this.subMenService.updateSubMenu(this.submenu.submenid, this.submenu).subscribe({
@@ -642,12 +658,12 @@ export class UsuarioAccesosComponent implements OnInit {
 
     }
     // Delete
-    SubMenuDelete(submenu: any){
-        this.submenu = {...submenu};
+    SubMenuDelete(submenu: any) {
+        this.submenu = { ...submenu };
         this.deleteSubMenuDialog = true;
     }
-     // Send Delete Menu
-    sendDeleteSubMenu(){
+    // Send Delete Menu
+    sendDeleteSubMenu() {
         this.loading = true;
         // this.subMenService.deleteSubMenu(this.submenu.submenid).subscribe({
         //     next: (data) => {
