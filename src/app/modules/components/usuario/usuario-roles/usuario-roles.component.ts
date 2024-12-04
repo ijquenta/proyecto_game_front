@@ -1,12 +1,10 @@
 // Modelos
-import { Rol } from 'src/app/modules/models/rol';
 import { Usuario } from 'src/app/modules/models/usuario';
 
 // Validation
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // Services
-import { RolService } from 'src/app/modules/service/data/rol.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 
 // Others
@@ -32,9 +30,7 @@ export class UsuarioRolesComponent implements OnInit {
     // user
     usuario: Usuario;
 
-    // role
-    roles: Rol[] = [];
-    role: Rol;
+    role: any;
 
     // validation
     rolForm: FormGroup;
@@ -72,7 +68,6 @@ export class UsuarioRolesComponent implements OnInit {
 
     constructor(
         private messageService: MessageService,
-        private rolService: RolService,
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService
@@ -126,24 +121,24 @@ export class UsuarioRolesComponent implements OnInit {
     }
 
     getDataRoles() {
-        this.spinner.show();
-        this.rolService.getRoles().subscribe({
-            next: (data: any) => {
-                this.roles = Array.isArray(data["data"]) ? data["data"] : [];
-            },
-            error: (error) => {
-                console.error(error)
-            },
-            complete: () => {
-                this.spinner.hide();
-            }
-        });
+        // this.spinner.show();
+        // this.rolService.getRoles().subscribe({
+        //     next: (data: any) => {
+        //         this.roles = Array.isArray(data["data"]) ? data["data"] : [];
+        //     },
+        //     error: (error) => {
+        //         console.error(error)
+        //     },
+        //     complete: () => {
+        //         this.spinner.hide();
+        //     }
+        // });
     }
 
     // manage role
 
     newRole() {
-        this.role = new Rol();
+        // this.role = new Rol();
         this.roleDialog = true;
         this.optionRole = true;
         this.rolForm.reset();
@@ -164,7 +159,7 @@ export class UsuarioRolesComponent implements OnInit {
         }
         if(this.optionRole){
 
-            this.role = new Rol();
+            // this.role = new Rol();
 
             this.role.tipo = 1;
             this.role.rolid = null;
@@ -174,36 +169,36 @@ export class UsuarioRolesComponent implements OnInit {
             this.role.roldescripcion = this.rolForm.value.roldescripcion;
 
             this.loading = true;
-            this.rolService.manageRole(this.role).subscribe({
-                next: (result: any) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Registro completado.',
-                        life: 3000
-                    });
-                },
-                error: (error) => {
-                    console.error(error)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Ocurrió un error. Contacta al soporte.',
-                        life: 5000
-                    });
-                    this.loading = false;
-                },
-                complete: () => {
-                    this.roleDialog = false;
-                    this.optionRole = false;
-                    this.getDataRoles();
-                    this.loading = false;
-                    this.rolForm.reset();
-                }
-            });
+            // this.rolService.manageRole(this.role).subscribe({
+            //     next: (result: any) => {
+            //         this.messageService.add({
+            //             severity: 'success',
+            //             summary: 'Éxito',
+            //             detail: 'Registro completado.',
+            //             life: 3000
+            //         });
+            //     },
+            //     error: (error) => {
+            //         console.error(error)
+            //         this.messageService.add({
+            //             severity: 'error',
+            //             summary: 'Error',
+            //             detail: 'Ocurrió un error. Contacta al soporte.',
+            //             life: 5000
+            //         });
+            //         this.loading = false;
+            //     },
+            //     complete: () => {
+            //         this.roleDialog = false;
+            //         this.optionRole = false;
+            //         this.getDataRoles();
+            //         this.loading = false;
+            //         this.rolForm.reset();
+            //     }
+            // });
         }
         if(!this.optionRole) {
-            this.role = new Rol();
+            // this.role = new Rol();
             this.role.tipo = 2;
             this.role.rolestado = 1;
             this.role.rolusumod = this.usuario.usuname;
@@ -212,37 +207,37 @@ export class UsuarioRolesComponent implements OnInit {
             this.role.rolid = this.rolForm.value.rolid;
             this.loading = true;
 
-            this.rolService.manageRole(this.role).subscribe({
-                next: (result: any) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Registro completado.',
-                        life: 3000
-                    });
-                },
-                error: (error) => {
-                    console.error(error)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Ocurrió un error. Contacta al soporte.',
-                        life: 5000
-                    });
-                    this.loading = false;
-                },
-                complete: () => {
-                    this.roleDialog = false;
-                    this.optionRole = false;
-                    this.getDataRoles();
-                    this.loading = false;
-                    this.rolForm.reset();
-                }
-            });
+            // this.rolService.manageRole(this.role).subscribe({
+            //     next: (result: any) => {
+            //         this.messageService.add({
+            //             severity: 'success',
+            //             summary: 'Éxito',
+            //             detail: 'Registro completado.',
+            //             life: 3000
+            //         });
+            //     },
+            //     error: (error) => {
+            //         console.error(error)
+            //         this.messageService.add({
+            //             severity: 'error',
+            //             summary: 'Error',
+            //             detail: 'Ocurrió un error. Contacta al soporte.',
+            //             life: 5000
+            //         });
+            //         this.loading = false;
+            //     },
+            //     complete: () => {
+            //         this.roleDialog = false;
+            //         this.optionRole = false;
+            //         this.getDataRoles();
+            //         this.loading = false;
+            //         this.rolForm.reset();
+            //     }
+            // });
         }
     }
 
-    updateRole(data: Rol) {
+    updateRole(data: any) {
         this.role = { ...data };
 
         this.rolForm.patchValue({
@@ -258,13 +253,13 @@ export class UsuarioRolesComponent implements OnInit {
 
     // manage role status
 
-    deactivateRole(data: Rol){
+    deactivateRole(data: any){
         this.role = { ...data };
         this.role.tipo = 2;
         this.deactivateRoleDialog = true;
     }
 
-    activateRole(data: Rol){
+    activateRole(data: any){
         this.role = { ...data };
         this.role.tipo = 3;
         this.activateRoleDialog = true;
@@ -272,56 +267,56 @@ export class UsuarioRolesComponent implements OnInit {
 
     confirmActivateDeactivate() {
         this.loading = true;
-        this.rolService.manageRoleStatus(this.role).subscribe({
-            next: (result: any) => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Registro completado.',
-                    life: 3000
-                });
-            },
-            error: (error) => {
-                console.error(error)
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Ocurrió un error. Contacta al soporte.',
-                    life: 5000
-                });
-                this.loading = false;
-            },
-            complete: () => {
-                this.deactivateRoleDialog = false;
-                this.activateRoleDialog = false;
-                this.getDataRoles();
-                this.loading = false;
-            }
-        });
+        // this.rolService.manageRoleStatus(this.role).subscribe({
+        //     next: (result: any) => {
+        //         this.messageService.add({
+        //             severity: 'success',
+        //             summary: 'Éxito',
+        //             detail: 'Registro completado.',
+        //             life: 3000
+        //         });
+        //     },
+        //     error: (error) => {
+        //         console.error(error)
+        //         this.messageService.add({
+        //             severity: 'error',
+        //             summary: 'Error',
+        //             detail: 'Ocurrió un error. Contacta al soporte.',
+        //             life: 5000
+        //         });
+        //         this.loading = false;
+        //     },
+        //     complete: () => {
+        //         this.deactivateRoleDialog = false;
+        //         this.activateRoleDialog = false;
+        //         this.getDataRoles();
+        //         this.loading = false;
+        //     }
+        // });
     }
 
     // Delete
-    deleteRole(role: Rol){
+    deleteRole(role: any){
         this.role = {...role};
         this.deleteRoleDialog = true;
     }
     // Send Delete Role
     sendDeleteRole(){
         this.loading = true;
-        this.rolService.deleteRole(this.role.rolid).subscribe({
-            next: (data) => {
-                this.messageService.add({ severity: 'success', summary: 'Rol', detail: 'Eliminado correctamente.', life: 3000 });
-                this.deleteRoleDialog = false;
-                this.loading = false;
-                this.getDataRoles();
-            },
-            error: (error) => {
-                console.error('Error when listing deleteMenu', error);
-                this.loading = false;
-            }
-            ,complete: () => {
-            }
-        })
+        // this.rolService.deleteRole(this.role.rolid).subscribe({
+        //     next: (data) => {
+        //         this.messageService.add({ severity: 'success', summary: 'Rol', detail: 'Eliminado correctamente.', life: 3000 });
+        //         this.deleteRoleDialog = false;
+        //         this.loading = false;
+        //         this.getDataRoles();
+        //     },
+        //     error: (error) => {
+        //         console.error('Error when listing deleteMenu', error);
+        //         this.loading = false;
+        //     }
+        //     ,complete: () => {
+        //     }
+        // })
     }
 
     // others
@@ -330,7 +325,7 @@ export class UsuarioRolesComponent implements OnInit {
         this.roleDialog = false;
         this.deactivateRoleDialog = false;
         this.activateRoleDialog = false;
-        this.role = new Rol();
+        // this.role = new Rol();
         this.rolForm.reset();
     }
 

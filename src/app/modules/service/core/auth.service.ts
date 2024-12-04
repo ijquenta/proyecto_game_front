@@ -62,16 +62,16 @@ export class AuthService {
     getProfile(): Observable<any> {
         const token = this.tokenService.getToken();
         let decode: any = (jwt_decode(token));
-
+        console.log("criterio", decode)
+        
         const criterio = {
-            usuid: decode.sub
+            usuario_id: decode.sub
         };
 
-        return this.http.post(`${API_URL}/auth/perfil`, criterio, {
-            context: checktoken()
-        }).pipe(
+        return this.http.get(`${API_URL}/usuarios/${criterio}`).pipe(
             tap(user => {
                 this.usuario$.next(user);
+                console.log("hola", user)
             })
         );
     }
@@ -83,11 +83,10 @@ export class AuthService {
             usuid: decode.usuid
         };
 
-        return this.http.post(`${API_URL}/auth/perfil`, criterio, {
-            context: checktoken()
-        }).pipe(
+        return this.http.get(`${API_URL}/usuarios/${criterio}`).pipe(
             tap(user => {
                 this.usuario$.next(user);
+                console.log("usuario new", user)
             })
         );
     }

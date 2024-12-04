@@ -60,8 +60,8 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
             });
     }
     ngOnInit() {
-        this.authService.getProfile().subscribe(() => {
-        });
+        // this.authService.getProfile().subscribe(() => {
+        // });
     }
 
     hideMenu() {

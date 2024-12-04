@@ -22,7 +22,6 @@ export class AppTopBarComponent {
 
     // Inicializa usuario con un objeto vacío
     usuario = new Usuario();
-    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     items!: MenuItem[];
 
@@ -39,14 +38,14 @@ export class AppTopBarComponent {
 
     modelOption: any[] | undefined;
     ngOnInit() {
-        this.authService.getProfile().subscribe(
-            (result: any) => {
-                this.usuario = result[0];
-            },
-            (error: any) => {
-                console.error("Error al obtener el perfil: ", error);
-            }
-        );
+        // this.authService.getProfile().subscribe(
+        //     (result: any) => {
+        //         this.usuario = result[0];
+        //     },
+        //     (error: any) => {
+        //         console.error("Error al obtener el perfil: ", error);
+        //     }
+        // );
         this.modelOption = [
             {
                 label: 'Perfil',

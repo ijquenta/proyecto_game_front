@@ -17,8 +17,6 @@ import { ImageModule } from 'primeng/image';
 import { CardModule } from 'primeng/card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-
-
 import { TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -37,10 +35,6 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ChipModule } from 'primeng/chip';
-import { UploadService } from 'src/app/modules/service/data/upload.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DividerModule } from 'primeng/divider';

@@ -6,7 +6,6 @@ import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from
 // Services
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 
 // Angular core
@@ -30,9 +29,6 @@ import * as FileSaver from 'file-saver';
 
 // enviroment
 import { environment } from 'src/environments/environment';
-
-// Logo
-import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
 
 // Interfaces
 interface Column {
@@ -109,7 +105,6 @@ export class UsuarioPersonaComponent implements OnInit {
     usuario: Usuario;
 
     // User profile photo
-    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     // Table
     rowsPerPageOptions = [5, 10, 20];
@@ -182,7 +177,6 @@ export class UsuarioPersonaComponent implements OnInit {
         private usuarioService: UsuarioService,
         private messageService: MessageService,
         private personaService: PersonaService,
-        private uploadService: UploadService,
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
@@ -563,66 +557,6 @@ export class UsuarioPersonaComponent implements OnInit {
         return fileType.startsWith('image/');
     }
 
-    // Person with profile photo or not
-    async deletePerson() {
-        this.person = new Persona();
-        this.person.tipo = 1;
-        this.person.perid = this.personExpanded.perid;
-        this.person.perusumod = this.usuario.usuname;
-        this.loading = true;
-        this.personaService.deletePerson(this.person).subscribe({
-            next: (response: any) => {
-                // Get perfoto
-                const currentPhoto = this.personExpanded.perfoto;
-                // Check profile photo
-                if (currentPhoto) {
-                    // Delete profile photo If exists
-                    const deleteSuccess = this.uploadService.deleteProfilePhoto(currentPhoto);
-                    // Message If It doesn't have profile photo
-                    if (!deleteSuccess) {
-                        this.messageService.add({
-                            severity: 'warn',
-                            summary: 'Imagen',
-                            detail: 'No se pudo eliminar la imagen actual.',
-                            life: 3000
-                        });
-                    }
-                    // Message If it has profile photo
-                    if(deleteSuccess) {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Imagen',
-                            detail: 'Se eliminó correctamente.',
-                            life: 3000 });
-                    }
-                }
-                this.personDeleteDialog = false;
-                this.personOptionDialog = false;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Persona',
-                    detail: 'Se elimino correctamente.',
-                    life: 3000
-                });
-                this.getPersonsExpended();
-                this.loading = false;
-            },
-            error: (error: any) => {
-                console.error("error: ", error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Persona',
-                    detail: 'Ocurrio un error, porfavor comunicarse con soporte.',
-                    life: 3000
-                });
-                this.loading = false;
-            },
-            complete: () => {
-                this.loading = false;
-            }
-        });
-    }
-
     // Activate person for personExpanded
     activatePerson() {
         this.person = new Persona();
@@ -812,7 +746,7 @@ export class UsuarioPersonaComponent implements OnInit {
                 doc.text(descriptionSecondary, descriptionX2, descriptionY2);
 
                 // Imagen in base64
-                const base64Image = logoIbciBase64;
+                const base64Image = "";
                 const imageX = 20;
                 const imageY = 10;
                 const imageWidth = 80; // Image width in points

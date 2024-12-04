@@ -8,15 +8,11 @@ import * as FileSaver from 'file-saver';
 
 // Servicios
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
-import { ArchivosService } from 'src/app/modules/service/util/archivos.service';
 
 // Modelos
 import { Usuario,  } from 'src/app/modules/models/usuario';
 import { TipoPersona, TipoPersona2, TipoRol } from 'src/app/modules/models/diccionario';
-import { Column, ExportColumn } from 'src/app/modules/models/exportFile';
-import logoIbciBase64 from '../../../../../assets/base64/logo_ibci_base64.js';
 
 // Para validaciones
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -36,9 +32,6 @@ interface ColumsTable {
 export class UsuarioCrudComponent implements OnInit {
 
     // Variables
-
-    // API
-    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     // Usuario
     usuario: Usuario;
@@ -76,8 +69,6 @@ export class UsuarioCrudComponent implements OnInit {
     usuarioPwdForm: FormGroup;
 
     originalUsername: any;
-    colsTable!: Column[];
-    exportColumns!: ExportColumn[];
 
     home: MenuItem | undefined;
     stateOptionsEstado: any;
@@ -109,7 +100,7 @@ export class UsuarioCrudComponent implements OnInit {
 
     rolOptions = [];
 
-    constructor( private messageService: MessageService, private usuarioService: UsuarioService, private authService: AuthService, private reporte: ReporteService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private archivoService: ArchivosService)
+    constructor( private messageService: MessageService, private usuarioService: UsuarioService, private authService: AuthService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService)
     {
         this.colsColumsTable = [
             { field: 'usuname', header: 'Nombre de usuario' },
@@ -163,24 +154,6 @@ export class UsuarioCrudComponent implements OnInit {
             usupassword: ['', [Validators.required, Validators.minLength(8), this.securityPassword]],
             usupassword2: ['', [Validators.required]]
         }, { validator: this.validatorPasswords });
-
-        this.colsTable = [
-            { field: 'usuid', header: 'ID' },
-            { field: 'usuname', header: 'Nombre de usuario' },
-            { field: 'pernomcompleto', header: 'Nombre completo' },
-            { field: 'pernrodoc', header: 'Nro. doc.' },
-            { field: 'usuemail', header: 'Email' },
-            { field: 'rolnombre', header: 'Rol' },
-
-            { field: 'usudescripcion', header: 'Descripcion' },
-            { field: 'usuusureg', header: 'Registro' },
-            // { field: 'usufecreg', header: 'Fecha' },
-            { field: 'usuusumod', header: 'Modificación' },
-            // { field: 'usufecmod', header: 'Fecha' }
-            { field: 'usuestado', header: 'Estado' },
-        ];
-
-        this.exportColumns = this.colsTable.map((col) => ({ title: col.header, dataKey: col.field }));
 
         this.usuarioService.getRoles().subscribe(
             (result: any) => {
@@ -570,69 +543,6 @@ export class UsuarioCrudComponent implements OnInit {
                 return 'No Confirmado';
         }
     }
-
-
-    // Fucniones para exportar en documentos PDF y/o Excel
-    // Exporta en PDF
-    exportPdf() {
-        import('jspdf').then(jsPDF => {
-            import('jspdf-autotable').then(() => {
-                const doc = new jsPDF.default('l', 'pt', 'a4');
-
-                // Título centrado
-                const title = 'Lista de Usuarios';
-                const titleFontSize = 16;
-                const titleWidth = doc.getStringUnitWidth(title) * titleFontSize / doc.internal.scaleFactor;
-                const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2;
-                const titleY = 60;
-                doc.setFontSize(titleFontSize);
-                doc.text(title, titleX, titleY);
-
-                // Subtítulo
-                const subtitle = 'Esta lista muestra todos los usuarios registradas en el sistema.';
-                const subtitleFontSize = 9;
-                const subtitleX = 20;
-                const subtitleY = 80;
-                doc.setFontSize(subtitleFontSize);
-                doc.text(subtitle, subtitleX, subtitleY);
-
-                // Descripción
-                const description = 'Sistema de Seguimiento y Gestión Académico';
-                const descriptionFontSize = 10;
-                const descriptionX = 100;
-                const descriptionY = 40;
-                doc.setFontSize(descriptionFontSize);
-                doc.text(description, descriptionX, descriptionY);
-
-                const description2 = 'Instituto Biblico de Capacitación Internacional';
-                const descriptionFontSize2 = 10;
-                const descriptionX2 = 100;
-                const descriptionY2 = 30;
-                doc.setFontSize(descriptionFontSize2);
-                doc.text(description2, descriptionX2, descriptionY2);
-
-                // Imagen en base64
-                const base64Image = logoIbciBase64;
-                const imageX = 20;
-                const imageY = 10;
-                const imageWidth = 80; // Ancho de la imagen en puntos
-                const imageHeight = 50; // Alto de la imagen en puntos
-                doc.addImage(base64Image, 'PNG', imageX, imageY, imageWidth, imageHeight);
-
-                // Tabla de datos
-                (doc as any).autoTable(
-                    { columns: this.exportColumns,
-                      body: this.usuariosDuplicado,
-                      theme: 'striped',
-                      styles: { fontSize: 8, cellPadding: 3 },
-                    startY: 100, }); // Posición inicial de la tabla
-                let PDF_EXTENSION = '.pdf';
-                const nombreArchivo = 'rpt-pdf-lista-usuario-' + new Date().getTime()+PDF_EXTENSION;
-                doc.save(nombreArchivo); // Guardar el archivo PDF con el nuevo nombre
-            });
-        });
-    }
-
     // Export Excel
     exportExcel() {
         import('xlsx').then((xlsx) => {

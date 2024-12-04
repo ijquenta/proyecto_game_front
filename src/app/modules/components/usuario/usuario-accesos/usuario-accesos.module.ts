@@ -21,19 +21,12 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { UsuarioAccesosComponent } from './usuario-accesos.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
-import { RolService } from 'src/app/modules/service/data/rol.service';
 import { AccordionModule } from 'primeng/accordion';
-import { AccesoService } from 'src/app/modules/service/data/acceso.service';
-import { PermisoService } from 'src/app/modules/service/data/permiso.service';
 import { TabViewModule } from 'primeng/tabview';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from "primeng/multiselect";
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { MenuService } from 'src/app/modules/service/data/menu.service';
-import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service';
-import { SubMenuService } from 'src/app/modules/service/data/submenu.service';
 @NgModule({
     imports: [
         SelectButtonModule,
@@ -66,12 +59,6 @@ import { SubMenuService } from 'src/app/modules/service/data/submenu.service';
     declarations: [UsuarioAccesosComponent],
     providers: [
             UsuarioService,
-            RolService,
-            AccesoService,
-            PermisoService,
-            MenuService,
-            TipoIconoService,
-            SubMenuService
         ]
 })
 export class UsuarioAccesosModule { }

@@ -24,12 +24,6 @@
             <div *ngIf="usuario.perfoto != null" class="user-display">
                 <p-tag [style]="{ 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 70%)'}">
                     <div class="flex align-items-center gap-2">
-                        <p-avatar
-                            image="{{ userProfilePhoto }}/{{ usuario.perfoto }}"
-                            styleClass="mr-2"
-                            size="xlarge"
-                            shape="circle">
-                        </p-avatar>
                         <h5>{{usuario.pernomcompleto}}</h5>
                     </div>
                 </p-tag>
@@ -124,14 +118,6 @@
         <p-card header="{{person.pernomcompleto}}" subheader="Nombre Completo" [style]="{ width: '100%' }">
             <ng-template pTemplate="header">
                 <div class="flex justify-content-center">
-                    <p-image
-                        src="{{userProfilePhoto}}/{{person.perfoto}}"
-                        alt="Image"
-                        width="150"
-                        height="150"
-                        [preview]="true"
-                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}">
-                    </p-image>
                 </div>
             </ng-template>
                 <p>
@@ -363,14 +349,7 @@
                                 <div class="flex justify-content-center">
                                     <div class="flex justify-content-center">
                                         <div *ngIf="personForm.value.perfoto">
-                                            <p-image
-                                                src="{{userProfilePhoto}}/{{personForm.value.perfoto}}"
-                                                alt="Image"
-                                                width="150"
-                                                height="150"
-                                                [preview]="true"
-                                                [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}"
-                                            ></p-image>
+                                           
                                     </div>
                                 </div>
                             </div>

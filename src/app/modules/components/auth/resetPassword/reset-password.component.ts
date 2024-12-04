@@ -20,7 +20,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     token: string;
     routeSub: Subscription;
     status: RequestStatus = 'init';
-    userProfilePhotofil = environment.API_URL_PROFILE_PHOTO;
     usuarioForm: FormGroup;
     forgotForm: FormGroup;
     usuarioRegistro: Usuario;

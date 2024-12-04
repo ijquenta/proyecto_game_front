@@ -7,21 +7,11 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 // Models
 import { Usuario } from 'src/app/modules/models/usuario';
-import { Rol } from 'src/app/modules/models/rol';
 import { MenuItem } from 'primeng/api';
-import { Acceso } from 'src/app/modules/models/acceso';
 import { TipoIcono, TipoRol, TipoSubMenu, TipoMenu } from 'src/app/modules/models/diccionario';
-import { Menu } from 'src/app/modules/models/menu';
-import { SubMenu } from 'src/app/modules/models/submenu';
 // Serivices
 import { AuthService } from 'src/app/modules/service/core/auth.service';
-import { RolService } from 'src/app/modules/service/data/rol.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { AccesoService } from 'src/app/modules/service/data/acceso.service';
-import { PermisoService } from 'src/app/modules/service/data/permiso.service';
-import { MenuService } from 'src/app/modules/service/data/menu.service';
-import { TipoIconoService } from 'src/app/modules/service/data/tipoIcono.service';
-import { SubMenuService } from 'src/app/modules/service/data/submenu.service';
 @Component({
     selector: 'usuario-accesos-component', // This is for called in other component
     templateUrl: './usuario-accesos.component.html',
@@ -33,8 +23,8 @@ export class UsuarioAccesosComponent implements OnInit {
 
     items: MenuItem[] | undefined;
     home: MenuItem | undefined;
-    accesses: Acceso[] = [];
-    access: Acceso;
+    accesses: any[] = [];
+    access: any;
     deleteAccessDialog: boolean = false;
     addAccessdialog: boolean = false;
     roles: any[] = [];
@@ -51,8 +41,8 @@ export class UsuarioAccesosComponent implements OnInit {
     // Menu Variables
     manageMenuDialog: boolean = false;
     deleteMenuDialog: boolean = false;
-    menus : Menu[] = [];;
-    menu: Menu;
+    menus : any[] = [];;
+    menu: any;
     loading: boolean = false;
     menuForm: FormGroup;
     dialogMenu: boolean = false;
@@ -64,8 +54,8 @@ export class UsuarioAccesosComponent implements OnInit {
     // SubMenu Variables
     manageSubMenuDialog: boolean = false;
     deleteSubMenuDialog: boolean = false;
-    submenus : SubMenu[] = [];;
-    submenu: SubMenu;
+    submenus : any[] = [];;
+    submenu: any;
     submenuForm: FormGroup;
     dialogSubMenu: boolean = false;
     optionSubMenu: boolean = false;
@@ -75,15 +65,9 @@ export class UsuarioAccesosComponent implements OnInit {
     constructor(
         public usuarioService: UsuarioService,
         private messageService: MessageService,
-        public rolService: RolService,
         private authService: AuthService,
-        private accesoService: AccesoService,
-        private permisoService: PermisoService,
         private formBuilder: FormBuilder,
-        private menuService: MenuService,
-        private tipoIconoService: TipoIconoService,
         private spinner: NgxSpinnerService,
-        private subMenService: SubMenuService
     ) {}
 
     ngOnInit() {
@@ -150,35 +134,35 @@ export class UsuarioAccesosComponent implements OnInit {
     // Access ------------------------------------------------------------------------------------------------------------------
     // List
     listAccesses() {
-        this.spinner.show();
-        this.accesoService.getAccesses().subscribe({
-            next: (data: any) => {
-            this.accesses = data;
-            this.spinner.hide();
-            },
-            error: (error) => {
-            console.error('Error al listar accesos:', error);
-            this.spinner.hide();
-            },
-            complete: () => {
-            this.spinner.hide();
-            }
-        });
+        // this.spinner.show();
+        // this.accesoService.getAccesses().subscribe({
+        //     next: (data: any) => {
+        //     this.accesses = data;
+        //     this.spinner.hide();
+        //     },
+        //     error: (error) => {
+        //     console.error('Error al listar accesos:', error);
+        //     this.spinner.hide();
+        //     },
+        //     complete: () => {
+        //     this.spinner.hide();
+        //     }
+        // });
     }
     // Delete
     deleteAccess(){
-        this.accesoService.deleteAccess(this.access.accid).subscribe(
-            response => {
-                this.messageService.add({ severity: 'success', summary: 'Acceso', detail: 'Eliminado, correcto.', life: 3000 });
-                this.deleteAccessDialog = false;
-                this.getDataTipoRol();
-                this.listAccesses();
-                this.getDataRoles();
-            },
-            error => {
-                console.error('Error eliminando acceso:', error);
-            }
-        );
+        // this.accesoService.deleteAccess(this.access.accid).subscribe(
+        //     response => {
+        //         this.messageService.add({ severity: 'success', summary: 'Acceso', detail: 'Eliminado, correcto.', life: 3000 });
+        //         this.deleteAccessDialog = false;
+        //         this.getDataTipoRol();
+        //         this.listAccesses();
+        //         this.getDataRoles();
+        //     },
+        //     error => {
+        //         console.error('Error eliminando acceso:', error);
+        //     }
+        // );
     }
     // Add
     addAcceso(){
@@ -186,18 +170,18 @@ export class UsuarioAccesosComponent implements OnInit {
         this.accessForm.reset();
     }
     getDataRoles() {
-        this.permisoService.getRoles().subscribe(
-          (data: any) => {
-            if (Array.isArray(data["data"])) {
-              this.roles = data["data"];
-            } else {
-              console.error('La respuesta no es un array:', data);
-            }
-          },
-          (error) => {
-            console.error('Error al listar roles:', error);
-          }
-        );
+        // this.permisoService.getRoles().subscribe(
+        //   (data: any) => {
+        //     if (Array.isArray(data["data"])) {
+        //       this.roles = data["data"];
+        //     } else {
+        //       console.error('La respuesta no es un array:', data);
+        //     }
+        //   },
+        //   (error) => {
+        //     console.error('Error al listar roles:', error);
+        //   }
+        // );
       }
     // Get Operation by Id
     getOperacionPorId(submenId: number) {
@@ -205,36 +189,36 @@ export class UsuarioAccesosComponent implements OnInit {
     }
     // Get Sub Menus
     getSubMenus() {
-        this.accesoService.getSubMenus().subscribe(
-            (data) => {
-                this.submenus = data as any[];
-            },
-            (error) => {
-                console.error('Error in recupered submenus', error);
-            }
-        );
+        // this.accesoService.getSubMenus().subscribe(
+        //     (data) => {
+        //         this.submenus = data as any[];
+        //     },
+        //     (error) => {
+        //         console.error('Error in recupered submenus', error);
+        //     }
+        // );
     }
     // Get Tipo Rol
     getDataTipoRol() {
-        this.rolService.getTipoRol().subscribe(
-            (data) => {
-                this.tipoRol = data as TipoRol[];
-            },
-            (error) => {
-                console.error('Error al getTipoRol', error)
-            }
-        )
+        // this.rolService.getTipoRol().subscribe(
+        //     (data) => {
+        //         this.tipoRol = data as TipoRol[];
+        //     },
+        //     (error) => {
+        //         console.error('Error al getTipoRol', error)
+        //     }
+        // )
     }
     // Get Access Type
     getDataAccessType(){
-        this.accesoService.getSubMenuType().subscribe(
-            (data) => {
-                this.tipoSubMenu = data as TipoSubMenu[];
-            },
-            (error) => {
-                console.error('Error al getAccessType', error)
-            }
-        )
+        // this.accesoService.getSubMenuType().subscribe(
+        //     (data) => {
+        //         this.tipoSubMenu = data as TipoSubMenu[];
+        //     },
+        //     (error) => {
+        //         console.error('Error al getAccessType', error)
+        //     }
+        // )
     }
     // Send Form Access Create Multiples
     sendFormAccess(){
@@ -246,7 +230,7 @@ export class UsuarioAccesosComponent implements OnInit {
             return;
         }
 
-        this.access = new Acceso();
+        this.access ={};
         this.access.rolid = this.accessForm.value.tipoRol.rolid;
         this.access.accactivo = this.accessForm.value.accactivo? 1 : 0;
         this.access.accestado = this.accessForm.value.accestado;
@@ -261,21 +245,21 @@ export class UsuarioAccesosComponent implements OnInit {
         }
 
         const requests = submenus.map(submenu => {
-            const accessData: Acceso = {
+            const accessData: any = {
                 ...this.access,
                 submenid: submenu.submenid
             };
-            return this.accesoService.createAccess(accessData).pipe(
-                catchError(error => {
-                    if (error.error && error.error.message.includes('UniqueViolation')) {
-                        // Si hay un error de violación de unicidad, retornar un objeto indicando el error
-                        return of({ error: true, message: 'Error de duplicado' });
-                    } else {
-                        // Si el error no es una violación de unicidad, lanzar el error
-                        throw error;
-                    }
-                })
-            );
+            // return this.accesoService.createAccess(accessData).pipe(
+            //     catchError(error => {
+            //         if (error.error && error.error.message.includes('UniqueViolation')) {
+            //             // Si hay un error de violación de unicidad, retornar un objeto indicando el error
+            //             return of({ error: true, message: 'Error de duplicado' });
+            //         } else {
+            //             // Si el error no es una violación de unicidad, lanzar el error
+            //             throw error;
+            //         }
+            //     })
+            // );
         });
 
         forkJoin(requests).subscribe(
@@ -305,16 +289,16 @@ export class UsuarioAccesosComponent implements OnInit {
 
     }
     // toggle Access Update
-    toggleAccess(access: Acceso): void {
+    toggleAccess(access: any): void {
         access.accusumod = this.usuario.usuname;
-        this.accesoService.updateAccess(access.accid, access).subscribe(
-            response => {
-                this.messageService.add({ severity: 'success', summary: 'Acceso', detail: 'Actualizado correcto.', life: 3000 });
-            },
-            error => {
-                console.error('Error actualizando acceso:', error);
-            }
-        );
+        // this.accesoService.updateAccess(access.accid, access).subscribe(
+        //     response => {
+        //         this.messageService.add({ severity: 'success', summary: 'Acceso', detail: 'Actualizado correcto.', life: 3000 });
+        //     },
+        //     error => {
+        //         console.error('Error actualizando acceso:', error);
+        //     }
+        // );
     }
 
     getAccessesByRolId(rolId: number) {
@@ -341,18 +325,18 @@ export class UsuarioAccesosComponent implements OnInit {
     // Get Menus
     getDataMenus(){
         this.spinner.show();
-        this.menuService.getMenus().subscribe({
-            next: (data) => {
-                this.menus = data as Menu[];
-                this.spinner.hide();
-            },
-            error: (error) => {
-                this.spinner.hide();
-                console.error('Error when listing getDatamenus', error);
-            }
-            ,complete: () => {
-            }
-        })
+        // this.menuService.getMenus().subscribe({
+        //     next: (data) => {
+        //         this.menus = data as Menu[];
+        //         this.spinner.hide();
+        //     },
+        //     error: (error) => {
+        //         this.spinner.hide();
+        //         console.error('Error when listing getDatamenus', error);
+        //     }
+        //     ,complete: () => {
+        //     }
+        // })
     }
     // button manage Menus
     manageMenus(){
@@ -368,30 +352,30 @@ export class UsuarioAccesosComponent implements OnInit {
         // this.getDataTipoIcono();
     }
     // Delete
-    MenuDelete(menu: Menu){
+    MenuDelete(menu: any){
         this.menu = {...menu};
         this.deleteMenuDialog = true;
     }
     // Send Delete Menu
     sendDeleteMenu(){
         this.loading = true;
-        this.menuService.deleteMenu(this.menu.menid).subscribe({
-            next: (data) => {
-                this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Eliminado, correcto.', life: 3000 });
-                this.deleteMenuDialog = false;
-                this.loading = false;
-                this.getDataMenus();
-            },
-            error: (error) => {
-                console.error('Error when listing deleteMenu', error);
-                this.loading = false;
-            }
-            ,complete: () => {
-            }
-        })
+        // this.menuService.deleteMenu(this.menu.menid).subscribe({
+        //     next: (data) => {
+        //         this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Eliminado, correcto.', life: 3000 });
+        //         this.deleteMenuDialog = false;
+        //         this.loading = false;
+        //         this.getDataMenus();
+        //     },
+        //     error: (error) => {
+        //         console.error('Error when listing deleteMenu', error);
+        //         this.loading = false;
+        //     }
+        //     ,complete: () => {
+        //     }
+        // })
     }
     // Update
-    MenuUpdate(menu: Menu){
+    MenuUpdate(menu: any){
         this.menuForm.reset();
         this.dialogMenu = true;
         this.optionMenu = false;
@@ -400,29 +384,27 @@ export class UsuarioAccesosComponent implements OnInit {
             menicono: menu.menicono
         }
         this.spinner.show();
-        this.tipoIconoService.findIdIcono(criterio).subscribe({
-            next: (data) => {
-                this.icoid = data['icoid'] as number;
-                this.spinner.hide();
-            },
-            error: (error) => {
-                console.error('Error when listing findIdIcono', error);
-                this.spinner.hide();
-            }
-            ,complete: () => {
-                this.menuForm.patchValue({
-                    menid: menu.menid,
-                    mennombre: menu.mennombre,
-                    tipoIcono: new TipoIcono(this.icoid, menu.menicono),
-                    menusureg: menu.menusureg,
-                    menusumod: menu.menusumod,
-                    mendescripcion: menu.mendescripcion,
-                    menestado: menu.menestado
-                });
-            }
-        })
-
-
+        // this.tipoIconoService.findIdIcono(criterio).subscribe({
+        //     next: (data) => {
+        //         this.icoid = data['icoid'] as number;
+        //         this.spinner.hide();
+        //     },
+        //     error: (error) => {
+        //         console.error('Error when listing findIdIcono', error);
+        //         this.spinner.hide();
+        //     }
+        //     ,complete: () => {
+        //         this.menuForm.patchValue({
+        //             menid: menu.menid,
+        //             mennombre: menu.mennombre,
+        //             tipoIcono: new TipoIcono(this.icoid, menu.menicono),
+        //             menusureg: menu.menusureg,
+        //             menusumod: menu.menusumod,
+        //             mendescripcion: menu.mendescripcion,
+        //             menestado: menu.menestado
+        //         });
+        //     }
+        // })
     }
     // Hialog dialog menu
     hideDialogMenu(){
@@ -439,7 +421,7 @@ export class UsuarioAccesosComponent implements OnInit {
             return;
         }
 
-        this.menu = new Menu();
+        // this.menu = new Menu();
         this.menu.menicono = this.menuForm.value.tipoIcono.iconombre;
         this.menu.mennombre = this.menuForm.value.mennombre;
         this.menu.menestado = this.menuForm.value.menestado;
@@ -448,61 +430,61 @@ export class UsuarioAccesosComponent implements OnInit {
         this.loading = true;
 
         if(this.optionMenu){
-            this.menuService.createMenu(this.menu).subscribe({
-                next: (data) => {
-                },
-                error: (error) => {
-                    this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
-                    console.error('Error in createMenu: ', error);
-                    this.loading = false;
-                },
-                complete: () => {
-                    this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Creación correcta.', life: 3000 });
-                    this.loading = false;
-                    this.dialogMenu = false;
-                    this.optionMenu = false;
-                    this.getDataMenus();
-                }
-            })
+            // this.menuService.createMenu(this.menu).subscribe({
+            //     next: (data) => {
+            //     },
+            //     error: (error) => {
+            //         this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
+            //         console.error('Error in createMenu: ', error);
+            //         this.loading = false;
+            //     },
+            //     complete: () => {
+            //         this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Creación correcta.', life: 3000 });
+            //         this.loading = false;
+            //         this.dialogMenu = false;
+            //         this.optionMenu = false;
+            //         this.getDataMenus();
+            //     }
+            // })
         }
         else{
             this.menu.menid = this.menuForm.value.menid;
             this.menu.menusumod = this.usuario.usuname;
-            this.menuService.updateMenu(this.menu.menid, this.menu).subscribe({
-                next: (data) => {
-                },
-                error: (error) => {
-                    this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
-                    console.error('Error in updateMenu: ', error);
-                    this.loading = false;
-                },
-                complete: () => {
-                    this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Actualización correcta.', life: 3000 });
-                    this.loading = false;
-                    this.dialogMenu = false;
-                    this.optionMenu = false;
-                    this.getDataMenus();
-                }
-            })
+            // this.menuService.updateMenu(this.menu.menid, this.menu).subscribe({
+            //     next: (data) => {
+            //     },
+            //     error: (error) => {
+            //         this.messageService.add({ severity: 'error', summary: 'Menu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
+            //         console.error('Error in updateMenu: ', error);
+            //         this.loading = false;
+            //     },
+            //     complete: () => {
+            //         this.messageService.add({ severity: 'success', summary: 'Menu', detail: 'Actualización correcta.', life: 3000 });
+            //         this.loading = false;
+            //         this.dialogMenu = false;
+            //         this.optionMenu = false;
+            //         this.getDataMenus();
+            //     }
+            // })
         }
 
     }
     // get Tipo Icono
     getDataTipoIcono(){
-        this.tipoIconoService.getTipoIcono().subscribe({
+        // this.tipoIconoService.getTipoIcono().subscribe({
 
-            next: (data) => {
-                this.tipoIcono = data as TipoIcono[];
-            },
+        //     next: (data) => {
+        //         this.tipoIcono = data as TipoIcono[];
+        //     },
 
-            error: (error) => {
-                console.error('Error when listing getDataTipoIcono', error);
-            },
+        //     error: (error) => {
+        //         console.error('Error when listing getDataTipoIcono', error);
+        //     },
 
-            complete: () => {
+        //     complete: () => {
 
-            }
-        })
+        //     }
+        // })
     }
     // get Status Description
     getStatusDescription(status: number): string {
@@ -530,25 +512,25 @@ export class UsuarioAccesosComponent implements OnInit {
     // Sub Menu -------------------------------------------------------------------------------------------------------------
     // Get Menus
     getListSubMenu() {
-        this.spinner.show();
-        this.subMenService.getListSubMenu().subscribe({
-          next: (data) => {
-            // Merge mennombre into each submenu
-            this.submenus = data.map((item: any) => {
-              return {
-                ...item.submenu,
-                mennombre: item.mennombre
-              } as SubMenu;
-            });
+        // this.spinner.show();
+        // this.subMenService.getListSubMenu().subscribe({
+        //   next: (data) => {
+        //     // Merge mennombre into each submenu
+        //     this.submenus = data.map((item: any) => {
+        //       return {
+        //         ...item.submenu,
+        //         mennombre: item.mennombre
+        //       } as SubMenu;
+        //     });
 
-            this.spinner.hide();
-          },
-          error: (error) => {
-            this.spinner.hide();
-            console.error('Error when listing getDatamenus', error);
-          },
-          complete: () => {}
-        });
+        //     this.spinner.hide();
+        //   },
+        //   error: (error) => {
+        //     this.spinner.hide();
+        //     console.error('Error when listing getDatamenus', error);
+        //   },
+        //   complete: () => {}
+        // });
     }
     // button manage SubMenu
     manageSubMenu(){
@@ -568,21 +550,21 @@ export class UsuarioAccesosComponent implements OnInit {
     // Get Tipo Menu
     getTipoMenu(){
         this.spinner.show();
-        this.subMenService.getTipoMenu().subscribe({
-            next: (data) => {
-                this.tipoMenu = data as TipoMenu[];
-                this.spinner.hide();
-            },
-            error: (error) => {
-                this.spinner.hide();
-                console.error('Error when listing getDatamenus', error);
-            }
-            ,complete: () => {
-            }
-        })
+        // this.subMenService.getTipoMenu().subscribe({
+        //     next: (data) => {
+        //         this.tipoMenu = data as TipoMenu[];
+        //         this.spinner.hide();
+        //     },
+        //     error: (error) => {
+        //         this.spinner.hide();
+        //         console.error('Error when listing getDatamenus', error);
+        //     }
+        //     ,complete: () => {
+        //     }
+        // })
     }
     // Update
-    SubMenuUpdate(submenu: SubMenu){
+    SubMenuUpdate(submenu: any){
         this.submenuForm.reset();
         this.dialogSubMenu = true;
         this.submenu = {...submenu}
@@ -611,7 +593,7 @@ export class UsuarioAccesosComponent implements OnInit {
             });
             return;
         }
-        this.submenu = new SubMenu();
+        // this.submenu = new SubMenu();
         this.submenu.menid = this.submenuForm.value.tipoMenu.menid;
         this.submenu.submennombre = this.submenuForm.value.submennombre;
         this.submenu.submenestado = this.submenuForm.value.submenestado;
@@ -620,67 +602,67 @@ export class UsuarioAccesosComponent implements OnInit {
         this.loading = true;
 
         if(this.optionSubMenu){
-            this.subMenService.createSubMenu(this.submenu).subscribe({
-                next: (data) => {
-                },
-                error: (error) => {
-                    this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
-                    console.error('Error in createSubMenu: ', error);
-                    this.loading = false;
-                },
-                complete: () => {
-                    this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Creación correcta.', life: 3000 });
-                    this.loading = false;
-                    this.dialogSubMenu = false;
-                    this.optionSubMenu = false;
-                    this.getListSubMenu();
-                }
-            })
+            // this.subMenService.createSubMenu(this.submenu).subscribe({
+            //     next: (data) => {
+            //     },
+            //     error: (error) => {
+            //         this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Creación incorrecta, intente nuevamente mas tarde.', life: 3000 });
+            //         console.error('Error in createSubMenu: ', error);
+            //         this.loading = false;
+            //     },
+            //     complete: () => {
+            //         this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Creación correcta.', life: 3000 });
+            //         this.loading = false;
+            //         this.dialogSubMenu = false;
+            //         this.optionSubMenu = false;
+            //         this.getListSubMenu();
+            //     }
+            // })
         }
         else{
             this.submenu.submenid = this.submenuForm.value.submenid;
             this.submenu.submenusumod = this.usuario.usuname;
-            this.subMenService.updateSubMenu(this.submenu.submenid, this.submenu).subscribe({
-                next: (data) => {
-                },
-                error: (error) => {
-                    this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
-                    console.error('Error in updateSubMenu: ', error);
-                    this.loading = false;
-                },
-                complete: () => {
-                    this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Actualización correcta.', life: 3000 });
-                    this.loading = false;
-                    this.dialogSubMenu = false;
-                    this.optionSubMenu = false;
-                    this.getListSubMenu();
-                }
-            })
+            // this.subMenService.updateSubMenu(this.submenu.submenid, this.submenu).subscribe({
+            //     next: (data) => {
+            //     },
+            //     error: (error) => {
+            //         this.messageService.add({ severity: 'error', summary: 'SubMenu', detail: 'Actualización incorrecta, intente nuevamente mas tarde.', life: 3000 });
+            //         console.error('Error in updateSubMenu: ', error);
+            //         this.loading = false;
+            //     },
+            //     complete: () => {
+            //         this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Actualización correcta.', life: 3000 });
+            //         this.loading = false;
+            //         this.dialogSubMenu = false;
+            //         this.optionSubMenu = false;
+            //         this.getListSubMenu();
+            //     }
+            // })
         }
 
     }
     // Delete
-    SubMenuDelete(submenu: SubMenu){
+    SubMenuDelete(submenu: any){
         this.submenu = {...submenu};
         this.deleteSubMenuDialog = true;
     }
      // Send Delete Menu
     sendDeleteSubMenu(){
         this.loading = true;
-        this.subMenService.deleteSubMenu(this.submenu.submenid).subscribe({
-            next: (data) => {
-                this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Eliminado, correcto.', life: 3000 });
-                this.deleteSubMenuDialog = false;
-                this.loading = false;
-                this.getListSubMenu();
-            },
-            error: (error) => {
-                console.error('Error when listing deleteMenu', error);
-                this.loading = false;
-            }
-            ,complete: () => {
-            }
-        })
+        // this.subMenService.deleteSubMenu(this.submenu.submenid).subscribe({
+        //     next: (data) => {
+        //         this.messageService.add({ severity: 'success', summary: 'SubMenu', detail: 'Eliminado, correcto.', life: 3000 });
+        //         this.deleteSubMenuDialog = false;
+        //         this.loading = false;
+        //         this.getListSubMenu();
+        //     },
+        //     error: (error) => {
+        //         console.error('Error when listing deleteMenu', error);
+        //         this.loading = false;
+        //     }
+        //     ,complete: () => {
+        //     }
+        // })
     }
 
 }

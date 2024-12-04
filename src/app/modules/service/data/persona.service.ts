@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
-import { Rol } from '../../models/rol';
 import { TokenService } from 'src/app/modules/service/core/token.service';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
-import { ArchivosService } from '../util/archivos.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 
@@ -20,7 +18,6 @@ export class PersonaService {
     constructor(
         private http: HttpClient,
         private tokenService: TokenService,
-        private archivos: ArchivosService,
         private spinner: NgxSpinnerService,
         private authService: AuthService
     ) {}
@@ -59,30 +56,6 @@ export class PersonaService {
 
     // Servicios Informacion Admision
 
-    rptInformacionAdmision(perid: number) {
-        this.usuario = this.authService.getUserData();
-        const criterio = {
-            perid: perid,
-            usuname: this.usuario[0]?.usuname,
-        };
-        this.spinner.show();
-        this.http
-            .post(`${API_URL}/rptInformacionAdmision`, criterio, httpOptions)
-            .subscribe(
-                (data: any) => {
-                    this.spinner.hide();
-                    this.archivos.generateReportPDF(
-                        data,
-                        'Reporte Ficha Admisíon'
-                    );
-                },
-                (error) => {
-                    this.spinner.hide();
-                    console.error(error);
-                    this.archivos.showToast();
-                }
-            );
-    }
 
     listarInformacionPersonal(perid: number) {
         return this.http.get(`${API_URL}/informacionPersonal/${perid}`, { context: checktoken(), });
@@ -130,23 +103,6 @@ export class PersonaService {
 
     listarDocumentoAdmision(perid: number) {
         return this.http.get(`${API_URL}/documentoAdmision/${perid}`, { context: checktoken(), });
-    }
-
-    mostrarDocumentoAdmision(filename: any) {
-        this.spinner.show();
-        this.http
-            .get(`${API_URL}/documentoAdmision/${filename}`, httpOptions)
-            .subscribe(
-                (data: any) => {
-                    this.spinner.hide();
-                    this.archivos.generateReportPDF(data, filename);
-                },
-                (error) => {
-                    this.spinner.hide();
-                    console.error(error);
-                    this.archivos.showToast();
-                }
-            );
     }
 
     adicionarDocumentoAdmision(criterio: any) {
@@ -231,11 +187,6 @@ export class PersonaService {
 
     crearRol(criterio: any) {
         return this.http.post(`${API_URL}/crearRol`, criterio), { context: checktoken(), };
-    }
-
-    modificarRol(criterio: any) {
-        let registroModRol = new Rol();
-        return this.http.post(`${API_URL}/modificarRol`, registroModRol, { context: checktoken(), });
     }
 
     eliminarRol(criterio: any) {

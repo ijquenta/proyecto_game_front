@@ -28,7 +28,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ChipModule } from 'primeng/chip';
 import { ReactiveFormsModule } from '@angular/forms';
-import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
@@ -83,7 +82,7 @@ import { SpeedDialModule } from 'primeng/speeddial';
         ReactiveFormsModule
     ],
     declarations: [UsuarioPersonaComponent],
-    providers: [UsuarioService, PersonaService, UploadService]
+    providers: [UsuarioService, PersonaService]
 })
 export class UsuarioPersonaModule { }
 

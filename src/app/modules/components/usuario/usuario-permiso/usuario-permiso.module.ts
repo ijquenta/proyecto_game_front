@@ -19,8 +19,6 @@ import { UsuarioPermisoRoutingModule } from './usuario-permiso-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { UsuarioPermisoComponent } from './usuario-permiso.component';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { RolService } from 'src/app/modules/service/data/rol.service';
-import { PermisoService } from 'src/app/modules/service/data/permiso.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DataViewModule } from 'primeng/dataview';
 import { TreeTableModule } from 'primeng/treetable';
@@ -29,7 +27,6 @@ import { AccordionModule } from 'primeng/accordion';
 import { BadgeModule } from 'primeng/badge';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { OperacionService } from 'src/app/modules/service/data/operacion.service';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { EditorModule } from 'primeng/editor';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -75,7 +72,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
         ChipModule
     ],
     declarations: [UsuarioPermisoComponent],
-    providers: [UsuarioService, RolService, PermisoService, OperacionService],
+    providers: [UsuarioService],
     schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class UsuarioPermisoModule { }

@@ -6,7 +6,6 @@ import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from
 // Services
 import { AuthService } from 'src/app/modules/service/core/auth.service';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { UploadService } from 'src/app/modules/service/data/upload.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
 import { LayoutService } from "../service/app.layout.service";
 import { MenuService } from "../menu/app.menu.service";
@@ -52,7 +51,6 @@ export class AppConfigComponent {
 
     // User
     usuario: any = {};
-    userProfilePhoto = environment.API_URL_PROFILE_PHOTO;
 
     // Option control panel
     scales: number[] = [12, 13, 14, 15, 16];
@@ -98,21 +96,21 @@ export class AppConfigComponent {
 
         this.assignValidations();
 
-        this.getPersons();
+        // this.getPersons();
 
-        this.fillTypeCombo();
+        // this.fillTypeCombo();
     }
 
     // Init
     getUserData() {
-        this.authService.getProfile().subscribe({
-                next: (result: any) => {
-                    this.usuario = result[0];
-                },
-                error: (error: any) => {
-                    console.error("Error al obtener el perfil: ", error);
-                }
-            });
+        // this.authService.getProfile().subscribe({
+        //         next: (result: any) => {
+        //             this.usuario = result[0];
+        //         },
+        //         error: (error: any) => {
+        //             console.error("Error al obtener el perfil: ", error);
+        //         }
+        //     });
     }
 
     assignValidations(){

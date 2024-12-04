@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/environments/environment';
-import { Rol } from '../../models/rol';
 import { Observable } from 'rxjs';
 import { checktoken } from 'src/app/interceptors/token.interceptor';
 
@@ -10,6 +9,81 @@ import { checktoken } from 'src/app/interceptors/token.interceptor';
 })
 export class UsuarioService {
     constructor(private http: HttpClient) {}
+
+    obtenerUsuarios() {
+        return this.http.get(`${API_URL}/usuarios`);
+    }
+
+    obtenerUsuarioPorId(id: any) {
+        return this.http.get(`${API_URL}/usuarios/${id}`);
+    }
+
+    obtenerPacientes() {
+        return this.http.get(`${API_URL}/pacientes`);
+    }
+
+    obtenerDoctores() {
+        return this.http.get(`${API_URL}/doctores`);
+    }
+
+    obtenerSesiones(){
+        return this.http.get(`${API_URL}/sesiones`);
+    }
+
+    crearUsuario(criterio: any) {
+        return this.http.post(`${API_URL}/usuarios`, criterio);
+    }
+
+    crearPaciente(criterio: any) {
+        return this.http.post(`${API_URL}/pacientes`, criterio);
+    }
+
+    crearDoctor(criterio: any) {
+        return this.http.post(`${API_URL}/doctores`, criterio);
+    }
+
+    crearSesion(criterio: any) {
+        return this.http.post(`${API_URL}/sesiones`, criterio);
+    }
+
+    modificarUsuario(criterio: any, id: any) {
+        return this.http.put(`${API_URL}/usuarios/${id}`, criterio);
+    }
+
+    modificarPaciente(criterio: any, id: any) {
+        return this.http.put(`${API_URL}/pacientes/${id}`, criterio);
+    }
+
+    modificarDoctor(criterio: any, id: any) {
+        return this.http.put(`${API_URL}/doctores/${id}`, criterio);
+    }
+
+    modifcarSesion(criterio: any, id: any) {
+        return this.http.put(`${API_URL}/sesiones/${id}`, criterio);
+    }
+
+    desactivarUsuario(id: any) {
+        return this.http.delete(`${API_URL}/usuarios/${id}`);
+    }
+
+    desactivarPaciente(id: any) {
+        return this.http.delete(`${API_URL}/pacientes/${id}`);
+    }
+
+    desactivarDoctor(id: any) {
+        return this.http.delete(`${API_URL}/doctores/${id}`);
+    }
+
+    desactivarSesion(id: any) {
+        return this.http.delete(`${API_URL}/sesiones/${id}`);
+    }
+
+
+
+
+
+    //
+
 
     getUsuario() {
         return this.http.get(`${API_URL}/listaUsuarios`, { context: checktoken(), });
@@ -31,10 +105,6 @@ export class UsuarioService {
         return this.http.post(`${API_URL}/crearRol`, criterio, { context: checktoken(), });
     }
 
-    modificarRol(criterio: any) {
-        let registroModRol = new Rol();
-        return this.http.post(`${API_URL}/modificarRol`, registroModRol, { context: checktoken(), });
-    }
     eliminarRol(criterio: any) {
         return this.http.post(`${API_URL}/eliminarRol`, criterio, { context: checktoken(), });
     }

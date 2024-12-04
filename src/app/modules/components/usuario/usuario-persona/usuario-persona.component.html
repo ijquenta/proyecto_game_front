@@ -284,7 +284,6 @@
                                 <p-avatar image="../../../../../assets/images/login/sin_foto_perfil.png" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                             </div>
                             <div *ngIf="person.perfoto != null">
-                                <p-avatar image="{{ userProfilePhoto }}/{{ person.perfoto }}" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
                             </div>
                         </td>
                         <td *ngFor="let col of columns">
@@ -686,14 +685,6 @@
         <p-card header="{{personExpanded.pernomcompleto}}" subheader="Nombre Completo" [style]="{ width: '100%' }">
             <ng-template pTemplate="header">
                 <div class="flex justify-content-center">
-                    <p-image
-                        src="{{userProfilePhoto}}/{{personExpanded.perfoto}}"
-                        alt="Image"
-                        width="150"
-                        height="150"
-                        [preview]="true"
-                        [imageStyle]="{'border-radius': '50%', 'object-fit': 'cover'}">
-                    </p-image>
                 </div>
             </ng-template>
                 <p>

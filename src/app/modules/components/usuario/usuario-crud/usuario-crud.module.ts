@@ -17,7 +17,6 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../../../service/data/usuario.service';
-import { ReporteService } from 'src/app/modules/service/data/reporte.service';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
 import { InputMaskModule } from "primeng/inputmask";
@@ -79,6 +78,6 @@ import { TabViewModule } from 'primeng/tabview';
         TooltipModule
     ],
     declarations: [UsuarioCrudComponent],
-    providers: [UsuarioService, ReporteService]
+    providers: [UsuarioService]
 })
 export class UsuarioCrudModule { }

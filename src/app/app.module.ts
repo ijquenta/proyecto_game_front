@@ -39,11 +39,8 @@ import { LoginComponent } from './modules/components/auth/login/login.component'
 import { RegisterComponent } from './modules/components/auth/register/register.component';
 import { ForgotPasswordComponent } from './modules/components/auth/forgotPassword/forgot-password.component';
 import { PasswordModule } from 'primeng/password';
-import { ReportComponent } from './modules/components/reportes/report/report.component';
-import { ReportesComponent } from './modules/components/reportes/reportes.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TokenInterceptor } from './interceptors/token.interceptor';
-import { ReportV2Component } from './modules/components/reportes/report/report-v2.component';
 import { ConfirmComponent } from './modules/components/auth/confirm/confirm.component';
 import { NoConfirmComponent } from './modules/components/auth/noConfirm/no-confirm.component';
 import { VerifiedComponent } from './modules/components/auth/verified/verified.component';
@@ -60,9 +57,6 @@ registerLocaleData(localeBo, 'es');
 @NgModule({
     declarations: [
         AppComponent,
-        ReportComponent,
-        ReportV2Component,
-        ReportesComponent,
         SafePipe,
         LoginComponent,
         RegisterComponent,

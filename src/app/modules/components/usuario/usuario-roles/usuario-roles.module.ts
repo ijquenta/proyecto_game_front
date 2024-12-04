@@ -22,7 +22,6 @@ import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioRolesComponent } from './usuario-roles.component';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-import { RolService } from 'src/app/modules/service/data/rol.service';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { ChipsModule } from "primeng/chips";
@@ -77,6 +76,6 @@ import { TabViewModule } from 'primeng/tabview';
         TooltipModule
     ],
     declarations: [UsuarioRolesComponent],
-    providers: [UsuarioService, RolService]
+    providers: [UsuarioService]
 })
 export class UsuarioRolesModule { }
