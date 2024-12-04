@@ -83,7 +83,7 @@ export class UsuarioRolesComponent implements OnInit {
             roldescripcion: ['', Validators.required],
         });
 
-        this.items = [{ label: 'Roles'}, { label: 'Gestionar Roles', routerLink:''},];
+        this.items = [{ label: 'Administrar'}, { label: 'Doctores', routerLink:''},];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
         this.colsColumsTable = [
@@ -105,8 +105,8 @@ export class UsuarioRolesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getDataUser();
-        this.getDataRoles();
+        // this.getDataUser();
+        // this.getDataRoles();
     }
 
     // get user, roles

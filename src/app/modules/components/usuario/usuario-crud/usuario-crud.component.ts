@@ -139,15 +139,15 @@ export class UsuarioCrudComponent implements OnInit {
         ];
 
         this.items = [
-            { label: 'Usuarios'},
-            { label: 'Gestionar Usuarios', routerLink:''},
+            { label: 'Administrar'},
+            { label: 'Sesiones', routerLink:''},
         ];
 
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
         // this.getUserData();
-        this.listarUsuarios();
-        this.listarPersonaCombo();
+        // this.listarUsuarios();
+        // this.listarPersonaCombo();
 
         this.usuarioForm = this.formBuilder.group({
             usuid: [''],

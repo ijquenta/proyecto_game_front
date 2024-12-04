@@ -88,7 +88,7 @@ export class UsuarioAccesosComponent implements OnInit {
 
     ngOnInit() {
 
-        this.items = [{ label: 'Usuarios'}, { label: 'Gestionar Accesos', routerLink:''},];
+        this.items = [{ label: 'Administrar'}, { label: 'Usuarios', routerLink:''},];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
         this.stateOptionsEstado = [ { label: 'Activo', value: 1 }, { label: 'Inactivo', value: 0 } ]
         this.scrollableTabs = this.roles;

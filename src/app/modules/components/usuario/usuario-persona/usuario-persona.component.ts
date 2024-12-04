@@ -192,8 +192,8 @@ export class UsuarioPersonaComponent implements OnInit {
     {
 
         this.items = [
-            { label: 'Usuarios' },
-            { label: 'Gestionar Personas', routerLink:''}
+            { label: 'Administrar' },
+            { label: 'Pacientes', routerLink:''}
         ];
 
         this.home = { icon: 'pi pi-home', routerLink: '/' };
@@ -249,7 +249,7 @@ export class UsuarioPersonaComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getPersonsExpended();
+        // this.getPersonsExpended();
         // this.fillTypeCombos();
         // this.getUserProfile();
         this.initializeValidations();
