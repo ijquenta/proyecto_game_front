@@ -83,8 +83,12 @@ export class SesionesComponent implements OnInit {
     onSubmit(): void {
         if (this.sesionForm.valid) {
 
+            
+
             this.sesionForm.value.id_paciente = this.sesionForm.value.id_paciente.value;
             this.sesionForm.value.id_doctor = this.sesionForm.value.id_doctor.value;
+
+            console.log("datos a guardar aaaa: ", this.sesionForm.value)
 
             const sesion: Sesion = this.sesionForm.value;
 
