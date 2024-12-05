@@ -46,7 +46,7 @@
                 <ng-template pTemplate="body" let-paciente>
                     <tr>
                         <td> {{ paciente.id_paciente }} </td>
-                        <td> {{ paciente.id_usuario }} </td>
+                        <td> {{ paciente.usuario.nombre + " " + paciente.usuario.apellido }} </td>
                         <td> {{ paciente.diagnostico }} </td>
                         <td> {{ paciente.fecha_ingreso | date:'yyyy-MM-dd' }} </td>
                         <td> {{ paciente.rango_movimiento }} </td>

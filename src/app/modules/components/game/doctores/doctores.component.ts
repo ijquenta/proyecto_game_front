@@ -1,382 +1,140 @@
-// Modelos
-import { Usuario } from 'src/app/modules/models/usuario';
-
-// Validation
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-// Services
-import { AuthService } from 'src/app/modules/service/core/auth.service';
-import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
-// Others
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { getSeverityStatus, getDescriptionStatus } from '../../../utils/severityDescriptionStatus';
-import { Table } from 'primeng/table';
 import { Doctor } from 'src/app/modules/models/game';
-
-interface ColumsTable {
-    field: string;
-    header: string;
-}
+import { Usuario } from 'src/app/modules/models/usuario';
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 
 @Component({
+    selector: 'doctores-component',
     templateUrl: './doctores.component.html',
     providers: [MessageService],
-    styleUrls: ['./doctores.component.css']
+    styleUrls: ['./doctores.component.css'],
 })
-
 export class DoctoresComponent implements OnInit {
-
-    // user
-    usuario: Usuario;
-
-    role: any;
-
     doctores: Doctor[] = [];
-
-    // validation
-    rolForm: FormGroup;
-
-    // boolean
-    optionRole: boolean = false;
-    roleDialog: boolean = false;
-    deactivateRoleDialog: boolean = false;
-    activateRoleDialog: boolean = false;
+    doctorForm: FormGroup;
+    doctor_dialog: boolean = false;
     loading: boolean = false;
-
-    // Others
-    errors: any;
-    rowsPerPageOptions = [5, 10, 20];
+    estadoOptions: any[];
     items: MenuItem[] | undefined;
     home: MenuItem | undefined;
-    deleteRoleDialog: boolean;
-
-    // Columns selected
-    colsColumsTable!: ColumsTable[];
-
-    selectedColumns: { field: string; header: string }[] = [
-        { field: 'rolnombre', header: 'Nombre' },
-        { field: 'roldescripcion', header: 'Descripción' },
-        { field: 'rolusureg', header: 'Registrado' },
-        { field: 'rolusumod', header: 'Modificado' },
-        { field: 'rolestado', header: 'Estado' },
-    ];
-
-    // Options status
-    statusOptions = [
-        { label: 'Activo', value: 1 },
-        { label: 'Inactivo', value: 0 }
-    ];
+    usuarios: Usuario[] = []; // Lista de usuarios
+    usuariosOptions: any[] = []; // Opciones para el dropdown
 
     constructor(
+        private usuarioService: UsuarioService,
         private messageService: MessageService,
-        private authService: AuthService,
-        private formBuilder: FormBuilder,
-        private spinner: NgxSpinnerService,
-        private usuarioService: UsuarioService
-    ) {
-        this.rolForm = this.formBuilder.group({
-            rolid: [''],
-            rolnombre: ['', [Validators.required, Validators.minLength(5)]],
-            roldescripcion: ['', Validators.required],
-        });
-
-        this.items = [{ label: 'Administrar' }, { label: 'Doctores', routerLink: '' },];
-        this.home = { icon: 'pi pi-home', routerLink: '/' };
-
-        this.colsColumsTable = [
-            { field: 'rolnombre', header: 'Nombre' },
-            { field: 'roldescripcion', header: 'Descripción' },
-            { field: 'rolfecreg', header: 'Fecha registrado' },
-            { field: 'rolusumod', header: 'Modificado' },
-            { field: 'rolfecmod', header: 'Fecha modificado' },
-            { field: 'rolestado', header: 'Estado' }
-        ];
-
-        this.selectedColumns = [
-            { field: 'rolnombre', header: 'Nombre' },
-            { field: 'roldescripcion', header: 'Descripción' },
-            { field: 'rolusureg', header: 'Registrado' },
-            { field: 'rolusumod', header: 'Modificado' },
-            { field: 'rolestado', header: 'Estado' }
-        ];
-    }
+        private formBuilder: FormBuilder
+    ) { }
 
     ngOnInit() {
-        // this.getDataUser();
-        // this.getDataRoles();
-        this.usuarioService.obtenerDoctores().subscribe({
-            next: (doctores) => {
-                this.doctores = doctores as [];
+        this.items = [{ label: 'Administrar' }, { label: 'Doctores', routerLink: '' }];
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+        this.doctorForm = this.formBuilder.group({
+            id_doctor: [null],
+            id_usuario: [null, [Validators.required]],
+            especialidad: ['', [Validators.required]],
+            estado: ['', [Validators.required]]
+        });
+
+        this.estadoOptions = [
+            { label: 'Activo', value: 'activo' },
+            { label: 'Inactivo', value: 'inactivo' }
+        ];
+
+        this.obtenerDoctores();
+        this.obtenerUsuarios();
+    }
+
+    obtenerDoctores() {
+        this.usuarioService.obtenerDoctores().subscribe(
+            (data) => {
+                this.doctores = data as Doctor[];
             },
-            error: (err) => {
-                console.error(err);
+            (error) => {
+                console.error('Error al obtener doctores', error);
             }
-        });
-    }
-
-    // get user, roles
-    getDataUser() {
-        this.spinner.show();
-        this.authService.getProfile().subscribe({
-            next: (data: any) => {
-                this.usuario = data[0];
-            },
-            error: (error) => {
-                console.error(error)
-            },
-            complete: () => {
-                this.spinner.hide();
-            }
-        });
-    }
-
-    getDataRoles() {
-        // this.spinner.show();
-        // this.rolService.getRoles().subscribe({
-        //     next: (data: any) => {
-        //         this.roles = Array.isArray(data["data"]) ? data["data"] : [];
-        //     },
-        //     error: (error) => {
-        //         console.error(error)
-        //     },
-        //     complete: () => {
-        //         this.spinner.hide();
-        //     }
-        // });
-    }
-
-    // manage role
-
-    newRole() {
-        // this.role = new Rol();
-        this.roleDialog = true;
-        this.optionRole = true;
-        this.rolForm.reset();
-    }
-
-    createRole() {
-        if (this.rolForm.invalid) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Verifica los datos ingresados.',
-                life: 5000
-            });
-            return Object.values(this.rolForm.controls).forEach(control => {
-                control.markAllAsTouched();
-                control.markAsDirty();
-            })
-        }
-        if (this.optionRole) {
-
-            // this.role = new Rol();
-
-            this.role.tipo = 1;
-            this.role.rolid = null;
-            this.role.rolestado = 1;
-            this.role.rolusureg = this.usuario.nombre;
-            this.role.rolnombre = this.rolForm.value.rolnombre;
-            this.role.roldescripcion = this.rolForm.value.roldescripcion;
-
-            this.loading = true;
-            // this.rolService.manageRole(this.role).subscribe({
-            //     next: (result: any) => {
-            //         this.messageService.add({
-            //             severity: 'success',
-            //             summary: 'Éxito',
-            //             detail: 'Registro completado.',
-            //             life: 3000
-            //         });
-            //     },
-            //     error: (error) => {
-            //         console.error(error)
-            //         this.messageService.add({
-            //             severity: 'error',
-            //             summary: 'Error',
-            //             detail: 'Ocurrió un error. Contacta al soporte.',
-            //             life: 5000
-            //         });
-            //         this.loading = false;
-            //     },
-            //     complete: () => {
-            //         this.roleDialog = false;
-            //         this.optionRole = false;
-            //         this.getDataRoles();
-            //         this.loading = false;
-            //         this.rolForm.reset();
-            //     }
-            // });
-        }
-        if (!this.optionRole) {
-            // this.role = new Rol();
-            this.role.tipo = 2;
-            this.role.rolestado = 1;
-            this.role.rolusumod = this.usuario.nombre;
-            this.role.rolnombre = this.rolForm.value.rolnombre;
-            this.role.roldescripcion = this.rolForm.value.roldescripcion;
-            this.role.rolid = this.rolForm.value.rolid;
-            this.loading = true;
-
-            // this.rolService.manageRole(this.role).subscribe({
-            //     next: (result: any) => {
-            //         this.messageService.add({
-            //             severity: 'success',
-            //             summary: 'Éxito',
-            //             detail: 'Registro completado.',
-            //             life: 3000
-            //         });
-            //     },
-            //     error: (error) => {
-            //         console.error(error)
-            //         this.messageService.add({
-            //             severity: 'error',
-            //             summary: 'Error',
-            //             detail: 'Ocurrió un error. Contacta al soporte.',
-            //             life: 5000
-            //         });
-            //         this.loading = false;
-            //     },
-            //     complete: () => {
-            //         this.roleDialog = false;
-            //         this.optionRole = false;
-            //         this.getDataRoles();
-            //         this.loading = false;
-            //         this.rolForm.reset();
-            //     }
-            // });
-        }
-    }
-
-    updateRole(data: any) {
-        this.role = { ...data };
-
-        this.rolForm.patchValue({
-            rolid: this.role.rolid,
-            rolnombre: this.role.rolnombre,
-            roldescripcion: this.role.roldescripcion
-        });
-
-        this.roleDialog = true;
-        this.optionRole = false;
-    }
-
-
-    // manage role status
-
-    deactivateRole(data: any) {
-        this.role = { ...data };
-        this.role.tipo = 2;
-        this.deactivateRoleDialog = true;
-    }
-
-    activateRole(data: any) {
-        this.role = { ...data };
-        this.role.tipo = 3;
-        this.activateRoleDialog = true;
-    }
-
-    confirmActivateDeactivate() {
-        this.loading = true;
-        // this.rolService.manageRoleStatus(this.role).subscribe({
-        //     next: (result: any) => {
-        //         this.messageService.add({
-        //             severity: 'success',
-        //             summary: 'Éxito',
-        //             detail: 'Registro completado.',
-        //             life: 3000
-        //         });
-        //     },
-        //     error: (error) => {
-        //         console.error(error)
-        //         this.messageService.add({
-        //             severity: 'error',
-        //             summary: 'Error',
-        //             detail: 'Ocurrió un error. Contacta al soporte.',
-        //             life: 5000
-        //         });
-        //         this.loading = false;
-        //     },
-        //     complete: () => {
-        //         this.deactivateRoleDialog = false;
-        //         this.activateRoleDialog = false;
-        //         this.getDataRoles();
-        //         this.loading = false;
-        //     }
-        // });
-    }
-
-    // Delete
-    deleteRole(role: any) {
-        this.role = { ...role };
-        this.deleteRoleDialog = true;
-    }
-    // Send Delete Role
-    sendDeleteRole() {
-        this.loading = true;
-        // this.rolService.deleteRole(this.role.rolid).subscribe({
-        //     next: (data) => {
-        //         this.messageService.add({ severity: 'success', summary: 'Rol', detail: 'Eliminado correctamente.', life: 3000 });
-        //         this.deleteRoleDialog = false;
-        //         this.loading = false;
-        //         this.getDataRoles();
-        //     },
-        //     error: (error) => {
-        //         console.error('Error when listing deleteMenu', error);
-        //         this.loading = false;
-        //     }
-        //     ,complete: () => {
-        //     }
-        // })
-    }
-
-    // others
-
-    hideDialog() {
-        this.roleDialog = false;
-        this.deactivateRoleDialog = false;
-        this.activateRoleDialog = false;
-        // this.role = new Rol();
-        this.rolForm.reset();
-    }
-
-    getDescription(status: any) {
-        return getDescriptionStatus(status);
-    }
-
-    getSeverity(status: any) {
-        return getSeverityStatus(status);
-    }
-
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal(
-            (event.target as HTMLInputElement).value,
-            'contains'
         );
     }
 
-    // Obtiene el color del estado
-    getSeverityStatus(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'success';
-            case 0:
-                return 'danger';
-            default:
-                return 'info';
-        }
+    abrirDialog() {
+        this.doctor_dialog = true;
+        this.doctorForm.reset(); // Reiniciar el formulario al abrir el diálogo
     }
-    // Obtiene la descripción del estado
-    getDescriptionStatus(estado: number): string {
-        switch (estado) {
-            case 1:
-                return 'Activo';
-            case 0:
-                return 'Inactivo';
-            default:
-                return 'Ninguno';
+
+    onSubmit(): void {
+        if (this.doctorForm.valid) {
+            const doctor: Doctor = this.doctorForm.value;
+
+            this.usuarioService.crearDoctor(doctor).subscribe(
+                (response) => {
+                    console.log('Doctor creado:', response);
+                    this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Doctor creado correctamente.' });
+                    this.doctorForm.reset();
+                    this.doctor_dialog = false;
+                    this.obtenerDoctores();
+                },
+                (error) => {
+                    console.error('Error al crear el doctor:', error);
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el doctor.' });
+                }
+            );
+        } else {
+            console.log('Formulario no válido');
         }
     }
 
+    modificarDoctor(doctor: Doctor): void {
+        this.doctorForm.patchValue(doctor);
+        this.doctor_dialog = true;
+    }
+
+    guardarCambios(): void {
+        if (this.doctorForm.valid) {
+            const doctorData = this.doctorForm.value;
+
+            if (doctorData.id_doctor) {
+                this.usuarioService.modificarDoctor(doctorData, doctorData.id_doctor).subscribe(
+                    response => {
+                        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Doctor modificado correctamente.' });
+                        this.doctor_dialog = false;
+                        this.obtenerDoctores();
+                    },
+                    error => {
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo modificar el doctor.' });
+                    }
+                );
+            }
+        }
+    }
+
+    obtenerUsuarios() {
+        this.usuarioService.obtenerUsuarios().subscribe(
+            (data) => {
+                this.usuarios = data as Usuario[];
+                // Mapear los usuarios a un formato adecuado para el dropdown
+                this.usuariosOptions = this.usuarios.map(usuario => ({
+                    label: `${usuario.nombre} ${usuario.apellido}`, // Mostrar nombre y apellido
+                    value: usuario.id_usuario // Usar id_usuario como valor
+                }));
+            },
+            (error) => {
+                console.error('Error al obtener usuarios', error);
+            }
+        );
+    }
+
+    desactivarDoctor(doctor: Doctor): void {
+        this.usuarioService.desactivarDoctor(doctor.id_doctor).subscribe(
+            response => {
+                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Doctor desactivado correctamente.' });
+                this.obtenerDoctores();
+            },
+            error => {
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo desactivar el doctor.' });
+            }
+        );
+    }
 }

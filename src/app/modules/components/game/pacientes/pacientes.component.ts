@@ -110,6 +110,7 @@ export class PacientesComponent implements OnInit {
     guardarCambios(): void {
         if (this.pacienteForm.valid) {
             const pacienteData = this.pacienteForm.value;
+            console.log("datos a guardar cambios: ",pacienteData)
 
             // Formatear la fecha de ingreso
             const fechaIngreso = new Date(pacienteData.fecha_ingreso);

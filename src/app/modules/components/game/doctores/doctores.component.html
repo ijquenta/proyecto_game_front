@@ -1,25 +1,28 @@
-<p-toast></p-toast>
+<!-- Doctor table -->
 <div class="grid">
+    <p-toast></p-toast>
     <div class="col-12">
         <div class="card">
             <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
             <h3>Doctores</h3>
             <hr>
-            <p-table #dtMenu [value]="doctores" responsiveLayout="stack" class="m-2" [loading]="loading"
+            <p-table #dtDoctor [value]="doctores" responsiveLayout="stack" class="m-2" [loading]="loading"
                 [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
-                styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['nombre']"
-                rowGroupMode="rowspan" groupRowsBy="nombre" [showCurrentPageReport]="true"
+                styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['especialidad']"
+                [showCurrentPageReport]="true"
                 currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
                 [rowHover]="true">
 
                 <ng-template pTemplate="caption">
                     <div class="flex align-items-center justify-content-between table-reader">
                         <button pButton pRipple label="Nuevo Doctor" icon="pi pi-user-plus"
-                            class="p-button-primary mr-2" pTooltip="Crear Nuevo Usuario" tooltipPosition="top"></button>
+                            class="p-button-primary mr-2" pTooltip="Crear Nuevo Doctor"
+                            tooltipPosition="top" (click)="abrirDialog()"></button>
+
                         <span class="p-input-icon-left w-auto">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="dtMenu.filterGlobal($event.target.value, 'contains')"
-                                placeholder="Buscar..." pTooltip="Buscar por nombre" tooltipPosition="top" />
+                            <input pInputText type="text" (input)="dtDoctor.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Buscar..." pTooltip="Buscar por especialidad" tooltipPosition="top" />
                         </span>
                     </div>
                 </ng-template>
@@ -36,24 +39,25 @@
 
                 <ng-template pTemplate="body" let-doctor>
                     <tr>
-
                         <td> {{ doctor.id_doctor }} </td>
-                        <td> {{ doctor.id_usuario }} </td>
+                        <td> {{ doctor.usuario.nombre + " " + doctor.usuario.apellido }} </td>
                         <td> {{ doctor.especialidad }} </td>
                         <td> {{ doctor.estado }} </td>
                         <td>
                             <div class="flex justify-content-center">
                                 <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"
-                                    class="p-button mr-2" pTooltip="Editar" tooltipPosition="top"></button>
+                                    class="p-button mr-2" pTooltip="Editar" tooltipPosition="top"
+                                    (click)="modificarDoctor(doctor)"></button>
                                 <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-trash"
-                                    class="p-button-danger mr-2" pTooltip="Eliminar" tooltipPosition="top"></button>
+                                    class="p-button-danger mr-2" pTooltip="Eliminar" tooltipPosition="top"
+                                    (click)="desactivarDoctor(doctor)"></button>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6">No se encontraron registros</td>
+                        <td colspan="5">No se encontraron registros</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -61,75 +65,35 @@
     </div>
 </div>
 
-<p-dialog [(visible)]="roleDialog" header="Rol" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }"
+<p-dialog [(visible)]="doctor_dialog" header="Formulario Doctor" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }"
     [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="false">
-    <form [formGroup]="rolForm" novalidate>
-        <div class="grid p-fluid">
-            <div class="field col-12">
-                <label for="name" class="block">Nombre (*)</label>
-                <input type="text" placeholder="Ingresar nombre del rol" pInputText id="name"
-                    formControlName="rolnombre"
-                    [ngClass]="{ 'ng-dirty': this.rolForm.get('rolnombre').touched, 'valid-field': this.rolForm.get('rolnombre').valid}" />
-                <small class="p-error block" *ngIf="rolForm.get('rolnombre').invalid && rolForm.get('rolnombre').dirty">
-                    <span *ngIf="rolForm.get('rolnombre').errors?.required">El campo es requerido. (*)</span>
-                    <span *ngIf="rolForm.get('rolnombre').errors?.['minlength']">El campo es muy corto. debe ser como
-                        mínimo 5 caracteres</span>
-                </small>
-                <small class="p-success block" *ngIf="rolForm.get('rolnombre')?.valid"> El campo es correcto. </small>
+    <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+
+        <div class="field">
+            <label for="usuario">Usuario</label>
+            <p-dropdown id="usuario" formControlName="id_usuario" [options]="usuariosOptions" placeholder="Seleccione un usuario"></p-dropdown>
+            <div *ngIf="doctorForm.get('id_usuario').invalid && doctorForm.get('id_usuario').touched" class="p-error">
+                El Usuario es requerido.
             </div>
-            <div class="field col-12">
-                <label for="description" class="block">Descripción (*)</label>
-                <textarea placeholder="Ingresar descripción del rol" id="description" name="description" pInputTextarea
-                    rows="5" cols="20" formControlName="roldescripcion"
-                    [ngClass]="{ 'ng-dirty': this.rolForm.get('roldescripcion').touched, 'valid-field': this.rolForm.get('roldescripcion').valid}"></textarea>
-                <small class="p-error"
-                    *ngIf="rolForm.get('roldescripcion')?.invalid && rolForm.get('roldescripcion')?.dirty"> El campo es
-                    requerido. (*)</small>
-                <small class="p-success" *ngIf="rolForm.get('roldescripcion')?.valid"> El campo es correcto.</small>
+        </div>
+
+        <div class="field">
+            <label for="especialidad">Especialidad</label>
+            <input id="especialidad" pInputText formControlName="especialidad" />
+            <div *ngIf="doctorForm.get('especialidad').invalid && doctorForm.get('especialidad').touched" class="p-error">
+                Especialidad es requerida.
+            </div>
+        </div>
+        <div class="field">
+            <label for="estado">Estado</label>
+            <p-dropdown id="estado" formControlName="estado" [options]="estadoOptions" placeholder="Seleccione un estado"></p-dropdown>
+            <div *ngIf="doctorForm.get('estado').invalid && doctorForm.get('estado').touched" class="p-error">
+                Estado es requerido.
             </div>
         </div>
     </form>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-            (click)="createRole()"></button>
-    </ng-template>
-</p-dialog>
-
-<p-dialog [(visible)]="deactivateRoleDialog" header="Aviso: Confirmar" [modal]="true">
-    <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3"
-            style="font-size: 2rem"></i>
-        <span *ngIf="role">Estas seguro de desactivar el registro: <b>{{role.rolnombre}}</b>?</span>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="No" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Si" icon="pi pi-check" class="p-button-text"
-            (click)="confirmActivateDeactivate()"></button>
-    </ng-template>
-</p-dialog>
-
-<p-dialog [(visible)]="activateRoleDialog" header="Aviso: Confirmar" [modal]="true">
-    <div class="flex align-items-center justify-content-center"> <i class="pi pi-exclamation-triangle mr-3"
-            style="font-size: 2rem"></i>
-        <span *ngIf="role">Estas seguro de activar el registro: <b>{{role.rolnombre}}</b>?</span>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="No" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Si" icon="pi pi-check" class="p-button-text"
-            (click)="confirmActivateDeactivate()"></button>
-    </ng-template>
-</p-dialog>
-
-
-<p-dialog [(visible)]="deleteRoleDialog" header="Confirmar" [modal]="true">
-    <div class="flex align-items-center justify-content-center">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span>Estas seguro de eliminar el rol?</span>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-            (click)="deleteRoleDialog = false"></button>
-        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Si" (click)="sendDeleteRole()"></button>
+        <button *ngIf="doctorForm.value.id_doctor == null" pButton type="submit" label="Guardar" [disabled]="doctorForm.invalid" (click)="onSubmit()"></button>
+        <button *ngIf="doctorForm.value.id_doctor != null" pButton type="submit" label="Guardar Cambios" [disabled]="doctorForm.invalid" (click)="guardarCambios()"></button>
     </ng-template>
 </p-dialog>
