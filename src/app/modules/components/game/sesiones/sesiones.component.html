@@ -1,3 +1,4 @@
+<!-- Sesion table -->
 <div class="grid">
     <p-toast></p-toast>
     <div class="col-12">
@@ -7,20 +8,21 @@
             <hr>
             <p-table #dtMenu [value]="sesiones" responsiveLayout="stack" class="m-2" [loading]="loading"
                 [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
-                styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['nombre']"
-                rowGroupMode="rowspan" groupRowsBy="nombre" [showCurrentPageReport]="true"
+                styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['paciente.usuario.nombre']"
+                [showCurrentPageReport]="true"
                 currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
                 [rowHover]="true">
 
                 <ng-template pTemplate="caption">
                     <div class="flex align-items-center justify-content-between table-reader">
-                        <button pButton pRipple label="Nueva Sesión" icon="pi pi-user-plus"
+                        <button pButton pRipple label="Nueva Sesión" icon="pi pi-plus"
                             class="p-button-primary mr-2" pTooltip="Crear Nueva Sesión"
-                            tooltipPosition="top"></button>
+                            tooltipPosition="top" (click)="abrirDialog()"></button>
+
                         <span class="p-input-icon-left w-auto">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" (input)="dtMenu.filterGlobal($event.target.value, 'contains')"
-                                placeholder="Buscar..." pTooltip="Buscar por nombre" tooltipPosition="top" />
+                                placeholder="Buscar..." pTooltip="Buscar por paciente" tooltipPosition="top" />
                         </span>
                     </div>
                 </ng-template>
@@ -29,7 +31,7 @@
                     <tr>
                         <th> ID </th>
                         <th> Paciente </th>
-                        <th> Doctor/a </th>
+                        <th> Doctor </th>
                         <th> Fecha de Sesión </th>
                         <th> Tiempo de Sesión </th>
                         <th> Puntaje Obtenido </th>
@@ -39,9 +41,9 @@
                         <th> Nivel de Dificultad </th>
                         <th> Estado Emocional </th>
                         <th> Mejoras Observadas </th>
-                        <th> Resultados </th>
-                        <th> Notas Adicional </th>
-                        <th> Retroalimentación </th>
+                        <th> Resultados de Prueba </th>
+                        <th> Notas </th>
+                        <th> Feedback </th>
                         <th> Estado </th>
                         <th> Opciones </th>
                     </tr>
@@ -49,10 +51,9 @@
 
                 <ng-template pTemplate="body" let-sesion>
                     <tr>
-
                         <td> {{ sesion.id_session }} </td>
-                        <td> {{ sesion.id_paciente }} </td>
-                        <td> {{ sesion.id_doctor }} </td>
+                        <td> {{ sesion.paciente.usuario.nombre + " " + sesion.paciente.usuario.apellido }} </td>
+                        <td> {{ sesion.doctor.usuario.nombre + " " + sesion.doctor.usuario.apellido }} </td>
                         <td> {{ sesion.fecha_sesion }} </td>
                         <td> {{ sesion.tiempo_sesion }} </td>
                         <td> {{ sesion.puntaje_obtenido }} </td>
@@ -69,16 +70,18 @@
                         <td>
                             <div class="flex justify-content-center">
                                 <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"
-                                    class="p-button mr-2" pTooltip="Editar" tooltipPosition="top"></button>
+                                    class="p-button mr-2" pTooltip="Editar" tooltipPosition="top"
+                                    (click)="modificarSesion(sesion)"></button>
                                 <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-trash"
-                                    class="p-button-danger mr-2" pTooltip="Eliminar" tooltipPosition="top"></button>
+                                    class="p-button-danger mr-2" pTooltip="Eliminar" tooltipPosition="top"
+                                    (click)="desactivarSesion(sesion)"></button>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6">No se encontraron registros</td>
+                        <td colspan="16">No se encontraron registros</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -86,4 +89,73 @@
     </div>
 </div>
 
+<p-dialog [(visible)]="sesion_dialog" header="Formulario Sesión" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '30vw'}" [draggable]="false" [resizable]="false" [maximizable]="false">
+    <form [formGroup]="sesionForm">
 
+        <div class="field">
+            <label for="paciente">Paciente</label>
+            <p-dropdown id="paciente" formControlName="id_paciente" [options]="pacientesOptions" optionLabel="label" placeholder="Seleccione un paciente" [filter]="true" [showClear]="true" [required]="true"></p-dropdown>
+        </div>
+        <div class="field">
+            <label for="doctor">Doctor</label>
+            <p-dropdown id="doctor" formControlName="id_doctor" [options]="doctoresOptions" optionLabel="label" placeholder="Seleccione un doctor" [filter]="true" [showClear]="true" [required]="true"></p-dropdown>
+        </div>
+        <div class="field">
+            <label for="fecha_sesion">Fecha de Sesión</label>
+            <p-calendar id="fecha_sesion" formControlName="fecha_sesion" [showIcon]="true" [required]="true"></p-calendar>
+        </div>
+        <div class="field">
+            <label for="tiempo_sesion">Tiempo de Sesión (min)</label>
+            <input id="tiempo_sesion" type="number" pInputText formControlName="tiempo_sesion" [required]="true" />
+        </div>
+        <div class="field">
+            <label for="puntaje_obtenido">Puntaje Obtenido</label>
+            <input id="puntaje_obtenido" type="number" pInputText formControlName="puntaje_obtenido" [required]="true" />
+        </div>
+        <div class="field">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" pInputTextarea formControlName="descripcion" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" pInputTextarea formControlName="observaciones" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="ejercicios_realizados">Ejercicios Realizados</label>
+            <textarea id="ejercicios_realizados" pInputTextarea formControlName="ejercicios_realizados" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="nivel_dificultad">Nivel de Dificultad</label>
+            <input id="nivel_dificultad" type="text" pInputText formControlName="nivel_dificultad" [required]="true" />
+        </div>
+        <div class="field">
+            <label for="estado_emocional">Estado Emocional</label>
+            <input id="estado_emocional" type="text" pInputText formControlName="estado_emocional" [required]="true" />
+        </div>
+        <div class="field">
+            <label for="mejoras_observadas">Mejoras Observadas</label>
+            <textarea id="mejoras_observadas" pInputTextarea formControlName="mejoras_observadas" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="resultados_prueba">Resultados de Prueba</label>
+            <textarea id="resultados_prueba" pInputTextarea formControlName="resultados_prueba" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="notas">Notas</label>
+            <textarea id="notas" pInputTextarea formControlName="notas" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="feedback">Feedback</label>
+            <textarea id="feedback" pInputTextarea formControlName="feedback" [required]="true"></textarea>
+        </div>
+        <div class="field">
+            <label for="estado">Estado</label>
+            <input id="estado" type="text" pInputText formControlName="estado" [required]="true" />
+        </div>
+        <div class="field">
+            <button *ngIf="sesionForm.value.id_session == null" pButton type="submit" label="Guardar" [disabled]="sesionForm.invalid" (click)="onSubmit()"></button>
+            <button *ngIf="sesionForm.value.id_session != null" pButton type="submit" label="Guardar Cambios" [disabled]="sesionForm.invalid" (click)="guardarCambios()"></button>    
+        </div>
+    </form>
+</p-dialog>

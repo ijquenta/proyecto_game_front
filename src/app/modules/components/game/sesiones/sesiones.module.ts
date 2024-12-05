@@ -38,8 +38,10 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ImageModule } from 'primeng/image';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TabViewModule } from 'primeng/tabview';
+import { CalendarModule } from 'primeng/calendar';
 @NgModule({
     imports: [
+        CalendarModule,
         TabViewModule,
         SelectButtonModule,
         ImageModule,

@@ -58,7 +58,7 @@ export class UsuarioService {
         return this.http.put(`${API_URL}/doctores/${id}`, criterio);
     }
 
-    modifcarSesion(criterio: any, id: any) {
+    modificarSesion(criterio: any, id: any) {
         return this.http.put(`${API_URL}/sesiones/${id}`, criterio);
     }
 
