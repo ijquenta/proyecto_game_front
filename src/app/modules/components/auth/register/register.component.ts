@@ -223,9 +223,11 @@ export class RegisterComponent implements OnInit {
             if (!userName) {// Si el nombre de usuario está vacío, no se realiza ninguna validación
                 return of(null); // Se devuelve un observable que emite null
             }
-            const existe = this.users.some(usuario => usuario.usuname === userName);// Se verifica si algún elemento en la lista de usuarios tiene el mismo nombre de usuario
-            return of(existe ? { userNameExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
+            // const existe = this.users.some(usuario => usuario.usuname === userName);// Se verifica si algún elemento en la lista de usuarios tiene el mismo nombre de usuario
+            // return of(existe ? { userNameExistente: true } : null); // Se devuelve un observable que emite un objeto de errores si existe un duplicado, de lo contrario, emite null
+            return null;
         };
+        
     }
 
     createPerson() {
@@ -349,28 +351,28 @@ export class RegisterComponent implements OnInit {
 
     // Función auxiliar para preparar los datos del usuario
     private prepareUserData(perid: number) {
-        this.userData = {
-            username: '',
-            email: '',
-            perid: perid,
-            usuname: this.userForm.value.usuname,
-            usuemail: this.userForm.value.usuemail,
-            rolid: this.userForm.value.tipoRol.rolid,
-            usupassword: this.userForm.value.usupassword,
-            usupasswordhash: this.userForm.value.usupasswordhash,
-            tipo: 1,
-            usuusureg: 'Register',
-            usudescripcion: 'Registro mediante formulario',
-            usuestado: 1,
-            usuid: null,
-            usuusumod: null,
-            usufecmod: null,
-            usufecreg: null,
-            perfoto: null,
-            pernomcompleto: null,
-            pernrodoc: null,
-            rolnombre: null
-        };
+        // this.userData = {
+        //     username: '',
+        //     email: '',
+        //     perid: perid,
+        //     usuname: this.userForm.value.usuname,
+        //     usuemail: this.userForm.value.usuemail,
+        //     rolid: this.userForm.value.tipoRol.rolid,
+        //     usupassword: this.userForm.value.usupassword,
+        //     usupasswordhash: this.userForm.value.usupasswordhash,
+        //     tipo: 1,
+        //     usuusureg: 'Register',
+        //     usudescripcion: 'Registro mediante formulario',
+        //     usuestado: 1,
+        //     usuid: null,
+        //     usuusumod: null,
+        //     usufecmod: null,
+        //     usufecreg: null,
+        //     perfoto: null,
+        //     pernomcompleto: null,
+        //     pernrodoc: null,
+        //     rolnombre: null
+        // };
     }
 
     // Función auxiliar para registrar al usuario

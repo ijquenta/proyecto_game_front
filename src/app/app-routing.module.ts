@@ -15,7 +15,7 @@ const routes: Routes = [
                 { path: '', loadChildren: () => import('./modules/components/panel/panel.module').then(m => m.PanelModule), canActivate: [ authGuard ] },
                 { path: 'principal', loadChildren: () => import('./modules/components/panel/panel.module').then(m => m.PanelModule), canActivate: [ authGuard ] },
                 { path: 'panel', loadChildren: () => import('./modules/components/principal/principal.module').then(m => m.PrincipaldModule), canActivate: [ authGuard ] },
-                { path: 'usuario', loadChildren: () => import('./modules/components/usuario/usuario.module').then(m => m.UsuarioModule), canActivate: [ authGuard ] },
+                { path: 'game', loadChildren: () => import('./modules/components/game/game.module').then(m => m.GameModule), canActivate: [ authGuard ] },
                 { path: 'error', component: AccessDeniedComponent},
                 { path: 'notfound', component: NotfoundComponent },
                 { path: '**', redirectTo: 'notfound' }

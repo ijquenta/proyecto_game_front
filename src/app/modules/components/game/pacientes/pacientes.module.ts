@@ -30,8 +30,8 @@ import { ChipModule } from 'primeng/chip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { PersonaService } from 'src/app/modules/service/data/persona.service';
-import { UsuarioPersonaRoutingModule } from './usuario-persona-routing.module';
-import { UsuarioPersonaComponent } from './usuario-persona.component';
+import { PacientesRoutingModule } from './pacientes-routing.module';
+import { PacientesComponent } from './pacientes.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -49,7 +49,7 @@ import { SpeedDialModule } from 'primeng/speeddial';
         CardModule,
         BreadcrumbModule,
         CommonModule,
-        UsuarioPersonaRoutingModule,
+        PacientesRoutingModule,
         TableModule,
         ButtonModule,
         TagModule,
@@ -81,10 +81,10 @@ import { SpeedDialModule } from 'primeng/speeddial';
         ChipModule,
         ReactiveFormsModule
     ],
-    declarations: [UsuarioPersonaComponent],
+    declarations: [PacientesComponent],
     providers: [UsuarioService, PersonaService]
 })
-export class UsuarioPersonaModule { }
+export class PacientesModule { }
 
 
 

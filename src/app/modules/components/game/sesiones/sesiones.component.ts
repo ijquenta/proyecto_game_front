@@ -17,6 +17,7 @@ import { TipoPersona, TipoPersona2, TipoRol } from 'src/app/modules/models/dicci
 // Para validaciones
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { Sesion } from 'src/app/modules/models/game';
 
 interface ColumsTable {
     field: string;
@@ -24,15 +25,15 @@ interface ColumsTable {
 }
 
 @Component({
-    templateUrl: './usuario-crud.component.html',
+    templateUrl: './sesiones.component.html',
     providers: [MessageService],
-    styleUrls: ['./usuario-crud.component.css']
+    styleUrls: ['./sesiones.component.css']
 })
 
-export class UsuarioCrudComponent implements OnInit {
+export class SesionesComponent implements OnInit {
 
     // Variables
-
+    sesiones: Sesion[] = [];
     // Usuario
     usuario: Usuario;
     usuarios: any[] = [];
@@ -166,6 +167,15 @@ export class UsuarioCrudComponent implements OnInit {
         //         console.error('Error al obtener los roles:', error);
         //     }
         // );
+
+        this.usuarioService.obtenerSesiones().subscribe({
+            next: (sesiones) => {
+                this.sesiones = sesiones as [];
+            },
+            error: (err) => {
+                console.error(err);
+            }
+        });
     }
 
     //  Funciones
@@ -237,17 +247,17 @@ export class UsuarioCrudComponent implements OnInit {
         this.usuario = { ...data };
         this.usuarioDialog = true;
         this.optionDialog = false;
-        this.originalUsername = this.usuario.usuname;
+        this.originalUsername = this.usuario.nombre;
 
-        this.usuarioForm.patchValue({
-            usuid: this.usuario.usuid,
-            usuname: this.usuario.usuname,
-            tipoPersona: new TipoPersona2(this.usuario.perid, this.usuario.pernomcompleto, this.usuario.pernrodoc, this.usuario.perfoto),
-            tipoRol: new TipoRol(this.usuario.rolid, this.usuario.rolnombre),
-            usuemail: this.usuario.usuemail,
-            usudescripcion: this.usuario.usudescripcion,
-            usuestado: this.usuario.usuestado
-        });
+        // this.usuarioForm.patchValue({
+        //     usuid: this.usuario.usuid,
+        //     usuname: this.usuario.usuname,
+        //     tipoPersona: new TipoPersona2(this.usuario.perid, this.usuario.pernomcompleto, this.usuario.pernrodoc, this.usuario.perfoto),
+        //     tipoRol: new TipoRol(this.usuario.rolid, this.usuario.rolnombre),
+        //     usuemail: this.usuario.usuemail,
+        //     usudescripcion: this.usuario.usudescripcion,
+        //     usuestado: this.usuario.usuestado
+        // });
 
         const usunameControl = this.usuarioForm.get('usuname');
         usunameControl.clearAsyncValidators();
@@ -260,75 +270,75 @@ export class UsuarioCrudComponent implements OnInit {
 
     // Enviar información para editar/crear usurario
     sendForm(){
-        if (this.optionDialog) {
-            if(this.usuarioForm.invalid){
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.usuarioForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
-            }
-            this.usuarioRegistro = new Usuario();
-            this.usuarioRegistro.tipo = 1;
-            this.usuarioRegistro.usuid = null;
-            this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
-            this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
-            this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
-            this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
-            this.usuarioRegistro.usuestado = 1;
-            this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
-            this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
-            this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
-                (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Usuario', detail: 'Se registro correctamente.', life: 5000});
-                    this.optionDialog = false;
-                    this.usuarioDialog = false;
-                    this.listarUsuarios();
-                },
-                (error) => {
-                    console.error("error: ", error);
-                    let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
-                    if (error.error.message.includes('UniqueViolation')) {
-                        errorMessage = 'Ya existe un registro con el mismo rol para esta persona.';
-                    }
+        // if (this.optionDialog) {
+        //     if(this.usuarioForm.invalid){
+        //         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+        //         return Object.values(this.usuarioForm.controls).forEach(control=>{ control.markAllAsTouched(); control.markAsDirty(); })
+        //     }
+        //     this.usuarioRegistro = new Usuario();
+        //     this.usuarioRegistro.tipo = 1;
+        //     this.usuarioRegistro.usuid = null;
+        //     this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
+        //     this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
+        //     this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
+        //     this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
+        //     this.usuarioRegistro.usuestado = 1;
+        //     this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
+        //     this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
+        //     this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
+        //         (result: any) => {
+        //             this.messageService.add({ severity: 'success', summary: 'Usuario', detail: 'Se registro correctamente.', life: 5000});
+        //             this.optionDialog = false;
+        //             this.usuarioDialog = false;
+        //             this.listarUsuarios();
+        //         },
+        //         (error) => {
+        //             console.error("error: ", error);
+        //             let errorMessage = 'Se produjo un error al intentar registrar el usuario.';
+        //             if (error.error.message.includes('UniqueViolation')) {
+        //                 errorMessage = 'Ya existe un registro con el mismo rol para esta persona.';
+        //             }
 
-                    this.messageService.add({ severity: 'error', summary: 'Usuario', detail: errorMessage, life: 7000});
-                }
-            );
-        }
-        else{
-            if(this.usuarioForm.invalid){
-                this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-                return Object.values(this.usuarioForm.controls).forEach(control=>{
-                    control.markAllAsTouched();
-                    control.markAsDirty();
-                })
-            }
-            this.usuarioRegistro = new Usuario();
-            this.usuarioRegistro.tipo = 2;
-            this.usuarioRegistro.usuid = this.usuarioForm.value.usuid;
-            this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
-            this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
-            this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
-            this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
-            this.usuarioRegistro.usuestado = 1;
-            this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
-            this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
-            this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
-                (result: any) => {
-                    this.messageService.add({ severity: 'success', summary: 'Persona', detail: 'Se modificado correctamente.', life: 3000});
-                    this.optionDialog = false;
-                    this.usuarioDialog = false;
-                    this.listarUsuarios();
-                },
-                (error) => {
-                    console.error("error: ", error);
-                    let errorMessage = 'Se produjo un error al intentar modificar el usuario.';
-                    if (error.error.message.includes('UniqueViolation')) {
-                        errorMessage = 'No se puede modificar el usuario porque ya existe un registro con el mismo rol para esta persona.';
-                    }
+        //             this.messageService.add({ severity: 'error', summary: 'Usuario', detail: errorMessage, life: 7000});
+        //         }
+        //     );
+        // }
+        // else{
+        //     if(this.usuarioForm.invalid){
+        //         this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
+        //         return Object.values(this.usuarioForm.controls).forEach(control=>{
+        //             control.markAllAsTouched();
+        //             control.markAsDirty();
+        //         })
+        //     }
+        //     this.usuarioRegistro = new Usuario();
+        //     this.usuarioRegistro.tipo = 2;
+        //     this.usuarioRegistro.usuid = this.usuarioForm.value.usuid;
+        //     this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
+        //     this.usuarioRegistro.usuemail = this.usuarioForm.value.usuemail;
+        //     this.usuarioRegistro.perid = this.usuarioForm.value.tipoPersona.perid;
+        //     this.usuarioRegistro.rolid = this.usuarioForm.value.tipoRol.rolid;
+        //     this.usuarioRegistro.usuestado = 1;
+        //     this.usuarioRegistro.usuusureg = this.datosUsuario.usuname;
+        //     this.usuarioRegistro.usudescripcion = this.usuarioForm.value.usudescripcion;
+        //     this.usuarioService.gestionarUsuario(this.usuarioRegistro).subscribe(
+        //         (result: any) => {
+        //             this.messageService.add({ severity: 'success', summary: 'Persona', detail: 'Se modificado correctamente.', life: 3000});
+        //             this.optionDialog = false;
+        //             this.usuarioDialog = false;
+        //             this.listarUsuarios();
+        //         },
+        //         (error) => {
+        //             console.error("error: ", error);
+        //             let errorMessage = 'Se produjo un error al intentar modificar el usuario.';
+        //             if (error.error.message.includes('UniqueViolation')) {
+        //                 errorMessage = 'No se puede modificar el usuario porque ya existe un registro con el mismo rol para esta persona.';
+        //             }
 
-                    this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: errorMessage, life: 7000});
-                }
-            )
-        }
+        //             this.messageService.add({ severity: 'error', summary: 'Error en el Registro', detail: errorMessage, life: 7000});
+        //         }
+        //     )
+        // }
     }
 
     // Abre modal para desactivar usuario
@@ -361,7 +371,7 @@ export class UsuarioCrudComponent implements OnInit {
         }
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
-        this.usuarioRegistro.usupassword = this.usuarioPwdForm.value.usupassword;
+        // this.usuarioRegistro.usupassword = this.usuarioPwdForm.value.usupassword;
         this.usuarioService.gestionarUsuarioPassword(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Activado.', life: 3000});
@@ -380,8 +390,8 @@ export class UsuarioCrudComponent implements OnInit {
     deactivateUser() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
-        this.usuarioRegistro.tipo = 2;
-        this.usuarioRegistro.usuusumod = this.datosUsuario.usuname;
+        // this.usuarioRegistro.tipo = 2;
+        // this.usuarioRegistro.usuusumod = this.datosUsuario.usuname;
         this.usuarioService.gestionarUsuarioEstado(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Desactivado.', life: 3000});
@@ -399,8 +409,8 @@ export class UsuarioCrudComponent implements OnInit {
     activateUser() {
         this.usuarioRegistro = new Usuario();
         this.usuarioRegistro = { ...this.usuario};
-        this.usuarioRegistro.tipo = 3;
-        this.usuarioRegistro.usuusumod = this.datosUsuario.usuname;
+        // this.usuarioRegistro.tipo = 3;
+        // this.usuarioRegistro.usuusumod = this.datosUsuario.usuname;
         this.usuarioService.gestionarUsuarioEstado(this.usuarioRegistro).subscribe(
             (result: any) => {
                 this.messageService.add({ severity: 'success', summary: 'Proceso realizado correctamente', detail: 'Usuario Activado.', life: 3000});
@@ -464,8 +474,9 @@ export class UsuarioCrudComponent implements OnInit {
             if (!nombreUsuario) {
                 return of(null);
             }
-            const existe = this.usuariosDuplicado.some(usuario => usuario.usuname === nombreUsuario);
-            return of(existe ? { nombreUsuarioExiste: true } : null);
+            // const existe = this.usuariosDuplicado.some(usuario => usuario.usuname === nombreUsuario);
+            // return of(existe ? { nombreUsuarioExiste: true } : null);
+            return null;
         }
     }
     // Verifica si el nombre de usuario cambia o no para realizar la busqueda si existiera

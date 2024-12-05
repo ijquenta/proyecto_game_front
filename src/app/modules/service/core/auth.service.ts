@@ -67,8 +67,9 @@ export class AuthService {
         const criterio = {
             usuario_id: decode.sub
         };
+        console.log("criterio2", criterio)
 
-        return this.http.get(`${API_URL}/usuarios/${criterio}`).pipe(
+        return this.http.get(`${API_URL}/usuarios/${criterio.usuario_id}`).pipe(
             tap(user => {
                 this.usuario$.next(user);
                 console.log("hola", user)

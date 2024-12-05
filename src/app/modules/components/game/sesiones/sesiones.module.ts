@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CrudRoutingModule } from './usuario-crud-routing.module';
-import { UsuarioCrudComponent } from './usuario-crud.component';
+import { SesionesRoutingModule } from './sesiones-routing.module';
+import { SesionesComponent } from './sesiones.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -46,7 +46,7 @@ import { TabViewModule } from 'primeng/tabview';
         BreadcrumbModule,
         DataViewModule,
         CommonModule,
-        CrudRoutingModule,
+        SesionesRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -77,7 +77,7 @@ import { TabViewModule } from 'primeng/tabview';
         CardModule,
         TooltipModule
     ],
-    declarations: [UsuarioCrudComponent],
+    declarations: [SesionesComponent],
     providers: [UsuarioService]
 })
-export class UsuarioCrudModule { }
+export class SesionesModule { }

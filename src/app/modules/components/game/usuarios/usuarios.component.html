@@ -1,0 +1,155 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-toast></p-toast>
+            <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+            <h3>Usuarios</h3>
+            <hr>
+            <p-table #dtMenu [value]="usuarios" responsiveLayout="stack" class="m-2" [loading]="loading"
+                [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
+                styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['nombre']"
+                rowGroupMode="rowspan" groupRowsBy="nombre" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+                [rowHover]="true">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center justify-content-between table-reader">
+                        <button pButton pRipple label="Nuevo Usuario" icon="pi pi-user-plus"
+                            class="p-button-primary mr-2" pTooltip="Crear Nuevo Usuario" tooltipPosition="top"
+                            (click)="abrirDialog()"
+                        ></button>
+                        <span class="p-input-icon-left w-auto">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dtMenu.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Buscar..." pTooltip="Buscar por nombre" tooltipPosition="top" />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th> ID </th>
+                        <th> Nombre </th>
+                        <th> Apellido </th>
+                        <th> Email </th>
+                        <th> Número de Carnet </th>
+                        <th> Telefono/Celular </th>
+                        <th> Fecha de Nacimiento </th>
+                        <th> Fecha de Creación </th>
+                        <th> Estado </th>
+                        <th> Opciones </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-usuario>
+                    <tr>
+
+                        <td> {{ usuario.id_usuario }} </td>
+                        <td> {{ usuario.nombre }} </td>
+                        <td> {{ usuario.apellido }} </td>
+                        <td> {{ usuario.email }} </td>
+                        <td> {{ usuario.numero_carnet }} </td>
+                        <td> {{ usuario.telefono }} </td>
+                        <td> {{ usuario.fecha_nacimiento }} </td>
+                        <td> {{ usuario.fecha_creacion }} </td>
+                        <td> {{ usuario.estado }} </td>
+                        <td>
+                            <div class="flex justify-content-center">
+                                <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"
+                                    class="p-button mr-2" pTooltip="Editar" tooltipPosition="top"
+                                    (click)="modificarUsuario(usuario)"></button>
+                                <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-trash"
+                                    class="p-button-danger mr-2" pTooltip="Eliminar" tooltipPosition="top"
+                                    (click)="desactivarUsuario(usuario)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="6">No se encontraron registros</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog [(visible)]="usuario_dialog" header="Formulario Usuario" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="false">
+    <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+        <div class="field">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" pInputText formControlName="nombre" />
+            <div *ngIf="usuarioForm.get('nombre').invalid && usuarioForm.get('nombre').touched" class="p-error">
+                Nombre es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="apellido">Apellido</label>
+            <input id="apellido" pInputText formControlName="apellido" />
+            <div *ngIf="usuarioForm.get('apellido').invalid && usuarioForm.get('apellido').touched" class="p-error">
+                Apellido es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="email">Email</label>
+            <input id="email" pInputText formControlName="email" />
+            <div *ngIf="usuarioForm.get('email').invalid && usuarioForm.get('email').touched" class="p-error">
+                Email es requerido y debe ser válido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="numero_carnet">Número de Carnet</label>
+            <input id="numero_carnet" pInputText formControlName="numero_carnet" />
+            <div *ngIf="usuarioForm.get('numero_carnet').invalid && usuarioForm.get('numero_carnet').touched" class="p-error">
+                Número de carnet es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" pInputText formControlName="telefono" />
+            <div *ngIf="usuarioForm.get('telefono').invalid && usuarioForm.get('telefono').touched" class="p-error">
+                Teléfono es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+            <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" [showIcon]="true"></p-calendar>
+            <div *ngIf="usuarioForm.get('fecha_nacimiento').invalid && usuarioForm.get('fecha_nacimiento').touched" class="p-error">
+                Fecha de nacimiento es requerida.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="rol">Rol</label>
+            <p-dropdown id="rol" formControlName="rol" [options]="rolOptions" placeholder="Seleccione un rol"></p-dropdown>
+            <div *ngIf="usuarioForm.get('rol').invalid && usuarioForm.get('rol').touched" class="p-error">
+                Rol es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="estado">Estado</label>
+            <p-dropdown id="estado" formControlName="estado" [options]="estadoOptions" placeholder="Seleccione un estado"></p-dropdown>
+            <div *ngIf="usuarioForm.get('estado').invalid && usuarioForm.get('estado').touched" class="p-error">
+                Estado es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="fecha_creacion">Fecha de Creación</label>
+            <input id="fecha_creacion" pInputText formControlName="fecha_creacion" disabled />
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button *ngIf="usuarioForm.value.id_usuario == null" pButton type="submit" label="Guardar" [disabled]="usuarioForm.invalid" (click)="onSubmit()"></button>
+        <button *ngIf="usuarioForm.value.id_usuario != null" pButton type="submit" label="Guardar Cambios" [disabled]="usuarioForm.invalid" (click)="guardarCambios()"></button>
+    </ng-template>
+</p-dialog>

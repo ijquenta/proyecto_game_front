@@ -27,30 +27,20 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th> ID </th>
-                        <th> Nombre </th>
-                        <th> Puntaje </th>
-                        <th> Tiempo </th>
-                        <th> Cantidad </th>
-                        <th> Descripcion </th>
+                        <th> Doctor </th>
+                        <th> Especialidad </th>
+                        <th> Estado </th>
                         <th> Opciones </th>
                     </tr>
                 </ng-template>
 
-                <ng-template pTemplate="body" let-paciente>
+                <ng-template pTemplate="body" let-doctor>
                     <tr>
 
-                        <td> {{ paciente.id }} </td>
-                        <td> {{ paciente.nombre }} </td>
-                        <td> {{ paciente.puntaje }} </td>
-                        <td>
-                            {{ paciente.tiempo }} <br>
-                        </td>
-                        <td>
-                            {{ paciente.cantidad }} <br>
-                        </td>
-                        <td>
-                            {{ paciente.descripcion }} <br>
-                        </td>
+                        <td> {{ doctor.id_doctor }} </td>
+                        <td> {{ doctor.id_usuario }} </td>
+                        <td> {{ doctor.especialidad }} </td>
+                        <td> {{ doctor.estado }} </td>
                         <td>
                             <div class="flex justify-content-center">
                                 <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"

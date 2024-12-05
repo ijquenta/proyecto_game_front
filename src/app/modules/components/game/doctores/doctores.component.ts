@@ -6,13 +6,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // Services
 import { AuthService } from 'src/app/modules/service/core/auth.service';
-
+import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 // Others
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { getSeverityStatus, getDescriptionStatus } from '../../../utils/severityDescriptionStatus';
 import { Table } from 'primeng/table';
+import { Doctor } from 'src/app/modules/models/game';
 
 interface ColumsTable {
     field: string;
@@ -20,19 +21,19 @@ interface ColumsTable {
 }
 
 @Component({
-    templateUrl: './usuario-roles.component.html',
+    templateUrl: './doctores.component.html',
     providers: [MessageService],
-    styleUrls: ['./usuario-roles.component.css']
+    styleUrls: ['./doctores.component.css']
 })
 
-export class UsuarioRolesComponent implements OnInit {
+export class DoctoresComponent implements OnInit {
 
     // user
     usuario: Usuario;
 
     role: any;
 
-    doctores: any[] = [];
+    doctores: Doctor[] = [];
 
     // validation
     rolForm: FormGroup;
@@ -54,7 +55,7 @@ export class UsuarioRolesComponent implements OnInit {
     // Columns selected
     colsColumsTable!: ColumsTable[];
 
-    selectedColumns: { field: string; header: string}[]  = [
+    selectedColumns: { field: string; header: string }[] = [
         { field: 'rolnombre', header: 'Nombre' },
         { field: 'roldescripcion', header: 'Descripción' },
         { field: 'rolusureg', header: 'Registrado' },
@@ -72,7 +73,8 @@ export class UsuarioRolesComponent implements OnInit {
         private messageService: MessageService,
         private authService: AuthService,
         private formBuilder: FormBuilder,
-        private spinner: NgxSpinnerService
+        private spinner: NgxSpinnerService,
+        private usuarioService: UsuarioService
     ) {
         this.rolForm = this.formBuilder.group({
             rolid: [''],
@@ -80,15 +82,15 @@ export class UsuarioRolesComponent implements OnInit {
             roldescripcion: ['', Validators.required],
         });
 
-        this.items = [{ label: 'Administrar'}, { label: 'Doctores', routerLink:''},];
+        this.items = [{ label: 'Administrar' }, { label: 'Doctores', routerLink: '' },];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
 
         this.colsColumsTable = [
             { field: 'rolnombre', header: 'Nombre' },
             { field: 'roldescripcion', header: 'Descripción' },
-            { field: 'rolfecreg', header: 'Fecha registrado'},
+            { field: 'rolfecreg', header: 'Fecha registrado' },
             { field: 'rolusumod', header: 'Modificado' },
-            { field: 'rolfecmod', header: 'Fecha modificado'},
+            { field: 'rolfecmod', header: 'Fecha modificado' },
             { field: 'rolestado', header: 'Estado' }
         ];
 
@@ -104,10 +106,18 @@ export class UsuarioRolesComponent implements OnInit {
     ngOnInit() {
         // this.getDataUser();
         // this.getDataRoles();
+        this.usuarioService.obtenerDoctores().subscribe({
+            next: (doctores) => {
+                this.doctores = doctores as [];
+            },
+            error: (err) => {
+                console.error(err);
+            }
+        });
     }
 
     // get user, roles
-    getDataUser(){
+    getDataUser() {
         this.spinner.show();
         this.authService.getProfile().subscribe({
             next: (data: any) => {
@@ -146,27 +156,27 @@ export class UsuarioRolesComponent implements OnInit {
         this.rolForm.reset();
     }
 
-    createRole(){
-        if(this.rolForm.invalid){
+    createRole() {
+        if (this.rolForm.invalid) {
             this.messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Verifica los datos ingresados.',
                 life: 5000
             });
-            return Object.values(this.rolForm.controls).forEach(control=>{
+            return Object.values(this.rolForm.controls).forEach(control => {
                 control.markAllAsTouched();
                 control.markAsDirty();
             })
         }
-        if(this.optionRole){
+        if (this.optionRole) {
 
             // this.role = new Rol();
 
             this.role.tipo = 1;
             this.role.rolid = null;
             this.role.rolestado = 1;
-            this.role.rolusureg = this.usuario.usuname;
+            this.role.rolusureg = this.usuario.nombre;
             this.role.rolnombre = this.rolForm.value.rolnombre;
             this.role.roldescripcion = this.rolForm.value.roldescripcion;
 
@@ -199,11 +209,11 @@ export class UsuarioRolesComponent implements OnInit {
             //     }
             // });
         }
-        if(!this.optionRole) {
+        if (!this.optionRole) {
             // this.role = new Rol();
             this.role.tipo = 2;
             this.role.rolestado = 1;
-            this.role.rolusumod = this.usuario.usuname;
+            this.role.rolusumod = this.usuario.nombre;
             this.role.rolnombre = this.rolForm.value.rolnombre;
             this.role.roldescripcion = this.rolForm.value.roldescripcion;
             this.role.rolid = this.rolForm.value.rolid;
@@ -255,13 +265,13 @@ export class UsuarioRolesComponent implements OnInit {
 
     // manage role status
 
-    deactivateRole(data: any){
+    deactivateRole(data: any) {
         this.role = { ...data };
         this.role.tipo = 2;
         this.deactivateRoleDialog = true;
     }
 
-    activateRole(data: any){
+    activateRole(data: any) {
         this.role = { ...data };
         this.role.tipo = 3;
         this.activateRoleDialog = true;
@@ -298,12 +308,12 @@ export class UsuarioRolesComponent implements OnInit {
     }
 
     // Delete
-    deleteRole(role: any){
-        this.role = {...role};
+    deleteRole(role: any) {
+        this.role = { ...role };
         this.deleteRoleDialog = true;
     }
     // Send Delete Role
-    sendDeleteRole(){
+    sendDeleteRole() {
         this.loading = true;
         // this.rolService.deleteRole(this.role.rolid).subscribe({
         //     next: (data) => {
@@ -331,11 +341,11 @@ export class UsuarioRolesComponent implements OnInit {
         this.rolForm.reset();
     }
 
-    getDescription(status: any){
+    getDescription(status: any) {
         return getDescriptionStatus(status);
     }
 
-    getSeverity(status: any){
+    getSeverity(status: any) {
         return getSeverityStatus(status);
     }
 

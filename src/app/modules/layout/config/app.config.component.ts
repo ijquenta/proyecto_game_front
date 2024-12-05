@@ -1,6 +1,6 @@
 // Models
 import { Persona, PersonaExpanded } from 'src/app/modules/models/persona';
-import { Usuario } from 'src/app/modules/models/usuario';
+import { Usuario } from '../../models/usuario';
 import { TipoPais, TipoCiudad, TipoEstadoCivil, TipoGenero, TipoDocumento } from 'src/app/modules/models/diccionario';
 
 // Services
@@ -50,7 +50,7 @@ export class AppConfigComponent {
     id: any;
 
     // User
-    usuario: any = {};
+    usuario: Usuario;
 
     // Option control panel
     scales: number[] = [12, 13, 14, 15, 16];
@@ -84,8 +84,7 @@ export class AppConfigComponent {
     userPasswordForm: FormGroup<any>;
     userData: Usuario;
 
-    constructor(public layoutService: LayoutService, public menuService: MenuService, private authService: AuthService, private confirmationService: ConfirmationService, private messageService: MessageService, private router: Router, private spinner: NgxSpinnerService, private personaService: PersonaService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef, private usuarioService: UsuarioService)
-    { }
+    constructor(public layoutService: LayoutService, public menuService: MenuService, private authService: AuthService, private confirmationService: ConfirmationService, private messageService: MessageService, private router: Router, private spinner: NgxSpinnerService, private personaService: PersonaService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef, private usuarioService: UsuarioService) { }
 
     ngOnInit() {
         this.getUserData();
@@ -95,25 +94,21 @@ export class AppConfigComponent {
         this.assignVariables();
 
         this.assignValidations();
-
-        // this.getPersons();
-
-        // this.fillTypeCombo();
     }
 
     // Init
     getUserData() {
-        // this.authService.getProfile().subscribe({
-        //         next: (result: any) => {
-        //             this.usuario = result[0];
-        //         },
-        //         error: (error: any) => {
-        //             console.error("Error al obtener el perfil: ", error);
-        //         }
-        //     });
+        this.authService.getProfile().subscribe({
+            next: (result: Usuario) => {
+                this.usuario = result;
+            },
+            error: (error: any) => {
+                console.error("Error al obtener el perfil: ", error);
+            }
+        });
     }
 
-    assignValidations(){
+    assignValidations() {
         this.userPasswordForm = this.formBuilder.group({
             usupassword: ['', [Validators.required, Validators.minLength(8), this.passwordSecurity]],
             usupasswordconfirm: ['', [Validators.required]]
@@ -137,53 +132,9 @@ export class AppConfigComponent {
             tipoEstadoCivil: ['', [Validators.required]],
             tipoPais: ['', [Validators.required]],
             tipoCiudad: ['', [Validators.required]],
-            tipoDocumento: ['',[Validators.required]],
+            tipoDocumento: ['', [Validators.required]],
             perobservacion: [''],
             perestado: ['', [Validators.required]]
-        });
-    }
-
-    // Change password
-
-    changePassword() {
-        // Verify that the fields are correct
-        if (this.userPasswordForm.invalid) {
-            this.messageService.add({ severity: 'error', summary: 'Advertencia', detail: 'Por favor, verifica las contraseñas ingresadas.', life: 3000 });
-            return Object.values(this.userPasswordForm.controls).forEach(control => {
-                control.markAllAsTouched();
-                control.markAsDirty();
-            });
-        }
-
-        this.userData = new Usuario();
-        this.userData.usuname = this.usuario.usuname;
-        this.userData.usupassword = this.userPasswordForm.value.usupassword;
-        this.spinner.show();
-
-        this.usuarioService.changePassword(this.userData).subscribe({
-          next: (response) => {
-            this.spinner.hide();
-            this.messageService.add({
-                    severity: 'success',
-                    summary: 'Contraseña',
-                    detail: 'Se cambió correctamente.',
-                    life: 3000
-                }
-            );
-          },
-          error: (err) => {
-            this.spinner.hide();
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Ocurrió un error. Contacta al soporte.',
-                life: 5000
-            });
-          },
-          complete: () => {
-            this.spinner.hide();
-            this.showDialogChangePassword = false;
-          }
         });
     }
 
@@ -191,7 +142,7 @@ export class AppConfigComponent {
         this.showDialogChangePassword = true;
     }
 
-    hideDialogChangePassword(){
+    hideDialogChangePassword() {
         this.showDialogChangePassword = false;
     }
 
@@ -201,7 +152,7 @@ export class AppConfigComponent {
     passwordSecurity(control: AbstractControl): { [key: string]: boolean } | null {
         const value = control.value;
         if (value && (!value.match(/[A-Z]/) || !value.match(/[a-z]/) || !value.match(/[0-9]/))) {
-          return { passwordSecurity: true };
+            return { passwordSecurity: true };
         }
         return null;
     }
@@ -267,8 +218,8 @@ export class AppConfigComponent {
                     resolve({ edadMinima: true });
                 }
                 resolve(null);
-                });
-            };
+            });
+        };
     }
 
     validateExistingDocumentNumber(): AsyncValidatorFn {
@@ -290,23 +241,10 @@ export class AppConfigComponent {
         }
     }
 
-    showModalModifyProfile() {
-        this.showDialogProfile = true;
-        this.person = new Persona();
-        this.personaService.showPersonData(this.usuario.perid).subscribe({
-            next: (result: any) => {
-                this.person = result['data'];
-            },
-            error: (error: any) => {
-                console.error("Error al obtener el perfil: ", error);
-            }
-        });
-    }
-
-    showModifyProfile(){
+    showModifyProfile() {
         this.showDialogProfileUpdate = true;
         this.fillTypeCombo();
-        this.person = { ...this.person};
+        this.person = { ...this.person };
         this.originalPersonNumberDocument = this.person.pernrodoc;
 
         this.personForm.reset();
@@ -342,102 +280,13 @@ export class AppConfigComponent {
         nroDocControl.updateValueAndValidity();
     }
 
-    hideDialog(){
+    hideDialog() {
         this.showDialogProfileUpdate = false;
         this.personForm.reset();
     }
 
-    sendForm(){
-        this.personForm.patchValue({
-            perfoto: this.fileurlperfoto || null,
-        });
-
-        if (this.personForm.invalid) {
-            this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, verifica la información ingresada e intenta nuevamente.', life: 3000 });
-            return Object.values(this.personForm.controls).forEach(control => {
-                control.markAllAsTouched();
-                control.markAsDirty();
-            });
-        }
-
-        const formData: FormData = new FormData();
-
-            formData.append('perid', this.personForm.value.perid);
-            formData.append('perfoto', this.perfotoFile || null);
-            formData.append('pernomcompleto', (this.personForm.value.perapepat + ' ' + this.personForm.value.perapemat + ' ' + this.personForm.value.pernombres) || null);
-            formData.append('pernombres', this.personForm.value.pernombres || null);
-            formData.append('perapepat', this.personForm.value.perapepat || null);
-            formData.append('perapemat', this.personForm.value.perapemat || null);
-            formData.append('pertipodoc', this.personForm.value.tipoDocumento?.tipodocid || null);
-            formData.append('pernrodoc', this.personForm.value.pernrodoc || null);
-            formData.append('perfecnac', this.personForm.value.perfecnac || null);
-            formData.append('pergenero', this.personForm.value.tipoGenero?.generoid || null);
-            formData.append('perestcivil', this.personForm.value.tipoEstadoCivil?.estadocivilid || null);
-            formData.append('perpais', this.personForm.value.tipoPais?.paisid || null);
-            formData.append('perciudad', this.personForm.value.tipoCiudad?.ciudadid || null);
-            formData.append('perdirec', this.personForm.value.perdirec || null);
-            formData.append('peremail', this.personForm.value.peremail || null);
-            formData.append('percelular', this.personForm.value.percelular || null);
-            formData.append('pertelefono', this.personForm.value.pertelefono || null);
-            formData.append('perusumod', this.usuario.usuname);
-
-            this.loading = true;
-            this.spinner.show();
-
-            this.personaService.updateProfile(formData).subscribe({
-                next: (data: any) => {
-
-                    this.showDialogProfileUpdate = false;
-                    this.messageService.add(
-                        {
-                            severity: 'success',
-                            summary: 'Datos de perfil',
-                            detail: 'Se modificó correctamente en el sistema.',
-                            life: 3000
-                        }
-                    );
-
-                    this.loading = false;
-                    this.spinner.hide();
-                    this.fileUploadProfilePhoto.clear();
-                    this.personForm.reset();
-                    this.perfotoFile = null;
-
-                    this.personaService.showPersonData(this.usuario.perid).subscribe(
-                        (result: any) => {
-                            this.person = result['data'];
-                        },
-                        (error: any) => {
-                            console.error("Error al obtener el perfil: ", error);
-                        }
-                    );
-
-                    this.getUserData();
-                },
-                error: (error: any) => {
-                    console.error("Error: ", error['message']);
-                    this.messageService.add(
-                        {
-                            severity: 'error',
-                            summary: 'Problema',
-                            detail: 'Ocurrió un error en el registro, verifique los campos ingresados.',
-                            life: 3000
-                        }
-                    );
-                    this.spinner.hide();
-                }
-            });
-    }
-
-    onUpload(event: any) {
-        this.perfotoFile = event.files[0];
-        this.perfotoFileUrl = URL.createObjectURL(this.perfotoFile);
-        this.cdr.detectChanges();
-        this.fileURLperfoto(this.perfotoFile);
-    }
-
     fileURLperfoto(file: File): string {
-        this.fileurlperfoto =  URL.createObjectURL(file);
+        this.fileurlperfoto = URL.createObjectURL(file);
         return this.fileurlperfoto;
     }
 
@@ -466,7 +315,7 @@ export class AppConfigComponent {
 
     initializeTheme() {
         const theme = localStorage.getItem('theme');
-        if(theme === "theme-dark"){
+        if (theme === "theme-dark") {
             this.isDarkTheme = true;
         }
         else {
@@ -485,7 +334,7 @@ export class AppConfigComponent {
 
     changeTheme(theme: string) {
         const themeLink = document.getElementById('app-theme') as HTMLLinkElement;
-        if(themeLink) {
+        if (themeLink) {
             themeLink.href = '/assets/layout/styles/theme/' + theme + '/' + theme + '.css'
         }
         localStorage.setItem('theme', theme);
@@ -515,7 +364,7 @@ export class AppConfigComponent {
         });
     }
 
-    logout(){
+    logout() {
         this.authService.logout();
         this.router.navigate(['/login']);
         this.visible = false;

@@ -15,10 +15,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { UsuarioAccesosRoutingModule } from './usuario-accesos-routing.module';
+import { UsuariosRoutingModule } from './usuarios-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { UsuarioAccesosComponent } from './usuario-accesos.component';
+import { UsuariosComponent } from './usuarios.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { AccordionModule } from 'primeng/accordion';
@@ -27,8 +27,10 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from "primeng/multiselect";
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { CalendarModule } from 'primeng/calendar';
 @NgModule({
     imports: [
+        CalendarModule,
         SelectButtonModule,
         MultiSelectModule,
         ReactiveFormsModule,
@@ -38,7 +40,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
         TooltipModule,
         BreadcrumbModule,
         CommonModule,
-        UsuarioAccesosRoutingModule,
+        UsuariosRoutingModule,
         TableModule,
         ButtonModule,
         TagModule,
@@ -56,9 +58,9 @@ import { SelectButtonModule } from 'primeng/selectbutton';
         RatingModule,
         ProgressSpinnerModule
     ],
-    declarations: [UsuarioAccesosComponent],
+    declarations: [UsuariosComponent],
     providers: [
             UsuarioService,
         ]
 })
-export class UsuarioAccesosModule { }
+export class UsuariosModule { }

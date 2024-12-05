@@ -33,22 +33,22 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Usuario',
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['usuario/acceso'],
+                        routerLink: ['game/usuarios'],
                     },
                     {
                         label: 'Doctores',
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['usuario/roles'],
+                        routerLink: ['game/doctores'],
                     },
                     {
                         label: 'Pacientes',
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['usuario/persona'],
+                        routerLink: ['game/pacientes'],
                     },
                     {
                         label: 'Sesiones',
                         icon: 'pi pi-fw pi-wrench',
-                        routerLink: ['usuario/crud'],
+                        routerLink: ['game/sesiones'],
                     },
                 ],
             },

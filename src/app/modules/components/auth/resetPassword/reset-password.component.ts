@@ -108,7 +108,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     enviarFormulario(): void {
         this.usuarioForm.patchValue({
-          usuname: this.usuario.usuname
+          // usuname: this.usuario.usuname
         });
 
         if (this.usuarioForm.invalid) {
@@ -119,8 +119,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         }
 
         this.usuarioRegistro = new Usuario();
-        this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
-        this.usuarioRegistro.usupassword = this.usuarioForm.value.usupassword;
+        // this.usuarioRegistro.usuname = this.usuarioForm.value.usuname;
+        // this.usuarioRegistro.usupassword = this.usuarioForm.value.usupassword;
         this.spinner.show();
         this.usuarioService.resetPassword(this.token, this.usuarioRegistro).subscribe({
           next: (response) => {

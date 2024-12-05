@@ -38,14 +38,14 @@ export class AppTopBarComponent {
 
     modelOption: any[] | undefined;
     ngOnInit() {
-        // this.authService.getProfile().subscribe(
-        //     (result: any) => {
-        //         this.usuario = result[0];
-        //     },
-        //     (error: any) => {
-        //         console.error("Error al obtener el perfil: ", error);
-        //     }
-        // );
+        this.authService.getProfile().subscribe(
+            (usuario: any) => {
+                this.usuario = usuario;
+            },
+            (error: any) => {
+                console.error("Error al obtener el perfil: ", error);
+            }
+        );
         this.modelOption = [
             {
                 label: 'Perfil',

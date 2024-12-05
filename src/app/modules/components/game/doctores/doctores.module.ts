@@ -14,13 +14,13 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { UsuarioRolesRoutingModule } from './usuario-roles-routing.module';
+import { DoctoresRoutingModule } from './doctores-routing.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChipModule } from 'primeng/chip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
-import { UsuarioRolesComponent } from './usuario-roles.component';
+import { DoctoresComponent } from './doctores.component';
 import { UsuarioService } from 'src/app/modules/service/data/usuario.service';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AutoCompleteModule } from "primeng/autocomplete";
@@ -54,7 +54,7 @@ import { TabViewModule } from 'primeng/tabview';
         SelectButtonModule,
         BreadcrumbModule,
         CommonModule,
-        UsuarioRolesRoutingModule,
+        DoctoresRoutingModule,
         TableModule,
         ButtonModule,
         TagModule,
@@ -75,7 +75,7 @@ import { TabViewModule } from 'primeng/tabview';
         CardModule,
         TooltipModule
     ],
-    declarations: [UsuarioRolesComponent],
+    declarations: [DoctoresComponent],
     providers: [UsuarioService]
 })
-export class UsuarioRolesModule { }
+export class DoctoresModule { }

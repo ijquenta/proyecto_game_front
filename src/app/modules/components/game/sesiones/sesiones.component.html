@@ -5,7 +5,7 @@
             <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
             <h3>Sesiones</h3>
             <hr>
-            <p-table #dtMenu [value]="usuarios" responsiveLayout="stack" class="m-2" [loading]="loading"
+            <p-table #dtMenu [value]="sesiones" responsiveLayout="stack" class="m-2" [loading]="loading"
                 [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
                 styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['nombre']"
                 rowGroupMode="rowspan" groupRowsBy="nombre" [showCurrentPageReport]="true"
@@ -28,30 +28,44 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th> ID </th>
-                        <th> Nombre </th>
-                        <th> Puntaje </th>
-                        <th> Tiempo </th>
-                        <th> Cantidad </th>
-                        <th> Descripcion </th>
+                        <th> Paciente </th>
+                        <th> Doctor/a </th>
+                        <th> Fecha de Sesión </th>
+                        <th> Tiempo de Sesión </th>
+                        <th> Puntaje Obtenido </th>
+                        <th> Descripción </th>
+                        <th> Observaciones </th>
+                        <th> Ejercicios Realizados </th>
+                        <th> Nivel de Dificultad </th>
+                        <th> Estado Emocional </th>
+                        <th> Mejoras Observadas </th>
+                        <th> Resultados </th>
+                        <th> Notas Adicional </th>
+                        <th> Retroalimentación </th>
+                        <th> Estado </th>
                         <th> Opciones </th>
                     </tr>
                 </ng-template>
 
-                <ng-template pTemplate="body" let-paciente>
+                <ng-template pTemplate="body" let-sesion>
                     <tr>
 
-                        <td> {{ paciente.id }} </td>
-                        <td> {{ paciente.nombre }} </td>
-                        <td> {{ paciente.puntaje }} </td>
-                        <td>
-                            {{ paciente.tiempo }} <br>
-                        </td>
-                        <td>
-                            {{ paciente.cantidad }} <br>
-                        </td>
-                        <td>
-                            {{ paciente.descripcion }} <br>
-                        </td>
+                        <td> {{ sesion.id_session }} </td>
+                        <td> {{ sesion.id_paciente }} </td>
+                        <td> {{ sesion.id_doctor }} </td>
+                        <td> {{ sesion.fecha_sesion }} </td>
+                        <td> {{ sesion.tiempo_sesion }} </td>
+                        <td> {{ sesion.puntaje_obtenido }} </td>
+                        <td> {{ sesion.descripcion }} </td>
+                        <td> {{ sesion.observaciones }} </td>
+                        <td> {{ sesion.ejercicios_realizados }} </td>
+                        <td> {{ sesion.nivel_dificultad }} </td>
+                        <td> {{ sesion.estado_emocional }} </td>
+                        <td> {{ sesion.mejoras_observadas }} </td>
+                        <td> {{ sesion.resultados_prueba }} </td>
+                        <td> {{ sesion.notas }} </td>
+                        <td> {{ sesion.feedback }} </td>
+                        <td> {{ sesion.estado }} </td>
                         <td>
                             <div class="flex justify-content-center">
                                 <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"

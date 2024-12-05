@@ -1,0 +1,145 @@
+<!-- Paciente table -->
+<div class="grid">
+    <p-toast></p-toast>
+    <div class="col-12">
+        <div class="card">
+            <p-breadcrumb class="max-w-full" [model]="items" [home]="home"></p-breadcrumb>
+            <h3>Pacientes</h3>
+            <hr>
+            <p-table #dtMenu [value]="pacientes" responsiveLayout="stack" class="m-2" [loading]="loading"
+                [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [paginator]="true"
+                styleClass="p-datatable-striped p-card p-datatable-sm" [globalFilterFields]="['nombre']"
+                rowGroupMode="rowspan" groupRowsBy="nombre" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+                [rowHover]="true">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center justify-content-between table-reader">
+                        <button pButton pRipple label="Nuevo Paciente" icon="pi pi-user-plus"
+                            class="p-button-primary mr-2" pTooltip="Crear Nuevo Paciente"
+                            tooltipPosition="top" (click)="abrirDialog()"></button>
+
+                        <span class="p-input-icon-left w-auto">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dtMenu.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Buscar..." pTooltip="Buscar por nombre" tooltipPosition="top" />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th> ID </th>
+                        <th> Paciente </th>
+                        <th> Diagnóstico </th>
+                        <th> Fecha de Ingreso </th>
+                        <th> Rango de Movimiento </th>
+                        <th> Fuerza </th>
+                        <th> Estabilidad </th>
+                        <th> Descripción </th>
+                        <th> Observación </th>
+                        <th> Estado </th>
+                        <th> Opciones </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-paciente>
+                    <tr>
+                        <td> {{ paciente.id_paciente }} </td>
+                        <td> {{ paciente.id_usuario }} </td>
+                        <td> {{ paciente.diagnostico }} </td>
+                        <td> {{ paciente.fecha_ingreso | date:'yyyy-MM-dd' }} </td>
+                        <td> {{ paciente.rango_movimiento }} </td>
+                        <td> {{ paciente.fuerza }} </td>
+                        <td> {{ paciente.estabilidad }} </td>
+                        <td> {{ paciente.descripcion }} </td>
+                        <td> {{ paciente.observacion }} </td>
+                        <td> {{ paciente.estado }} </td>
+                        <td>
+                            <div class="flex justify-content-center">
+                                <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-pencil"
+                                    class="p-button mr-2" pTooltip="Editar" tooltipPosition="top"
+                                    (click)="modificarPaciente(paciente)"></button>
+                                <button pButton="pButton" pRipple="pRipple" type="button" icon="pi pi-trash"
+                                    class="p-button-danger mr-2" pTooltip="Eliminar" tooltipPosition="top"
+                                    (click)="desactivarPaciente(paciente)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="11">No se encontraron registros</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="paciente_dialog" header="Formulario Paciente" [modal]="true" class="p-fluid" [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false" [maximizable]="false">
+    <form [formGroup]="pacienteForm" (ngSubmit)="onSubmit()">
+
+        <div class="field">
+            <label for="usuario">Usuario</label>
+            <p-dropdown id="usuario" formControlName="id_usuario" [options]="usuariosOptions" placeholder="Seleccione un usuario"></p-dropdown>
+            <div *ngIf="pacienteForm.get('id_usuario').invalid && pacienteForm.get('id_usuario').touched" class="p-error">
+                El Usuario es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="diagnostico">Diagnóstico</label>
+            <input id="diagnostico" pInputText formControlName="diagnostico" />
+            <div *ngIf="pacienteForm.get('diagnostico').invalid && pacienteForm.get('diagnostico').touched" class="p-error">
+                Diagnóstico es requerido.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="fecha_ingreso">Fecha de Ingreso</label>
+            <p-calendar id="fecha_ingreso" formControlName="fecha_ingreso" [showIcon]="true"></p-calendar>
+            <div *ngIf="pacienteForm.get('fecha_ingreso').invalid && pacienteForm.get('fecha_ingreso').touched" class="p-error">
+                Fecha de ingreso es requerida.
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="rango_movimiento">Rango de Movimiento</label>
+            <input id="rango_movimiento" pInputText formControlName="rango_movimiento" />
+        </div>
+
+        <div class="field">
+            <label for="fuerza">Fuerza</label>
+            <input id="fuerza" pInputText formControlName="fuerza" />
+        </div>
+
+        <div class="field">
+            <label for="estabilidad">Estabilidad</label>
+            <input id="estabilidad" pInputText formControlName="estabilidad" />
+        </div>
+
+        <div class="field">
+            <label for="descripcion">Descripción</label>
+            <input id="descripcion" pInputText formControlName="descripcion" />
+        </div>
+
+        <div class="field">
+            <label for="observacion">Observación</label>
+            <input id="observacion" pInputText formControlName="observacion" />
+        </div>
+
+        <div class="field">
+            <label for="estado">Estado</label>
+            <p-dropdown id="estado" formControlName="estado" [options]="estadoOptions" placeholder="Seleccione un estado"></p-dropdown>
+            <div *ngIf="pacienteForm.get('estado').invalid && pacienteForm.get('estado').touched" class="p-error">
+                Estado es requerido.
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <button *ngIf="pacienteForm.value.id_paciente == null" pButton type="submit" label="Guardar" [disabled]="pacienteForm.invalid" (click)="onSubmit()"></button>
+        <button *ngIf="pacienteForm.value.id_paciente != null" pButton type="submit" label="Guardar Cambios" [disabled]="pacienteForm.invalid" (click)="guardarCambios()"></button>
+    </ng-template>
+</p-dialog>

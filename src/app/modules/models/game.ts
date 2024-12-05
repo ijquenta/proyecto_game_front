@@ -3,7 +3,7 @@ export class Paciente {
     id_paciente?: number = 0;
     id_usuario?: number = 0;
     diagnostico?: string = '';
-    fecha_ingreso?: Date = new Date();
+    fecha_ingreso?: string = '';
     rango_movimiento?: string = '';
     fuerza?: string = '';
     estabilidad?: string = '';
